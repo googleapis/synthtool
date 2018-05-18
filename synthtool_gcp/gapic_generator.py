@@ -19,16 +19,24 @@ class GAPICGenerator:
         # git clone git@github.com:googleapis/googleapis.git
         if not googleapis_repo_location:
             googleapis_repo_location = tempfile.mkdtemp()
+        self.googleapis = Path(googleapis_repo_location)
 
         # Even if we provided a path, just try to clone. This will noop if it
         # exists.
-        logging.info("clone googleapis/googleapis")
-        subprocess.run(['git',
-                        'clone',
-                        'git@github.com:googleapis/googleapis.git',
-                        googleapis_repo_location],
-                       stdout=subprocess.DEVNULL)
-        self.googleapis = Path(googleapis_repo_location)
+        if not self.googleapis.exists():
+            logging.info("clone googleapis/googleapis")
+            subprocess.run(['git',
+                            'clone',
+                            'git@github.com:googleapis/googleapis.git',
+                            self.googleapis],
+                           stdout=subprocess.DEVNULL)
+        else:
+            # we aren't going to reclone, but we should pull.
+            logging.info("pull googleapis/googleapis")
+            subprocess.run(['git',
+                            'pull'],
+                           cwd=self.googleapis,
+                           stdout=subprocess.DEVNULL)
 
     def py_library(self, service: str, version: str) -> Path:
         '''
