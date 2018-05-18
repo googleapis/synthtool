@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import os
+import re
 
 
 def copy(source: Path, destination: str=None):
@@ -19,6 +20,15 @@ def copy(source: Path, destination: str=None):
     else:
         # copy individual file
         shutil.copy2(source, destination)
+
+
+def replace(source: Path, pattern: str, replacement: str,
+            multiline: bool = False):
+    with open(source, 'r') as f:
+        text = f.read()
+    new_text = re.sub(pattern, replacement, text, flags=re.MULTILINE)
+    with open(source, 'w') as f:
+        f.write(new_text)
 
 
 def _copy_to_existing_dir(source: Path, destination: Path):

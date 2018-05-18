@@ -1,7 +1,7 @@
 import synthtool as s
 import synthtool_gcp as gcp
 import logging
-
+from pathlib import Path
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -16,15 +16,13 @@ v2beta2_library = gapic._generate_code(
 
 s.copy(v2beta2_library)
 
+# Set Release Status
+release_status = 'Development Status :: 3 - Alpha'
+s.replace(Path('setup.py'),
+          '(release_status = )(.*)$',
+          f"\\1'{release_status}'")
 
-# s.copy(v1_library / 'tests/gapic/myapi_v1', 'tests/gapic/myapi_v1')
-# s.copy(v1_library / 'docs/reference', 'docs/v1')
-# s.copy(v1p1beta1_library,  'google/cloud/myapi_v1p1beta1')
-# s.copy(v1p1beta1_library, 'tests/gapic/myapi_v1p1beta1')
-# s.copy(v1p1beta1_library / 'docs/reference', 'docs/v1p1beta1')
-
-# FUTURE add code to stitch together __init__.py
-# common.render('python/speech/__init__.py', versions=['v1', 'v1beta1'])
-
-# FUTURE Add code to stitch together RST
-# common.render('python/docs/index.rst', versions=['v1', 'v1beta1'])
+# Add Dependencies
+s.replace(Path('setup.py'),
+          'dependencies = \[\n*(^.*,\n)+',
+          "\\g<0>    'grpc-google-iam-v1<0.12dev,>=0.11.4',\n")
