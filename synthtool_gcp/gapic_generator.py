@@ -7,12 +7,14 @@ import platform
 
 class GAPICGenerator:
     def __init__(self, googleapis_repo_location=None):
+        self.logger = logging.getLogger('GAPICGenerator')
+
         # Docker on mac by default cannot use the default temp file location
-        # instead use the more standard *nix /tmp location
+        # instead use the more standard *nix /tmp location\
         if platform.system() == 'Darwin':
             tempfile.tempdir = '/tmp'
 
-        logging.info("Ensuring dependencies")
+        self.logger.info("Ensuring dependencies")
         self._ensure_dependencies_installed()
 
         # clone google apis to temp
@@ -24,7 +26,7 @@ class GAPICGenerator:
         # Even if we provided a path, just try to clone. This will noop if it
         # exists.
         if not self.googleapis.exists():
-            logging.info("clone googleapis/googleapis")
+            self.logger.info("clone googleapis/googleapis")
             subprocess.run(['git',
                             'clone',
                             'git@github.com:googleapis/googleapis.git',
@@ -32,7 +34,7 @@ class GAPICGenerator:
                            stdout=subprocess.DEVNULL)
         else:
             # we aren't going to reclone, but we should pull.
-            logging.info("pull googleapis/googleapis")
+            self.logger.info("pull googleapis/googleapis")
             subprocess.run(['git',
                             'pull'],
                            cwd=self.googleapis,
@@ -47,7 +49,8 @@ class GAPICGenerator:
         '''
         return self._generate_code(service, version, 'python')
 
-    def _generate_code(self, service, version, language):
+    def _generate_code(self, service, version, language,
+                       artman_yaml_name=None, artman_output_name=None):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
             'python': ('python_gapic', 'python'),
@@ -61,22 +64,25 @@ class GAPICGenerator:
         gapic_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
         # Ensure docker image
-        logging.info("Pulling artman docker image")
-        subprocess.run(['docker', 'pull', 'googleapis/artman:0.9.0'],
+        self.logger.info("Pulling artman docker image")
+        subprocess.run(['docker', 'pull', 'googleapis/artman:0.9.1'],
                        stdout=subprocess.DEVNULL)
 
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
-        artman_yaml_name = f"artman_{service}_{version}.yaml"
-        artman_yaml = self.googleapis/'google/cloud'/service/artman_yaml_name
-        print(f"artman yaml: {artman_yaml}")
-        if not artman_yaml.exists():
+        if artman_yaml_name is None:
+            artman_yaml_name = f"artman_{service}_{version}.yaml"
+        artman_yaml = Path('google/cloud')/service/artman_yaml_name
+        self.logger.info(f"artman yaml: {artman_yaml}")
+
+        if not (self.googleapis/artman_yaml).exists():
             raise FileNotFoundError(
                 f"Unable to find artman yaml file: {artman_yaml}")
 
-        logging.info("Running code generator")
-        result = subprocess.run(['artman', '--config', artman_yaml, 'generate',
-                                'python_gapic'],
+        subprocess_args = ['artman', '--config', artman_yaml, 'generate',
+                           'python_gapic']
+        self.logger.info(f"Running Artman: {subprocess_args}")
+        result = subprocess.run(subprocess_args,
                                 stdout=subprocess.DEVNULL,
                                 cwd=self.googleapis)
 
@@ -85,8 +91,10 @@ class GAPICGenerator:
 
         # Expect the output to be in the artman-genfiles directory.
         # example: /artman-genfiles/python/speech-v1
+        if artman_output_name is None:
+            artman_output_name = f"{service}-{version}"
         genfiles_dir = self.googleapis/'artman-genfiles'/gen_language
-        genfiles = genfiles_dir/f"{service}-{version}"
+        genfiles = genfiles_dir/artman_output_name
 
         if not genfiles.exists():
             raise FileNotFoundError(
