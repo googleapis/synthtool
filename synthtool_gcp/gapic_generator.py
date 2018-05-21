@@ -80,7 +80,7 @@ class GAPICGenerator:
                 f"Unable to find artman yaml file: {artman_yaml}")
 
         subprocess_args = ['artman', '--config', artman_yaml, 'generate',
-                           'python_gapic']
+                           gapic_arg]
         self.logger.info(f"Running Artman: {subprocess_args}")
         result = subprocess.run(subprocess_args,
                                 stdout=subprocess.DEVNULL,
