@@ -16,20 +16,27 @@ v1_library = gapic._generate_code(
 s.copy(v1_library)
 
 
-# Fix nox.py params for unit tests
+# Fix nox.py params for unit/system tests
+# https://github.com/googleapis/gapic-generator/issues/2017
 s.replace(
     'nox.py',
     "@nox.parametrize\('py', .*(\ndef unit\(session, py\):)",
     "@nox.parametrize('py', ['2.7', '3.5', '3.6', '3.7'])\g<1>")
+s.replace(
+    'nox.py',
+    "@nox.parametrize\('py', .*(\ndef system\(session, py\):)",
+    "@nox.parametrize('py', ['2.7', '3.7'])\g<1>")
 
 
 # Correct calls to routing_header
+# https://github.com/googleapis/gapic-generator/issues/2016
 s.replace(
     Path("google/cloud/iot_v1/gapic/device_manager_client.py"),
     "routing_header\(",
     "routing_header.to_grpc_metadata(")
 
 # metadata in tests in none but should be empty list.
+# https://github.com/googleapis/gapic-generator/issues/2014
 s.replace(
     Path("google/cloud/iot_v1/gapic/device_manager_client.py"),
     'def .*\(([^\)]+)\n.*metadata=None\):\n\s+"""([^"""])*"""\n',
@@ -40,6 +47,7 @@ s.replace(
 
 
 # line 380 and 755 have an issue with empty objects trying to get attrs
+# https://github.com/googleapis/gapic-generator/issues/2015
 s.replace(
     Path("google/cloud/iot_v1/gapic/device_manager_client.py"),
     "(^        )(routing_header = google.api_core.gapic_v1.routing_header"
