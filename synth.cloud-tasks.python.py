@@ -1,7 +1,6 @@
 import synthtool as s
 import synthtool_gcp as gcp
 import logging
-from pathlib import Path
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -18,11 +17,11 @@ s.copy(v2beta2_library)
 
 # Set Release Status
 release_status = 'Development Status :: 3 - Alpha'
-s.replace(Path('setup.py'),
+s.replace('setup.py',
           '(release_status = )(.*)$',
           f"\\1'{release_status}'")
 
 # Add Dependencies
-s.replace(Path('setup.py'),
+s.replace('setup.py',
           'dependencies = \[\n*(^.*,\n)+',
           "\\g<0>    'grpc-google-iam-v1<0.12dev,>=0.11.4',\n")
