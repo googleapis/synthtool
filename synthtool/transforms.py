@@ -4,6 +4,8 @@ from typing import Iterable, Union
 import os
 import re
 
+from synthtool import log
+
 PathOrStr = Union[str, Path]
 ListOfPathsOrStrs = Iterable[Union[str, Path]]
 
@@ -99,4 +101,4 @@ def replace(
     for path in paths:
         replaced = _replace_in_file(path, expr, after)
         if replaced:
-            print(f"Replaced {before!r} in {path}.")
+            log.info(f"Replaced {before!r} in {path}.")

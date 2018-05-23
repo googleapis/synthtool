@@ -1,44 +1,29 @@
 from pathlib import Path
-import subprocess
 import tempfile
-import logging
 import platform
+
+from synthtool import log
+from synthtool import shell
+from synthtool.sources import git
+
+
+GOOGLEAPIS_URL: str = 'git@github.com:googleapis/googleapis.git'
+GOOGLEAPIS_PRIVATE_URL: str = (
+    'git@github.com:googleapis/googleapis-private.git')
 
 
 class GAPICGenerator:
-    def __init__(self, googleapis_repo_location=None):
-        self.logger = logging.getLogger('GAPICGenerator')
-
+    def __init__(self, googleapis_url: str = GOOGLEAPIS_URL):
         # Docker on mac by default cannot use the default temp file location
         # instead use the more standard *nix /tmp location\
         if platform.system() == 'Darwin':
             tempfile.tempdir = '/tmp'
 
-        self.logger.info("Ensuring dependencies")
         self._ensure_dependencies_installed()
 
         # clone google apis to temp
         # git clone git@github.com:googleapis/googleapis.git
-        if not googleapis_repo_location:
-            googleapis_repo_location = tempfile.mkdtemp()
-        self.googleapis = Path(googleapis_repo_location)
-
-        # Even if we provided a path, just try to clone. This will noop if it
-        # exists.
-        if not self.googleapis.exists():
-            self.logger.info("clone googleapis/googleapis")
-            subprocess.run(['git',
-                            'clone',
-                            'git@github.com:googleapis/googleapis.git',
-                            self.googleapis],
-                           stdout=subprocess.DEVNULL)
-        else:
-            # we aren't going to reclone, but we should pull.
-            self.logger.info("pull googleapis/googleapis")
-            subprocess.run(['git',
-                            'pull'],
-                           cwd=self.googleapis,
-                           stdout=subprocess.DEVNULL)
+        self.googleapis = git.clone(googleapis_url)
 
     def py_library(self, service: str, version: str) -> Path:
         '''
@@ -64,16 +49,15 @@ class GAPICGenerator:
         gapic_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
         # Ensure docker image
-        self.logger.info("Pulling artman docker image")
-        subprocess.run(['docker', 'pull', 'googleapis/artman:0.9.1'],
-                       stdout=subprocess.DEVNULL)
+        log.debug("Pulling artman docker image")
+        shell.run(['docker', 'pull', 'googleapis/artman:0.9.1'])
 
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
         if artman_yaml_name is None:
             artman_yaml_name = f"artman_{service}_{version}.yaml"
         artman_yaml = Path('google/cloud')/service/artman_yaml_name
-        self.logger.info(f"artman yaml: {artman_yaml}")
+        log.debug(f"artman yaml: {artman_yaml}")
 
         if not (self.googleapis/artman_yaml).exists():
             raise FileNotFoundError(
@@ -81,10 +65,8 @@ class GAPICGenerator:
 
         subprocess_args = ['artman', '--config', artman_yaml, 'generate',
                            gapic_arg]
-        self.logger.info(f"Running Artman: {subprocess_args}")
-        result = subprocess.run(subprocess_args,
-                                stdout=subprocess.DEVNULL,
-                                cwd=self.googleapis)
+        log.info(f"Running Artman: {subprocess_args}")
+        result = shell.run(subprocess_args, cwd=self.googleapis)
 
         if result.returncode:
             raise Exception(f"Failed to generate {artman_yaml}")
@@ -103,12 +85,13 @@ class GAPICGenerator:
         return genfiles
 
     def _ensure_dependencies_installed(self):
+        log.debug("Ensuring dependencies")
+
         dependencies = ['docker', 'git', 'artman']
         failed_dependencies = []
         for dependency in dependencies:
-            return_code = subprocess.run(
-                ['which', dependency],
-                stdout=subprocess.DEVNULL).returncode
+            return_code = shell.run(
+                ['which', dependency], check=False).returncode
             if return_code:
                 failed_dependencies.append(dependency)
 
