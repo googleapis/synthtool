@@ -10,4 +10,5 @@ home-page = "http://g/cdpe-libraries"
 classifiers = ["License :: OSI Approved :: Apache Software License"]
 requires = [
     "colorlog",
+    "jinja2"
 ]

@@ -5,7 +5,7 @@ import nox
 def test(session):
     session.interpreter = 'python3.6'
     session.install('pytest', 'flit')
-    session.run('flit', 'install')
+    session.run('flit', 'install', '-s')
     session.run('pytest', 'tests', *session.posargs)
 
 
@@ -13,6 +13,6 @@ def test(session):
 def lint(session):
     session.interpreter = 'python3.6'
     session.install('flit', 'mypy', 'flake8')
-    session.run('flit', 'install')
+    session.run('flit', 'install', '-s')
     session.run('flake8', 'synthtool', 'synthtool_gcp', 'tests')
     session.run('mypy', '--ignore-missing-imports', 'synthtool')
