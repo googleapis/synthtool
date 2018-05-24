@@ -6,7 +6,7 @@ from synthtool import transforms
 
 
 @pytest.fixture()
-def fixtures(tmpdir):
+def expand_path_fixtures(tmpdir):
     files = [
         'a.txt',
         'b.py',
@@ -51,7 +51,7 @@ def fixtures(tmpdir):
         'dirb/suba',
         'dirb/suba/g.py']),
 ])
-def test__expand_paths(fixtures, input, expected):
+def test__expand_paths(expand_path_fixtures, input, expected):
     paths = sorted([str(x) for x in transforms._expand_paths(input)])
     assert paths == expected
 
@@ -60,7 +60,22 @@ def test__expand_paths(fixtures, input, expected):
     ('e.txt', ['dira/e.txt']),
     ('*', ['dira/e.txt', 'dira/f.py']),
 ])
-def test__expand_paths_with_root(fixtures, input, expected):
+def test__expand_paths_with_root(expand_path_fixtures, input, expected):
     paths = sorted([
         str(x) for x in transforms._expand_paths(input, root='dira')])
     assert paths == expected
+
+
+def test__filter_files(expand_path_fixtures):
+    files = sorted([
+        str(x) for x in
+        transforms._filter_files(transforms._expand_paths('**/*'))])
+
+    assert files == [
+        'a.txt',
+        'b.py',
+        'c.md',
+        'dira/e.txt',
+        'dira/f.py',
+        'dirb/suba/g.py'
+    ]
