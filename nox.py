@@ -6,7 +6,7 @@ def test(session):
     session.interpreter = 'python3.6'
     session.install('pytest', 'flit')
     session.run('flit', 'install')
-    session.run('pytest', 'tests')
+    session.run('pytest', 'tests', *session.posargs)
 
 
 @nox.session
