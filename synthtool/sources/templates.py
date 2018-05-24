@@ -10,7 +10,7 @@ PathOrStr = Union[str, Path]
 
 
 class Templates:
-    def __init__(self, location: PathOrStr):
+    def __init__(self, location: PathOrStr) -> None:
         self.env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(str(location)),
             autoescape=False)
