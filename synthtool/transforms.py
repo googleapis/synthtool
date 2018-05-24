@@ -11,7 +11,7 @@ ListOfPathsOrStrs = Iterable[Union[str, Path]]
 
 
 def _expand_paths(
-        paths: ListOfPathsOrStrs, root: Path = None) -> Iterable[Path]:
+        paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[Path]:
     """Given a list of globs/paths, expands them into a flat sequence,
     expanding globs as necessary."""
     if isinstance(paths, (str, Path)):
@@ -48,7 +48,7 @@ def _copy_dir_to_existing_dir(source: Path, destination: Path):
     for root, _, files in os.walk(source):
         for name in files:
             rel_path = str(Path(root).relative_to(source)).lstrip('.')
-            dest_dir = os.path.join(destination, rel_path)
+            dest_dir = os.path.join(str(destination), rel_path)
             os.makedirs(dest_dir, exist_ok=True)
             dest_path = os.path.join(dest_dir, name)
             shutil.copyfile(os.path.join(root, name), dest_path)

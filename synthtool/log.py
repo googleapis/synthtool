@@ -8,7 +8,7 @@ except ImportError:
 SUCCESS = 25
 
 
-class LoggerWithSuccess(logging.getLoggerClass()):
+class LoggerWithSuccess(logging.getLoggerClass()):  # type: ignore
     def __init__(self, name, level=logging.NOTSET):
         super(LoggerWithSuccess, self).__init__(name, level)
         logging.addLevelName(SUCCESS, "SUCCESS")

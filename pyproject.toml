@@ -1,0 +1,13 @@
+[build-system]
+requires = ["flit"]
+build-backend = "flit.buildapi"
+
+[tool.flit.metadata]
+module = "synthtool"
+author = "Thea Flowers"
+author-email = "theaflowers@google.com"
+home-page = "http://g/cdpe-libraries"
+classifiers = ["License :: OSI Approved :: Apache Software License"]
+requires = [
+    "colorlog",
+]
