@@ -4,6 +4,7 @@ from typing import Iterable, Union
 import os
 import re
 
+from synthtool import _tracked_paths
 from synthtool import log
 
 PathOrStr = Union[str, Path]
@@ -58,18 +59,17 @@ def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None):
     """
     copy file(s) at source to current directory
     """
-    if destination is None:
-        destination = Path(".")
-
-    # ensure destination is a `Path`
-    destination = Path(destination)
-
     for source in _expand_paths(sources):
+        if destination is None:
+            canonical_destination = _tracked_paths.relativize(source)
+        else:
+            canonical_destination = Path(destination)
+
         if source.is_dir():
-            _copy_dir_to_existing_dir(source, destination)
+            _copy_dir_to_existing_dir(source, canonical_destination)
         else:
             # copy individual file
-            shutil.copy2(source, destination)
+            shutil.copy2(source, canonical_destination)
 
 
 def _replace_in_file(path, expr, replacement):
