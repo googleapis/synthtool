@@ -62,7 +62,7 @@ class GAPICGenerator:
         if config_path is None:
             config_path = (
                 Path('google/cloud') / service
-                / "artman_{service}_{version}.yaml")
+                / f"artman_{service}_{version}.yaml")
         else:
             config_path = Path(config_path)
 
