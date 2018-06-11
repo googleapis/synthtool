@@ -3,6 +3,7 @@ import shutil
 from typing import Iterable, Union
 import os
 import re
+import sys
 
 from synthtool import _tracked_paths
 from synthtool import log
@@ -24,6 +25,9 @@ def _expand_paths(
     # ensure root is a path
     root = Path(root)
 
+    # record name of synth script so we don't try to do transforms on it
+    synth_script_name = sys.argv[0]
+
     for path in paths:
         if isinstance(path, Path):
             if path.is_absolute():
@@ -33,7 +37,7 @@ def _expand_paths(
             else:
                 yield path
         else:
-            yield from root.glob(path)
+            yield from (p for p in root.glob(path) if p != synth_script_name)
 
 
 def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:

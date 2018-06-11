@@ -1,1 +1,1 @@
-googleapis-artman >= 9.0.1
+googleapis-artman >= 0.11.0

@@ -64,7 +64,7 @@ class GAPICGenerator:
                 Path('google/cloud') / service
                 / f"artman_{service}_{version}.yaml")
         else:
-            config_path = Path(config_path)
+            config_path = Path('google/cloud') / service / Path(config_path)
 
         if not (self.googleapis/config_path).exists():
             raise FileNotFoundError(
@@ -106,5 +106,7 @@ class GAPICGenerator:
         if failed_dependencies:
             raise EnvironmentError(
                 f"Dependencies missing: {', '.join(failed_dependencies)}")
+
+        shell.run(['docker', 'pull', 'googleapis/artman:0.11.0'])
 
         # TODO: Install artman in a virtualenv.

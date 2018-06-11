@@ -14,5 +14,5 @@ def run(args, *, cwd=None, check=True):
             encoding='utf-8',
         )
     except subprocess.CalledProcessError as exc:
-        log.error(f"Failed executing {' '.join(args)}:\n\n{exc.stdout}")
+        log.error(f"Failed executing {' '.join((str(arg) for arg in args))}:\n\n{exc.stdout}")
         raise exc
