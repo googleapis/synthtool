@@ -5,7 +5,7 @@ from pathlib import Path
 
 logging.basicConfig(level=logging.DEBUG)
 
-gapic = gcp.GAPICGenerator("/tmp/synthtool-googleapis")
+gapic = gcp.GAPICGenerator()
 common = gcp.CommonTemplates()
 
 # tasks has two product names, and a poorly named artman yaml
@@ -31,40 +31,33 @@ s.replace(
 # Correct calls to routing_header
 # https://github.com/googleapis/gapic-generator/issues/2016
 s.replace(
-    Path("google/cloud/iot_v1/gapic/device_manager_client.py"),
+    "google/cloud/iot_v1/gapic/device_manager_client.py",
     "routing_header\(",
     "routing_header.to_grpc_metadata(")
 
 # metadata in tests in none but should be empty list.
 # https://github.com/googleapis/gapic-generator/issues/2014
 s.replace(
-    Path("google/cloud/iot_v1/gapic/device_manager_client.py"),
-    'def .*\(([^\)]+)\n.*metadata=None\):\n\s+"""([^"""])*"""\n',
+    "google/cloud/*/gapic/*_client.py",
+    'def .*\(([^\)]+)\n.*metadata=None\):\n\s+"""(.*\n)*?\s+"""\n',
     '\g<0>'
     '        if metadata is None:\n'
     '            metadata = []\n'
     '        metadata = list(metadata)\n')
 
-
 # line 380 and 755 have an issue with empty objects trying to get attrs
 # https://github.com/googleapis/gapic-generator/issues/2015
+# empty objects trying to get attrs
+# https://github.com/googleapis/gapic-generator/issues/2015
 s.replace(
-    Path("google/cloud/iot_v1/gapic/device_manager_client.py"),
+    "google/cloud/*/gapic/*_client.py",
     "(^        )(routing_header = google.api_core.gapic_v1.routing_header"
     ".to_grpc_metadata\(\n)"
-    "(\s+\[\('device_registry.name', device_registry.name\)\], \)\n)"
+    "(\s+\[\(')([a-z_]+)(\.name', queue.name\)\], \)\n)"
     "(\s+metadata.append\(routing_header\)\n)",
-    "\g<1>if hasattr(device_registry, 'name'):\n"
-    "\g<1>    \g<2>    \g<3>    \g<4>"
+    "\g<1>if hasattr(\g<3>, 'name'):\n"
+    "\g<1>    \g<2>\g<3>\g<4>    \g<5>    \g<6>"
 )
-s.replace(
-    Path("google/cloud/iot_v1/gapic/device_manager_client.py"),
-    "(^        )(routing_header = google.api_core.gapic_v1.routing_header"
-    ".to_grpc_metadata\(\n)"
-    "(\s+\[\('device.name', device.name\)\], \)\n)"
-    "(\s+metadata.append\(routing_header\)\n)",
-    "\g<1>if hasattr(device, 'name'):\n"
-    "\g<1>    \g<2>    \g<3>    \g<4>"
-)
+
 # TODO: Generation failing due to Device.name not being a valid
 # call to `device = {}`

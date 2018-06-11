@@ -3,7 +3,7 @@ import synthtool_gcp as gcp
 import logging
 logging.basicConfig()
 
-gapic = gcp.GAPICGenerator("/tmp/synthtool-googleapis")
+gapic = gcp.GAPICGenerator()
 common = gcp.CommonTemplates()
 
 v1_library = gapic.py_library('speech', 'v1')

@@ -5,7 +5,7 @@ from pathlib import Path
 
 logging.basicConfig(level=logging.DEBUG)
 
-gapic = gcp.GAPICGenerator("/tmp/synthtool-googleapis")
+gapic = gcp.GAPICGenerator()
 common = gcp.CommonTemplates()
 
 # tasks has two product names, and a poorly named artman yaml

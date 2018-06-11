@@ -37,7 +37,8 @@ def _expand_paths(
             else:
                 yield path
         else:
-            yield from (p for p in root.glob(path) if p != synth_script_name)
+            yield from (p for p in root.glob(path)
+                        if p.absolute() != Path(synth_script_name).absolute())
 
 
 def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
