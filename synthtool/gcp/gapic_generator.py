@@ -56,6 +56,14 @@ class GAPICGenerator:
     def node_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, 'nodejs', **kwargs)
 
+    nodejs_library = node_library
+
+    def ruby_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, 'ruby', **kwargs)
+
+    def php_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, 'php', **kwargs)
+
     def _generate_code(self, service, version, language,
                        config_path=None, artman_output_name=None):
         # map the language to the artman argument and subdir of genfiles
