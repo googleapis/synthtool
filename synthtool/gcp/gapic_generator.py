@@ -7,7 +7,7 @@ from synthtool import log
 from synthtool import shell
 from synthtool.sources import git
 
-
+ARTMAN_VERSION = '0.12.0'
 GOOGLEAPIS_URL: str = 'git@github.com:googleapis/googleapis.git'
 GOOGLEAPIS_PRIVATE_URL: str = (
     'git@github.com:googleapis/googleapis-private.git')
@@ -55,7 +55,7 @@ class GAPICGenerator:
 
         # Ensure docker image
         log.debug("Pulling artman docker image.")
-        shell.run(['docker', 'pull', 'googleapis/artman:0.10.1'])
+        shell.run(['docker', 'pull', f'googleapis/artman:ARTMAN_VERSION'])
 
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
@@ -109,6 +109,6 @@ class GAPICGenerator:
             raise EnvironmentError(
                 f"Dependencies missing: {', '.join(failed_dependencies)}")
 
-        shell.run(['docker', 'pull', 'googleapis/artman:0.11.0'])
+        shell.run(['docker', 'pull', f'googleapis/artman:ARTMAN_VERSION'])
 
         # TODO: Install artman in a virtualenv.
