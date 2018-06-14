@@ -55,7 +55,7 @@ class GAPICGenerator:
 
         # Ensure docker image
         log.debug("Pulling artman docker image.")
-        shell.run(['docker', 'pull', f'googleapis/artman:ARTMAN_VERSION'])
+        shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
 
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
