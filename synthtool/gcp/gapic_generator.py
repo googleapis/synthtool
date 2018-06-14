@@ -49,6 +49,7 @@ class GAPICGenerator:
             'python': ('python_gapic', 'python'),
             'nodejs': ('nodejs_gapic', 'js'),
             'ruby': ('ruby_gapic', 'ruby'),
+            'php': ('php_gapic', 'php'),
         }
 
         if language not in GENERATE_FLAG_LANGUAGE:
