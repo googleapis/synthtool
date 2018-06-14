@@ -39,6 +39,9 @@ class GAPICGenerator:
         '''
         return self._generate_code(service, version, 'python', **kwargs)
 
+    def node_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, 'nodejs', **kwargs)
+
     def _generate_code(self, service, version, language,
                        config_path=None, artman_output_name=None):
         # map the language to the artman argument and subdir of genfiles
@@ -109,6 +112,6 @@ class GAPICGenerator:
             raise EnvironmentError(
                 f"Dependencies missing: {', '.join(failed_dependencies)}")
 
-        shell.run(['docker', 'pull', f'googleapis/artman:ARTMAN_VERSION'])
+        shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
 
         # TODO: Install artman in a virtualenv.
