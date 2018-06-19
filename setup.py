@@ -35,7 +35,7 @@ setuptools.setup(
     version=version,
     description=description,
     author='Google LLC',
-    author_email='googleapis-packages@oogle.com',
+    author_email='googleapis-packages@google.com',
     license='Apache 2.0',
     url='',
     classifiers=[
