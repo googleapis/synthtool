@@ -99,7 +99,7 @@ class GAPICGenerator:
             raise FileNotFoundError(
                 f"Unable to find configuration yaml file: {config_path}.")
 
-        log.info(f"Running generator for {config_path}.")
+        log.debug(f"Running generator for {config_path}.")
         result = shell.run([
             ARTMAN_VENV / 'bin' / 'artman',
             '--config', config_path, 'generate', gapic_arg],
@@ -112,12 +112,14 @@ class GAPICGenerator:
         # example: /artman-genfiles/python/speech-v1
         if artman_output_name is None:
             artman_output_name = f"{service}-{version}"
-        genfiles_dir = self.googleapis/'artman-genfiles'/gen_language
+        genfiles_dir = self.googleapis / 'artman-genfiles' / gen_language
         genfiles = genfiles_dir/artman_output_name
 
         if not genfiles.exists():
             raise FileNotFoundError(
                 f"Unable to find generated output of artman: {genfiles}.")
+
+        log.success(f"Generated code into {genfiles}.")
 
         _tracked_paths.add(genfiles)
         return genfiles
