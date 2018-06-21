@@ -28,26 +28,21 @@ ARTMAN_VERSION = os.environ.get('SYNTHTOOL_ARTMAN_VERSION', 'latest')
 ARTMAN_VENV = cache.get_cache_dir() / 'artman_venv'
 GOOGLEAPIS_URL: str = 'git@github.com:googleapis/googleapis.git'
 GOOGLEAPIS_PRIVATE_URL: str = (
-    'git@github.com:googleapis/googleapis-private.git')
+    'git@github.com:googleapis/googleapis-privatez.git')
+
+
+# Docker on mac by default cannot use the default temp file location
+# instead use the more standard *nix /tmp location\
+if platform.system() == 'Darwin':
+    tempfile.tempdir = '/tmp'
 
 
 class GAPICGenerator:
-    def __init__(self, private: bool = False):
-        # Docker on mac by default cannot use the default temp file location
-        # instead use the more standard *nix /tmp location\
-        if platform.system() == 'Darwin':
-            tempfile.tempdir = '/tmp'
+    def __init__(self):
 
         self._ensure_dependencies_installed()
         self._install_artman()
-
-        # clone google apis to temp
-        # git clone git@github.com:googleapis/googleapis.git
-        if not private:
-            googleapis_url = GOOGLEAPIS_URL
-        else:
-            googleapis_url = GOOGLEAPIS_PRIVATE_URL
-        self.googleapis = git.clone(googleapis_url)
+        self._clone_googleapis()
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
         '''
@@ -70,7 +65,8 @@ class GAPICGenerator:
         return self._generate_code(service, version, 'php', **kwargs)
 
     def _generate_code(self, service, version, language,
-                       config_path=None, artman_output_name=None):
+                       config_path=None, artman_output_name=None,
+                       private=False):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
             'python': ('python_gapic', 'python'),
@@ -84,6 +80,17 @@ class GAPICGenerator:
 
         gapic_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
+        # Determine which googleapis repo to use
+        if not private:
+            googleapis = self.googleapis
+        else:
+            googleapis = self.googleapis_private
+
+        if googleapis is None:
+            raise RuntimeError(
+                f'Unable to generate {config_path}, the googleapis repository'
+                'is unavailable.')
+
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
         if config_path is None:
@@ -95,7 +102,7 @@ class GAPICGenerator:
         else:
             config_path = Path('google/cloud') / service / Path(config_path)
 
-        if not (self.googleapis/config_path).exists():
+        if not (googleapis / config_path).exists():
             raise FileNotFoundError(
                 f"Unable to find configuration yaml file: {config_path}.")
 
@@ -103,7 +110,7 @@ class GAPICGenerator:
         result = shell.run([
             ARTMAN_VENV / 'bin' / 'artman',
             '--config', config_path, 'generate', gapic_arg],
-            cwd=self.googleapis)
+            cwd=googleapis)
 
         if result.returncode:
             raise Exception(f"Failed to generate from {config_path}")
@@ -112,7 +119,7 @@ class GAPICGenerator:
         # example: /artman-genfiles/python/speech-v1
         if artman_output_name is None:
             artman_output_name = f"{service}-{version}"
-        genfiles_dir = self.googleapis / 'artman-genfiles' / gen_language
+        genfiles_dir = googleapis / 'artman-genfiles' / gen_language
         genfiles = genfiles_dir/artman_output_name
 
         if not genfiles.exists():
@@ -154,3 +161,13 @@ class GAPICGenerator:
             f'googleapis-artman{version_specifier}'])
         log.debug('Pulling artman image.')
         shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
+
+    def _clone_googleapis(self):
+        self.googleapis = git.clone(GOOGLEAPIS_URL)
+
+        try:
+            self.googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
+        except:
+            log.warning(
+                'Could not clone googleapis-private, you will not be able to '
+                'generate private API versions!')
