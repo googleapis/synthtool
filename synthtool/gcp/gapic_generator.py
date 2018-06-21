@@ -28,7 +28,7 @@ ARTMAN_VERSION = os.environ.get('SYNTHTOOL_ARTMAN_VERSION', 'latest')
 ARTMAN_VENV = cache.get_cache_dir() / 'artman_venv'
 GOOGLEAPIS_URL: str = 'git@github.com:googleapis/googleapis.git'
 GOOGLEAPIS_PRIVATE_URL: str = (
-    'git@github.com:googleapis/googleapis-privatez.git')
+    'git@github.com:googleapis/googleapis-private.git')
 
 
 # Docker on mac by default cannot use the default temp file location
