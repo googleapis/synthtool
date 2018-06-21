@@ -12,16 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from pathlib import Path
 import tempfile
 import platform
+import venv
 
 from synthtool import _tracked_paths
+from synthtool import cache
 from synthtool import log
 from synthtool import shell
 from synthtool.sources import git
 
-ARTMAN_VERSION = '0.12.0'
+ARTMAN_VERSION = os.environ.get('SYNTHTOOL_ARTMAN_VERSION', 'latest')
+ARTMAN_VENV = cache.get_cache_dir() / 'artman_venv'
 GOOGLEAPIS_URL: str = 'git@github.com:googleapis/googleapis.git'
 GOOGLEAPIS_PRIVATE_URL: str = (
     'git@github.com:googleapis/googleapis-private.git')
@@ -35,6 +39,7 @@ class GAPICGenerator:
             tempfile.tempdir = '/tmp'
 
         self._ensure_dependencies_installed()
+        self._install_artman()
 
         # clone google apis to temp
         # git clone git@github.com:googleapis/googleapis.git
@@ -79,10 +84,6 @@ class GAPICGenerator:
 
         gapic_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
-        # Ensure docker image
-        log.debug("Pulling artman docker image.")
-        shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
-
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
         if config_path is None:
@@ -98,10 +99,11 @@ class GAPICGenerator:
             raise FileNotFoundError(
                 f"Unable to find configuration yaml file: {config_path}.")
 
-        subprocess_args = ['artman', '--config', config_path, 'generate',
-                           gapic_arg]
-        log.info(f"Running generator.")
-        result = shell.run(subprocess_args, cwd=self.googleapis)
+        log.info(f"Running generator for {config_path}.")
+        result = shell.run([
+            ARTMAN_VENV / 'bin' / 'artman',
+            '--config', config_path, 'generate', gapic_arg],
+            cwd=self.googleapis)
 
         if result.returncode:
             raise Exception(f"Failed to generate from {config_path}")
@@ -121,9 +123,9 @@ class GAPICGenerator:
         return genfiles
 
     def _ensure_dependencies_installed(self):
-        log.debug("Ensuring dependencies")
+        log.debug("Ensuring dependencies.")
 
-        dependencies = ['docker', 'git', 'artman']
+        dependencies = ['docker', 'git']
         failed_dependencies = []
         for dependency in dependencies:
             return_code = shell.run(
@@ -135,6 +137,18 @@ class GAPICGenerator:
             raise EnvironmentError(
                 f"Dependencies missing: {', '.join(failed_dependencies)}")
 
-        shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
 
-        # TODO: Install artman in a virtualenv.
+    def _install_artman(self):
+        if not ARTMAN_VENV.exists():
+            venv.main([str(ARTMAN_VENV)])
+
+        if ARTMAN_VERSION != 'latest':
+            version_specifier = f'=={ARTMAN_VERSION}'
+        else:
+            version_specifier = ''
+
+        shell.run([
+            ARTMAN_VENV / 'bin' / 'pip', 'install', '--upgrade',
+            f'googleapis-artman{version_specifier}'])
+        log.debug('Pulling artman image.')
+        shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
