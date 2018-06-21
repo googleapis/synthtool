@@ -163,10 +163,12 @@ class GAPICGenerator:
         shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
 
     def _clone_googleapis(self):
-        self.googleapis = git.clone(GOOGLEAPIS_URL)
+        self.googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
 
         try:
-            self.googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
+            self.googleapis_private = git.clone(
+                GOOGLEAPIS_PRIVATE_URL,
+                depth=1)
         except:
             log.warning(
                 'Could not clone googleapis-private, you will not be able to '
