@@ -22,7 +22,6 @@ description = ''
 version = '0.1.0'
 release_status = 'Development Status :: 3 - Alpha'
 dependencies = [
-    "googleapis-artman",
     "colorlog < 3.0.0",
     "jinja2"
 ]

@@ -37,6 +37,39 @@ if platform.system() == 'Darwin':
     tempfile.tempdir = '/tmp'
 
 
+def _run_artman(image, root_dir, config, *args):
+    """Executes artman command in the artman container.
+    Args:
+        root_dir: The input directory that will be mounted to artman docker
+            container as local googleapis directory.
+    Returns:
+        The output directory with artman-generated files.
+    """
+    container_name = 'artman-docker'
+    config_dirname = os.path.dirname(config)
+    output_dir = root_dir / 'artman-genfiles'
+
+    docker_cmd = [
+        'docker', 'run', '--name', container_name, '--rm', '-i',
+        '-e', f'HOST_USER_ID={os.getuid()}',
+        '-e', f'HOST_GROUP_ID={os.getgid()}',
+        '-e', 'RUNNING_IN_ARTMAN_DOCKER=True',
+        '-v', f'{root_dir}:{root_dir}',
+        '-v', f'{output_dir}:{output_dir}',
+        '-w', root_dir,
+        image,
+        '/bin/bash', '-c'
+    ]
+
+    artman_command = ' '.join(map(str,
+        ['artman', '--local', '--config', config, 'generate'] + list(args)))
+
+    cmd = docker_cmd + [artman_command]
+
+    shell.run(cmd, cwd=root_dir)
+
+    return output_dir
+
 class GAPICGenerator:
     def __init__(self):
 
@@ -78,7 +111,7 @@ class GAPICGenerator:
         if language not in GENERATE_FLAG_LANGUAGE:
             raise ValueError("provided language unsupported")
 
-        gapic_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
+        gapic_language_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
         # Determine which googleapis repo to use
         if not private:
@@ -107,22 +140,18 @@ class GAPICGenerator:
                 f"Unable to find configuration yaml file: {config_path}.")
 
         log.debug(f"Running generator for {config_path}.")
-        result = shell.run([
-            ARTMAN_VENV / 'bin' / 'artman',
-            '--image', f'googleapis/artman:{ARTMAN_VERSION}',
-            '--config', config_path,
-            'generate', gapic_arg],
-            cwd=googleapis)
-
-        if result.returncode:
-            raise Exception(f"Failed to generate from {config_path}")
+        output_root = _run_artman(
+            f'googleapis/artman:{ARTMAN_VERSION}',
+            googleapis,
+            config_path,
+            gapic_language_arg
+        )
 
         # Expect the output to be in the artman-genfiles directory.
         # example: /artman-genfiles/python/speech-v1
         if artman_output_name is None:
             artman_output_name = f"{service}-{version}"
-        genfiles_dir = googleapis / 'artman-genfiles' / gen_language
-        genfiles = genfiles_dir/artman_output_name
+        genfiles = output_root / gen_language /artman_output_name
 
         if not genfiles.exists():
             raise FileNotFoundError(
@@ -165,6 +194,7 @@ class GAPICGenerator:
         shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
 
     def _clone_googleapis(self):
+        log.debug("Cloning googleapis.")
         self.googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
 
         try:
