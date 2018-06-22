@@ -109,7 +109,9 @@ class GAPICGenerator:
         log.debug(f"Running generator for {config_path}.")
         result = shell.run([
             ARTMAN_VENV / 'bin' / 'artman',
-            '--config', config_path, 'generate', gapic_arg],
+            '--image', f'googleapis/artman:{ARTMAN_VERSION}'
+            '--config', config_path,
+            'generate', gapic_arg],
             cwd=googleapis)
 
         if result.returncode:
