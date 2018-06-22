@@ -27,7 +27,7 @@ dependencies = [
     "jinja2"
 ]
 
-packages = ['synthtool']
+packages = setuptools.find_packages()
 
 
 setuptools.setup(
