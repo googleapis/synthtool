@@ -60,7 +60,8 @@ def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
     return (path for path in paths if path.is_file())
 
 
-def _copy_dir_to_existing_dir(source: Path, destination: Path):
+def _copy_dir_to_existing_dir(source: Path, destination: Path,
+                              excludes: ListOfPathsOrStrs = None):
     """
     copies files over existing files to an existing directory
     this function does not copy empty directories
@@ -69,15 +70,23 @@ def _copy_dir_to_existing_dir(source: Path, destination: Path):
         for name in files:
             rel_path = str(Path(root).relative_to(source)).lstrip('.')
             dest_dir = os.path.join(str(destination), rel_path)
-            os.makedirs(dest_dir, exist_ok=True)
             dest_path = os.path.join(dest_dir, name)
-            shutil.copyfile(os.path.join(root, name), dest_path)
+
+            exclude = [excluded for excluded in excludes
+                       if excluded.samefile(dest_path) or
+                       excluded.samefile(dest_dir)]
+            if not exclude:
+                os.makedirs(dest_dir, exist_ok=True)
+                shutil.copyfile(os.path.join(root, name), dest_path)
 
 
-def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None):
+def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None,
+         excludes: ListOfPathsOrStrs = None):
     """
     copy file(s) at source to current directory
     """
+    expanded_excludes = list(_expand_paths(excludes))
+
     for source in _expand_paths(sources):
         if destination is None:
             canonical_destination = _tracked_paths.relativize(source)
@@ -85,8 +94,9 @@ def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None):
             canonical_destination = Path(destination)
 
         if source.is_dir():
-            _copy_dir_to_existing_dir(source, canonical_destination)
-        else:
+            _copy_dir_to_existing_dir(source, canonical_destination,
+                                      excludes=expanded_excludes)
+        elif source not in expanded_excludes:
             # copy individual file
             shutil.copy2(source, canonical_destination)
 
