@@ -73,8 +73,8 @@ def _copy_dir_to_existing_dir(source: Path, destination: Path,
             dest_path = os.path.join(dest_dir, name)
 
             exclude = [excluded for excluded in excludes
-                       if excluded.samefile(dest_path) or
-                       excluded.samefile(dest_dir)]
+                       if excluded.relative_to('.') == Path(dest_path) or
+                       excluded.relative_to('.') == Path(dest_dir)]
             if not exclude:
                 os.makedirs(dest_dir, exist_ok=True)
                 shutil.copyfile(os.path.join(root, name), dest_path)
