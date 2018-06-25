@@ -30,6 +30,9 @@ def _expand_paths(
         paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[Path]:
     """Given a list of globs/paths, expands them into a flat sequence,
     expanding globs as necessary."""
+    if paths is None:
+        return []
+
     if isinstance(paths, (str, Path)):
         paths = [paths]
 
