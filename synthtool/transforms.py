@@ -69,15 +69,15 @@ def _copy_dir_to_existing_dir(source: Path, destination: Path,
     copies files over existing files to an existing directory
     this function does not copy empty directories
     """
+
     for root, _, files in os.walk(source):
         for name in files:
             rel_path = str(Path(root).relative_to(source)).lstrip('.')
             dest_dir = os.path.join(str(destination), rel_path)
             dest_path = os.path.join(dest_dir, name)
-
-            exclude = [excluded for excluded in excludes
-                       if excluded.relative_to('.') == Path(dest_path) or
-                       excluded.relative_to('.') == Path(dest_dir)]
+            exclude = [e for e in excludes
+                       if e.relative_to('.') == Path(dest_path) or
+                       e.relative_to('.') == Path(dest_dir)]
             if not exclude:
                 os.makedirs(dest_dir, exist_ok=True)
                 shutil.copyfile(os.path.join(root, name), dest_path)
@@ -88,18 +88,17 @@ def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None,
     """
     copy file(s) at source to current directory
     """
-    expanded_excludes = list(_expand_paths(excludes))
-
     for source in _expand_paths(sources):
         if destination is None:
             canonical_destination = _tracked_paths.relativize(source)
         else:
             canonical_destination = Path(destination)
 
+        excludes = [Path(e) for e in excludes]
         if source.is_dir():
             _copy_dir_to_existing_dir(source, canonical_destination,
-                                      excludes=expanded_excludes)
-        elif source not in expanded_excludes:
+                                      excludes=excludes)
+        elif source not in excludes:
             # copy individual file
             shutil.copy2(source, canonical_destination)
 
