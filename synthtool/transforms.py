@@ -69,7 +69,8 @@ def _copy_dir_to_existing_dir(source: Path, destination: Path,
     copies files over existing files to an existing directory
     this function does not copy empty directories
     """
-
+    if not excludes:
+        excludes = []
     for root, _, files in os.walk(source):
         for name in files:
             rel_path = str(Path(root).relative_to(source)).lstrip('.')
@@ -94,7 +95,10 @@ def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None,
         else:
             canonical_destination = Path(destination)
 
-        excludes = [Path(e) for e in excludes]
+        if excludes:
+            excludes = [Path(e) for e in excludes]
+        else:
+            excludes = []
         if source.is_dir():
             _copy_dir_to_existing_dir(source, canonical_destination,
                                       excludes=excludes)
