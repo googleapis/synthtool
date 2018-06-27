@@ -14,7 +14,7 @@ cd synthtool
 pip install .
 ```
 
-## Usage
+## Basic usage
 
 ### Python
 

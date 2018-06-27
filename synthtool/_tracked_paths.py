@@ -34,4 +34,4 @@ def relativize(path):
             return path.relative_to(tracked_path)
         except ValueError:
             pass
-    raise ValueError(f'The root for {path} is not tracked.')
+    raise ValueError(f"The root for {path} is not tracked.")

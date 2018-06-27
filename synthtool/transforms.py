@@ -26,8 +26,7 @@ PathOrStr = Union[str, Path]
 ListOfPathsOrStrs = Iterable[Union[str, Path]]
 
 
-def _expand_paths(
-        paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[Path]:
+def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[Path]:
     """Given a list of globs/paths, expands them into a flat sequence,
     expanding globs as necessary."""
     if paths is None:
@@ -37,7 +36,7 @@ def _expand_paths(
         paths = [paths]
 
     if root is None:
-        root = Path('.')
+        root = Path(".")
 
     # ensure root is a path
     root = Path(root)
@@ -54,8 +53,11 @@ def _expand_paths(
             else:
                 yield path
         else:
-            yield from (p for p in root.glob(path)
-                        if p.absolute() != Path(synth_script_name).absolute())
+            yield from (
+                p
+                for p in root.glob(path)
+                if p.absolute() != Path(synth_script_name).absolute()
+            )
 
 
 def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
@@ -63,8 +65,9 @@ def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
     return (path for path in paths if path.is_file())
 
 
-def _copy_dir_to_existing_dir(source: Path, destination: Path,
-                              excludes: ListOfPathsOrStrs = None):
+def _copy_dir_to_existing_dir(
+    source: Path, destination: Path, excludes: ListOfPathsOrStrs = None
+):
     """
     copies files over existing files to an existing directory
     this function does not copy empty directories
@@ -73,19 +76,27 @@ def _copy_dir_to_existing_dir(source: Path, destination: Path,
         excludes = []
     for root, _, files in os.walk(source):
         for name in files:
-            rel_path = str(Path(root).relative_to(source)).lstrip('.')
+            rel_path = str(Path(root).relative_to(source)).lstrip(".")
             dest_dir = os.path.join(str(destination), rel_path)
             dest_path = os.path.join(dest_dir, name)
-            exclude = [e for e in excludes
-                       if e.relative_to('.') == Path(dest_path) or
-                       e.relative_to('.') == Path(dest_dir)]
+            exclude = [
+                e
+                for e in excludes
+                if (
+                    e.relative_to(".") == Path(dest_path)
+                    or e.relative_to(".") == Path(dest_dir)
+                )
+            ]
             if not exclude:
                 os.makedirs(dest_dir, exist_ok=True)
                 shutil.copyfile(os.path.join(root, name), dest_path)
 
 
-def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None,
-         excludes: ListOfPathsOrStrs = None):
+def move(
+    sources: ListOfPathsOrStrs,
+    destination: PathOrStr = None,
+    excludes: ListOfPathsOrStrs = None,
+):
     """
     copy file(s) at source to current directory
     """
@@ -100,15 +111,14 @@ def move(sources: ListOfPathsOrStrs, destination: PathOrStr = None,
         else:
             excludes = []
         if source.is_dir():
-            _copy_dir_to_existing_dir(source, canonical_destination,
-                                      excludes=excludes)
+            _copy_dir_to_existing_dir(source, canonical_destination, excludes=excludes)
         elif source not in excludes:
             # copy individual file
             shutil.copy2(source, canonical_destination)
 
 
 def _replace_in_file(path, expr, replacement):
-    with path.open('r+') as fh:
+    with path.open("r+") as fh:
         content = fh.read()
         content, count = expr.subn(replacement, content)
 
@@ -125,13 +135,11 @@ def _replace_in_file(path, expr, replacement):
 
 
 def replace(
-        sources: ListOfPathsOrStrs,
-        before: str,
-        after: str,
-        flags: int = re.MULTILINE):
+    sources: ListOfPathsOrStrs, before: str, after: str, flags: int = re.MULTILINE
+):
     """Replaces occurrences of before with after in all the given sources."""
     expr = re.compile(before, flags=flags or 0)
-    paths = _filter_files(_expand_paths(sources, '.'))
+    paths = _filter_files(_expand_paths(sources, "."))
 
     for path in paths:
         replaced = _replace_in_file(path, expr, after)

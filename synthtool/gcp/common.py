@@ -17,7 +17,7 @@ from pathlib import Path
 from synthtool.sources import templates
 
 
-_TEMPLATES_DIR = Path(__file__).parent / 'templates'
+_TEMPLATES_DIR = Path(__file__).parent / "templates"
 
 
 class CommonTemplates:

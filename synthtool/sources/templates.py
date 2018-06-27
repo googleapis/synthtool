@@ -26,8 +26,8 @@ PathOrStr = Union[str, Path]
 class Templates:
     def __init__(self, location: PathOrStr) -> None:
         self.env = jinja2.Environment(
-            loader=jinja2.FileSystemLoader(str(location)),
-            autoescape=False)
+            loader=jinja2.FileSystemLoader(str(location)), autoescape=False
+        )
         self.dir = tmp.tmpdir()
 
     def render(self, template_name: str, **kwargs) -> Path:

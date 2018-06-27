@@ -35,7 +35,7 @@ class LoggerWithSuccess(logging.getLoggerClass()):  # type: ignore
 
 
 logging.setLoggerClass(LoggerWithSuccess)
-logger = logging.getLogger('synthtool')
+logger = logging.getLogger("synthtool")
 logger.setLevel(logging.DEBUG)
 
 
@@ -77,13 +77,13 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
             "%(cyan)s%(name)s > %(log_color)s%(message)s",
             reset=True,
             log_colors={
-                'DEBUG': 'cyan',
-                'INFO': 'blue',
-                'WARNING': 'yellow',
-                'ERROR': 'red',
-                'CRITICAL': 'red,bg_white',
-                'SUCCESS': 'green'
-            }
+                "DEBUG": "cyan",
+                "INFO": "blue",
+                "WARNING": "yellow",
+                "ERROR": "red",
+                "CRITICAL": "red,bg_white",
+                "SUCCESS": "green",
+            },
         )
 
         handler.setFormatter(formatter)

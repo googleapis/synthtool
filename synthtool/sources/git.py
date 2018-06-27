@@ -20,11 +20,12 @@ from synthtool import shell
 
 
 def clone(
-        url: str,
-        dest: pathlib.Path = None,
-        committish: str = 'master',
-        force: bool = False,
-        depth: int = None) -> pathlib.Path:
+    url: str,
+    dest: pathlib.Path = None,
+    committish: str = "master",
+    force: bool = False,
+    depth: int = None,
+) -> pathlib.Path:
     if dest is None:
         dest = cache.get_cache_dir()
 
@@ -34,15 +35,13 @@ def clone(
         shutil.rmtree(dest)
 
     if not dest.exists():
-        cmd = ['git', 'clone', url, dest]
+        cmd = ["git", "clone", url, dest]
         if depth is not None:
-            cmd.extend(['--depth', str(depth)])
+            cmd.extend(["--depth", str(depth)])
         shell.run(cmd)
     else:
-        shell.run([
-            'git', 'pull'], cwd=str(dest))
+        shell.run(["git", "pull"], cwd=str(dest))
 
-    shell.run([
-        'git', 'reset', '--hard', committish], cwd=str(dest))
+    shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
 
     return dest

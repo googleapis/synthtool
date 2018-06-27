@@ -33,7 +33,7 @@ def tmpdir() -> Path:
 def cleanup():
     for path in _tempdirs:
         shutil.rmtree(str(path))
-    log.debug(f'Cleaned up {len(_tempdirs)} temporary directories.')
+    log.debug(f"Cleaned up {len(_tempdirs)} temporary directories.")
 
 
 atexit.register(cleanup)

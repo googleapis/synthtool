@@ -16,6 +16,7 @@ import os
 from pathlib import Path
 import tempfile
 import platform
+import subprocess
 import venv
 
 from synthtool import _tracked_paths
@@ -24,17 +25,16 @@ from synthtool import log
 from synthtool import shell
 from synthtool.sources import git
 
-ARTMAN_VERSION = os.environ.get('SYNTHTOOL_ARTMAN_VERSION', 'latest')
-ARTMAN_VENV = cache.get_cache_dir() / 'artman_venv'
-GOOGLEAPIS_URL: str = 'git@github.com:googleapis/googleapis.git'
-GOOGLEAPIS_PRIVATE_URL: str = (
-    'git@github.com:googleapis/googleapis-private.git')
+ARTMAN_VERSION = os.environ.get("SYNTHTOOL_ARTMAN_VERSION", "latest")
+ARTMAN_VENV = cache.get_cache_dir() / "artman_venv"
+GOOGLEAPIS_URL: str = "git@github.com:googleapis/googleapis.git"
+GOOGLEAPIS_PRIVATE_URL: str = ("git@github.com:googleapis/googleapis-private.git")
 
 
 # Docker on mac by default cannot use the default temp file location
 # instead use the more standard *nix /tmp location\
-if platform.system() == 'Darwin':
-    tempfile.tempdir = '/tmp'
+if platform.system() == "Darwin":
+    tempfile.tempdir = "/tmp"
 
 
 def _run_artman(image, root_dir, config, *args):
@@ -45,30 +45,43 @@ def _run_artman(image, root_dir, config, *args):
     Returns:
         The output directory with artman-generated files.
     """
-    container_name = 'artman-docker'
-    config_dirname = os.path.dirname(config)
-    output_dir = root_dir / 'artman-genfiles'
+    container_name = "artman-docker"
+    output_dir = root_dir / "artman-genfiles"
 
     docker_cmd = [
-        'docker', 'run', '--name', container_name, '--rm', '-i',
-        '-e', f'HOST_USER_ID={os.getuid()}',
-        '-e', f'HOST_GROUP_ID={os.getgid()}',
-        '-e', 'RUNNING_IN_ARTMAN_DOCKER=True',
-        '-v', f'{root_dir}:{root_dir}',
-        '-v', f'{output_dir}:{output_dir}',
-        '-w', root_dir,
+        "docker",
+        "run",
+        "--name",
+        container_name,
+        "--rm",
+        "-i",
+        "-e",
+        f"HOST_USER_ID={os.getuid()}",
+        "-e",
+        f"HOST_GROUP_ID={os.getgid()}",
+        "-e",
+        "RUNNING_IN_ARTMAN_DOCKER=True",
+        "-v",
+        f"{root_dir}:{root_dir}",
+        "-v",
+        f"{output_dir}:{output_dir}",
+        "-w",
+        root_dir,
         image,
-        '/bin/bash', '-c'
+        "/bin/bash",
+        "-c",
     ]
 
-    artman_command = ' '.join(map(str,
-        ['artman', '--local', '--config', config, 'generate'] + list(args)))
+    artman_command = " ".join(
+        map(str, ["artman", "--local", "--config", config, "generate"] + list(args))
+    )
 
     cmd = docker_cmd + [artman_command]
 
     shell.run(cmd, cwd=root_dir)
 
     return output_dir
+
 
 class GAPICGenerator:
     def __init__(self):
@@ -78,34 +91,40 @@ class GAPICGenerator:
         self._clone_googleapis()
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
-        '''
+        """
         Generates the Python Library files using artman/GAPIC
         returns a `Path` object
         library: path to library. 'google/cloud/speech'
         version: version of lib. 'v1'
-        '''
-        return self._generate_code(service, version, 'python', **kwargs)
+        """
+        return self._generate_code(service, version, "python", **kwargs)
 
     def node_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, 'nodejs', **kwargs)
+        return self._generate_code(service, version, "nodejs", **kwargs)
 
     nodejs_library = node_library
 
     def ruby_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, 'ruby', **kwargs)
+        return self._generate_code(service, version, "ruby", **kwargs)
 
     def php_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, 'php', **kwargs)
+        return self._generate_code(service, version, "php", **kwargs)
 
-    def _generate_code(self, service, version, language,
-                       config_path=None, artman_output_name=None,
-                       private=False):
+    def _generate_code(
+        self,
+        service,
+        version,
+        language,
+        config_path=None,
+        artman_output_name=None,
+        private=False,
+    ):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
-            'python': ('python_gapic', 'python'),
-            'nodejs': ('nodejs_gapic', 'js'),
-            'ruby': ('ruby_gapic', 'ruby'),
-            'php': ('php_gapic', 'php'),
+            "python": ("python_gapic", "python"),
+            "nodejs": ("nodejs_gapic", "js"),
+            "ruby": ("ruby_gapic", "ruby"),
+            "php": ("php_gapic", "php"),
         }
 
         if language not in GENERATE_FLAG_LANGUAGE:
@@ -121,41 +140,44 @@ class GAPICGenerator:
 
         if googleapis is None:
             raise RuntimeError(
-                f'Unable to generate {config_path}, the googleapis repository'
-                'is unavailable.')
+                f"Unable to generate {config_path}, the googleapis repository"
+                "is unavailable."
+            )
 
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
         if config_path is None:
             config_path = (
-                Path('google/cloud') / service
-                / f"artman_{service}_{version}.yaml")
+                Path("google/cloud") / service / f"artman_{service}_{version}.yaml"
+            )
         elif Path(config_path).is_absolute():
-            config_path = Path(config_path).relative_to('/')
+            config_path = Path(config_path).relative_to("/")
         else:
-            config_path = Path('google/cloud') / service / Path(config_path)
+            config_path = Path("google/cloud") / service / Path(config_path)
 
         if not (googleapis / config_path).exists():
             raise FileNotFoundError(
-                f"Unable to find configuration yaml file: {config_path}.")
+                f"Unable to find configuration yaml file: {config_path}."
+            )
 
         log.debug(f"Running generator for {config_path}.")
         output_root = _run_artman(
-            f'googleapis/artman:{ARTMAN_VERSION}',
+            f"googleapis/artman:{ARTMAN_VERSION}",
             googleapis,
             config_path,
-            gapic_language_arg
+            gapic_language_arg,
         )
 
         # Expect the output to be in the artman-genfiles directory.
         # example: /artman-genfiles/python/speech-v1
         if artman_output_name is None:
             artman_output_name = f"{service}-{version}"
-        genfiles = output_root / gen_language /artman_output_name
+        genfiles = output_root / gen_language / artman_output_name
 
         if not genfiles.exists():
             raise FileNotFoundError(
-                f"Unable to find generated output of artman: {genfiles}.")
+                f"Unable to find generated output of artman: {genfiles}."
+            )
 
         log.success(f"Generated code into {genfiles}.")
 
@@ -165,43 +187,46 @@ class GAPICGenerator:
     def _ensure_dependencies_installed(self):
         log.debug("Ensuring dependencies.")
 
-        dependencies = ['docker', 'git']
+        dependencies = ["docker", "git"]
         failed_dependencies = []
         for dependency in dependencies:
-            return_code = shell.run(
-                ['which', dependency], check=False).returncode
+            return_code = shell.run(["which", dependency], check=False).returncode
             if return_code:
                 failed_dependencies.append(dependency)
 
         if failed_dependencies:
             raise EnvironmentError(
-                f"Dependencies missing: {', '.join(failed_dependencies)}")
-
+                f"Dependencies missing: {', '.join(failed_dependencies)}"
+            )
 
     def _install_artman(self):
         if not ARTMAN_VENV.exists():
             venv.main([str(ARTMAN_VENV)])
 
-        if ARTMAN_VERSION != 'latest':
-            version_specifier = f'=={ARTMAN_VERSION}'
+        if ARTMAN_VERSION != "latest":
+            version_specifier = f"=={ARTMAN_VERSION}"
         else:
-            version_specifier = ''
+            version_specifier = ""
 
-        shell.run([
-            ARTMAN_VENV / 'bin' / 'pip', 'install', '--upgrade',
-            f'googleapis-artman{version_specifier}'])
-        log.debug('Pulling artman image.')
-        shell.run(['docker', 'pull', f'googleapis/artman:{ARTMAN_VERSION}'])
+        shell.run(
+            [
+                ARTMAN_VENV / "bin" / "pip",
+                "install",
+                "--upgrade",
+                f"googleapis-artman{version_specifier}",
+            ]
+        )
+        log.debug("Pulling artman image.")
+        shell.run(["docker", "pull", f"googleapis/artman:{ARTMAN_VERSION}"])
 
     def _clone_googleapis(self):
         log.debug("Cloning googleapis.")
         self.googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
 
         try:
-            self.googleapis_private = git.clone(
-                GOOGLEAPIS_PRIVATE_URL,
-                depth=1)
-        except:
+            self.googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
+        except subprocess.CalledProcessError:
             log.warning(
-                'Could not clone googleapis-private, you will not be able to '
-                'generate private API versions!')
+                "Could not clone googleapis-private, you will not be able to "
+                "generate private API versions!"
+            )
