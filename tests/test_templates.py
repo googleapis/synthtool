@@ -25,5 +25,13 @@ def test_render():
     t = templates.Templates(FIXTURES)
     result = t.render("example.j2", name="world")
 
-    assert result.name == "example.j2"
+    assert result.name == "example"
     assert result.read_text() == "Hello, world!"
+
+
+def test_render_group():
+    t = templates.TemplateGroup(FIXTURES / "group")
+    result = t.render(var_a="hello", var_b="world")
+
+    assert (result / '1.txt').read_text() == "hello"
+    assert (result / 'subdir' / '2.txt').read_text() == "world"
