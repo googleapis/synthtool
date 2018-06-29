@@ -14,7 +14,7 @@
 
 import setuptools
 
-name = 'synthtool'
+name = 'gcp-synthtool'
 description = ''
 version = '0.1.0'
 release_status = 'Development Status :: 3 - Alpha'
@@ -31,7 +31,7 @@ setuptools.setup(
     version=version,
     description=description,
     author='Google LLC',
-    author_email='googleapis-packages@google.com',
+    author_email='theaflowers@google.com',
     license='Apache 2.0',
     url='',
     classifiers=[
