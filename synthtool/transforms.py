@@ -67,11 +67,15 @@ def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
 
 def _copy_dir_to_existing_dir(
     source: Path, destination: Path, excludes: ListOfPathsOrStrs = None
-):
+) -> bool:
     """
     copies files over existing files to an existing directory
-    this function does not copy empty directories
+    this function does not copy empty directories.
+
+    Returns: True if any files were copied, False otherwise.
     """
+    copied = False
+
     if not excludes:
         excludes = []
     for root, _, files in os.walk(source):
@@ -90,16 +94,23 @@ def _copy_dir_to_existing_dir(
             if not exclude:
                 os.makedirs(dest_dir, exist_ok=True)
                 shutil.copyfile(os.path.join(root, name), dest_path)
+                copied = True
+
+    return copied
 
 
 def move(
     sources: ListOfPathsOrStrs,
     destination: PathOrStr = None,
     excludes: ListOfPathsOrStrs = None,
-):
+) -> bool:
     """
-    copy file(s) at source to current directory
+    copy file(s) at source to current directory.
+
+    Returns: True if any files were copied, False otherwise.
     """
+    copied = False
+
     for source in _expand_paths(sources):
         if destination is None:
             canonical_destination = _tracked_paths.relativize(source)
@@ -111,10 +122,19 @@ def move(
         else:
             excludes = []
         if source.is_dir():
-            _copy_dir_to_existing_dir(source, canonical_destination, excludes=excludes)
+            copied = copied or _copy_dir_to_existing_dir(
+                source, canonical_destination, excludes=excludes)
         elif source not in excludes:
             # copy individual file
             shutil.copy2(source, canonical_destination)
+            copied = True
+
+    if not copied:
+        log.warning(
+            f'No files in sources {sources} were copied. Does the source '
+            f'contain files?')
+
+    return copied
 
 
 def _replace_in_file(path, expr, replacement):
@@ -140,6 +160,9 @@ def replace(
     """Replaces occurrences of before with after in all the given sources."""
     expr = re.compile(before, flags=flags or 0)
     paths = _filter_files(_expand_paths(sources, "."))
+
+    if not paths:
+        log.warning(f'No files were found in sources {sources} for replace()')
 
     for path in paths:
         replaced = _replace_in_file(path, expr, after)
