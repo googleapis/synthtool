@@ -80,7 +80,7 @@ def _copy_dir_to_existing_dir(
         excludes = []
     for root, _, files in os.walk(source):
         for name in files:
-            rel_path = str(Path(root).relative_to(source)).lstrip(".")
+            rel_path = str(Path(root).relative_to(source))
             dest_dir = os.path.join(str(destination), rel_path)
             dest_path = os.path.join(dest_dir, name)
             exclude = [
