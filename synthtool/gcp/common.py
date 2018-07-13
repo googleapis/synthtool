@@ -15,7 +15,7 @@
 from pathlib import Path
 
 from synthtool.sources import templates
-
+from synthtool import _tracked_paths
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
 
@@ -26,6 +26,12 @@ class CommonTemplates:
 
     def py_library(self) -> Path:
         raise NotImplemented()
+
+    def node_library(self, package_name) -> Path:
+        t = templates.TemplateGroup(_TEMPLATES_DIR / "node_library")
+        result = t.render(package_name=package_name)
+        _tracked_paths.add(result)
+        return result
 
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)

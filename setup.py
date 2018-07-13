@@ -47,5 +47,10 @@ setuptools.setup(
     packages=packages,
     install_requires=dependencies,
     include_package_data=True,
+    package_data={
+        'synthtool': [
+            'gcp/templates/**/*',
+            'gcp/templates/node_library/.circleci/*'],
+    },
     zip_safe=False,
 )
