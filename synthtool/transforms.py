@@ -118,7 +118,8 @@ def move(
             canonical_destination = Path(destination)
 
         if excludes:
-            excludes = [Path(e) for e in excludes]
+            excludes = _expand_paths(excludes, source)
+            excludes = [_tracked_paths.relativize(e) for e in excludes]
         else:
             excludes = []
         if source.is_dir():
