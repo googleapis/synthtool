@@ -10,10 +10,11 @@ pyenv to get 3.6.
 
 ```
 # Install latest
-pip install git+https://github.com/GoogleCloudPlatform/synthtool.git
+
+python3 -m pip install --user --upgrade git+https://github.com/GoogleCloudPlatform/synthtool.git
 
 # Install stable
-pip install gcp-synthtool
+python3 -m pip install --user --upgrade gcp-synthtool
 ```
 
 ## Basic usage
@@ -51,7 +52,7 @@ Node.js generation is similar to python. For an example `synth.py` you can look 
 
 ## Features
 ### Templating
-Synthtool supports template files using jinja. As an example let's look at node.js. The templates for node can be found at `/synthtool/gcp/templates/node_library/`. As of writing this doc, the following works in a node.js synth script.
+Synthtool supports template files using jinja. As an example let's look at node.js. The templates for node can be found at `/synthtool/gcp/templates/node_library/`. The following is taken from a node.js synth script.
 
 ```
 common_templates = gcp.CommonTemplates()
