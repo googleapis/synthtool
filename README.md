@@ -43,7 +43,7 @@ Once you run synthtool without errors:
 - commit and push the changes to a branch and open a PR!
 
 ### Node.js
-Node.js generation is similar to python. For an example `synth.py` you can use https://github.com/googleapis/nodejs-speech/blob/master/synth.py as an example.
+Node.js generation is similar to python. For an example `synth.py` you can look at https://github.com/googleapis/nodejs-speech/blob/master/synth.py.
 
 ### Ruby
 - TODO. Should be similar to Python
