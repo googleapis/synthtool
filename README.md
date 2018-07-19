@@ -9,9 +9,11 @@ pyenv to get 3.6.
 
 
 ```
-git clone sso://devrel/cloud/libraries/tools/synthtool
-cd synthtool
-pip install .
+# Install latest
+pip install git+https://github.com/GoogleCloudPlatform/synthtool.git
+
+# Install stable
+pip install gcp-synthtool
 ```
 
 ## Basic usage
@@ -41,7 +43,21 @@ Once you run synthtool without errors:
 - commit and push the changes to a branch and open a PR!
 
 ### Node.js
-- TODO. Should be similar to Python
+Node.js generation is similar to python. For an example `synth.py` you can use https://github.com/googleapis/nodejs-speech/blob/master/synth.py as an example.
 
 ### Ruby
 - TODO. Should be similar to Python
+
+
+## Features
+### Templating
+Synthtool supports template files using jinja. As an example let's look at node.js. The templates for node can be found at `/synthtool/gcp/templates/node_library/`. As of writing this doc, the following works in a node.js synth script.
+
+```
+common_templates = gcp.CommonTemplates()
+
+templates = common_templates.node_library(package_name="@google-cloud/speech")
+s.copy(templates)
+```
+
+`package_name` is a keyword arg that is used by a jinja template. Jinja uses `{{ package_name }}` to customize the template for a specific package. You can add additionaly keyword args as necessary.
