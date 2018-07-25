@@ -16,14 +16,6 @@ import nox
 
 
 @nox.session
-def test(session):
-    session.interpreter = 'python3.6'
-    session.install('pytest')
-    session.run('pip', 'install', '-e', '.')
-    session.run('pytest', 'tests', *session.posargs)
-
-
-@nox.session
 def blacken(session):
     session.interpreter = 'python3.6'
     session.install('black')
@@ -38,3 +30,11 @@ def lint(session):
     session.run('black', '--check', 'synthtool', 'tests')
     session.run('flake8', 'synthtool', 'tests')
     session.run('mypy', '--ignore-missing-imports', 'synthtool')
+
+
+@nox.session
+def test(session):
+    session.interpreter = 'python3.6'
+    session.install('pytest')
+    session.run('pip', 'install', '-e', '.')
+    session.run('pytest', 'tests', *session.posargs)

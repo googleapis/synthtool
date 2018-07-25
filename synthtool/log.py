@@ -37,7 +37,7 @@ class LoggerWithSuccess(logging.getLoggerClass()):  # type: ignore
 logging.setLoggerClass(LoggerWithSuccess)
 logger = logging.getLogger("synthtool")
 logger.setLevel(logging.DEBUG)
-logging.getLogger('urllib3.connectionpool').setLevel(logging.ERROR)
+logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
 
 
 def success(*args, **kwargs):
