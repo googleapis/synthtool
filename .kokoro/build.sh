@@ -16,6 +16,8 @@
 
 set -eo pipefail
 
+cd github/synthtool
+
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
