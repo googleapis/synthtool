@@ -15,10 +15,12 @@
 """Synthtool synthesizes libraries from disparate sources."""
 
 from synthtool.transforms import move, replace
-
-__version__ = "0.0.1"
-
+from synthtool import log
+from synthtool import update_check
 
 copy = move
 
 __all__ = ["copy", "move", "replace"]
+
+# check for updates, if needed.
+update_check.check_for_updates('gcp-synthtool', print=log.critical)

@@ -19,7 +19,7 @@ description = ''
 version = '0.1.0'
 release_status = 'Development Status :: 3 - Alpha'
 dependencies = [
-    "colorlog < 3.0.0",
+    "colorlog",
     "jinja2"
 ]
 

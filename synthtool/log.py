@@ -37,6 +37,7 @@ class LoggerWithSuccess(logging.getLoggerClass()):  # type: ignore
 logging.setLoggerClass(LoggerWithSuccess)
 logger = logging.getLogger("synthtool")
 logger.setLevel(logging.DEBUG)
+logging.getLogger('urllib3.connectionpool').setLevel(logging.ERROR)
 
 
 def success(*args, **kwargs):
@@ -74,14 +75,14 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
 
     if color is True:
         formatter = ColoredFormatter(
-            "%(cyan)s%(name)s > %(log_color)s%(message)s",
+            "%(purple)s%(name)s > %(log_color)s%(message)s",
             reset=True,
             log_colors={
                 "DEBUG": "cyan",
                 "INFO": "blue",
                 "WARNING": "yellow",
                 "ERROR": "red",
-                "CRITICAL": "red,bg_white",
+                "CRITICAL": "red,bg_yellow",
                 "SUCCESS": "green",
             },
         )
