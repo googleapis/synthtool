@@ -52,8 +52,6 @@ def check_for_updates(package_name: str, print=print) -> None:
         pkg_resources.get_distribution(package_name).version
     )
 
-    current_version = packaging.version.Version("0.0.1")
-
     pypi_version = packaging.version.Version(_get_pypi_version(package_name))
 
     if current_version >= pypi_version:
