@@ -23,3 +23,6 @@ export PYTHONUNBUFFERED=1
 
 python3 -m pip install --quiet nox-automation
 nox -s lint test
+
+# remove all files, preventing kokoro from trying to sync them.
+rm -rf *
