@@ -87,8 +87,8 @@ def _copy_dir_to_existing_dir(
                 e
                 for e in excludes
                 if (
-                    e.relative_to(".") == Path(dest_path)
-                    or e.relative_to(".") == Path(dest_dir)
+                    Path(e).relative_to(".") == Path(dest_path)
+                    or Path(e).relative_to(".") == Path(dest_dir)
                 )
             ]
             if not exclude:
@@ -118,13 +118,15 @@ def move(
             canonical_destination = Path(destination)
 
         if excludes:
-            excludes = [_tracked_paths.relativize(e)
-                        for e in _expand_paths(excludes, source)]
+            excludes = [
+                _tracked_paths.relativize(e) for e in _expand_paths(excludes, source)
+            ]
         else:
             excludes = []
         if source.is_dir():
             copied = copied or _copy_dir_to_existing_dir(
-                source, canonical_destination, excludes=excludes)
+                source, canonical_destination, excludes=excludes
+            )
         elif source not in excludes:
             # copy individual file
             shutil.copy2(source, canonical_destination)
@@ -132,8 +134,9 @@ def move(
 
     if not copied:
         log.warning(
-            f'No files in sources {sources} were copied. Does the source '
-            f'contain files?')
+            f"No files in sources {sources} were copied. Does the source "
+            f"contain files?"
+        )
 
     return copied
 
@@ -163,9 +166,17 @@ def replace(
     paths = _filter_files(_expand_paths(sources, "."))
 
     if not paths:
-        log.warning(f'No files were found in sources {sources} for replace()')
+        log.warning(f"No files were found in sources {sources} for replace()")
 
+    any_replaced = False
     for path in paths:
         replaced = _replace_in_file(path, expr, after)
+        any_replaced = any_replaced or replaced
         if replaced:
             log.info(f"Replaced {before!r} in {path}.")
+
+    if not any_replaced:
+        log.warning(
+            f"No replacements made in {sources} for pattern {before}, maybe "
+            "replacement is not longer needed?"
+        )

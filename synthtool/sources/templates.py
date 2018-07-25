@@ -34,13 +34,13 @@ def _render_to_path(env, template_name, dest, params):
 
     output = template.stream(**params)
 
-    if template_name.endswith('.j2'):
+    if template_name.endswith(".j2"):
         template_name = template.name[:-3]
 
     dest = dest / template_name
     dest.parent.mkdir(parents=True, exist_ok=True)
 
-    with dest.open('w') as fh:
+    with dest.open("w") as fh:
         output.dump(fh)
 
     return dest
