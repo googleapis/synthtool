@@ -68,11 +68,14 @@ def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
 def _merge_file(
     source_path: Path,
     dest_path: Path,
-    merge: Callable[[str, str], str]
+    merge: Callable[[str, str, Path], str]
 ):
     """
     Writes to the destination the result of merging the source with the
     existing destination contents, using the given merge function.
+
+    The merge function must take three arguments: the source contents, the
+    old destination contents, and a Path to the file to be written.
     """
 
     with source_path.open("r") as source_file:
@@ -81,7 +84,7 @@ def _merge_file(
     with dest_path.open("r+") as dest_file:
         dest_text = dest_file.read()
 
-        final_text = merge(source_text, dest_text)
+        final_text = merge(source_text, dest_text, dest_path)
 
         if final_text != dest_text:
             dest_file.seek(0)
