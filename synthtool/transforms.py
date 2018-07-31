@@ -94,7 +94,7 @@ def _copy_dir_to_existing_dir(
     source: Path,
     destination: Path,
     excludes: ListOfPathsOrStrs = None,
-    merge: Callable[[str, str], str] = None,
+    merge: Callable[[str, str, Path], str] = None,
 ) -> bool:
     """
     copies files over existing files to an existing directory
@@ -109,23 +109,23 @@ def _copy_dir_to_existing_dir(
     for root, _, files in os.walk(source):
         for name in files:
             rel_path = str(Path(root).relative_to(source))
-            dest_dir = os.path.join(str(destination), rel_path)
-            dest_path = os.path.join(dest_dir, name)
+            dest_dir = destination / rel_path
+            dest_path = dest_dir / name
             exclude = [
                 e
                 for e in excludes
                 if (
-                    Path(e).relative_to(".") == Path(dest_path)
-                    or Path(e).relative_to(".") == Path(dest_dir)
+                    Path(e).relative_to(".") == dest_path
+                    or Path(e).relative_to(".") == dest_dir
                 )
             ]
             if not exclude:
-                os.makedirs(dest_dir, exist_ok=True)
-                source_path = os.path.join(root, name)
+                os.makedirs(str(dest_dir), exist_ok=True)
+                source_path = Path(os.path.join(root, name))
                 if merge is not None and dest_path.is_file():
-                    _merge_file(source_path, dest_path)
+                    _merge_file(source_path, dest_path, merge)
                 else:
-                    shutil.copyfile(source_path, dest_path)
+                    shutil.copyfile(str(source_path), str(dest_path))
                 copied = True
 
     return copied
@@ -135,7 +135,7 @@ def move(
     sources: ListOfPathsOrStrs,
     destination: PathOrStr = None,
     excludes: ListOfPathsOrStrs = None,
-    merge: Callable[[str, str], str] = None,
+    merge: Callable[[str, str, Path], str] = None,
 ) -> bool:
     """
     copy file(s) at source to current directory.
