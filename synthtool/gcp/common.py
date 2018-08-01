@@ -27,9 +27,9 @@ class CommonTemplates:
     def py_library(self) -> Path:
         raise NotImplemented()
 
-    def node_library(self, package_name) -> Path:
+    def node_library(self, package_name, repo_name) -> Path:
         t = templates.TemplateGroup(_TEMPLATES_DIR / "node_library")
-        result = t.render(package_name=package_name)
+        result = t.render(package_name=package_name, repo_name=repo_name)
         _tracked_paths.add(result)
         return result
 
