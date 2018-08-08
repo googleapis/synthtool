@@ -13,7 +13,9 @@
 # limitations under the License.
 
 from . import gapic_generator
+from . import repository_generator
 from . import common
 
 GAPICGenerator = gapic_generator.GAPICGenerator
+RepositoryGenerator = repository_generator.RepositoryGenerator
 CommonTemplates = common.CommonTemplates

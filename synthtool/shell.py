@@ -17,7 +17,7 @@ import subprocess
 from synthtool import log
 
 
-def run(args, *, cwd=None, check=True):
+def run(args, *, cwd=None, check=True, env=None):
     try:
         return subprocess.run(
             args,
@@ -26,6 +26,7 @@ def run(args, *, cwd=None, check=True):
             cwd=cwd,
             check=check,
             encoding="utf-8",
+            env=env,
         )
     except subprocess.CalledProcessError as exc:
         log.error(
