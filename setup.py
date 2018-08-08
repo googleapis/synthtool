@@ -16,7 +16,7 @@ import setuptools
 
 name = 'gcp-synthtool'
 description = ''
-version = '0.3.0'
+version = '0.3.1'
 release_status = 'Development Status :: 3 - Alpha'
 dependencies = [
     "colorlog",
