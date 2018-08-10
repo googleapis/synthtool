@@ -25,6 +25,9 @@ ListOfPathsOrStrs = Iterable[PathOrStr]
 def merge_gemspec(src: str, dest: str, path: Path):
     """Merge function for ruby gemspecs.
 
+    Preserves the gem version and homepage fields from the destination, and
+    copies the remaining fields from the newly generated source.
+
     Args:
         src: Source gemspec content from gapic
         dest: Destination gemspec content
@@ -33,12 +36,17 @@ def merge_gemspec(src: str, dest: str, path: Path):
     Returns:
         The merged gemspec content.
     """
-    version_re = re.compile(r'^\s+gem.version\s*=\s*"[\d\.]+"$', flags=re.MULTILINE)
-    match = version_re.search(dest)
+    regex = re.compile(r'^\s+gem.version\s*=\s*"[\d\.]+"$', flags=re.MULTILINE)
+    match = regex.search(dest)
     if match:
-        return version_re.sub(match.group(0), src, count=1)
-    else:
-        return src
+        src = regex.sub(match.group(0), src, count=1)
+
+    regex = re.compile(r'^\s+gem.homepage\s*=\s*"[^"]+"$', flags=re.MULTILINE)
+    match = regex.search(dest)
+    if match:
+        src = regex.sub(match.group(0), src, count=1)
+
+    return src
 
 def delete_method(sources: ListOfPathsOrStrs, method_name: str):
     """Deletes a Ruby method, including the leading comment if any.
