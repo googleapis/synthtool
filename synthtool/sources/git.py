@@ -15,6 +15,7 @@
 import pathlib
 import shutil
 
+from synthtool import _tracked_paths
 from synthtool import cache
 from synthtool import shell
 
@@ -43,5 +44,8 @@ def clone(
         shell.run(["git", "pull"], cwd=str(dest))
 
     shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
+
+    # track all git repositories
+    _tracked_paths.add(dest)
 
     return dest
