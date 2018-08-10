@@ -4,6 +4,20 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.3.1
+
+### Implementation Changes
+- nodejs: remove lock file workflows from CI (#28)
+
+## 0.3.0
+
+### New Features
+- Support optional merge function during copy (#21)
+- add more templates for nodejs (#23)
+
+### Internal / Testing Changes
+- Use new Nox (#24)
+
 ## 0.2.0
 
 ### Implementation Changes
