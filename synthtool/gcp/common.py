@@ -33,5 +33,11 @@ class CommonTemplates:
         _tracked_paths.add(result)
         return result
 
+    def php_library(self, **kwargs) -> Path:
+        t = templates.TemplateGroup(_TEMPLATES_DIR / "php_library")
+        result = t.render(**kwargs)
+        _tracked_paths.add(result)
+        return result
+
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
