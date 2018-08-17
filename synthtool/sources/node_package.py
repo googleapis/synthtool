@@ -14,6 +14,7 @@
 
 import json
 
+
 def read_metadata():
     """
     read package name and repository in package.json from a Node library.
