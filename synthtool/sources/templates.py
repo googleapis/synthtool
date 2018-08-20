@@ -25,7 +25,9 @@ PathOrStr = Union[str, Path]
 
 def _make_env(location):
     return jinja2.Environment(
-        loader=jinja2.FileSystemLoader(str(location)), autoescape=False
+        loader=jinja2.FileSystemLoader(str(location)),
+        autoescape=False,
+        keep_trailing_newline=True,
     )
 
 
