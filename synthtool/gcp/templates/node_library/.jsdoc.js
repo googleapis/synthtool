@@ -36,10 +36,10 @@ module.exports = {
     includePattern: '\\.js$'
   },
   templates: {
-    copyright: 'Copyright 2017 Google, LLC.',
+    copyright: 'Copyright 2018 Google, LLC.',
     includeDate: false,
     sourceFiles: false,
-    systemName: '{{ package_name }}',
+    systemName: '{{ metadata['package_name'] }}',
     theme: 'lumen'
   }
 };
