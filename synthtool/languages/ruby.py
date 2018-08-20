@@ -48,6 +48,7 @@ def merge_gemspec(src: str, dest: str, path: Path):
 
     return src
 
+
 def delete_method(sources: ListOfPathsOrStrs, method_name: str):
     """Deletes a Ruby method, including the leading comment if any.
 
@@ -55,5 +56,5 @@ def delete_method(sources: ListOfPathsOrStrs, method_name: str):
         sources: Source file or list of files
         method_name: Name of the method to delete
     """
-    regex = f'\\n\\n(\\s+#[^\\n]*\\n)*\\n*(\\s+)def\\s+{method_name}[^\\n]+\\n+(\\2\\s\\s[^\\n]+\\n+)*\\2end\\n'
-    synthtool.replace(sources, regex, '\n')
+    regex = f"\\n\\n(\\s+#[^\\n]*\\n)*\\n*(\\s+)def\\s+{method_name}[^\\n]+\\n+(\\2\\s\\s[^\\n]+\\n+)*\\2end\\n"
+    synthtool.replace(sources, regex, "\n")
