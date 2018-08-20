@@ -14,7 +14,7 @@
 
 import json
 
-_REQUIRED_FIELDS = ['name', 'repository']
+_REQUIRED_FIELDS = ["name", "repository"]
 
 
 def read_metadata():
@@ -24,10 +24,12 @@ def read_metadata():
     Returns:
         data - package.json file as a dict.
     """
-    with open('./package.json') as f:
+    with open("./package.json") as f:
         data = json.load(f)
 
         if not all(key in data for key in _REQUIRED_FIELDS):
-            raise RuntimeError(f'package.json is missing required fields {_REQUIRED_FIELDS}')
+            raise RuntimeError(
+                f"package.json is missing required fields {_REQUIRED_FIELDS}"
+            )
 
         return data

@@ -28,7 +28,7 @@ class CommonTemplates:
         raise NotImplemented()
 
     def node_library(self, **kwargs) -> Path:
-        kwargs['metadata'] = node_package.read_metadata()
+        kwargs["metadata"] = node_package.read_metadata()
         t = templates.TemplateGroup(_TEMPLATES_DIR / "node_library")
         result = t.render(**kwargs)
         _tracked_paths.add(result)
