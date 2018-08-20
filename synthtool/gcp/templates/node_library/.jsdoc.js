@@ -39,7 +39,7 @@ module.exports = {
     copyright: 'Copyright 2018 Google, LLC.',
     includeDate: false,
     sourceFiles: false,
-    systemName: '{{ metadata['package_name'] }}',
+    systemName: '{{ metadata['name'] }}',
     theme: 'lumen'
   }
 };

@@ -14,24 +14,20 @@
 
 import json
 
+_REQUIRED_FIELDS = ['name', 'repository']
+
 
 def read_metadata():
     """
     read package name and repository in package.json from a Node library.
 
     Returns:
-        package_name: Name of the package (with scope)
-        repo_name: Name of the repository
+        data - package.json file as a dict.
     """
     with open('./package.json') as f:
         data = json.load(f)
 
-        package_name = data['name']
-        repo_name = data['repository']
+        if not all(key in data for key in _REQUIRED_FIELDS):
+            raise RuntimeError(f'package.json is missing required fields {_REQUIRED_FIELDS}')
 
-        if package_name is None:
-            raise RuntimeError("package.json is missing name field")
-        if repo_name is None:
-            raise RuntimeError("package.json is missing repository field")
-
-        return {'package_name': package_name, 'repo_name': repo_name}
+        return data
