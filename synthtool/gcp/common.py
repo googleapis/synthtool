@@ -14,6 +14,7 @@
 
 from pathlib import Path
 
+from synthtool.languages import node
 from synthtool.sources import templates
 from synthtool import _tracked_paths
 
@@ -27,9 +28,10 @@ class CommonTemplates:
     def py_library(self) -> Path:
         raise NotImplemented()
 
-    def node_library(self, package_name, repo_name) -> Path:
+    def node_library(self, **kwargs) -> Path:
+        kwargs["metadata"] = node.read_metadata()
         t = templates.TemplateGroup(_TEMPLATES_DIR / "node_library")
-        result = t.render(package_name=package_name, repo_name=repo_name)
+        result = t.render(**kwargs)
         _tracked_paths.add(result)
         return result
 
