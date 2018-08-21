@@ -22,11 +22,11 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_deep_paths():
-    parent = FIXTURES / 'parent'
-    deep_path = FIXTURES / 'parent' / 'child' / 'grandchild'
-    deep_item = deep_path / 'thing.txt'
+    parent = FIXTURES / "parent"
+    deep_path = FIXTURES / "parent" / "child" / "grandchild"
+    deep_item = deep_path / "thing.txt"
 
     _tracked_paths.add(parent)
     _tracked_paths.add(deep_path)
 
-    assert _tracked_paths.relativize(deep_item) == Path('thing.txt')
+    assert _tracked_paths.relativize(deep_item) == Path("thing.txt")
