@@ -25,6 +25,8 @@ _tracked_paths = []
 
 def add(path):
     _tracked_paths.append(pathlib.Path(path))
+    # Reverse sort the list, so that the deepest paths get matched first.
+    _tracked_paths.sort(key=lambda s: -len(str(s)))
 
 
 def relativize(path):
