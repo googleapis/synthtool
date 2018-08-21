@@ -12,28 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Tracked paths.
-
-This is a bit of a hack.
-"""
-
-import pathlib
+from pathlib import Path
 
 
-_tracked_paths = []
+from synthtool import _tracked_paths
 
 
-def add(path):
-    _tracked_paths.append(pathlib.Path(path))
-    # Reverse sort the list, so that the deepest paths get matched first.
-    _tracked_paths.sort(key=lambda s: -len(str(s)))
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
-def relativize(path):
-    path = pathlib.Path(path)
-    for tracked_path in _tracked_paths:
-        try:
-            return path.relative_to(tracked_path)
-        except ValueError:
-            pass
-    raise ValueError(f"The root for {path} is not tracked.")
+def test_deep_paths():
+    parent = FIXTURES / "parent"
+    deep_path = FIXTURES / "parent" / "child" / "grandchild"
+    deep_item = deep_path / "thing.txt"
+
+    _tracked_paths.add(parent)
+    _tracked_paths.add(deep_path)
+
+    assert _tracked_paths.relativize(deep_item) == Path("thing.txt")
