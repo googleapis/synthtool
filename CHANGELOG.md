@@ -4,6 +4,24 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.4.0
+
+### Implementation Changes
+
+- Fix tracked paths issue by preferentially matching the longest path (#36)
+- set Jinja2 option to keep new line char at EOF (#35)
+
+### New Features
+
+- (nodejs) read repo_name and package_name from package.json (#34)
+- Add Ruby-specific tools (#22)
+- Adding php templates (#33)
+- Add git sources to tracked_paths (#31)
+
+### Internal / Testing Changes
+
+- Fix trampoline script
+
 ## 0.3.1
 
 ### Implementation Changes
