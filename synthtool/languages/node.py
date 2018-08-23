@@ -32,4 +32,7 @@ def read_metadata():
                 f"package.json is missing required fields {_REQUIRED_FIELDS}"
             )
 
+        # extract just the name, without org
+        data["repository_name"] = data["repository"].split("/", 2)[1]
+
         return data
