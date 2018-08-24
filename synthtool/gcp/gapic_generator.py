@@ -110,6 +110,9 @@ class GAPICGenerator:
     def php_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, "php", **kwargs)
 
+    def java_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "java", **kwargs)
+
     def _generate_code(
         self,
         service,
@@ -125,6 +128,7 @@ class GAPICGenerator:
             "nodejs": ("nodejs_gapic", "js"),
             "ruby": ("ruby_gapic", "ruby"),
             "php": ("php_gapic", "php"),
+            "java": ("java_gapic", "java"),
         }
 
         if language not in GENERATE_FLAG_LANGUAGE:
