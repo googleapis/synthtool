@@ -4,6 +4,11 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.5.0
+
+### New Features
+- Add Kokoro configs for nodejs repos (#38)
+
 ## 0.4.0
 
 ### Implementation Changes
