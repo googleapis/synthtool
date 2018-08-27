@@ -4,6 +4,12 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.6.1
+
+### Implementation Changes
+
+- Include subdirectories under node_library/.kokoro (#43)
+
 ## 0.6.0
 
 ### Implementation Changes
