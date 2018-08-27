@@ -4,6 +4,17 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.6.0
+
+### Implementation Changes
+
+- Run `npm install` before publishing (#41)
+- Add missing resources
+
+### New Features
+
+- Allow synthtool to build java Gapic clients (#40)
+
 ## 0.5.0
 
 ### New Features
