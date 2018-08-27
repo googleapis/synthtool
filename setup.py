@@ -54,7 +54,7 @@ setuptools.setup(
             'gcp/templates/**/*',
             'gcp/templates/node_library/.circleci/*',
             'gcp/templates/node_library/.github/*',
-            'gcp/templates/node_library/.kokoro/*',
+            'gcp/templates/node_library/.kokoro/**/*',
         ],
     },
     zip_safe=False,
