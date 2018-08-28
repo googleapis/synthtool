@@ -57,10 +57,11 @@ def _render_to_path(env, source_path, template_name, dest, params):
 class Templates:
     def __init__(self, location: PathOrStr) -> None:
         self.env = _make_env(location)
+        self.source_path = Path(location)
         self.dir = tmp.tmpdir()
 
     def render(self, template_name: str, **kwargs) -> Path:
-        return _render_to_path(self.env, template_name, self.dir, kwargs)
+        return _render_to_path(self.env, self.source_path, template_name, self.dir, kwargs)
 
 
 class TemplateGroup:
