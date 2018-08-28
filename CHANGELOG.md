@@ -4,6 +4,12 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.6.2
+
+### Implementation Changes
+
+- Use manifest.in for package data
+
 ## 0.6.1
 
 ### Implementation Changes
