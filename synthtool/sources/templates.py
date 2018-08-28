@@ -31,19 +31,25 @@ def _make_env(location):
     )
 
 
-def _render_to_path(env, template_name, dest, params):
+def _render_to_path(env, source_path, template_name, dest, params):
     template = env.get_template(template_name)
 
     output = template.stream(**params)
 
-    if template_name.endswith(".j2"):
-        template_name = template.name[:-3]
+    file_name = template_name
+    if file_name.endswith(".j2"):
+        file_name = file_name[:-3]
 
-    dest = dest / template_name
+    dest = dest / file_name
     dest.parent.mkdir(parents=True, exist_ok=True)
 
     with dest.open("w") as fh:
         output.dump(fh)
+
+    # Copy file mode over
+    source_path = source_path / template_name
+    mode = source_path.stat().st_mode
+    dest.chmod(mode)
 
     return dest
 
@@ -60,11 +66,12 @@ class Templates:
 class TemplateGroup:
     def __init__(self, location: PathOrStr) -> None:
         self.env = _make_env(location)
+        self.source_path = Path(location)
         self.dir = tmp.tmpdir()
 
     def render(self, **kwargs) -> Path:
         for template_name in self.env.list_templates():
             print(template_name)
-            _render_to_path(self.env, template_name, self.dir, kwargs)
+            _render_to_path(self.env, self.source_path, template_name, self.dir, kwargs)
 
         return self.dir
