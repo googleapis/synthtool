@@ -61,7 +61,9 @@ class Templates:
         self.dir = tmp.tmpdir()
 
     def render(self, template_name: str, **kwargs) -> Path:
-        return _render_to_path(self.env, self.source_path, template_name, self.dir, kwargs)
+        return _render_to_path(
+            self.env, self.source_path, template_name, self.dir, kwargs
+        )
 
 
 class TemplateGroup:
