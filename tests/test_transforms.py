@@ -33,6 +33,20 @@ def expand_path_fixtures(tmpdir):
     os.chdir(cwd)
 
 
+@pytest.fixture()
+def executable_fixtures(tmpdir):
+    # Executable file
+    executable = "exec.sh"
+    path = tmpdir.join(executable)
+    path.write_text("content", encoding="utf-8", ensure=True)
+    path.chmod(0o100755)
+
+    cwd = os.getcwd()
+    os.chdir(str(tmpdir))
+    yield tmpdir
+    os.chdir(cwd)
+
+
 @pytest.mark.parametrize(
     ["input", "expected"],
     [
@@ -83,3 +97,12 @@ def test__filter_files(expand_path_fixtures):
         "dira/f.py",
         "dirb/suba/g.py",
     ]
+
+
+def test__file_copy_mode(executable_fixtures, tmpdir):
+    executable = "exec.sh"
+    destination = tmpdir / "exec_copy.sh"
+
+    transforms.move([executable], destination)
+
+    assert destination.stat().mode == 0o100755
