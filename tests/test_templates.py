@@ -35,3 +35,16 @@ def test_render_group():
 
     assert (result / "1.txt").read_text() == "hello\n"
     assert (result / "subdir" / "2.txt").read_text() == "world\n"
+
+
+def test_render_preserve_mode():
+    """
+    Test that rendering templates correctly preserve file modes.
+    """
+    source_file = FIXTURES / "executable.j2"
+    source_mode = source_file.stat().st_mode
+
+    t = templates.Templates(FIXTURES)
+    result = t.render("executable.j2", name="executable")
+
+    assert result.stat().st_mode == source_mode
