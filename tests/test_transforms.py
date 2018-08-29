@@ -99,9 +99,9 @@ def test__filter_files(expand_path_fixtures):
     ]
 
 
-def test__file_copy_mode(executable_fixtures, tmpdir):
+def test__file_copy_mode(executable_fixtures):
     executable = "exec.sh"
-    destination = tmpdir / "exec_copy.sh"
+    destination = executable_fixtures / "exec_copy.sh"
 
     transforms.move([executable], destination)
 
