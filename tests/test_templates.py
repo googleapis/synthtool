@@ -47,4 +47,4 @@ def test_render_preserve_mode():
     t = templates.Templates(FIXTURES)
     result = t.render("executable.j2", name="executable")
 
-    assert result.stat().st_mode == source_mode == 0o100755
+    assert result.stat().st_mode == source_mode == 0o100775

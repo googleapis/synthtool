@@ -105,4 +105,4 @@ def test__file_copy_mode(executable_fixtures, tmpdir):
 
     transforms.move([executable], destination)
 
-    assert destination.stat().mode == 0o100755
+    assert destination.stat().mode == 0o100775
