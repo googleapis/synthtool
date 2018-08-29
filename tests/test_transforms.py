@@ -39,7 +39,7 @@ def executable_fixtures(tmpdir):
     executable = "exec.sh"
     path = tmpdir.join(executable)
     path.write_text("content", encoding="utf-8", ensure=True)
-    path.chmod(0o100755)
+    path.chmod(0o100775)
 
     cwd = os.getcwd()
     os.chdir(str(tmpdir))
