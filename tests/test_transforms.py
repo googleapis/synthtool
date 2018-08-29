@@ -92,14 +92,9 @@ def test__move_to_dest(expand_path_fixtures):
     _tracked_paths.add(expand_path_fixtures)
     dest = Path(str(expand_path_fixtures / "dest"))
 
-    transforms.move(
-        tmp_path,
-        dest,
-        excludes=["dira/f.py"])
+    transforms.move(tmp_path, dest, excludes=["dira/f.py"])
 
-    files = sorted(
-        [str(x) for x in transforms._expand_paths("**/*", root='dest')]
-    )
+    files = sorted([str(x) for x in transforms._expand_paths("**/*", root="dest")])
 
     # Assert destination does not contain dira/e.py (excluded)
     assert files == [
