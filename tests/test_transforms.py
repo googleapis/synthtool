@@ -13,10 +13,12 @@
 # limitations under the License.
 
 import os
+from pathlib import Path
 
 import pytest
 
 from synthtool import transforms
+from synthtool import _tracked_paths
 
 
 @pytest.fixture()
@@ -106,3 +108,25 @@ def test__file_copy_mode(executable_fixtures):
     transforms.move([executable], destination)
 
     assert destination.stat().mode == 0o100775
+
+
+def test__move_to_dest(expand_path_fixtures):
+    tmp_path = Path(str(expand_path_fixtures))
+    _tracked_paths.add(expand_path_fixtures)
+    dest = Path(str(expand_path_fixtures / "dest"))
+
+    transforms.move(tmp_path, dest, excludes=["dira/f.py"])
+
+    files = sorted([str(x) for x in transforms._expand_paths("**/*", root="dest")])
+
+    # Assert destination does not contain dira/e.py (excluded)
+    assert files == [
+        "dest/a.txt",
+        "dest/b.py",
+        "dest/c.md",
+        "dest/dira",
+        "dest/dira/e.txt",
+        "dest/dirb",
+        "dest/dirb/suba",
+        "dest/dirb/suba/g.py",
+    ]
