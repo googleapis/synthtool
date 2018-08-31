@@ -4,6 +4,16 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.7.0
+
+### Implementation Changes
+- Move: excludes arg paths should be relative to source, not destination (#48)
+- Update CircleCI config for nodejs (#50)
+- fix: CircleCI config should not try to decrypt if no key is present (#49)
+
+### New Features
+- feat: preserve file mode in templates (#47)
+
 ## 0.6.2
 
 ### Implementation Changes
