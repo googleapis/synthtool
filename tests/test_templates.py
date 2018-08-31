@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import stat
 from pathlib import Path
 
 
@@ -43,7 +44,9 @@ def test_render_preserve_mode():
     """
     source_file = FIXTURES / "executable.j2"
     source_mode = source_file.stat().st_mode
-    assert source_mode == 0o100775
+
+    # Verify source fixture has execute permission for USER
+    assert source_mode & stat.S_IXUSR
 
     t = templates.Templates(FIXTURES)
     result = t.render("executable.j2", name="executable")

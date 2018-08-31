@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import stat
 from pathlib import Path
 
 import pytest
@@ -107,7 +108,7 @@ def test__file_copy_mode(executable_fixtures):
 
     transforms.move([executable], destination)
 
-    assert destination.stat().mode == 0o100775
+    assert destination.stat().mode & stat.S_IXUSR
 
 
 def test__move_to_dest(expand_path_fixtures):
