@@ -125,7 +125,7 @@ def _copy_dir_to_existing_dir(
                 if merge is not None and dest_path.is_file():
                     _merge_file(source_path, dest_path, merge)
                 else:
-                    shutil.copyfile(str(source_path), str(dest_path))
+                    shutil.copy2(str(source_path), str(dest_path))
                 copied = True
 
     return copied
@@ -138,7 +138,7 @@ def move(
     merge: Callable[[str, str, Path], str] = None,
 ) -> bool:
     """
-    copy file(s) at source to current directory.
+    copy file(s) at source to current directory, preserving file mode.
 
     Returns: True if any files were copied, False otherwise.
     """

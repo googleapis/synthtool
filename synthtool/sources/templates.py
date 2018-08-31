@@ -45,12 +45,18 @@ def _render_to_path(env, template_name, dest, params):
     with dest.open("w") as fh:
         output.dump(fh)
 
+    # Copy file mode over
+    source_path = Path(template.filename)
+    mode = source_path.stat().st_mode
+    dest.chmod(mode)
+
     return dest
 
 
 class Templates:
     def __init__(self, location: PathOrStr) -> None:
         self.env = _make_env(location)
+        self.source_path = Path(location)
         self.dir = tmp.tmpdir()
 
     def render(self, template_name: str, **kwargs) -> Path:

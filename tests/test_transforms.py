@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import stat
 from pathlib import Path
 
 import pytest
@@ -28,6 +29,20 @@ def expand_path_fixtures(tmpdir):
     for file in files:
         path = tmpdir.join(file)
         path.write_text("content", encoding="utf-8", ensure=True)
+
+    cwd = os.getcwd()
+    os.chdir(str(tmpdir))
+    yield tmpdir
+    os.chdir(cwd)
+
+
+@pytest.fixture()
+def executable_fixtures(tmpdir):
+    # Executable file
+    executable = "exec.sh"
+    path = tmpdir.join(executable)
+    path.write_text("content", encoding="utf-8", ensure=True)
+    path.chmod(0o100775)
 
     cwd = os.getcwd()
     os.chdir(str(tmpdir))
@@ -85,6 +100,16 @@ def test__filter_files(expand_path_fixtures):
         "dira/f.py",
         "dirb/suba/g.py",
     ]
+
+
+def test__file_copy_mode(executable_fixtures):
+    executable = "exec.sh"
+    destination = executable_fixtures / "exec_copy.sh"
+
+    transforms.move([executable], destination)
+
+    # Check if destination file has execute permission for USER
+    assert destination.stat().mode & stat.S_IXUSR
 
 
 def test__move_to_dest(expand_path_fixtures):
