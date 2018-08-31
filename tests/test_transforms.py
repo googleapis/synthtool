@@ -108,6 +108,7 @@ def test__file_copy_mode(executable_fixtures):
 
     transforms.move([executable], destination)
 
+    # Check if destination file has execute permission for USER
     assert destination.stat().mode & stat.S_IXUSR
 
 
