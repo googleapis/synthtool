@@ -153,6 +153,7 @@ jobs:
                 openssl aes-256-cbc -d -in $encrypted_key
                   -out $(echo $encrypted_key | sed 's/\.enc//')
                   -k "${SYSTEM_TESTS_ENCRYPTION_KEY}"
+              done
             fi
       - run: *npm_install_and_link
       - run:
