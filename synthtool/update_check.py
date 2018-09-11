@@ -31,6 +31,7 @@ def _only_once_pls(package_name: str) -> bool:
     flag = pathlib.Path.home() / ".cache" / f"update-check-{package_name}"
 
     if not flag.exists():
+        flag.parent.mkdir(parents=True, exist_ok=True)
         flag.touch()
         return True
 
