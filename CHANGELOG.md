@@ -4,6 +4,14 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.8.0
+
+### Implementation Changes
+- Correct a wrong path in the PHP template ([#65](https://github.com/GoogleCloudPlatform/synthtool/pull/65))
+
+### Internal / Testing Changes
+- Add release build files ([#68](https://github.com/GoogleCloudPlatform/synthtool/pull/68))
+
 ## 0.7.1
 
 ### Implementation Changes
