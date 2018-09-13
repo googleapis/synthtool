@@ -23,8 +23,8 @@ TWINE_PASSWORD=$(cat "${KOKORO_GFILE_DIR}/twine-password.txt")
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
-python3 -m pip install --upgrade --quiet setuptools twine
+python3 -m pip install --upgrade --quiet setuptools wheel twine
 
 python3 setup.py sdist bdist_wheel
-twine --username "${TWINE_USERNAME}" --password "${TWINE_PASSWORD}" upload dist/*
+twine upload --username "${TWINE_USERNAME}" --password "${TWINE_PASSWORD}" dist/*
 
