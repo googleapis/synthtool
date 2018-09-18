@@ -28,7 +28,7 @@ dependencies = [
 
 packages = setuptools.find_packages()
 scripts = [
-    'synthtool=synthtool.main:main'
+    'synthtool=synthtool.__main__:main'
 ]
 
 setuptools.setup(
