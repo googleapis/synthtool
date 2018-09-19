@@ -19,6 +19,7 @@ description = ''
 version = '0.8.0'
 release_status = 'Development Status :: 3 - Alpha'
 dependencies = [
+    "click",
     "colorlog",
     "jinja2",
     "packaging",
@@ -26,7 +27,9 @@ dependencies = [
 ]
 
 packages = setuptools.find_packages()
-
+scripts = [
+    'synthtool=synthtool.__main__:main'
+]
 
 setuptools.setup(
     name=name,
@@ -50,4 +53,7 @@ setuptools.setup(
     install_requires=dependencies,
     include_package_data=True,
     zip_safe=False,
+    entry_points={
+        'console_scripts': scripts,
+    },
 )
