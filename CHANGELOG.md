@@ -4,6 +4,15 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.9.0
+
+### New Features
+- Make synthtool an executable ([#74](https://github.com/GoogleCloudPlatform/synthtool/pull/74))
+
+### Internal / Testing Changes
+- Run system and samples test on Kokoro for nodejs repos ([#75](https://github.com/GoogleCloudPlatform/synthtool/pull/75))
+- Update eslint rules for nodejs ([#73](https://github.com/GoogleCloudPlatform/synthtool/pull/73))
+
 ## 0.8.0
 
 ### Implementation Changes
