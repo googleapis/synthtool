@@ -22,8 +22,8 @@ cd github/synthtool
 export PYTHONUNBUFFERED=1
 
 python3 -m pip install --upgrade --quiet nox
-nox --version
-nox -s lint test
+python3 -m nox --version
+python3 -m nox -s lint test
 
 # remove all files, preventing kokoro from trying to sync them.
 rm -rf *
