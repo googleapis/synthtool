@@ -21,7 +21,8 @@ cd github/synthtool
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
-python3 -m pip install --upgrade --quiet --pre nox
+python3 -m pip install --upgrade --quiet nox
+nox --version
 nox -s lint test
 
 # remove all files, preventing kokoro from trying to sync them.
