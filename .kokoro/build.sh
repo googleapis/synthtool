@@ -22,7 +22,7 @@ cd github/synthtool
 export PYTHONUNBUFFERED=1
 
 # Remove old nox.
-python3 -m pip uninstall --quiet nox-automation
+python3 -m pip uninstall --yes --quiet nox-automation
 
 # Install nox.
 python3 -m pip install --upgrade --quiet nox
