@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import json
-import re
 from synthtool.sources import git
 
 _REQUIRED_FIELDS = ["name", "repository"]
