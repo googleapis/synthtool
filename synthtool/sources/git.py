@@ -14,10 +14,16 @@
 
 import pathlib
 import shutil
+import re
+from typing import Dict
 
 from synthtool import _tracked_paths
 from synthtool import cache
 from synthtool import shell
+
+REPO_REGEX = (
+    r"(((https:\/\/)|(git@))github.com(:|\/))?(?P<owner>[^\/]+)\/(?P<name>[^\/]+)"
+)
 
 
 def clone(
@@ -49,3 +55,28 @@ def clone(
     _tracked_paths.add(dest)
 
     return dest
+
+
+def parse_repo_url(url: str) -> Dict[str, str]:
+    """
+    Parses a GitHub url and returns a dict with:
+        owner - Owner of the repository
+        name  - Name of the repository
+
+    The following are matchable:
+        googleapis/nodejs-vision(.git)?
+        git@github.com:GoogleCloudPlatform/google-cloud-python.git
+        https://github.com/GoogleCloudPlatform/google-cloud-python.git
+    """
+    match = re.search(REPO_REGEX, url)
+
+    if not match:
+        raise RuntimeError("repository url is not a properly formatted git string.")
+
+    owner = match.group("owner")
+    name = match.group("name")
+
+    if name.endswith(".git"):
+        name = name[:-4]
+
+    return {"owner": owner, "name": name}
