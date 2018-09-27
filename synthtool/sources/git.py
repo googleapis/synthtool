@@ -70,6 +70,9 @@ def parse_repo_url(url: str) -> Dict[str, str]:
     """
     match = re.search(REPO_REGEX, url)
 
+    if not match:
+        raise RuntimeError("repository url is not a properly formatted git string.")
+
     owner = match.group("owner")
     name = match.group("name")
 
