@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+from synthtool.sources import git
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -32,7 +33,9 @@ def read_metadata():
                 f"package.json is missing required fields {_REQUIRED_FIELDS}"
             )
 
-        # extract just the name, without org
-        data["repository_name"] = data["repository"].split("/", 2)[1]
+        repo = git.parse_repo_url(data["repository"])
+
+        data["repository"] = f'{repo["owner"]}/{repo["name"]}'
+        data["repository_name"] = repo["name"]
 
         return data
