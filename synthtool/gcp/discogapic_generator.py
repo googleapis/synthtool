@@ -16,7 +16,6 @@ import os
 from pathlib import Path
 import tempfile
 import platform
-import subprocess
 import venv
 
 from synthtool import _tracked_paths
