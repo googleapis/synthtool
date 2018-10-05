@@ -113,12 +113,7 @@ class DiscoGAPICGenerator:
         return self._generate_code(service, version, "java", **kwargs)
 
     def _generate_code(
-        self,
-        service,
-        version,
-        language,
-        config_path=None,
-        artman_output_name=None
+        self, service, version, language, config_path=None, artman_output_name=None
     ):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
@@ -217,4 +212,6 @@ class DiscoGAPICGenerator:
 
     def _clone_discovery_artifact_manager(self):
         log.debug("Cloning discovery-artifact-manager.")
-        self.discovery_artifact_manager = git.clone(DISCOVERY_ARTIFACT_MANAGER_URL, depth=1)
+        self.discovery_artifact_manager = git.clone(
+            DISCOVERY_ARTIFACT_MANAGER_URL, depth=1
+        )
