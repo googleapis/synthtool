@@ -12,80 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 from pathlib import Path
-import tempfile
-import platform
-import venv
 
 from synthtool import _tracked_paths
-from synthtool import cache
 from synthtool import log
-from synthtool import shell
-from synthtool.sources import git
+from synthtool.gcp import artman
 
-ARTMAN_VERSION = os.environ.get("SYNTHTOOL_ARTMAN_VERSION", "latest")
-ARTMAN_VENV = cache.get_cache_dir() / "artman_venv"
 DISCOVERY_ARTIFACT_MANAGER_URL: str = "git@github.com:googleapis/discovery-artifact-manager.git"
-
-
-# Docker on mac by default cannot use the default temp file location
-# instead use the more standard *nix /tmp location\
-if platform.system() == "Darwin":
-    tempfile.tempdir = "/tmp"
-
-
-def _run_artman(image, root_dir, config, *args):
-    """Executes artman command in the artman container.
-    Args:
-        root_dir: The input directory that will be mounted to artman docker
-            container as local googleapis directory.
-    Returns:
-        The output directory with artman-generated files.
-    """
-    container_name = "artman-docker"
-    output_dir = root_dir / "artman-genfiles"
-
-    docker_cmd = [
-        "docker",
-        "run",
-        "--name",
-        container_name,
-        "--rm",
-        "-i",
-        "-e",
-        f"HOST_USER_ID={os.getuid()}",
-        "-e",
-        f"HOST_GROUP_ID={os.getgid()}",
-        "-e",
-        "RUNNING_IN_ARTMAN_DOCKER=True",
-        "-v",
-        f"{root_dir}:{root_dir}",
-        "-v",
-        f"{output_dir}:{output_dir}",
-        "-w",
-        root_dir,
-        image,
-        "/bin/bash",
-        "-c",
-    ]
-
-    artman_command = " ".join(
-        map(str, ["artman", "--local", "--config", config, "generate"] + list(args))
-    )
-
-    cmd = docker_cmd + [artman_command]
-
-    shell.run(cmd, cwd=root_dir)
-
-    return output_dir
 
 
 class DiscoGAPICGenerator:
     def __init__(self):
-
-        self._ensure_dependencies_installed()
-        self._install_artman()
         self._clone_discovery_artifact_manager()
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
@@ -151,8 +88,8 @@ class DiscoGAPICGenerator:
             )
 
         log.debug(f"Running generator for {config_path}.")
-        output_root = _run_artman(
-            f"googleapis/artman:{ARTMAN_VERSION}",
+        output_root = artman.Artman().run(
+            f"googleapis/artman:{artman.ARTMAN_VERSION}",
             self.discovery_artifact_manager,
             config_path,
             gapic_language_arg,
@@ -173,41 +110,6 @@ class DiscoGAPICGenerator:
 
         _tracked_paths.add(genfiles)
         return genfiles
-
-    def _ensure_dependencies_installed(self):
-        log.debug("Ensuring dependencies.")
-
-        dependencies = ["docker", "git"]
-        failed_dependencies = []
-        for dependency in dependencies:
-            return_code = shell.run(["which", dependency], check=False).returncode
-            if return_code:
-                failed_dependencies.append(dependency)
-
-        if failed_dependencies:
-            raise EnvironmentError(
-                f"Dependencies missing: {', '.join(failed_dependencies)}"
-            )
-
-    def _install_artman(self):
-        if not ARTMAN_VENV.exists():
-            venv.main([str(ARTMAN_VENV)])
-
-        if ARTMAN_VERSION != "latest":
-            version_specifier = f"=={ARTMAN_VERSION}"
-        else:
-            version_specifier = ""
-
-        shell.run(
-            [
-                ARTMAN_VENV / "bin" / "pip",
-                "install",
-                "--upgrade",
-                f"googleapis-artman{version_specifier}",
-            ]
-        )
-        log.debug("Pulling artman image.")
-        shell.run(["docker", "pull", f"googleapis/artman:{ARTMAN_VERSION}"])
 
     def _clone_discovery_artifact_manager(self):
         log.debug("Cloning discovery-artifact-manager.")
