@@ -17,6 +17,7 @@ from pathlib import Path
 from synthtool import _tracked_paths
 from synthtool import log
 from synthtool.gcp import artman
+from synthtool.sources import git
 
 DISCOVERY_ARTIFACT_MANAGER_URL: str = "git@github.com:googleapis/discovery-artifact-manager.git"
 
