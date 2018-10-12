@@ -13,20 +13,18 @@
 # limitations under the License.
 
 from pathlib import Path
-import subprocess
 
 from synthtool import _tracked_paths
 from synthtool import log
 from synthtool.gcp import artman
 from synthtool.sources import git
 
-GOOGLEAPIS_URL: str = "git@github.com:googleapis/googleapis.git"
-GOOGLEAPIS_PRIVATE_URL: str = ("git@github.com:googleapis/googleapis-private.git")
+DISCOVERY_ARTIFACT_MANAGER_URL: str = "git@github.com:googleapis/discovery-artifact-manager.git"
 
 
-class GAPICGenerator:
+class DiscoGAPICGenerator:
     def __init__(self):
-        self._clone_googleapis()
+        self._clone_discovery_artifact_manager()
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
         """
@@ -52,13 +50,7 @@ class GAPICGenerator:
         return self._generate_code(service, version, "java", **kwargs)
 
     def _generate_code(
-        self,
-        service,
-        version,
-        language,
-        config_path=None,
-        artman_output_name=None,
-        private=False,
+        self, service, version, language, config_path=None, artman_output_name=None
     ):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
@@ -66,7 +58,7 @@ class GAPICGenerator:
             "nodejs": ("nodejs_gapic", "js"),
             "ruby": ("ruby_gapic", "ruby"),
             "php": ("php_gapic", "php"),
-            "java": ("java_gapic", "java"),
+            "java": ("java_discogapic", "java"),
         }
 
         if language not in GENERATE_FLAG_LANGUAGE:
@@ -74,13 +66,7 @@ class GAPICGenerator:
 
         gapic_language_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
-        # Determine which googleapis repo to use
-        if not private:
-            googleapis = self.googleapis
-        else:
-            googleapis = self.googleapis_private
-
-        if googleapis is None:
+        if self.discovery_artifact_manager is None:
             raise RuntimeError(
                 f"Unable to generate {config_path}, the googleapis repository"
                 "is unavailable."
@@ -90,23 +76,22 @@ class GAPICGenerator:
         # $ artman --config path/to/artman_api.yaml generate python_gapic
         if config_path is None:
             config_path = (
-                Path("google/cloud") / service / f"artman_{service}_{version}.yaml"
+                Path("gapic/google") / service / f"artman_{service}_{version}.yaml"
             )
         elif Path(config_path).is_absolute():
             config_path = Path(config_path).relative_to("/")
         else:
-            config_path = Path("google/cloud") / service / Path(config_path)
+            config_path = Path("gapic/google") / service / Path(config_path)
 
-        if not (googleapis / config_path).exists():
+        if not (self.discovery_artifact_manager / config_path).exists():
             raise FileNotFoundError(
                 f"Unable to find configuration yaml file: {config_path}."
             )
 
         log.debug(f"Running generator for {config_path}.")
-
         output_root = artman.Artman().run(
             f"googleapis/artman:{artman.ARTMAN_VERSION}",
-            googleapis,
+            self.discovery_artifact_manager,
             config_path,
             gapic_language_arg,
         )
@@ -127,14 +112,8 @@ class GAPICGenerator:
         _tracked_paths.add(genfiles)
         return genfiles
 
-    def _clone_googleapis(self):
-        log.debug("Cloning googleapis.")
-        self.googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
-
-        try:
-            self.googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
-        except subprocess.CalledProcessError:
-            log.warning(
-                "Could not clone googleapis-private, you will not be able to "
-                "generate private API versions!"
-            )
+    def _clone_discovery_artifact_manager(self):
+        log.debug("Cloning discovery-artifact-manager.")
+        self.discovery_artifact_manager = git.clone(
+            DISCOVERY_ARTIFACT_MANAGER_URL, depth=1
+        )
