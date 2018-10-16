@@ -25,9 +25,6 @@ GOOGLEAPIS_PRIVATE_URL: str = ("git@github.com:googleapis/googleapis-private.git
 
 
 class GAPICGenerator:
-    def __init__(self):
-        self._clone_googleapis()
-
     def py_library(self, service: str, version: str, **kwargs) -> Path:
         """
         Generates the Python Library files using artman/GAPIC
@@ -58,6 +55,7 @@ class GAPICGenerator:
         language,
         config_path=None,
         artman_output_name=None,
+        googleapis_directory=None,
         private=False,
     ):
         # map the language to the artman argument and subdir of genfiles
@@ -75,16 +73,21 @@ class GAPICGenerator:
         gapic_language_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
         # Determine which googleapis repo to use
-        if not private:
-            googleapis = self.googleapis
+        if googleapis_directory:
+            googleapis = Path(googleapis_directory).expanduser()
+            log.debug(f"Using local googleapis at: {googleapis}")
         else:
-            googleapis = self.googleapis_private
+            self._clone_googleapis()
+            if not private:
+                googleapis = self.googleapis
+            else:
+                googleapis = self.googleapis_private
 
-        if googleapis is None:
-            raise RuntimeError(
-                f"Unable to generate {config_path}, the googleapis repository"
-                "is unavailable."
-            )
+            if googleapis is None:
+                raise RuntimeError(
+                    f"Unable to generate {config_path}, the googleapis repository"
+                    "is unavailable."
+                )
 
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
@@ -99,7 +102,7 @@ class GAPICGenerator:
 
         if not (googleapis / config_path).exists():
             raise FileNotFoundError(
-                f"Unable to find configuration yaml file: {config_path}."
+                f"Unable to find configuration yaml file: {(googleapis / config_path)}."
             )
 
         log.debug(f"Running generator for {config_path}.")
