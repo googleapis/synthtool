@@ -4,6 +4,29 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 0.10.0
+
+10-16-2018 14:43 PDT
+
+### Implementation Changes
+- fix(node): move fetch codecov token to node8/test.cfg ([#92](https://github.com/GoogleCloudPlatform/synthtool/pull/92))
+- fix(node): bring in codecov master token into nodejs builds ([#88](https://github.com/GoogleCloudPlatform/synthtool/pull/88))
+- npm bundled in win VM has a known issue with fsevents, upgrade it ([#86](https://github.com/GoogleCloudPlatform/synthtool/pull/86))
+- pre test hooks usually sets secrets, set +x to prevent them from leaking ([#84](https://github.com/GoogleCloudPlatform/synthtool/pull/84))
+- chore(node): remove .appveyor.yaml from templating ([#82](https://github.com/GoogleCloudPlatform/synthtool/pull/82))
+- Add optional env var for npm install timeout ([#79](https://github.com/GoogleCloudPlatform/synthtool/pull/79))
+- Use prefer-const in the .eslintrc.yaml ([#78](https://github.com/GoogleCloudPlatform/synthtool/pull/78))
+- nodejs: add test_project arg for templates ([#63](https://github.com/GoogleCloudPlatform/synthtool/pull/63))
+
+### New Features
+- feat(node): Migrate uploading of test coverage report from CircleCI to Kokoro ([#87](https://github.com/GoogleCloudPlatform/synthtool/pull/87))
+- feat(node): match different styles of repository string ([#83](https://github.com/GoogleCloudPlatform/synthtool/pull/83))
+- feat(node): allow pre-samples-test.sh hook ([#81](https://github.com/GoogleCloudPlatform/synthtool/pull/81))
+- Add discogapic generator ([#90](https://github.com/GoogleCloudPlatform/synthtool/pull/90))
+
+### Internal / Testing Changes
+- Use new Nox ([#80](https://github.com/GoogleCloudPlatform/synthtool/pull/80))
+
 ## 0.9.0
 
 ### New Features
