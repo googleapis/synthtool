@@ -16,7 +16,6 @@ import os
 import platform
 import tempfile
 
-from synthtool import cache
 from synthtool import log
 from synthtool import shell
 
