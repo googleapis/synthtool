@@ -13,16 +13,13 @@
 # limitations under the License.
 
 import os
-import tempfile
 import platform
-import venv
+import tempfile
 
-from synthtool import cache
 from synthtool import log
 from synthtool import shell
 
 ARTMAN_VERSION = os.environ.get("SYNTHTOOL_ARTMAN_VERSION", "latest")
-ARTMAN_VENV = cache.get_cache_dir() / "artman_venv"
 
 
 class Artman:
@@ -95,21 +92,5 @@ class Artman:
             )
 
     def _install_artman(self):
-        if not ARTMAN_VENV.exists():
-            venv.main([str(ARTMAN_VENV)])
-
-        if ARTMAN_VERSION != "latest":
-            version_specifier = f"=={ARTMAN_VERSION}"
-        else:
-            version_specifier = ""
-
-        shell.run(
-            [
-                ARTMAN_VENV / "bin" / "pip",
-                "install",
-                "--upgrade",
-                f"googleapis-artman{version_specifier}",
-            ]
-        )
         log.debug("Pulling artman image.")
         shell.run(["docker", "pull", f"googleapis/artman:{ARTMAN_VERSION}"])
