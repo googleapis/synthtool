@@ -129,9 +129,9 @@ class GAPICGenerator:
         return genfiles
 
     def _clone_googleapis(self):
-        self.local_googleapis = 'SYNTHTOOL_GOOGLEAPIS' in os.environ
+        self.local_googleapis = "SYNTHTOOL_GOOGLEAPIS" in os.environ
         if self.local_googleapis:
-            self.googleapis = Path(os.environ['SYNTHTOOL_GOOGLEAPIS']).expanduser()
+            self.googleapis = Path(os.environ["SYNTHTOOL_GOOGLEAPIS"]).expanduser()
             log.debug(f"Using local googleapis at {self.googleapis}")
         else:
             log.debug("Cloning googleapis.")
