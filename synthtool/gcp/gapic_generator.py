@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from pathlib import Path
 import subprocess
 
@@ -75,10 +76,10 @@ class GAPICGenerator:
         gapic_language_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
         # Determine which googleapis repo to use
-        if not private:
-            googleapis = self.googleapis
-        else:
+        if private and not self.local_googleapis:
             googleapis = self.googleapis_private
+        else:
+            googleapis = self.googleapis
 
         if googleapis is None:
             raise RuntimeError(
@@ -99,7 +100,7 @@ class GAPICGenerator:
 
         if not (googleapis / config_path).exists():
             raise FileNotFoundError(
-                f"Unable to find configuration yaml file: {config_path}."
+                f"Unable to find configuration yaml file: {(googleapis / config_path)}."
             )
 
         log.debug(f"Running generator for {config_path}.")
@@ -128,13 +129,18 @@ class GAPICGenerator:
         return genfiles
 
     def _clone_googleapis(self):
-        log.debug("Cloning googleapis.")
-        self.googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
+        self.local_googleapis = "SYNTHTOOL_GOOGLEAPIS" in os.environ
+        if self.local_googleapis:
+            self.googleapis = Path(os.environ["SYNTHTOOL_GOOGLEAPIS"]).expanduser()
+            log.debug(f"Using local googleapis at {self.googleapis}")
+        else:
+            log.debug("Cloning googleapis.")
+            self.googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
 
-        try:
-            self.googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
-        except subprocess.CalledProcessError:
-            log.warning(
-                "Could not clone googleapis-private, you will not be able to "
-                "generate private API versions!"
-            )
+            try:
+                self.googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
+            except subprocess.CalledProcessError:
+                log.warning(
+                    "Could not clone googleapis-private, you will not be able to "
+                    "generate private API versions!"
+                )
