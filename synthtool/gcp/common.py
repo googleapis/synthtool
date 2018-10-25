@@ -26,7 +26,7 @@ class CommonTemplates:
         self._templates = templates.Templates(_TEMPLATES_DIR)
 
     def py_library(self) -> Path:
-        raise NotImplemented()
+        raise NotImplementedError()
 
     def node_library(self, **kwargs) -> Path:
         kwargs["metadata"] = node.read_metadata()
