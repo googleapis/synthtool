@@ -16,6 +16,11 @@
 
 set -eo pipefail
 
+# Enable the publish build reporter.
+python3 -m pip install gcp-releasetool
+python3 -m releasetool publish-reporter-script > /tmp/publisher-script; source /tmp/publisher-script
+
+
 cd github/synthtool
 TWINE_USERNAME=$(cat "${KOKORO_GFILE_DIR}/twine-username.txt")
 TWINE_PASSWORD=$(cat "${KOKORO_GFILE_DIR}/twine-password.txt")
