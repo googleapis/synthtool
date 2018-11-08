@@ -19,7 +19,9 @@ from synthtool import log
 from synthtool.gcp import artman
 from synthtool.sources import git
 
-DISCOVERY_ARTIFACT_MANAGER_URL: str = git.make_repo_clone_url("googleapis/discovery-artifact-manager")
+DISCOVERY_ARTIFACT_MANAGER_URL: str = git.make_repo_clone_url(
+    "googleapis/discovery-artifact-manager"
+)
 
 
 class DiscoGAPICGenerator:
