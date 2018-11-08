@@ -13,16 +13,16 @@
 # limitations under the License.
 
 import os
-from pathlib import Path
 import subprocess
+from pathlib import Path
 
 from synthtool import _tracked_paths
 from synthtool import log
 from synthtool.gcp import artman
 from synthtool.sources import git
 
-GOOGLEAPIS_URL: str = "git@github.com:googleapis/googleapis.git"
-GOOGLEAPIS_PRIVATE_URL: str = ("git@github.com:googleapis/googleapis-private.git")
+GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
+GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
 
 
 class GAPICGenerator:
