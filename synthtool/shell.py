@@ -17,11 +17,16 @@ import subprocess
 from synthtool import log
 
 
-def run(args, *, cwd=None, check=True):
+def run(args, *, cwd=None, check=True, hide_output=True):
+    if hide_output:
+        stdout = subprocess.PIPE
+    else:
+        stdout = None
+
     try:
         return subprocess.run(
             args,
-            stdout=subprocess.PIPE,
+            stdout=stdout,
             stderr=subprocess.STDOUT,
             cwd=cwd,
             check=check,
