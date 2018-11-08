@@ -93,4 +93,6 @@ class Artman:
 
     def _install_artman(self):
         log.debug("Pulling artman image.")
-        shell.run(["docker", "pull", f"googleapis/artman:{ARTMAN_VERSION}"])
+        shell.run(
+            ["docker", "pull", f"googleapis/artman:{ARTMAN_VERSION}"], hide_output=False
+        )
