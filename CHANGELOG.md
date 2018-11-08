@@ -4,6 +4,35 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.11.08
+
+11-08-2018 12:36 PST
+
+### Implementation Changes
+
+- Show stdout for docker pull ([#121](https://github.com/googleapis/synthtool/pull/121))
+- Prefer https URLs for cloning from GitHub, add SYNTHTOOL_USE_SSH to use ssh ([#120](https://github.com/googleapis/synthtool/pull/120))
+- Drop the PR template for nodejs ([#117](https://github.com/googleapis/synthtool/pull/117))
+- Update github issue templates ([#116](https://github.com/googleapis/synthtool/pull/116))
+- Incude build/ in eslint ignore ([#115](https://github.com/googleapis/synthtool/pull/115))
+- feat: make npm link work for system tests ([#114](https://github.com/googleapis/synthtool/pull/114))
+- fix: update nodejs issue templates ([#112](https://github.com/googleapis/synthtool/pull/112))
+- feat(node): add node11 test env ([#110](https://github.com/googleapis/synthtool/pull/110))
+- fix(node): remove store_artifact for windows builds ([#103](https://github.com/googleapis/synthtool/pull/103))
+- feat(node): upload code coverage for continuous builds too ([#102](https://github.com/googleapis/synthtool/pull/102))
+- docs: update the new issue templates for nodejs ([#101](https://github.com/googleapis/synthtool/pull/101))
+- node: use latest npm for Windows ([#119](https://github.com/googleapis/synthtool/pull/119))
+- Stop installing Artman outside of Docker. ([#99](https://github.com/googleapis/synthtool/pull/99))
+
+### New Features
+
+- Add option to specify local googleapis directory ([#100](https://github.com/googleapis/synthtool/pull/100))
+
+### Internal / Testing Changes
+
+- Enable the autorelease reporter ([#122](https://github.com/googleapis/synthtool/pull/122))
+- Fix lint error ([#113](https://github.com/googleapis/synthtool/pull/113))
+
 ## 0.10.0
 
 10-17-2018 12:23 PDT
