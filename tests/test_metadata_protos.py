@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import google.protobuf.json_format
+
 from synthtool.protos import metadata_pb2
 
 
@@ -24,3 +26,29 @@ def test_basic_operation():
     )
 
     assert metadata.sources[0].git.name == "test name"
+
+
+def test_to_json():
+    metadata = metadata_pb2.Metadata()
+    metadata.sources.add(
+        git=metadata_pb2.GitSource(
+            name="test name", remote="test remote", sha="test sha"
+        )
+    )
+
+    jsonified = google.protobuf.json_format.MessageToJson(metadata)
+
+    assert jsonified == """\
+{
+  "sources": [
+    {
+      "git": {
+        "name": "test name",
+        "remote": "test remote",
+        "sha": "test sha"
+      }
+    }
+  ]
+}"""
+
+    print(jsonified)
