@@ -27,7 +27,7 @@ def lint(session):
     session.run('pip', 'install', '-e', '.')
     session.run('black', '--check', 'synthtool', 'tests')
     session.run('flake8', 'synthtool', 'tests')
-    session.run('mypy', '--ignore-missing-imports', 'synthtool')
+    session.run('mypy', 'synthtool')
 
 
 @nox.session(python='3.6')
@@ -35,3 +35,10 @@ def test(session):
     session.install('pytest')
     session.run('pip', 'install', '-e', '.')
     session.run('pytest', 'tests', *session.posargs)
+
+
+@nox.session(python='3.6')
+def generate_protos(session):
+    session.install("grpcio-tools")
+    session.run(
+        "python", "-m", "grpc_tools.protoc", "-Isynthtool/protos", "--python_out=synthtool/protos", "synthtool/protos/metadata.proto")
