@@ -38,7 +38,9 @@ def test_to_json():
 
     jsonified = google.protobuf.json_format.MessageToJson(metadata)
 
-    assert jsonified == """\
+    assert (
+        jsonified
+        == """\
 {
   "sources": [
     {
@@ -50,5 +52,6 @@ def test_to_json():
     }
   ]
 }"""
+    )
 
     print(jsonified)
