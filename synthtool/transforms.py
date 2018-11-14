@@ -64,7 +64,7 @@ def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[
 def _file_is_gitignored(path: Path) -> bool:
     """Checks if a file is ignored by git"""
     try:
-        subprocess.check_call(["git", "check-ignore", "-q", str(path.resolve())])
+        subprocess.run(["git", "check-ignore", "-q", str(path.resolve())], stderr=subprocess.PIPE)
         return True
     except subprocess.CalledProcessError:
         return False
