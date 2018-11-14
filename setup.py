@@ -24,6 +24,7 @@ dependencies = [
     "jinja2",
     "packaging",
     "requests",
+    "protobuf",
 ]
 
 packages = setuptools.find_packages()
