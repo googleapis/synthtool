@@ -14,7 +14,6 @@
 
 from pathlib import Path
 import shutil
-import subprocess
 from typing import Callable, Iterable, Union
 import os
 import re
@@ -61,23 +60,10 @@ def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[
             )
 
 
-def _file_is_gitignored(path: Path) -> bool:
-    """Checks if a file is ignored by git"""
-    try:
-        subprocess.run(["git", "check-ignore", "-q", str(path.resolve())], stderr=subprocess.PIPE)
-        return True
-    except subprocess.CalledProcessError:
-        return False
-
-
 def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
     """Returns only the paths that are files (no directories)."""
 
-    return (
-        path
-        for path in paths
-        if path.is_file() and os.access(path, os.W_OK) and not _file_is_gitignored(path)
-    )
+    return (path for path in paths if path.is_file() and os.access(path, os.W_OK))
 
 
 def _merge_file(
