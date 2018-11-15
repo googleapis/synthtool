@@ -74,7 +74,7 @@ def clone(
 
     # add repo to metadata
     sha, message = get_latest_commit(dest)
-    commit_metadata = extract_commmit_message_metadata(message)
+    commit_metadata = extract_commit_message_metadata(message)
 
     metadata.add_git_source(
         name=dest.name,
