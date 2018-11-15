@@ -57,13 +57,13 @@ def test_get_latest_commit(check_call):
     assert message == "commit\nmessage."
 
 
-def test_extract_commmit_message_metadata():
+def test_extract_commit_message_metadata():
     message = """\
 Hello, world!
 
 One: Hello!
 Two: 1234
 """
-    metadata = git.extract_commmit_message_metadata(message)
+    metadata = git.extract_commit_message_metadata(message)
 
     assert metadata == {"One": "Hello!", "Two": "1234"}

@@ -120,7 +120,7 @@ def get_latest_commit(repo: pathlib.Path = None) -> Tuple[str, str]:
     return commit, message
 
 
-def extract_commmit_message_metadata(message: str) -> Dict[str, str]:
+def extract_commit_message_metadata(message: str) -> Dict[str, str]:
     """Extract extended metadata stored in the Git commit message.
 
     For example, a commit that looks like this::
