@@ -29,6 +29,17 @@ def test_add_git_source():
     assert current.sources[0].git.remote == "remote"
 
 
+def test_add_generator_source():
+    metadata.reset()
+
+    metadata.add_generator_source(name="name", version="1.2.3")
+
+    current = metadata.get()
+
+    assert current.sources[0].generator.name == "name"
+    assert current.sources[0].generator.version == "1.2.3"
+
+
 def test_write(tmpdir):
     metadata.reset()
 
