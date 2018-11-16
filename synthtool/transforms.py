@@ -62,7 +62,8 @@ def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[
 
 def _filter_files(paths: Iterable[Path]) -> Iterable[Path]:
     """Returns only the paths that are files (no directories)."""
-    return (path for path in paths if path.is_file())
+
+    return (path for path in paths if path.is_file() and os.access(path, os.W_OK))
 
 
 def _merge_file(

@@ -16,10 +16,12 @@ import os
 import pathlib
 import re
 import shutil
-from typing import Dict
+import subprocess
+from typing import Dict, Tuple
 
 from synthtool import _tracked_paths
 from synthtool import cache
+from synthtool import metadata
 from synthtool import shell
 
 REPO_REGEX = (
@@ -70,6 +72,17 @@ def clone(
     # track all git repositories
     _tracked_paths.add(dest)
 
+    # add repo to metadata
+    sha, message = get_latest_commit(dest)
+    commit_metadata = extract_commit_message_metadata(message)
+
+    metadata.add_git_source(
+        name=dest.name,
+        remote=url,
+        sha=sha,
+        internal_ref=commit_metadata.get("PiperOrigin-RevId"),
+    )
+
     return dest
 
 
@@ -96,3 +109,37 @@ def parse_repo_url(url: str) -> Dict[str, str]:
         name = name[:-4]
 
     return {"owner": owner, "name": name}
+
+
+def get_latest_commit(repo: pathlib.Path = None) -> Tuple[str, str]:
+    """Return the sha and commit message of the latest commit."""
+    output = subprocess.check_output(
+        ["git", "log", "-1", "--pretty=%H%n%B"], cwd=repo
+    ).decode("utf-8")
+    commit, message = output.split("\n", 1)
+    return commit, message
+
+
+def extract_commit_message_metadata(message: str) -> Dict[str, str]:
+    """Extract extended metadata stored in the Git commit message.
+
+    For example, a commit that looks like this::
+
+        Do the thing!
+
+        Piper-Changelog: 1234567
+
+    Will return::
+
+        {"Piper-Changelog": "1234567"}
+
+    """
+    metadata = {}
+    for line in message.splitlines():
+        if ":" not in line:
+            continue
+
+        key, value = line.split(":", 1)
+        metadata[key] = value.strip()
+
+    return metadata

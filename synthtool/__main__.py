@@ -22,8 +22,9 @@ from synthtool import log
 
 @click.command()
 @click.version_option(message="%(version)s")
-def main():
-    synth_file = os.path.join(os.getcwd(), "synth.py")
+@click.argument("synthfile", default="synth.py")
+def main(synthfile):
+    synth_file = os.path.abspath(synthfile)
 
     if os.path.lexists(synth_file):
         log.debug(f"Executing {synth_file}.")
