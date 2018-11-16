@@ -12,11 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import functools
+import json
 import os
 import platform
 import tempfile
 
 from synthtool import log
+from synthtool import metadata
 from synthtool import shell
 
 ARTMAN_VERSION = os.environ.get("SYNTHTOOL_ARTMAN_VERSION", "latest")
@@ -30,6 +33,30 @@ class Artman:
             tempfile.tempdir = "/tmp"
         self._ensure_dependencies_installed()
         self._install_artman()
+        self._report_metadata()
+
+    @functools.lru_cache()
+    def _docker_image_info(self):
+        result = shell.run(
+            ["docker", "inspect", f"googleapis/artman:{ARTMAN_VERSION}"],
+            hide_output=True,
+        )
+        return json.loads(result.stdout)[0]
+
+    @property
+    def version(self) -> str:
+        # The artman version is hidden in the container's environment variables.
+        # We could just docker run `artman --version`, but we already have the
+        # container info so why not? This is faster as it saves us an exec().
+        env_vars = dict(
+            value.split("=", 1) for value in self._docker_image_info()["Config"]["Env"]
+        )
+
+        return env_vars.get("ARTMAN_VERSION", "unknown")
+
+    @property
+    def docker_image(self) -> str:
+        return self._docker_image_info()["RepoDigests"][0]
 
     def run(self, image, root_dir, config, *args):
         """Executes artman command in the artman container.
@@ -95,4 +122,9 @@ class Artman:
         log.debug("Pulling artman image.")
         shell.run(
             ["docker", "pull", f"googleapis/artman:{ARTMAN_VERSION}"], hide_output=False
+        )
+
+    def _report_metadata(self):
+        metadata.add_generator_source(
+            name="artman", version=self.version, docker_image=self.docker_image
         )

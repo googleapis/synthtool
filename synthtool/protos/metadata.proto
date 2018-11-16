@@ -47,6 +47,7 @@ message GitSource {
 message GeneratorSource {
     string name = 1;
     string version = 2;
+    string docker_image = 3;
 }
 
 message TemplateSource {

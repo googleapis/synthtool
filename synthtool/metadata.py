@@ -40,6 +40,11 @@ def add_git_source(**kwargs) -> None:
     _metadata.sources.add(git=metadata_pb2.GitSource(**kwargs))
 
 
+def add_generator_source(**kwargs) -> None:
+    """Adds a generator source to the current metadata."""
+    _metadata.sources.add(generator=metadata_pb2.GeneratorSource(**kwargs))
+
+
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
     jsonified = google.protobuf.json_format.MessageToJson(_metadata)
