@@ -28,6 +28,7 @@ GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-pri
 class GAPICGenerator:
     def __init__(self):
         self._clone_googleapis()
+        self._artman = artman.Artman()
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
         """
@@ -105,7 +106,7 @@ class GAPICGenerator:
 
         log.debug(f"Running generator for {config_path}.")
 
-        output_root = artman.Artman().run(
+        output_root = self._artman.run(
             f"googleapis/artman:{artman.ARTMAN_VERSION}",
             googleapis,
             config_path,
