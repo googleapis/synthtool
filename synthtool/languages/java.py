@@ -19,6 +19,7 @@ from synthtool import shell
 from pathlib import Path
 from typing import List
 
+
 def format_code(path: str, version: str = "1.6") -> None:
     """
     Runs the google-java-format jar against all .java files found within the
@@ -36,13 +37,17 @@ def format_code(path: str, version: str = "1.6") -> None:
     log.info("Running java formatter on {} files".format(len(files)))
     shell.run(["java", "-jar", jar, "--replace"] + files)
 
+
 def _download_formatter(version: str, dest: Path) -> None:
     url = f"https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
     log.info("Downloading java formatter")
     shell.run(["curl", "-L", "-o", dest, url], hide_output=False)
 
+
 def _find_files(basedir: str, suffix: str = ".java") -> List[str]:
-    return [os.path.join(root, name)
-            for root, _dirs, files in os.walk(basedir)
-            for name in files
-            if name.endswith(suffix)]
+    return [
+        os.path.join(root, name)
+        for root, _dirs, files in os.walk(basedir)
+        for name in files
+        if name.endswith(suffix)
+    ]
