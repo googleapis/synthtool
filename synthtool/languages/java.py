@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import glob
 import os
 from synthtool import cache
 from synthtool import log
 from synthtool import shell
 from pathlib import Path
-from typing import List
 
 
 def format_code(path: str, version: str = "1.6") -> None:
@@ -31,7 +31,8 @@ def format_code(path: str, version: str = "1.6") -> None:
         _download_formatter(version, jar)
 
     # Find all .java files in path and run the formatter on them
-    files = _find_files(path)
+    log.info("Looking for java files in {}".format(os.path.join(path, "**/*.java")))
+    files = list(glob.iglob(os.path.join(path, "**/*.java"), recursive=True))
 
     # Run the formatter as a jar file
     log.info("Running java formatter on {} files".format(len(files)))
@@ -42,12 +43,3 @@ def _download_formatter(version: str, dest: Path) -> None:
     url = f"https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
     log.info("Downloading java formatter")
     shell.run(["curl", "-L", "-o", dest, url], hide_output=False)
-
-
-def _find_files(basedir: str, suffix: str = ".java") -> List[str]:
-    return [
-        os.path.join(root, name)
-        for root, _dirs, files in os.walk(basedir)
-        for name in files
-        if name.endswith(suffix)
-    ]
