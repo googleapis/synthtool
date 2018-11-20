@@ -14,26 +14,32 @@
 
 import importlib
 import os
+import sys
 
 import click
 
-from synthtool import log
+import synthtool.log
+import synthtool.metadata
 
 
 @click.command()
 @click.version_option(message="%(version)s")
 @click.argument("synthfile", default="synth.py")
-def main(synthfile):
+@click.option("--metadata", default="synth.metadata")
+def main(synthfile, metadata):
+    synthtool.metadata.register_exit_hook(outfile=metadata)
+
     synth_file = os.path.abspath(synthfile)
 
     if os.path.lexists(synth_file):
-        log.debug(f"Executing {synth_file}.")
+        synthtool.log.debug(f"Executing {synth_file}.")
         # https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly
         spec = importlib.util.spec_from_file_location("synth", synth_file)
         synth_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(synth_module)
     else:
-        log.exception(f"{synth_file} not found.")
+        synthtool.log.exception(f"{synth_file} not found.")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
