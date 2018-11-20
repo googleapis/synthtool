@@ -14,7 +14,6 @@
 
 import atexit
 import functools
-import sys
 
 import google.protobuf.json_format
 
@@ -57,8 +56,3 @@ def write(outfile: str = "synth.metadata") -> None:
 
 def register_exit_hook(**kwargs) -> None:
     atexit.register(functools.partial(write, **kwargs))
-
-
-# Only register this hook if pytest is not active.
-if "pytest" not in sys.modules:  # pragma: no cover
-    register_exit_hook()
