@@ -25,8 +25,11 @@ class CommonTemplates:
     def __init__(self):
         self._templates = templates.Templates(_TEMPLATES_DIR)
 
-    def py_library(self) -> Path:
-        raise NotImplementedError()
+    def py_library(self, **kwargs) -> Path:
+        t = templates.TemplateGroup(_TEMPLATES_DIR / "python_library")
+        result = t.render(**kwargs)
+        _tracked_paths.add(result)
+        return result
 
     def node_library(self, **kwargs) -> Path:
         kwargs["metadata"] = node.read_metadata()
