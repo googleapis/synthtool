@@ -20,8 +20,11 @@ from synthtool import log
 from synthtool import shell
 from pathlib import Path
 
+JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
+DEFAULT_FORMAT_VERSION = "1.6"
 
-def format_code(path: str, version: str = "1.6") -> None:
+
+def format_code(path: str, version: str = DEFAULT_FORMAT_VERSION) -> None:
     """
     Runs the google-java-format jar against all .java files found within the
     provided path.
@@ -32,7 +35,6 @@ def format_code(path: str, version: str = "1.6") -> None:
         _download_formatter(version, jar)
 
     # Find all .java files in path and run the formatter on them
-    log.info("Looking for java files in {}".format(os.path.join(path, "**/*.java")))
     files = list(glob.iglob(os.path.join(path, "**/*.java"), recursive=True))
 
     # Run the formatter as a jar file
@@ -42,7 +44,7 @@ def format_code(path: str, version: str = "1.6") -> None:
 
 def _download_formatter(version: str, dest: Path) -> None:
     log.info("Downloading java formatter")
-    url = f"https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
+    url = JAR_DOWNLOAD_URL.format(version=version)
     response = requests.get(url)
     response.raise_for_status()
     with open(dest, "wb") as fh:
