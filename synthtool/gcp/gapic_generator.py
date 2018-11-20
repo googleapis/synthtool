@@ -14,6 +14,7 @@
 
 import os
 from pathlib import Path
+from typing import Optional
 
 from synthtool import _tracked_paths
 from synthtool import log
@@ -22,7 +23,7 @@ from synthtool.sources import git
 
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
 GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
-LOCAL_GOOGLEAPIS: str = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
+LOCAL_GOOGLEAPIS: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
 
 
 class GAPICGenerator:
