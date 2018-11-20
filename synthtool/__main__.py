@@ -36,5 +36,5 @@ def main(synthfile):
         log.exception(f"{synth_file} not found.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

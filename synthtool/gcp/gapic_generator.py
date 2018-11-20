@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import subprocess
 from pathlib import Path
 
 from synthtool import _tracked_paths
@@ -151,7 +150,9 @@ class GAPICGenerator:
 
         if self.local_googleapis:
             self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(f"Using local googleapis at {self._googleapis_private} for googleapis-private")
+            log.debug(
+                f"Using local googleapis at {self._googleapis_private} for googleapis-private"
+            )
 
         else:
             log.debug("Cloning googleapis-private.")
