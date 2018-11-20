@@ -23,11 +23,13 @@ from synthtool.sources import git
 
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
 GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
+LOCAL_GOOGLEAPIS: str = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
 
 
 class GAPICGenerator:
     def __init__(self):
-        self._clone_googleapis()
+        self._googleapis = None
+        self._googleapis_private = None
         self._artman = artman.Artman()
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
@@ -77,10 +79,10 @@ class GAPICGenerator:
         gapic_language_arg, gen_language = GENERATE_FLAG_LANGUAGE[language]
 
         # Determine which googleapis repo to use
-        if private and not self.local_googleapis:
-            googleapis = self.googleapis_private
+        if not private:
+            googleapis = self._clone_googleapis()
         else:
-            googleapis = self.googleapis
+            googleapis = self._clone_googleapis_private()
 
         if googleapis is None:
             raise RuntimeError(
@@ -130,18 +132,29 @@ class GAPICGenerator:
         return genfiles
 
     def _clone_googleapis(self):
-        self.local_googleapis = "SYNTHTOOL_GOOGLEAPIS" in os.environ
-        if self.local_googleapis:
-            self.googleapis = Path(os.environ["SYNTHTOOL_GOOGLEAPIS"]).expanduser()
-            log.debug(f"Using local googleapis at {self.googleapis}")
+        if self._googleapis is not None:
+            return self._googleapis
+
+        if LOCAL_GOOGLEAPIS:
+            self._googleapis = Path(LOCAL_GOOGLEAPIS).expanduser()
+            log.debug(f"Using local googleapis at {self._googleapis}")
+
         else:
             log.debug("Cloning googleapis.")
-            self.googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
+            self._googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
 
-            try:
-                self.googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
-            except subprocess.CalledProcessError:
-                log.warning(
-                    "Could not clone googleapis-private, you will not be able to "
-                    "generate private API versions!"
-                )
+        return self._googleapis
+
+    def _clone_googleapis_private(self):
+        if self._googleapis_private is not None:
+            return self._googleapis_private
+
+        if self.local_googleapis:
+            self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
+            log.debug(f"Using local googleapis at {self._googleapis_private} for googleapis-private")
+
+        else:
+            log.debug("Cloning googleapis-private.")
+            self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
+
+        return self._googleapis_private
