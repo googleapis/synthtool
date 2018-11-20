@@ -14,6 +14,7 @@
 
 import glob
 import os
+import requests
 from synthtool import cache
 from synthtool import log
 from synthtool import shell
@@ -40,6 +41,9 @@ def format_code(path: str, version: str = "1.6") -> None:
 
 
 def _download_formatter(version: str, dest: Path) -> None:
-    url = f"https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
     log.info("Downloading java formatter")
-    shell.run(["curl", "-L", "-o", dest, url], hide_output=False)
+    url = f"https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
+    response = requests.get(url)
+    response.raise_for_status()
+    with open(dest, "wb") as fh:
+        fh.write(response.content)
