@@ -39,7 +39,7 @@ def format_code(path: str, version: str = DEFAULT_FORMAT_VERSION) -> None:
 
     # Run the formatter as a jar file
     log.info("Running java formatter on {} files".format(len(files)))
-    shell.run(["java", "-jar", jar, "--replace"] + files)
+    shell.run(["java", "-jar", str(jar), "--replace"] + files)
 
 
 def _download_formatter(version: str, dest: Path) -> None:
