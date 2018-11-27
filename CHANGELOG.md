@@ -4,6 +4,27 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.11.27
+
+11-27-2018 10:09 PST
+
+
+### Implementation Changes
+- add noxfile template ([#144](https://github.com/GoogleCloudPlatform/synthtool/pull/144))
+- Lazily clone googleapis{-private} ([#140](https://github.com/GoogleCloudPlatform/synthtool/pull/140))
+- Report Artman info to metadata ([#136](https://github.com/GoogleCloudPlatform/synthtool/pull/136))
+- Add metadata reporting for Git sources. ([#132](https://github.com/GoogleCloudPlatform/synthtool/pull/132))
+- Construct the artman instance only once. ([#135](https://github.com/GoogleCloudPlatform/synthtool/pull/135))
+- Harden replace ([#129](https://github.com/GoogleCloudPlatform/synthtool/pull/129))
+- Add basic metadata protos ([#127](https://github.com/GoogleCloudPlatform/synthtool/pull/127))
+- Update eslintignore rules for nodejs ([#125](https://github.com/GoogleCloudPlatform/synthtool/pull/125))
+
+### New Features
+- Add ability to format java code with a custom google-java-format version ([#145](https://github.com/GoogleCloudPlatform/synthtool/pull/145))
+- Warn when running the synthesis script directly ([#142](https://github.com/GoogleCloudPlatform/synthtool/pull/142))
+- Add option to change metadata output location ([#141](https://github.com/GoogleCloudPlatform/synthtool/pull/141))
+- Add initial python templates ([#131](https://github.com/GoogleCloudPlatform/synthtool/pull/131))
+
 ## 2018.11.08
 
 11-08-2018 12:36 PST
