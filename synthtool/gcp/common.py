@@ -16,7 +16,9 @@ from pathlib import Path
 
 from synthtool.languages import node
 from synthtool.sources import templates
+from synthtool import __main__
 from synthtool import _tracked_paths
+from synthtool import metadata
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
 
@@ -25,24 +27,24 @@ class CommonTemplates:
     def __init__(self):
         self._templates = templates.Templates(_TEMPLATES_DIR)
 
-    def py_library(self, **kwargs) -> Path:
-        t = templates.TemplateGroup(_TEMPLATES_DIR / "python_library")
+    def _generic_library(self, directory: str, **kwargs) -> Path:
+        t = templates.TemplateGroup(_TEMPLATES_DIR / directory)
         result = t.render(**kwargs)
         _tracked_paths.add(result)
+        metadata.add_template_source(
+            name=directory, origin="synthtool.gcp", version=__main__.VERSION
+        )
         return result
+
+    def py_library(self, **kwargs) -> Path:
+        return self._generic_library("python_library", **kwargs)
 
     def node_library(self, **kwargs) -> Path:
         kwargs["metadata"] = node.read_metadata()
-        t = templates.TemplateGroup(_TEMPLATES_DIR / "node_library")
-        result = t.render(**kwargs)
-        _tracked_paths.add(result)
-        return result
+        return self._generic_library("node_library", **kwargs)
 
     def php_library(self, **kwargs) -> Path:
-        t = templates.TemplateGroup(_TEMPLATES_DIR / "php_library")
-        result = t.render(**kwargs)
-        _tracked_paths.add(result)
-        return result
+        return self._generic_library("php_library", **kwargs)
 
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
