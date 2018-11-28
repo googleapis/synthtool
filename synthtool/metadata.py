@@ -44,6 +44,11 @@ def add_generator_source(**kwargs) -> None:
     _metadata.sources.add(generator=metadata_pb2.GeneratorSource(**kwargs))
 
 
+def add_template_source(**kwargs) -> None:
+    """Adds a template source to the current metadata."""
+    _metadata.sources.add(template=metadata_pb2.TemplateSource(**kwargs))
+
+
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
     jsonified = google.protobuf.json_format.MessageToJson(_metadata)
