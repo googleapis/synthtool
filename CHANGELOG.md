@@ -4,6 +4,14 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.11.28
+
+11-28-2018 13:47 PST
+
+
+### New Features
+- Update python templates ([#146](https://github.com/GoogleCloudPlatform/synthtool/pull/146))
+
 ## 2018.11.27
 
 11-27-2018 10:09 PST
