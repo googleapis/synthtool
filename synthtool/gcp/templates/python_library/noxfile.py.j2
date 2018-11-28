@@ -71,7 +71,8 @@ def default(session):
     session.install("mock", "pytest", "pytest-cov")
     for local_dep in LOCAL_DEPS:
         session.install("-e", local_dep)
-    session.install("-e", ".")
+    session.install("-e", "."){% for dependency in unit_test_dependencies %}
+    session.install("-e", "{{dependency}}"){% endfor %}
 
     # Run py.test against the unit tests.
     session.run(
@@ -117,7 +118,8 @@ def system(session):
     session.install("mock", "pytest")
     for local_dep in LOCAL_DEPS:
         session.install("-e", local_dep)
-    session.install("-e", "../test_utils/")
+    session.install("-e", "../test_utils/"){% for dependency in system_test_dependencies %}
+    session.install("-e", "{{dependency}}"){% endfor %}
     session.install("-e", ".")
 
     # Run py.test against the system tests.
