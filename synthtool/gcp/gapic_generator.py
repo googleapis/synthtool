@@ -149,7 +149,7 @@ class GAPICGenerator:
         if self._googleapis_private is not None:
             return self._googleapis_private
 
-        if self.local_googleapis:
+        if LOCAL_GOOGLEAPIS:
             self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
             log.debug(
                 f"Using local googleapis at {self._googleapis_private} for googleapis-private"
