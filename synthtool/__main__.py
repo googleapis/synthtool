@@ -17,13 +17,20 @@ import os
 import sys
 
 import click
+import pkg_resources
 
 import synthtool.log
 import synthtool.metadata
 
 
+try:
+    VERSION = pkg_resources.get_distribution("gcp-synthtool").version
+except pkg_resources.DistributionNotFound:
+    VERSION = "0.0.0+dev"
+
+
 @click.command()
-@click.version_option(message="%(version)s")
+@click.version_option(message="%(version)s", version=VERSION)
 @click.argument("synthfile", default="synth.py")
 @click.option("--metadata", default="synth.metadata")
 def main(synthfile, metadata):
