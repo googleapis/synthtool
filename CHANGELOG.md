@@ -4,6 +4,14 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.11.29.2
+
+11-29-2018 14:11 PST
+
+
+### Implementation Changes
+- modify exclusion of local deps to not match folder name of repo ([#153](https://github.com/GoogleCloudPlatform/synthtool/pull/153))
+
 ## 2018.11.29
 
 11-29-2018 12:46 PST
