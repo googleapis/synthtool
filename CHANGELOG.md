@@ -4,6 +4,16 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.11.29
+
+11-29-2018 12:46 PST
+
+
+### Implementation Changes
+- enforce black in noxfile, broaden to generated code ([#151](https://github.com/GoogleCloudPlatform/synthtool/pull/151))
+- Fix private googleapis cloning [#150](https://github.com/GoogleCloudPlatform/synthtool/pull/150)
+- Report GCP common templates to metadata ([#149](https://github.com/GoogleCloudPlatform/synthtool/pull/149))
+
 ## 2018.11.28
 
 11-28-2018 13:47 PST
