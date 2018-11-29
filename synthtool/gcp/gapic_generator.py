@@ -18,6 +18,7 @@ from typing import Optional
 
 from synthtool import _tracked_paths
 from synthtool import log
+from synthtool import metadata
 from synthtool.gcp import artman
 from synthtool.sources import git
 
@@ -127,6 +128,15 @@ class GAPICGenerator:
             )
 
         log.success(f"Generated code into {genfiles}.")
+
+        metadata.add_client_destination(
+            source="googleapis" if not private else "googleapis-private",
+            api_name=service,
+            api_version=version,
+            language=language,
+            generator="gapic",
+            config=str(config_path),
+        )
 
         _tracked_paths.add(genfiles)
         return genfiles

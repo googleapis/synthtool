@@ -49,6 +49,11 @@ def add_template_source(**kwargs) -> None:
     _metadata.sources.add(template=metadata_pb2.TemplateSource(**kwargs))
 
 
+def add_client_destination(**kwargs) -> None:
+    """Adds a client library destination to the current metadata."""
+    _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
+
+
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
     jsonified = google.protobuf.json_format.MessageToJson(_metadata)

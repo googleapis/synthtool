@@ -64,12 +64,17 @@ message Destination {
 }
 
 message ClientDestination {
-    string api_name = 1;
-    string api_version = 2;
-    string generator = 3;
-    string source = 4;
+    string source = 1;
+    string api_name = 2;
+    string api_version = 3;
+    string language = 4;
+    string generator = 5;
+    string config = 6;
 }
 
+// Currently unused as storing all file destination options will likely cause
+// the metadata file to be too large and may cause autosynth trashing. We'll
+// investigate using this in the future.
 message FileSetDestination {
     string source = 1;
     repeated string files = 2;
