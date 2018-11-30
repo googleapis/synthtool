@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import atexit
+import datetime
 import functools
 
 import google.protobuf.json_format
@@ -51,6 +52,7 @@ def add_template_source(**kwargs) -> None:
 
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
+    _metadata.update_time.FromDatetime(datetime.datetime.utcnow())
     jsonified = google.protobuf.json_format.MessageToJson(_metadata)
 
     with open(outfile, "w") as fh:

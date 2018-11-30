@@ -49,10 +49,12 @@ def test_write(tmpdir):
 
     metadata.write(str(output_file))
 
-    data = output_file.read()
+    raw = output_file.read()
 
     # Ensure the file was written, that *some* metadata is in it, and that it
     # is valid JSON.
+    assert raw
+    assert "sha" in raw
+    data = json.loads(raw)
     assert data
-    assert "sha" in data
-    assert json.loads(data)
+    assert data["updateTime"] is not None
