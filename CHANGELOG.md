@@ -4,6 +4,18 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.11.30
+
+11-30-2018 12:51 PST
+
+
+### Implementation Changes
+- Use 3.6 to run black as our as autosynth uses 3.6 ([#157](https://github.com/GoogleCloudPlatform/synthtool/pull/157))
+
+### New Features
+- Report gapic generation to metadata ([#155](https://github.com/GoogleCloudPlatform/synthtool/pull/155))
+- Write update_time to metadata ([#156](https://github.com/GoogleCloudPlatform/synthtool/pull/156))
+
 ## 2018.11.29.2
 
 11-29-2018 14:11 PST
