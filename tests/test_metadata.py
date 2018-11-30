@@ -40,6 +40,39 @@ def test_add_generator_source():
     assert current.sources[0].generator.version == "1.2.3"
 
 
+def test_add_template_source():
+    metadata.reset()
+
+    metadata.add_template_source(name="name", version="1.2.3")
+
+    current = metadata.get()
+
+    assert current.sources[0].template.name == "name"
+    assert current.sources[0].template.version == "1.2.3"
+
+
+def test_add_client_destination():
+    metadata.reset()
+
+    metadata.add_client_destination(
+        source="source",
+        api_name="api",
+        api_version="v1",
+        language="py",
+        generator="gen",
+        config="config",
+    )
+
+    current = metadata.get()
+
+    assert current.destinations[0].client.source == "source"
+    assert current.destinations[0].client.api_name == "api"
+    assert current.destinations[0].client.api_version == "v1"
+    assert current.destinations[0].client.language == "py"
+    assert current.destinations[0].client.generator == "gen"
+    assert current.destinations[0].client.config == "config"
+
+
 def test_write(tmpdir):
     metadata.reset()
 
