@@ -24,7 +24,9 @@ JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/downlo
 DEFAULT_FORMAT_VERSION = "1.6"
 
 
-def format_code(path: str, version: str = DEFAULT_FORMAT_VERSION) -> None:
+def format_code(
+    path: str, version: str = DEFAULT_FORMAT_VERSION, times: int = 2
+) -> None:
     """
     Runs the google-java-format jar against all .java files found within the
     provided path.
@@ -39,7 +41,8 @@ def format_code(path: str, version: str = DEFAULT_FORMAT_VERSION) -> None:
 
     # Run the formatter as a jar file
     log.info("Running java formatter on {} files".format(len(files)))
-    shell.run(["java", "-jar", str(jar), "--replace"] + files)
+    for _ in range(times):
+        shell.run(["java", "-jar", str(jar), "--replace"] + files)
 
 
 def _download_formatter(version: str, dest: Path) -> None:
