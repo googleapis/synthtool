@@ -4,6 +4,16 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.12.05
+
+12-05-2018 13:59 PST
+
+
+### Implementation Changes
+- Run the java formatter more than once. ([#163](https://github.com/GoogleCloudPlatform/synthtool/pull/163))
+- nodejs: ignore build/test by default for nyc ([#162](https://github.com/GoogleCloudPlatform/synthtool/pull/162))
+- Add a LICENSE for all node.js repos ([#161](https://github.com/GoogleCloudPlatform/synthtool/pull/161))
+
 ## 2018.11.30
 
 11-30-2018 12:51 PST
