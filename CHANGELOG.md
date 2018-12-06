@@ -4,6 +4,18 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2018.12.06
+
+12-06-2018 13:43 PST
+
+### Implementation Changes
+
+- chore: always run nyc report before codecov ([#165](https://github.com/googleapis/synthtool/pull/165))
+
+### New Features
+
+- Allow access to additional arguments passed to synthtool ([#166](https://github.com/googleapis/synthtool/pull/166))
+
 ## 2018.12.05
 
 12-05-2018 13:59 PST

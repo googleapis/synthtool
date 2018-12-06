@@ -16,7 +16,7 @@ import setuptools
 
 name = 'gcp-synthtool'
 description = ''
-version = '2018.12.05'
+version = '2018.12.06'
 release_status = 'Development Status :: 3 - Alpha'
 dependencies = [
     "click",
