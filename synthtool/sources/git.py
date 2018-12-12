@@ -31,14 +31,14 @@ REPO_REGEX = (
 USE_SSH = os.environ.get("AUTOSYNTH_USE_SSH", False)
 
 
-def make_repo_clone_url(repo: str) -> str:
+def make_repo_clone_url(repo: str, use_ssh=False) -> str:
     """Returns a fully-qualified repo URL on GitHub from a string containing
     "owner/repo".
 
     This returns an https URL by default, but will return an ssh URL if
     AUTOSYNTH_USE_SSH is set.
     """
-    if USE_SSH:
+    if USE_SSH or use_ssh:
         return f"git@github.com:{repo}.git"
     else:
         return f"https://github.com/{repo}.git"

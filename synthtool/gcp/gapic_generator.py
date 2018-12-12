@@ -23,7 +23,7 @@ from synthtool.gcp import artman
 from synthtool.sources import git
 
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
-GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
+GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private", use_ssh=True)
 LOCAL_GOOGLEAPIS: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
 
 
