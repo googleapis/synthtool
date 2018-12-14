@@ -62,3 +62,20 @@ s.copy(templates)
 ```
 
 `package_name` is a keyword arg that is used by a jinja template. Jinja uses `{{ package_name }}` to customize the template for a specific package. You can add additionaly keyword args as necessary.
+
+### googleapis-private
+Synthtool supports generation from googleapis/googleapis-private. 
+
+```
+gapic = gcp.GAPICGenerator()
+library = gapic.node_library('speech', 'v1', private=True)
+```
+2FA is required to clone a private repo. You have two choices on how to go about this, depending on whether you want to use SSH or HTTPS.
+
+* SSH: Set the environment variable `AUTOSYNTH_USE_SSH` to `true`. The repo will be cloned using SSH.
+* HTTPS: Generate a [GitHub Personal Access Token](https://github.com/settings/tokens) with scope `repo`. When GitHub prompts for your password, provide the access token instead.
+```
+synthtool > Cloning googleapis-private.
+Username for 'https://github.com': busunkim96
+Password for 'https://busunkim96@github.com':
+```
