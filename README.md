@@ -73,7 +73,7 @@ library = gapic.node_library('speech', 'v1', private=True)
 2FA is required to clone a private repo. 
 
 * **Using SSH:** Before running Synthtool, set the environment variable `AUTOSYNTH_USE_SSH` to `true`. The repo will be cloned using SSH.
-* **Using HTTPS:** Generate a [GitHub Personal Access Token](https://github.com/settings/tokens) with scope `repo`. Run Synthtool. When GitHub prompts for your GitHub password, provide the access token instead.
+* **Using HTTPS:** Generate a [GitHub Personal Access Token](https://github.com/settings/tokens) with scope `repo`. Run Synthtool. When GitHub prompts for your GitHub password, provide the access token.
 ```
 synthtool > Cloning googleapis-private.
 Username for 'https://github.com': busunkim96
@@ -81,7 +81,7 @@ Password for 'https://busunkim96@github.com':
 ```
 
 ### Artman Version
-Synthtool uses the latest version of the [Artman Docker image](https://hub.docker.com/r/googleapis/artman). Change the Artman Docker image by set the environment variable `SYNTHTOOL_ARTMAN_VERSION` to the desired version tag.
+Synthtool uses the latest version of the [Artman Docker image](https://hub.docker.com/r/googleapis/artman). You can change this by setting the environment variable `SYNTHTOOL_ARTMAN_VERSION` to the desired version tag.
 
 ```
 export SYNTHTOOL_ARTMAN_VERSION=0.16.2
