@@ -73,7 +73,7 @@ library = gapic.node_library('speech', 'v1', private=True)
 2FA is required to clone a private repo. 
 
 * **Using SSH:** Before running Synthtool, set the environment variable `AUTOSYNTH_USE_SSH` to `true`. The repo will be cloned using SSH.
-* **Using HTTPS:** Generate a [GitHub Personal Access Token](https://github.com/settings/tokens) with scope `repo`. Run Synthtool. When GitHub prompts for your GitHub password, provide the access token.
+* **Using HTTPS:** Generate a [GitHub Personal Access Token](https://github.com/settings/tokens) with scope `repo`. Run synthtool. When GitHub prompts for your GitHub password, provide the access token instead.
 ```
 synthtool > Cloning googleapis-private.
 Username for 'https://github.com': busunkim96
@@ -88,7 +88,7 @@ export SYNTHTOOL_ARTMAN_VERSION=0.16.2
 ```
 
 ### Local Googleapis
-Synthtool supports generation from a local copy of googleapis. Specify the path to the local copy of `googleapis` in the environment variable `SYNTHTOOL_LOCAL_GOOGLEAPIS`.
+Synthtool supports generation from a local copy of googleapis. Specify the path to`googleapis` in the environment variable `SYNTHTOOL_LOCAL_GOOGLEAPIS`.
 
 ```
 export SYNTHTOOL_LOCAL_GOOGLEAPIS=path/to/local/googleapis
