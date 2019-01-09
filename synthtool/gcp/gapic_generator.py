@@ -64,6 +64,7 @@ class GAPICGenerator:
         config_path=None,
         artman_output_name=None,
         private=False,
+        include_protos=False,
     ):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
@@ -128,6 +129,17 @@ class GAPICGenerator:
             )
 
         log.success(f"Generated code into {genfiles}.")
+
+        # Get the *.protos files and put them in a protos dir in the output
+        if include_protos:
+            import shutil
+
+            source_dir = googleapis / config_path.parent
+            proto_files = source_dir.glob('**/*.proto')
+            os.mkdir(genfiles / 'protos')
+            for i in proto_files:
+                shutil.copyfile(i, genfiles / 'protos' / i.name)
+            log.success(f"Placed proto files into {genfiles}/protos.")
 
         metadata.add_client_destination(
             source="googleapis" if not private else "googleapis-private",
