@@ -135,10 +135,10 @@ class GAPICGenerator:
             import shutil
 
             source_dir = googleapis / config_path.parent
-            proto_files = source_dir.glob('**/*.proto')
-            os.mkdir(genfiles / 'protos')
+            proto_files = source_dir.glob("**/*.proto")
+            os.mkdir(genfiles / "protos")
             for i in proto_files:
-                shutil.copyfile(i, genfiles / 'protos' / i.name)
+                shutil.copyfile(i, genfiles / "protos" / i.name)
             log.success(f"Placed proto files into {genfiles}/protos.")
 
         metadata.add_client_destination(
