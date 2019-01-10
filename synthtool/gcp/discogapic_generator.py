@@ -52,13 +52,7 @@ class DiscoGAPICGenerator:
         return self._generate_code(service, version, "java", **kwargs)
 
     def _generate_code(
-        self,
-        service,
-        version,
-        language,
-        config_path=None,
-        artman_output_name=None,
-        include_protos=False,
+        self, service, version, language, config_path=None, artman_output_name=None
     ):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
@@ -116,17 +110,6 @@ class DiscoGAPICGenerator:
             )
 
         log.success(f"Generated code into {genfiles}.")
-
-        # Get the *.protos files and put them in a protos dir in the output
-        if include_protos:
-            import shutil
-
-            source_dir = googleapis / config_path.parent
-            proto_files = source_dir.glob("**/*.proto")
-            os.mkdir(genfiles / "protos")
-            for i in proto_files:
-                shutil.copyfile(i, genfiles / "protos" / i.name)
-            log.success(f"Placed proto files into {genfiles}/protos.")
 
         _tracked_paths.add(genfiles)
         return genfiles
