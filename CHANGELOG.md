@@ -4,6 +4,20 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2019.01.16
+
+01-16-2019 12:43 PST
+
+### Node.js templates
+- node: update jsdoc templates ([#178](https://github.com/googleapis/synthtool/pull/178))
+- node: inject yoshi-automation-key ([#172](https://github.com/googleapis/synthtool/pull/172))
+- node: add Kokoro configs and remove CircleCI configs ([#171](https://github.com/googleapis/synthtool/pull/171))
+- Update nycrc and eslintignore ([#170](https://github.com/googleapis/synthtool/pull/170))
+
+### New Features
+- Add include_protos option to generation ([#177](https://github.com/googleapis/synthtool/pull/177))
+- Document environment variables ([#176](https://github.com/googleapis/synthtool/pull/176))
+
 ## 2018.12.06
 
 12-06-2018 13:43 PST
