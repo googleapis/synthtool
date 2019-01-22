@@ -24,6 +24,16 @@ npm install
 
 npm run docs
 
+DOCS_LOCATION=./docs
+
+if [ ! -d $DOCS_LOCATION ]; then
+    echo "No docs generated, skipping link checker..";
+    exit 0;
+fi
+
 # Check broken links
-npm install send parseurl broken-link-checker
-npm run doc-check
+echo "Running link checker"
+npm install broken-link-checker http-server
+npx http-server -p 8080 $DOCS_LOCATION
+npx blc http://localhost:8080 -r --exclude www.googleapis.com
+
