@@ -76,7 +76,7 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
         if spec.loader is None:
             raise ImportError("Could not import synth.py")
 
-        spec.loader.exec_module(synth_module)
+        spec.loader.exec_module(synth_module)  # type: ignore
 
     else:
         synthtool.log.exception(f"{synth_file} not found.")
