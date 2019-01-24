@@ -35,7 +35,7 @@ to author a synth.py script. You can grab one from another package
 
 We run synthtool as follows:
 ```
-python synth.py
+python -m synthtool
 ```
 
 Once you run synthtool without errors:
@@ -88,8 +88,8 @@ export SYNTHTOOL_ARTMAN_VERSION=0.16.2
 ```
 
 ### Local Googleapis
-Synthtool supports generation from a local copy of googleapis. Specify the path to`googleapis` in the environment variable `SYNTHTOOL_LOCAL_GOOGLEAPIS`.
+Synthtool supports generation from a local copy of googleapis. Specify the path to`googleapis` in the environment variable `SYNTHTOOL_GOOGLEAPIS`.
 
 ```
-export SYNTHTOOL_LOCAL_GOOGLEAPIS=path/to/local/googleapis
+export SYNTHTOOL_GOOGLEAPIS=path/to/local/googleapis
 ```
