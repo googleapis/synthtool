@@ -136,10 +136,18 @@ class GAPICGenerator:
 
             source_dir = googleapis / config_path.parent
             proto_files = source_dir.glob("**/*.proto")
-            os.mkdir(genfiles / "protos")
+            # By default, put the protos at the root in a folder named 'protos'.
+            # Specific languages can be cased here to put them in a more language
+            # appropriate place.
+            proto_output_path = genfiles / "protos"
+            if language == "python":
+                # place protos alongsize the *_pb2.py files
+                proto_output_path = genfiles / f"google/cloud/{service}_{version}/proto"
+            os.makedirs(proto_output_path, exist_ok=True)
+
             for i in proto_files:
-                shutil.copyfile(i, genfiles / "protos" / i.name)
-            log.success(f"Placed proto files into {genfiles}/protos.")
+                shutil.copyfile(i, proto_output_path / i.name)
+            log.success(f"Placed proto files into {proto_output_path}.")
 
         metadata.add_client_destination(
             source="googleapis" if not private else "googleapis-private",
