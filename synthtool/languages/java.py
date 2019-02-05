@@ -21,7 +21,7 @@ from synthtool import shell
 from pathlib import Path
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
-DEFAULT_FORMAT_VERSION = "1.6"
+DEFAULT_FORMAT_VERSION = "1.7"
 
 
 def format_code(
