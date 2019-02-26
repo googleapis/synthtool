@@ -4,6 +4,33 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2019.02.26
+
+02-26-2019 11:11 PST
+
+## Node.js templates
+- fix: broken link in CLA ([#192](https://github.com/GoogleCloudPlatform/synthtool/pull/192))
+- build: add docs 404 check to npm scripts ([#190](https://github.com/GoogleCloudPlatform/synthtool/pull/190))
+- node(kokoro): test grpc-js ([#189](https://github.com/GoogleCloudPlatform/synthtool/pull/189))
+- node: move CONTRIBUTING.md to root ([#188](https://github.com/GoogleCloudPlatform/synthtool/pull/188))
+- node: add lint/fix example to contributing guide ([#187](https://github.com/GoogleCloudPlatform/synthtool/pull/187))
+- node: ignore googleapis.com links ([#179](https://github.com/GoogleCloudPlatform/synthtool/pull/179))
+
+## Python templates
+- Update noxfile template, add comment explaining why 3.6 ([#193](https://github.com/GoogleCloudPlatform/synthtool/pull/193))
+- Use 3.7 for Blacken ([#191](https://github.com/GoogleCloudPlatform/synthtool/pull/191))
+
+### Implementation Changes
+- Update java formatting version to 1.7 ([#186](https://github.com/GoogleCloudPlatform/synthtool/pull/186))
+- fix proto path to glob only specific versions ([#185](https://github.com/GoogleCloudPlatform/synthtool/pull/185))
+- Add special handling for Python to place protos next to protoc outputs ([#184](https://github.com/GoogleCloudPlatform/synthtool/pull/184))
+
+### Documentation
+- Update readme to latest instructions ([#182](https://github.com/GoogleCloudPlatform/synthtool/pull/182))
+
+### Internal / Testing Changes
+- Ignore lint error about loader ([#183](https://github.com/GoogleCloudPlatform/synthtool/pull/183))
+
 ## 2019.01.16
 
 01-16-2019 12:43 PST
