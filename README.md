@@ -93,3 +93,8 @@ Synthtool supports generation from a local copy of googleapis. Specify the path 
 ```
 export SYNTHTOOL_GOOGLEAPIS=path/to/local/googleapis
 ```
+
+
+## Helpful tips
+### Where does the generated code go?
+Synthtool will run [Artman](https://hub.docker.com/r/googleapis/artman) which will create generated code that can be found at `~/.cache/synthtool/googleapis<-private>/artman_genfiles`. This is useful for figuring out what it is you need to copy for your specific library.
