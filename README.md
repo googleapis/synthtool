@@ -11,7 +11,7 @@ pyenv to get 3.6.
 ```
 # Install latest
 
-python3 -m pip install --user --upgrade git+https://github.com/GoogleCloudPlatform/synthtool.git
+python3 -m pip install --user --upgrade git+https://github.com/googleapis/synthtool.git
 
 # Install stable
 python3 -m pip install --user --upgrade gcp-synthtool
@@ -24,7 +24,7 @@ python3 -m pip install --user --upgrade gcp-synthtool
 To start the process of generation, we need to clone the destination repository.
 
 ```
-git clone git@github.com:GoogleCloudPlatform/google-cloud-python.git
+git clone git@github.com:googleapis/google-cloud-python.git
 cd google-cloud-python
 cd {cloud-package}
 ```
