@@ -16,12 +16,6 @@
 
 set -eo pipefail
 
-export NPM_CONFIG_PREFIX=/home/node/.npm-global
-
-# Start the releasetool reporter
-python3 -m pip install gcp-releasetool
-python3 -m releasetool publish-reporter-script > /tmp/publisher-script; source /tmp/publisher-script
-
 cd $(dirname $0)/..
 
 npm install
@@ -31,15 +25,15 @@ npm run docs
 # Publish documentation with docuploader.
 python3 -m pip install --user gcp-docuploader
 
-VERSION=$(npm view {{ metadata['distribution_name'] }} version)
+VERSION=$(npm view {{ metadata['name'] }} version)
 
 # TODO(busunkim): Add product-page and issue-tracker
 python3 -m docuploader create-metadata \
 			--name {{ metadata['product'] }} \
 			--version ${VERSION}\
 			--language node \
-			--distribution-name {{ metadata['distribution_name'] }} \
+			--distribution-name {{ metadata['name'] }} \
 			--github-repository https://github.com/{{ metadata['repository'] }} \
-			docs/docs.metadata 
+			docs/docs.metadata
 
 python3 -m docuploader upload docs
