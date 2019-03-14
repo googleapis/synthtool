@@ -35,13 +35,10 @@ def read_metadata():
 
         repo = git.parse_repo_url(data["repository"])
 
-        data["distribution_name"] = data["name"]
         data["product"] = data["name"].rsplit("/")[-1]
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
-
-        # get 
 
         return data
 
