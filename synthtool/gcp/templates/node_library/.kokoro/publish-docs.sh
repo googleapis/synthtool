@@ -31,7 +31,7 @@ VERSION=$(npm view {{ metadata['name'] }} version)
 python3 -m docuploader create-metadata \
 			--name {{ metadata['product'] }} \
 			--version ${VERSION}\
-			--language node \
+			--language nodejs \
 			--distribution-name {{ metadata['name'] }} \
 			--github-repository https://github.com/{{ metadata['repository'] }} \
 			docs/docs.metadata
