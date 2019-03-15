@@ -41,6 +41,7 @@ class CommonTemplates:
 
     def node_library(self, **kwargs) -> Path:
         kwargs["metadata"] = node.read_metadata()
+        kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
         return self._generic_library("node_library", **kwargs)
 
     def php_library(self, **kwargs) -> Path:
