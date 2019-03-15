@@ -40,6 +40,7 @@ def read_metadata():
 
         return data
 
+
 def get_publish_token(package_name: str):
     """
     parses the package_name into the name of the token to publish the package.
