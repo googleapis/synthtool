@@ -16,7 +16,6 @@ from typing import Union
 from pathlib import Path
 
 import jinja2
-from jinja2.ext import Extension
 
 from synthtool import tmp
 
@@ -30,8 +29,8 @@ def _make_env(location):
         autoescape=False,
         keep_trailing_newline=True,
     )
-    env.filters['release_quality_badge'] = release_quality_badge
-    env.filters['language_pretty'] = language_pretty
+    env.filters["release_quality_badge"] = release_quality_badge
+    env.filters["language_pretty"] = language_pretty
     return env
 
 
@@ -79,6 +78,7 @@ class TemplateGroup:
 
         return self.dir
 
+
 #
 # Generates a markdown badge for displaying a "Release Quality'.
 #
@@ -86,13 +86,14 @@ class TemplateGroup:
 # @returns {string} The markdown badge.
 def release_quality_badge(input):
     if input:
-        return 'hello world'
+        return "hello world"
     return None
+
 
 #
 # .repo-metadata.json language field to pretty language.
 #
 def language_pretty(input):
-    if input == 'nodejs':
-        return 'Node.js'
+    if input == "nodejs":
+        return "Node.js"
     return input

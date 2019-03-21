@@ -54,14 +54,14 @@ class CommonTemplates:
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
 
-    # 
+    #
     # loads additional meta information from:
     #
     # .cloud-repo-tools.json: which contains information that helps generate
-    #  README files.
+    #  README files with samples.
     #
     # .repo-metadata.json: which contains general meta-info about git repo.
-    # 
+    #
     def _load_generic_metadata(self, metadata):
         if os.path.exists("./.cloud-repo-tools.json"):
             with open("./.cloud-repo-tools.json") as f:
