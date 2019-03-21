@@ -20,6 +20,9 @@ from synthtool import __main__
 from synthtool import _tracked_paths
 from synthtool import metadata
 
+import json
+import os
+
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
 
 
@@ -28,6 +31,7 @@ class CommonTemplates:
         self._templates = templates.Templates(_TEMPLATES_DIR)
 
     def _generic_library(self, directory: str, **kwargs) -> Path:
+        self._load_generic_metadata(kwargs["metadata"])
         t = templates.TemplateGroup(_TEMPLATES_DIR / directory)
         result = t.render(**kwargs)
         _tracked_paths.add(result)
@@ -49,3 +53,20 @@ class CommonTemplates:
 
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
+
+    # 
+    # loads additional meta information from:
+    #
+    # .cloud-repo-tools.json: which contains information that helps generate
+    #  README files.
+    #
+    # .repo-metadata.json: which contains general meta-info about git repo.
+    # 
+    def _load_generic_metadata(self, metadata):
+        if os.path.exists("./.cloud-repo-tools.json"):
+            with open("./.cloud-repo-tools.json") as f:
+                metadata["samples"] = json.load(f)
+
+        if os.path.exists("./.repo-metadata.json"):
+            with open("./.repo-metadata.json") as f:
+                metadata["repo"] = json.load(f)
