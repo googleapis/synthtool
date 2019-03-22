@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+import os
 from pathlib import Path
 
 from synthtool.languages import node
@@ -20,8 +22,6 @@ from synthtool import __main__
 from synthtool import _tracked_paths
 from synthtool import metadata
 
-import json
-import os
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
 
