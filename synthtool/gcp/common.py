@@ -63,9 +63,14 @@ class CommonTemplates:
     # .repo-metadata.json: which contains general meta-info about git repo.
     #
     def _load_generic_metadata(self, metadata):
+        # TODO: replace with loading from samples folder.
+        metadata["samples"] = {}
+
         if os.path.exists("./.cloud-repo-tools.json"):
             with open("./.cloud-repo-tools.json") as f:
                 metadata["samples"] = json.load(f)
+
+        metadata["repo"] = {}
 
         if os.path.exists("./.repo-metadata.json"):
             with open("./.repo-metadata.json") as f:

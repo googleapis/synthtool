@@ -17,6 +17,8 @@ from pathlib import Path
 
 import jinja2
 
+
+from synthtool import log
 from synthtool import tmp
 
 
@@ -82,12 +84,32 @@ class TemplateGroup:
 #
 # Generates a markdown badge for displaying a "Release Quality'.
 #
-# @param {string} releaseQuality One of: (ga, beta, alpha, eap, deprecated).
+# @param {string} release_quality One of: (ga, beta, alpha, eap, deprecated).
 # @returns {string} The markdown badge.
 def release_quality_badge(input):
-    if input:
-        return "hello world"
-    return None
+    if not input:
+        log.error(f"ensure you pass a string 'quality' to release_quality_badge")
+        return
+
+    release_quality = input.upper()
+    badge = ""
+
+    if release_quality == "GA":
+        badge = "general%20availability%20%28GA%29-brightgreen"
+    elif release_quality == "BETA":
+        badge = "beta-yellow"
+    elif release_quality == "ALPHA":
+        badge = "alpha-orange"
+    elif release_quality == "EAP":
+        badge = "EAP-yellow"
+    elif release_quality == "DEPRECATED":
+        badge = "deprecated-red"
+    else:
+        log.error(
+            "Expected 'release_quality' to be one of: (ga, beta, alpha, eap, deprecated)"
+        )
+        return
+    return f"[![release level](https://img.shields.io/badge/release%20level-{badge}.svg?style=flat)](https://cloud.google.com/terms/launch-stages)"
 
 
 #
