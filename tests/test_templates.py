@@ -20,6 +20,7 @@ from synthtool.sources import templates
 
 
 FIXTURES = Path(__file__).parent / "fixtures"
+NODE_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/node_library"
 
 
 def test_render():
@@ -52,3 +53,11 @@ def test_render_preserve_mode():
     result = t.render("executable.j2", name="executable")
 
     assert result.stat().st_mode == source_mode
+
+
+def test_release_quality_badge():
+    t = templates.Templates(NODE_TEMPLATES)
+    result = t.render(
+        "README.md", metadata={"repo": {"release_quality": "beta"}, "samples": {}}
+    ).read_text()
+    assert f"https://img.shields.io/badge/release%20level-beta-yellow.svg" in result
