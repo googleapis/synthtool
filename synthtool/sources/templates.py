@@ -17,7 +17,6 @@ from pathlib import Path
 
 import jinja2
 
-
 from synthtool import log
 from synthtool import tmp
 
