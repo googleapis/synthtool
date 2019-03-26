@@ -25,15 +25,16 @@ npm run docs
 # Publish documentation with docuploader.
 python3 -m pip install --user gcp-docuploader
 
-VERSION=$(npm view {{ metadata['name'] }} version)
+VERSION=$(npm view {{ metadata['repo']['distribution_name'] }} version)
 
-# TODO(busunkim): Add product-page and issue-tracker
 python3 -m docuploader create-metadata \
-			--name {{ metadata['product'] }} \
+			--name {{ metadata['repo']['name'] }} \
 			--version ${VERSION}\
-			--language nodejs \
-			--distribution-name {{ metadata['name'] }} \
-			--github-repository https://github.com/{{ metadata['repository'] }} \
+			--language {{ metadata['repo']['language'] }} \
+			--distribution-name {{ metadata['repo']['name'] }} \
+			--github-repository https://github.com/{{ metadata['repo']['repo'] }} \
+			--product-page {{ metadata['repo']['product_documentation']}} \
+			--issue-tracker {{ metadata['repo']['issue_tracker'] }}
 			docs/docs.metadata
 
 python3 -m docuploader upload docs
