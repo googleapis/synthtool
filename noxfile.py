@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import nox
+import shutil
+import os
 
 
 @nox.session(python='3.6')
@@ -42,3 +44,22 @@ def generate_protos(session):
     session.install("grpcio-tools")
     session.run(
         "python", "-m", "grpc_tools.protoc", "-Isynthtool/protos", "--python_out=synthtool/protos", "synthtool/protos/metadata.proto")
+
+@nox.session(python='3.6')
+def docs(session):
+    """Build the docs."""
+
+    session.install('sphinx', 'alabaster')
+    session.install('-e', '.')
+
+    shutil.rmtree(os.path.join('docs', '_build'), ignore_errors=True)
+    session.run(
+        'sphinx-build',
+        '-W',  # warnings as errors
+        '-T',  # show full traceback on exception
+        '-N',  # no colors
+        '-b', 'html',
+        '-d', os.path.join('docs', '_build', 'doctrees', ''),
+        os.path.join('docs', ''),
+        os.path.join('docs', '_build', 'html', ''),
+    )
