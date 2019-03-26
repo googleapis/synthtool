@@ -37,6 +37,7 @@ def read_metadata():
 
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
+        data["lib_install_cmd"] = f'npm install {data["name"]}'
 
         return data
 
