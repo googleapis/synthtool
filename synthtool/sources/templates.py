@@ -33,6 +33,7 @@ def _make_env(location):
     )
     env.filters["release_quality_badge"] = release_quality_badge
     env.filters["language_pretty"] = language_pretty
+    env.filters["syntax_highlighter"] = syntax_highlighter
     return env
 
 
@@ -84,8 +85,6 @@ class TemplateGroup:
 #
 # Generates a markdown badge for displaying a "Release Quality'.
 #
-# @param {string} release_quality One of: (ga, beta, alpha, eap, deprecated).
-# @returns {string} The markdown badge.
 def release_quality_badge(input):
     if not input:
         log.error(f"ensure you pass a string 'quality' to release_quality_badge")
@@ -118,4 +117,13 @@ def release_quality_badge(input):
 def language_pretty(input):
     if input == "nodejs":
         return "Node.js"
+    return input
+
+
+#
+# .repo-metadata.json language field to syntax highlighter name.
+#
+def syntax_highlighter(input):
+    if input == "nodejs":
+        return "javascript"
     return input

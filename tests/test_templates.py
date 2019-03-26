@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import stat
 from pathlib import Path
 
-
+from synthtool.gcp import common
 from synthtool.sources import templates
 
 
@@ -58,6 +59,30 @@ def test_render_preserve_mode():
 def test_release_quality_badge():
     t = templates.Templates(NODE_TEMPLATES)
     result = t.render(
-        "README.md", metadata={"repo": {"release_quality": "beta"}, "samples": {}}
+        "README.md", metadata={"repo": {"release_level": "beta"}, "samples": {}}
     ).read_text()
     assert f"https://img.shields.io/badge/release%20level-beta-yellow.svg" in result
+    assert "This library is considered to be in **beta**" in result
+
+
+def test_load_samples():
+    cwd = os.getcwd()
+    os.chdir(FIXTURES)
+
+    common_templates = common.CommonTemplates()
+    metadata = {}
+    common_templates._load_samples(metadata)
+    assert metadata["samples"][0]["name"] == "Requester Pays"
+    assert metadata["samples"][0]["file"] == "requesterPays.js"
+    assert len(metadata["samples"]) == 1
+
+    os.chdir(cwd)
+
+
+def test_syntax_highlighter():
+    t = templates.Templates(NODE_TEMPLATES)
+    result = t.render(
+        "README.md",
+        metadata={"repo": {"language": "nodejs"}, "quickstart": "const foo = 'bar'"},
+    ).read_text()
+    assert "```javascript" in result

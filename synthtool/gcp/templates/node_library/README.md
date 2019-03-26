@@ -4,7 +4,7 @@
 
 # [{{ metadata['repo']['name_pretty'] }}: {{ metadata['repo']['language']|language_pretty }} Client](https://github.com/{{ metadata['repo']['repo'] }})
 
-{{ metadata['repo']['release_quality']|release_quality_badge }}
+{{ metadata['repo']['release_level']|release_quality_badge }}
 [![npm version](https://img.shields.io/npm/v/{{ metadata['name'] }}.svg)](https://www.npmjs.org/package/{{ metadata['name'] }})
 [![codecov](https://img.shields.io/codecov/c/github/{{ metadata['repo']['repo'] }}/master.svg?style=flat)](https://codecov.io/gh/{{ metadata['repo']['repo'] }})
 
@@ -14,7 +14,7 @@
 | --- |
 | This library is **deprecated**. {{ metadata['deprecated'] }} |
 {% endif %}
-* [Using the client library](#using-the-client-library){% if metadata['samples']['samples']|length %}
+* [Using the client library](#using-the-client-library){% if metadata['samples']|length %}
 * [Samples](#samples){% endif %}
 * [Versioning](#versioning)
 * [Contributing](#contributing)
@@ -22,9 +22,9 @@
 
 ## Using the client library
 
-1.  [Select or create a Cloud Platform project][projects].{% if not metadata['samples']['suppress_billing'] %}
-1.  [Enable billing for your project][billing].{% endif %}{% if metadata['samples']['api_id'] %}
-1.  [Enable the {{ metadata['repo']['name_pretty'] }} API][enable_api].{% endif %}
+1.  [Select or create a Cloud Platform project][projects].
+1.  [Enable billing for your project][billing].
+1.  [Enable the {{ metadata['repo']['name_pretty'] }} API][enable_api].
 1.  [Set up authentication with a service account][auth] so you can access the
     API from your local workstation.
 
@@ -35,12 +35,12 @@
 {% if  metadata['quickstart'] %}
 1. Try an example:
 
-```{{ metadata['syntax_highlighting_ext'] }}
+```{{ metadata['repo']['language']|syntax_highlighter }}
 {{ metadata['quickstart'] }}
 ```
 {% endif %}
 
-{% if metadata['samples']['samples']|length %}
+{% if metadata['samples']|length %}
 ## Samples
 
 Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory. The samples' `README.md`
@@ -48,7 +48,7 @@ has instructions for running the samples.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-{% for sample in metadata['samples']['samples'] %}| {{ sample.name }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/samples/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor=samples/{{ sample.file }},samples/README.md) |
+{% for sample in metadata['samples'] %}| {{ sample.name }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/samples/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor=samples/{{ sample.file }},samples/README.md) |
 {% endfor %}
 {% endif %}
 
@@ -59,25 +59,25 @@ also contains samples.
 
 This library follows [Semantic Versioning](http://semver.org/).
 
-{% if metadata['release_quality'] == 'ga' %}
+{% if metadata['repo']['release_level'] == 'ga' %}
 This library is considered to be **General Availability (GA)**. This means it
 is stable; the code surface will not change in backwards-incompatible ways
 unless absolutely necessary (e.g. because of critical security issues) or with
 an extensive deprecation period. Issues and requests against **GA** libraries
 are addressed with the highest priority.
 {% endif %}
-{% if metadata['release_quality'] == 'beta' %}
+{% if metadata['repo']['release_level'] == 'beta' %}
 This library is considered to be in **beta**. This means it is expected to be
 mostly stable while we work toward a general availability release; however,
 complete stability is not guaranteed. We will address issues and requests
 against beta libraries with a high priority.
 {% endif %}
-{% if metadata['release_quality'] == 'alpha' %}
+{% if metadata['repo']['release_level'] == 'alpha' %}
 This library is considered to be in **alpha**. This means it is still a
 work-in-progress and under active development. Any release is subject to
 backwards-incompatible changes at any time.
 {% endif %}
-{% if metadata['release_quality'] == 'deprecated' %}
+{% if metadata['release_level'] == 'deprecated' %}
 This library is **deprecated**. This means that it is no longer being
 actively maintained and the only updates the library will receive will
 be for critical security issues. {% if metadata['deprecated'] %}{{ metadata['deprecated'] }}{% endif %}
@@ -89,19 +89,19 @@ More Information: [Google Cloud Platform Launch Stages][launch_stages]
 
 ## Contributing
 
-Contributions welcome! See the [Contributing Guide](https://github.com/{{ metadata['repository_name'] }}/blob/master/.github/CONTRIBUTING.md).
+Contributions welcome! See the [Contributing Guide](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/CONTRIBUTING.md).
 
 ## License
 
 Apache Version 2.0
 
-See [LICENSE](https://github.com/{{ metadata['repository_name'] }}/blob/master/LICENSE)
+See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/LICENSE)
 
 ## What's Next
 
 * [{{ metadata['repo']['name_pretty'] }} Documentation][product-docs]
 * [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]
-* [github.com/{{ metadata['repository_name'] }}](https://github.com{{repoPath}})
+* [github.com/{{ metadata['repo']['repo'] }}](https://github.com/{{ metadata['repo']['repo'] }})
 
 Read more about the client libraries for Cloud APIs, including the older
 Google APIs Client Libraries, in [Client Libraries Explained][explained].
@@ -113,5 +113,5 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
-[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['api_id'] }}
+[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}
 [auth]: https://cloud.google.com/docs/authentication/getting-started

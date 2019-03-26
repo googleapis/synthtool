@@ -14,6 +14,7 @@
 
 import json
 import os
+import re
 from pathlib import Path
 
 from synthtool.languages import node
@@ -24,6 +25,8 @@ from synthtool import metadata
 
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
+_RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart]"
+_RE_SAMPLE_COMMENT_STOP = r"\[END \w+_quickstart]"
 
 
 class CommonTemplates:
@@ -55,23 +58,69 @@ class CommonTemplates:
         return self._templates.render(template_name, **kwargs)
 
     #
-    # loads additional meta information from:
-    #
-    # .cloud-repo-tools.json: which contains information that helps generate
-    #  README files with samples.
-    #
-    # .repo-metadata.json: which contains general meta-info about git repo.
+    # loads additional meta information from .repo-metadata.json.
     #
     def _load_generic_metadata(self, metadata):
         # TODO: replace with loading from samples folder.
-        metadata["samples"] = {}
-
-        if os.path.exists("./.cloud-repo-tools.json"):
-            with open("./.cloud-repo-tools.json") as f:
-                metadata["samples"] = json.load(f)
+        self._load_samples(metadata)
 
         metadata["repo"] = {}
-
         if os.path.exists("./.repo-metadata.json"):
             with open("./.repo-metadata.json") as f:
                 metadata["repo"] = json.load(f)
+
+    #
+    # walks samples directory and builds up samples data-structure:
+    #
+    # {
+    #   "name": "Requester Pays",
+    #   "file": "requesterPays.js"
+    # }
+    #
+    def _load_samples(self, metadata):
+        metadata["samples"] = []
+        samples_dir = Path(os.getcwd()) / "samples"
+        if os.path.exists(samples_dir):
+            files = os.listdir(samples_dir)
+            files.sort()
+            for file in files:
+                if re.match(r"\w+\.js$", file):
+                    if file == "quickstart.js":
+                        metadata["quickstart"] = self._read_quickstart(samples_dir)
+                    else:
+                        metadata["samples"].append(
+                            {"name": decamelize(file[:-3]), "file": file}
+                        )
+
+    #
+    # quickstart is a special case, it should be loaded and displayed
+    # in README.md rather than pushed into samples array.
+    #
+    def _read_quickstart(self, samples_dir):
+        reading = False
+        quickstart = ""
+
+        with open(samples_dir / "quickstart.js") as f:
+            while True:
+                line = f.readline()
+                if not line or re.search(_RE_SAMPLE_COMMENT_STOP, line):
+                    break
+                if reading:
+                    quickstart += line
+                if re.search(_RE_SAMPLE_COMMENT_START, line):
+                    reading = True
+
+        return quickstart
+
+
+#
+# parser to convert fooBar.js to Foo Bar.
+#
+def decamelize(str):
+    str2 = str[0].upper()
+    for chr in str[1:]:
+        if re.match(r"[A-Z]", chr):
+            str2 += " " + chr.upper()
+        else:
+            str2 += chr
+    return str2
