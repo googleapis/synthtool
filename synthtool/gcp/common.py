@@ -15,6 +15,7 @@
 import json
 import os
 import re
+import yaml
 from pathlib import Path
 
 from synthtool.languages import node
@@ -62,6 +63,7 @@ class CommonTemplates:
     #
     def _load_generic_metadata(self, metadata):
         self._load_samples(metadata)
+        self._load_partials(metadata)
 
         metadata["repo"] = {}
         if os.path.exists("./.repo-metadata.json"):
@@ -110,6 +112,24 @@ class CommonTemplates:
                     reading = True
 
         return quickstart
+
+    #
+    # hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
+    # The following fields are currently supported:
+    #
+    # introduction: a more thorough introduction than metadata["description"].
+    #
+    def _load_partials(self, metadata):
+        cwd_path = Path(os.getcwd())
+        partials_file = None
+        for file in [".readme-partials.yml", ".readme-partials.yaml"]:
+            if os.path.exists(cwd_path / file):
+                partials_file = cwd_path / file
+                break
+        if not partials_file:
+            return
+        with open(partials_file) as f:
+            metadata["partials"] = yaml.load(f, Loader=yaml.SafeLoader)
 
 
 #
