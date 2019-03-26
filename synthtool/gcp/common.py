@@ -61,7 +61,6 @@ class CommonTemplates:
     # loads additional meta information from .repo-metadata.json.
     #
     def _load_generic_metadata(self, metadata):
-        # TODO: replace with loading from samples folder.
         self._load_samples(metadata)
 
         metadata["repo"] = {}
