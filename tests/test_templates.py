@@ -72,9 +72,13 @@ def test_load_samples():
     common_templates = common.CommonTemplates()
     metadata = {}
     common_templates._load_samples(metadata)
+    # should have loaded samples.
     assert metadata["samples"][0]["name"] == "Requester Pays"
     assert metadata["samples"][0]["file"] == "requesterPays.js"
     assert len(metadata["samples"]) == 1
+    # should have loaded the special quickstart sample (ignoring header).
+    assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
+    assert "limitations under the License" not in metadata["quickstart"]
 
     os.chdir(cwd)
 

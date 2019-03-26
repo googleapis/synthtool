@@ -26,7 +26,7 @@ from synthtool import metadata
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
 _RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart]"
-_RE_SAMPLE_COMMENT_STOP = r"\[END \w+_quickstart]"
+_RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart]"
 
 
 class CommonTemplates:
@@ -92,7 +92,7 @@ class CommonTemplates:
                         )
 
     #
-    # quickstart is a special case, it should be loaded and displayed
+    # quickstart is a special case, it should be read from disk and displayed
     # in README.md rather than pushed into samples array.
     #
     def _read_quickstart(self, samples_dir):
@@ -102,7 +102,7 @@ class CommonTemplates:
         with open(samples_dir / "quickstart.js") as f:
             while True:
                 line = f.readline()
-                if not line or re.search(_RE_SAMPLE_COMMENT_STOP, line):
+                if not line or re.search(_RE_SAMPLE_COMMENT_END, line):
                     break
                 if reading:
                     quickstart += line
