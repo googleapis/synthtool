@@ -90,3 +90,17 @@ def test_syntax_highlighter():
         metadata={"repo": {"language": "nodejs"}, "quickstart": "const foo = 'bar'"},
     ).read_text()
     assert "```javascript" in result
+
+
+def test_hide_billing():
+    t = templates.Templates(NODE_TEMPLATES)
+
+    result = t.render(
+        "README.md", metadata={"repo": {"requires_billing": True}}
+    ).read_text()
+    assert "Enable billing for your project" in result
+
+    result = t.render(
+        "README.md", metadata={"repo": {"requires_billing": False}}
+    ).read_text()
+    assert "Enable billing for your project" not in result
