@@ -17,6 +17,7 @@ import os
 import re
 import yaml
 from pathlib import Path
+from typing import List
 
 from synthtool.languages import node
 from synthtool.sources import templates
@@ -33,10 +34,14 @@ _RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart]"
 class CommonTemplates:
     def __init__(self):
         self._templates = templates.Templates(_TEMPLATES_DIR)
+        self.excludes = []  # type: List[str]
 
     def _generic_library(self, directory: str, **kwargs) -> Path:
-        self._load_generic_metadata(kwargs["metadata"])
-        t = templates.TemplateGroup(_TEMPLATES_DIR / directory)
+        # load common repo meta information (metadata that's not language specific).
+        if "metadata" in kwargs:
+            self._load_generic_metadata(kwargs["metadata"])
+
+        t = templates.TemplateGroup(_TEMPLATES_DIR / directory, self.excludes)
         result = t.render(**kwargs)
         _tracked_paths.add(result)
         metadata.add_template_source(
@@ -48,6 +53,11 @@ class CommonTemplates:
         return self._generic_library("python_library", **kwargs)
 
     def node_library(self, **kwargs) -> Path:
+        # TODO: once we've migrated all Node.js repos to either having
+        #  .repo-metadata.json, or excluding README.md, we can remove this.
+        if not os.path.exists("./.repo-metadata.json"):
+            self.excludes.append("README.md")
+
         kwargs["metadata"] = node.read_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
         return self._generic_library("node_library", **kwargs)
@@ -118,6 +128,7 @@ class CommonTemplates:
     # The following fields are currently supported:
     #
     # introduction: a more thorough introduction than metadata["description"].
+    # quickstart_footer: add additional context to footer of quickstart.
     #
     def _load_partials(self, metadata):
         cwd_path = Path(os.getcwd())
