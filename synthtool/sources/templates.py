@@ -69,10 +69,10 @@ class Templates:
 
 
 class TemplateGroup:
-    def __init__(self, location: PathOrStr) -> None:
+    def __init__(self, location: PathOrStr, excludes: List[str] = []) -> None:
         self.env = _make_env(location)
         self.dir = tmp.tmpdir()
-        self.excludes = []  # type: List[str]
+        self.excludes = excludes
 
     def render(self, **kwargs) -> Path:
         for template_name in self.env.list_templates():
