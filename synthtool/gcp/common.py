@@ -57,6 +57,7 @@ class CommonTemplates:
         #  .repo-metadata.json, or excluding README.md, we can remove this.
         if not os.path.exists("./.repo-metadata.json"):
             self.excludes.append("README.md")
+            self.excludes.append("samples/README.md")
 
         kwargs["metadata"] = node.read_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
