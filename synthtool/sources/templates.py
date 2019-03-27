@@ -123,11 +123,13 @@ def language_pretty(input):
         return "Node.js"
     return input
 
+
 #
 # converts Foo Bar into foo-bar, for use wih anchor links.
 #
 def slugify(input):
-    return input.lower().replace(' ', '-')
+    return input.lower().replace(" ", "-")
+
 
 #
 # .repo-metadata.json language field to syntax highlighter name.
