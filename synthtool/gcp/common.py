@@ -118,6 +118,7 @@ class CommonTemplates:
     # The following fields are currently supported:
     #
     # introduction: a more thorough introduction than metadata["description"].
+    # quickstart_footer: add additional context to footer of quickstart.
     #
     def _load_partials(self, metadata):
         cwd_path = Path(os.getcwd())

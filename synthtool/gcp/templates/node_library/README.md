@@ -8,23 +8,42 @@
 [![npm version](https://img.shields.io/npm/v/{{ metadata['name'] }}.svg)](https://www.npmjs.org/package/{{ metadata['name'] }})
 [![codecov](https://img.shields.io/codecov/c/github/{{ metadata['repo']['repo'] }}/master.svg?style=flat)](https://codecov.io/gh/{{ metadata['repo']['repo'] }})
 
-{% if metadata['partials'] and metadata['partials']['introduction'] %}
-{{ metadata['partials']['introduction'] }}
-{% else %}
-{{ metadata['description'] }}
-{% endif %}
 {% if metadata['deprecated'] %}
 | :warning: Deprecated Module |
 | --- |
 | This library is **deprecated**. {{ metadata['deprecated'] }} |
 {% endif %}
-* [Using the client library](#using-the-client-library){% if metadata['samples']|length %}
+
+{% if metadata['partials'] and metadata['partials']['introduction'] %}
+{{ metadata['partials']['introduction'] }}
+{% else %}
+{{ metadata['description'] }}
+{% endif %}
+
+* [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]
+* [{{ metadata['repo']['name_pretty'] }} Documentation][product-docs]
+* [github.com/{{ metadata['repo']['repo'] }}](https://github.com/{{ metadata['repo']['repo'] }})
+
+Read more about the client libraries for Cloud APIs, including the older
+Google APIs Client Libraries, in [Client Libraries Explained][explained].
+
+[explained]: https://cloud.google.com/apis/docs/client-libraries-explained
+
+**Table of contents:**
+
+{% if  metadata['quickstart'] %}
+* [Quickstart](#quickstart)
+  * [Before you begin](#before-you-begin)
+  * [Installing the client library](#installing-the-client-library)
+  * [Using the client library](#using-the-client-library){% endif %}{% if metadata['samples']|length %}
 * [Samples](#samples){% endif %}
 * [Versioning](#versioning)
 * [Contributing](#contributing)
 * [License](#license)
 
-## Using the client library
+## Quickstart
+
+### Before you begin
 
 1.  [Select or create a Cloud Platform project][projects].{% if metadata['repo']['requires_billing'] %}
 1.  [Enable billing for your project][billing].{% endif %}
@@ -32,16 +51,19 @@
 1.  [Set up authentication with a service account][auth] so you can access the
     API from your local workstation.
 
-1. Install the client library:
+### Installing the client library
 
-        {{ metadata['lib_install_cmd'] }}
+```bash
+{{ metadata['lib_install_cmd'] }}
+```
 
 {% if  metadata['quickstart'] %}
-1. Try an example:
+### Using the client library
 
 ```{{ metadata['repo']['language']|syntax_highlighter }}
-{{ metadata['quickstart'] }}
-```
+{{ metadata['quickstart'] }}{% if metadata['partials'] and metadata['partials']['quickstart_footer'] %}
+{{ metadata['partials']['quickstart_footer'] }}
+{% endif %}```
 {% endif %}
 
 {% if metadata['samples']|length %}
@@ -100,17 +122,6 @@ Contributions welcome! See the [Contributing Guide](https://github.com/{{ metada
 Apache Version 2.0
 
 See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/LICENSE)
-
-## What's Next
-
-* [{{ metadata['repo']['name_pretty'] }} Documentation][product-docs]
-* [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]
-* [github.com/{{ metadata['repo']['repo'] }}](https://github.com/{{ metadata['repo']['repo'] }})
-
-Read more about the client libraries for Cloud APIs, including the older
-Google APIs Client Libraries, in [Client Libraries Explained][explained].
-
-[explained]: https://cloud.google.com/apis/docs/client-libraries-explained
 
 [client-docs]: {{ metadata['repo']['client_documentation'] }}
 [product-docs]: {{ metadata['repo']['product_documentation'] }}
