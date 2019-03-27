@@ -32,6 +32,7 @@ def _make_env(location):
     )
     env.filters["release_quality_badge"] = release_quality_badge
     env.filters["language_pretty"] = language_pretty
+    env.filters["slugify"] = slugify
     env.filters["syntax_highlighter"] = syntax_highlighter
     return env
 
@@ -122,6 +123,11 @@ def language_pretty(input):
         return "Node.js"
     return input
 
+#
+# converts Foo Bar into foo-bar, for use wih anchor links.
+#
+def slugify(input):
+    return input.lower().replace(' ', '-')
 
 #
 # .repo-metadata.json language field to syntax highlighter name.
