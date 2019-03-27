@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,12 +29,12 @@ VERSION=$(npm view {{ metadata['repo']['distribution_name'] }} version)
 
 python3 -m docuploader create-metadata \
 			--name {{ metadata['repo']['name'] }} \
-			--version ${VERSION}\
+			--version ${VERSION} \
 			--language {{ metadata['repo']['language'] }} \
 			--distribution-name {{ metadata['repo']['name'] }} \
 			--github-repository https://github.com/{{ metadata['repo']['repo'] }} \
 			--product-page {{ metadata['repo']['product_documentation']}} \
-			--issue-tracker {{ metadata['repo']['issue_tracker'] }}
+			--issue-tracker {{ metadata['repo']['issue_tracker'] }} \
 			docs/docs.metadata
 
 python3 -m docuploader upload docs
