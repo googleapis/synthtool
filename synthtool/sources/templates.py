@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Union
+from typing import Union, List
 from pathlib import Path
 
 import jinja2
@@ -69,14 +69,18 @@ class Templates:
 
 
 class TemplateGroup:
-    def __init__(self, location: PathOrStr) -> None:
+    def __init__(self, location: PathOrStr, excludes: List[str] = []) -> None:
         self.env = _make_env(location)
         self.dir = tmp.tmpdir()
+        self.excludes = excludes
 
     def render(self, **kwargs) -> Path:
         for template_name in self.env.list_templates():
-            print(template_name)
-            _render_to_path(self.env, template_name, self.dir, kwargs)
+            if template_name not in self.excludes:
+                print(template_name)
+                _render_to_path(self.env, template_name, self.dir, kwargs)
+            else:
+                print(f"Skipping: {template_name}")
 
         return self.dir
 
