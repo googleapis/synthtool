@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Union
+from typing import Union, List
 from pathlib import Path
 
 import jinja2
@@ -72,7 +72,7 @@ class TemplateGroup:
     def __init__(self, location: PathOrStr) -> None:
         self.env = _make_env(location)
         self.dir = tmp.tmpdir()
-        self.excludes = []
+        self.excludes = [] # type: List[str]
 
     def render(self, **kwargs) -> Path:
         for template_name in self.env.list_templates():
