@@ -35,9 +35,12 @@ class CommonTemplates:
         self._templates = templates.Templates(_TEMPLATES_DIR)
 
     def _generic_library(self, directory: str, **kwargs) -> Path:
-        if "metadata" in kwargs:
-            self._load_generic_metadata(kwargs["metadata"])
         t = templates.TemplateGroup(_TEMPLATES_DIR / directory)
+
+        # load common repo meta information (metadata that's not language specific).
+        if "metadata" in kwargs:
+            self._load_generic_metadata(kwargs["metadata"], t)
+
         result = t.render(**kwargs)
         _tracked_paths.add(result)
         metadata.add_template_source(
@@ -62,7 +65,7 @@ class CommonTemplates:
     #
     # loads additional meta information from .repo-metadata.json.
     #
-    def _load_generic_metadata(self, metadata):
+    def _load_generic_metadata(self, metadata, template_group):
         self._load_samples(metadata)
         self._load_partials(metadata)
 
@@ -70,6 +73,8 @@ class CommonTemplates:
         if os.path.exists("./.repo-metadata.json"):
             with open("./.repo-metadata.json") as f:
                 metadata["repo"] = json.load(f)
+        else:
+            template_group.excludes.append("README.md")
 
     #
     # walks samples directory and builds up samples data-structure:
