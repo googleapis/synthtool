@@ -104,3 +104,18 @@ def test_hide_billing():
         "README.md", metadata={"repo": {"requires_billing": False}}
     ).read_text()
     assert "Enable billing for your project" not in result
+
+
+def test_readme_partials():
+    cwd = os.getcwd()
+    os.chdir(FIXTURES)
+
+    common_templates = common.CommonTemplates()
+    metadata = {}
+    common_templates._load_partials(metadata)
+    # should have populated introduction from partial.
+    assert (
+        "objects to users via direct download" in metadata["partials"]["introduction"]
+    )
+
+    os.chdir(cwd)
