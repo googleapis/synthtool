@@ -23,6 +23,7 @@ dependencies = [
     "colorlog",
     "jinja2",
     "packaging",
+    "PyYAML",
     "requests",
     "protobuf",
 ]

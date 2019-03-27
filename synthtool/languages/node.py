@@ -37,5 +37,22 @@ def read_metadata():
 
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
+        data["lib_install_cmd"] = f'npm install {data["name"]}'
 
         return data
+
+
+def get_publish_token(package_name: str):
+    """
+    parses the package_name into the name of the token to publish the package.
+
+    Example:
+        @google-cloud/storage => google-cloud-storage-npm-token
+        dialogflow => dialogflow-npm-token
+
+    Args:
+        package: Name of the npm package.
+    Returns:
+        The name of the key to fetch the publish token.
+    """
+    return package_name.strip("@").replace("/", "-") + "-npm-token"
