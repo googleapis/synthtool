@@ -61,9 +61,8 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 ### Using the client library
 
 ```{{ metadata['repo']['language']|syntax_highlighter }}
-{{ metadata['quickstart'] }}{% if metadata['partials'] and metadata['partials']['quickstart_footer'] %}
-{{ metadata['partials']['quickstart_footer'] }}
-{% endif %}```
+{{ metadata['quickstart'] }}
+```
 {% endif %}
 
 {% if metadata['samples']|length %}
