@@ -8,7 +8,11 @@
 [![npm version](https://img.shields.io/npm/v/{{ metadata['name'] }}.svg)](https://www.npmjs.org/package/{{ metadata['name'] }})
 [![codecov](https://img.shields.io/codecov/c/github/{{ metadata['repo']['repo'] }}/master.svg?style=flat)](https://codecov.io/gh/{{ metadata['repo']['repo'] }})
 
+{% if metadata['partials'] and metadata['partials']['introduction'] %}
+{{ metadata['partials']['introduction'] }}
+{% else %}
 {{ metadata['description'] }}
+{% endif %}
 {% if metadata['deprecated'] %}
 | :warning: Deprecated Module |
 | --- |
