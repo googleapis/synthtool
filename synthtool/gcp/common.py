@@ -35,7 +35,8 @@ class CommonTemplates:
         self._templates = templates.Templates(_TEMPLATES_DIR)
 
     def _generic_library(self, directory: str, **kwargs) -> Path:
-        self._load_generic_metadata(kwargs["metadata"])
+        if "metadata" in kwargs:
+            self._load_generic_metadata(kwargs["metadata"])
         t = templates.TemplateGroup(_TEMPLATES_DIR / directory)
         result = t.render(**kwargs)
         _tracked_paths.add(result)
