@@ -1,5 +1,5 @@
 [//]: # "This README.md file is auto-generated, all changes to this file will be lost."
-[//]: # "To regenerate it, use `npm run generate-scaffolding`."
+[//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
 # [{{ metadata['repo']['name_pretty'] }}: {{ metadata['repo']['language']|language_pretty }} Samples](https://github.com/{{ metadata['repo']['repo'] }})
@@ -30,7 +30,7 @@ View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/m
 
 [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo']  }}&page=editor&open_in_editor=samples/{{ sample.file }},samples/README.md)
 
-__Usage:__ 
+__Usage:__
 
 See available commands:
 

@@ -17,7 +17,7 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 from synthtool.languages import node
 from synthtool.sources import templates
@@ -69,10 +69,10 @@ class CommonTemplates:
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
 
-    #
-    # loads additional meta information from .repo-metadata.json.
-    #
-    def _load_generic_metadata(self, metadata):
+    def _load_generic_metadata(self, metadata: Dict):
+        """
+        loads additional meta information from .repo-metadata.json.
+        """
         self._load_samples(metadata)
         self._load_partials(metadata)
 
@@ -81,15 +81,15 @@ class CommonTemplates:
             with open("./.repo-metadata.json") as f:
                 metadata["repo"] = json.load(f)
 
-    #
-    # walks samples directory and builds up samples data-structure:
-    #
-    # {
-    #   "name": "Requester Pays",
-    #   "file": "requesterPays.js"
-    # }
-    #
-    def _load_samples(self, metadata):
+    def _load_samples(self, metadata: Dict):
+        """
+        walks samples directory and builds up samples data-structure:
+
+        {
+            "name": "Requester Pays",
+            "file": "requesterPays.js"
+        }
+        """
         metadata["samples"] = []
         samples_dir = Path(os.getcwd()) / "samples"
         if os.path.exists(samples_dir):
@@ -104,11 +104,11 @@ class CommonTemplates:
                             {"name": decamelize(file[:-3]), "file": file}
                         )
 
-    #
-    # quickstart is a special case, it should be read from disk and displayed
-    # in README.md rather than pushed into samples array.
-    #
-    def _read_quickstart(self, samples_dir):
+    def _read_quickstart(self, samples_dir: Path) -> str:
+        """
+        quickstart is a special case, it should be read from disk and displayed
+        in README.md rather than pushed into samples array.
+        """
         reading = False
         quickstart = ""
 
@@ -124,13 +124,13 @@ class CommonTemplates:
 
         return quickstart
 
-    #
-    # hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
-    # The following fields are currently supported:
-    #
-    # introduction: a more thorough introduction than metadata["description"].
-    #
-    def _load_partials(self, metadata):
+    def _load_partials(self, metadata: Dict):
+        """
+        hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
+        The following fields are currently supported:
+
+        introduction: a more thorough introduction than metadata["description"].
+        """
         cwd_path = Path(os.getcwd())
         partials_file = None
         for file in [".readme-partials.yml", ".readme-partials.yaml"]:
@@ -143,10 +143,8 @@ class CommonTemplates:
             metadata["partials"] = yaml.load(f, Loader=yaml.SafeLoader)
 
 
-#
-# parser to convert fooBar.js to Foo Bar.
-#
-def decamelize(str):
+def decamelize(str: str):
+    """ parser to convert fooBar.js to Foo Bar. """
     str2 = str[0].upper()
     for chr in str[1:]:
         if re.match(r"[A-Z]", chr):
