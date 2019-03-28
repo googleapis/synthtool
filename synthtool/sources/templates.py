@@ -127,7 +127,8 @@ def language_pretty(input):
 #
 # converts Foo Bar into foo-bar, for use wih anchor links.
 #
-def slugify(input):
+def slugify(input: str) -> str:
+"""Converts Foo Bar into foo-bar, for use wih anchor links."""
     return input.lower().replace(" ", "-")
 
 
