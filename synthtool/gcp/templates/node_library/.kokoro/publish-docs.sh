@@ -31,7 +31,7 @@ python3 -m docuploader create-metadata \
 			--name {{ metadata['repo']['name'] }} \
 			--version ${VERSION} \
 			--language {{ metadata['repo']['language'] }} \
-			--distribution-name {{ metadata['repo']['name'] }} \
+			--distribution-name {{ metadata['repo']['distribution_name'] }} \
 			--github-repository https://github.com/{{ metadata['repo']['repo'] }} \
 			--product-page {{ metadata['repo']['product_documentation']}} \
 			--issue-tracker {{ metadata['repo']['issue_tracker'] }} \
