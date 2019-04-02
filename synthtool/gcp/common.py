@@ -40,6 +40,10 @@ class CommonTemplates:
         # load common repo meta information (metadata that's not language specific).
         if "metadata" in kwargs:
             self._load_generic_metadata(kwargs["metadata"])
+            # if no samples were found, don't attempt to render a
+            # samples/README.md.
+            if not kwargs["metadata"]["samples"]:
+                self.excludes.append("samples/README.md")
 
         t = templates.TemplateGroup(_TEMPLATES_DIR / directory, self.excludes)
         result = t.render(**kwargs)
@@ -57,7 +61,8 @@ class CommonTemplates:
         #  .repo-metadata.json, or excluding README.md, we can remove this.
         if not os.path.exists("./.repo-metadata.json"):
             self.excludes.append("README.md")
-            self.excludes.append("samples/README.md")
+            if "samples/README.md" not in self.excludes:
+                self.excludes.append("samples/README.md")
 
         kwargs["metadata"] = node.read_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
@@ -99,10 +104,12 @@ class CommonTemplates:
                 if re.match(r"\w+\.js$", file):
                     if file == "quickstart.js":
                         metadata["quickstart"] = self._read_quickstart(samples_dir)
-                    else:
-                        metadata["samples"].append(
-                            {"name": decamelize(file[:-3]), "file": file}
-                        )
+                    # only add quickstart file to samples list if code sample is found.
+                    if file == "quickstart.js" and not metadata.get("quickstart", None):
+                        continue
+                    metadata["samples"].append(
+                        {"name": decamelize(file[:-3]), "file": file}
+                    )
 
     def _read_quickstart(self, samples_dir: Path) -> str:
         """
@@ -130,6 +137,7 @@ class CommonTemplates:
         The following fields are currently supported:
 
         introduction: a more thorough introduction than metadata["description"].
+        body: custom body to include in the usage section of the document.
         """
         cwd_path = Path(os.getcwd())
         partials_file = None

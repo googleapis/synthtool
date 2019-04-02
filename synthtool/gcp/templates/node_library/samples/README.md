@@ -32,13 +32,8 @@ View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/m
 
 __Usage:__
 
-See available commands:
 
-`node {{ sample.file }} --help`
-
-Run the sample:
-
-`node {{ sample.file }} [command] [options]`
+`node {{ sample.file }}`
 
 {% if not loop.last %}
 -----
