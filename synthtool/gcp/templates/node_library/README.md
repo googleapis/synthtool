@@ -20,8 +20,8 @@
 {{ metadata['description'] }}
 {% endif %}
 
-* [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]
-* [{{ metadata['repo']['name_pretty'] }} Documentation][product-docs]
+{% if metadata['repo']['client_documentation'] %}* [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]{% endif %}
+{% if metadata['repo']['product_documentation'] %}* [{{ metadata['repo']['name_pretty'] }} Documentation][product-docs]{% endif %}
 * [github.com/{{ metadata['repo']['repo'] }}](https://github.com/{{ metadata['repo']['repo'] }})
 
 Read more about the client libraries for Cloud APIs, including the older
@@ -31,18 +31,18 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 
 **Table of contents:**
 
-{% if  metadata['quickstart'] %}
+
 * [Quickstart](#quickstart)
-  * [Before you begin](#before-you-begin)
+{% if metadata['repo']['api_id'] %}  * [Before you begin](#before-you-begin){% endif %}
   * [Installing the client library](#installing-the-client-library)
-  * [Using the client library](#using-the-client-library){% endif %}{% if metadata['samples']|length %}
-* [Samples](#samples){% endif %}
+{% if metadata['quickstart'] %}  * [Using the client library](#using-the-client-library){% endif %}
+{% if metadata['samples']|length %}* [Samples](#samples){% endif %}
 * [Versioning](#versioning)
 * [Contributing](#contributing)
 * [License](#license)
 
 ## Quickstart
-
+{% if metadata['repo']['api_id'] %}
 ### Before you begin
 
 1.  [Select or create a Cloud Platform project][projects].{% if metadata['repo']['requires_billing'] %}
@@ -50,7 +50,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 1.  [Enable the {{ metadata['repo']['name_pretty'] }} API][enable_api].
 1.  [Set up authentication with a service account][auth] so you can access the
     API from your local workstation.
-
+{% endif %}
 ### Installing the client library
 
 ```bash
@@ -61,10 +61,9 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 ### Using the client library
 
 ```{{ metadata['repo']['language']|syntax_highlighter }}
-{{ metadata['quickstart'] }}{% if metadata['partials'] and metadata['partials']['quickstart_footer'] %}
-{{ metadata['partials']['quickstart_footer'] }}
-{% endif %}```
-{% endif %}
+{{ metadata['quickstart'] }}
+```
+{% endif %}{% if metadata['partials'] and metadata['partials']['body'] %}{{ metadata['partials']['body'] }}{% endif %}
 
 {% if metadata['samples']|length %}
 ## Samples
@@ -77,10 +76,10 @@ has instructions for running the samples.
 {% for sample in metadata['samples'] %}| {{ sample.name }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/samples/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor=samples/{{ sample.file }},samples/README.md) |
 {% endfor %}
 {% endif %}
-
+{% if metadata['repo']['client_documentation'] %}
 The [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs] documentation
 also contains samples.
-
+{% endif %}
 ## Versioning
 
 This library follows [Semantic Versioning](http://semver.org/).
@@ -123,10 +122,10 @@ Apache Version 2.0
 
 See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/LICENSE)
 
-[client-docs]: {{ metadata['repo']['client_documentation'] }}
-[product-docs]: {{ metadata['repo']['product_documentation'] }}
+{% if metadata['repo']['client_documentation'] %}[client-docs]: {{ metadata['repo']['client_documentation'] }}{% endif %}
+{% if metadata['repo']['product_documentation'] %}[product-docs]: {{ metadata['repo']['product_documentation'] }}{% endif %}
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
-[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}
+{% if metadata['repo']['api_id'] %}[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [auth]: https://cloud.google.com/docs/authentication/getting-started

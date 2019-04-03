@@ -32,6 +32,7 @@ def _make_env(location):
     )
     env.filters["release_quality_badge"] = release_quality_badge
     env.filters["language_pretty"] = language_pretty
+    env.filters["slugify"] = slugify
     env.filters["syntax_highlighter"] = syntax_highlighter
     return env
 
@@ -85,13 +86,11 @@ class TemplateGroup:
         return self.dir
 
 
-#
-# Generates a markdown badge for displaying a "Release Quality'.
-#
-def release_quality_badge(input):
+def release_quality_badge(input: str) -> str:
+    """Generates a markdown badge for displaying a "Release Quality'."""
     if not input:
         log.error(f"ensure you pass a string 'quality' to release_quality_badge")
-        return
+        return ""
 
     release_quality = input.upper()
     badge = ""
@@ -110,23 +109,24 @@ def release_quality_badge(input):
         log.error(
             "Expected 'release_quality' to be one of: (ga, beta, alpha, eap, deprecated)"
         )
-        return
+        return ""
     return f"[![release level](https://img.shields.io/badge/release%20level-{badge}.svg?style=flat)](https://cloud.google.com/terms/launch-stages)"
 
 
-#
-# .repo-metadata.json language field to pretty language.
-#
-def language_pretty(input):
+def language_pretty(input: str) -> str:
+    """.repo-metadata.json language field to pretty language."""
     if input == "nodejs":
         return "Node.js"
     return input
 
 
-#
-# .repo-metadata.json language field to syntax highlighter name.
-#
-def syntax_highlighter(input):
+def slugify(input: str) -> str:
+    """Converts Foo Bar into foo-bar, for use wih anchor links."""
+    return input.lower().replace(" ", "-")
+
+
+def syntax_highlighter(input: str) -> str:
+    """.repo-metadata.json language field to syntax highlighter name."""
     if input == "nodejs":
         return "javascript"
     return input
