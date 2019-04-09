@@ -1,4 +1,4 @@
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ def test_converts_camel_to_title():
 def test_handles_acronym():
     assert decamelize("ACL") == "ACL"
     assert decamelize("coolACL") == "Cool ACL"
-
 
 def test_handles_spaces():
     assert decamelize("cool api") == "Cool Api"
