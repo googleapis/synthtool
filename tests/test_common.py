@@ -24,5 +24,6 @@ def test_handles_acronym():
     assert decamelize("ACL") == "ACL"
     assert decamelize("coolACL") == "Cool ACL"
 
+
 def test_handles_spaces():
     assert decamelize("cool api") == "Cool Api"
