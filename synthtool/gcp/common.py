@@ -153,16 +153,22 @@ class CommonTemplates:
 
 def decamelize(str: str):
     """ parser to convert fooBar.js to Foo Bar. """
+    prev = " "
     str2 = ""
-    pchr = " "
-    for chr in str:
-        if pchr == " ":
+    for i in range(0, len(str)):
+        chr = str[i]
+        if prev == " ":
             str2 += chr.upper()
         elif re.match(r"[A-Z]", chr):
-            if not re.match(r"[A-Z]", pchr):
+            # handle "JSONFrom" -> "JSON From" case.
+            next = ""
+            if i < len(str) - 1:
+                next = str[i + 1]
+            # "CoolACL" -> "Cool ACL" case.
+            if not re.match(r"[A-Z]", prev) or re.match(r"[a-z]", next):
                 str2 += " "
             str2 += chr
         else:
             str2 += chr
-        pchr = str2[len(str2) - 1]
+        prev = str2[len(str2) - 1]
     return str2

@@ -23,6 +23,7 @@ def test_converts_camel_to_title():
 def test_handles_acronym():
     assert decamelize("ACL") == "ACL"
     assert decamelize("coolACL") == "Cool ACL"
+    assert decamelize("loadJSONFromGCS") == "Load JSON From GCS"
 
 
 def test_handles_spaces():
