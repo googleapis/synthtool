@@ -151,12 +151,12 @@ class CommonTemplates:
             metadata["partials"] = yaml.load(f, Loader=yaml.SafeLoader)
 
 
-def decamelize(str: str):
+def decamelize(value: str):
     """ parser to convert fooBar.js to Foo Bar. """
-    str2 = str[0].upper()
-    for chr in str[1:]:
-        if re.match(r"[A-Z]", chr):
-            str2 += " " + chr.upper()
-        else:
-            str2 += chr
-    return str2
+    if not value:
+        return ""
+    str_decamelize = re.sub("^.", value[0].upper(), value)  # apple -> Apple.
+    str_decamelize = re.sub(
+        "([A-Z]+)([A-Z])([a-z0-9])", r"\1 \2\3", str_decamelize
+    )  # ACLBatman -> ACL Batman.
+    return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.
