@@ -14,7 +14,7 @@
 
 import os
 import sys
-from importlib import util
+import importlib.util
 from typing import List, Sequence
 
 import click
@@ -70,8 +70,8 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
     if os.path.lexists(synth_file):
         synthtool.log.debug(f"Executing {synth_file}.")
         # https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly
-        spec = util.spec_from_file_location("synth", synth_file)
-        synth_module = util.module_from_spec(spec)
+        spec = importlib.util.spec_from_file_location("synth", synth_file)
+        synth_module = importlib.util.module_from_spec(spec)
 
         if spec.loader is None:
             raise ImportError("Could not import synth.py")
