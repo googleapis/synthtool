@@ -32,7 +32,6 @@
 
 ### Documentation
 
-- Update readme to latest instructions ([#182](https://github.com/googleapis/synthtool/pull/182))
 - s/GoogleCloudPlatform/googleapis/g in README ([#199](https://github.com/googleapis/synthtool/pull/199))
 - Add a helpful tips section to the readme ([#200](https://github.com/googleapis/synthtool/pull/200))
 
