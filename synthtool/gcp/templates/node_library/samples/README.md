@@ -6,7 +6,7 @@
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
-{{ metadata['partials'] and metadata['partials']['introduction'] }}
+{% if metadata['partials'] and metadata['partials']['introduction'] %}{{ metadata['partials']['introduction'] }}{% endif %}
 
 ## Table of Contents
 
