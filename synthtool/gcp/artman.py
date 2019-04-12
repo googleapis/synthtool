@@ -113,7 +113,13 @@ class Artman:
         ]
 
         artman_command = " ".join(
-            map(str, ["artman", "--local", "--config", config] + additional_flags + ["generate"] + list(args))
+            map(
+                str,
+                ["artman", "--local", "--config", config]
+                + additional_flags
+                + ["generate"]
+                + list(args),
+            )
         )
 
         cmd = docker_cmd + [artman_command]
