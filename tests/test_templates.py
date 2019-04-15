@@ -73,9 +73,9 @@ def test_load_samples():
     metadata = {}
     common_templates._load_samples(metadata)
     # should have loaded samples.
-    assert metadata["samples"][0]["name"] == "Requester Pays"
-    assert metadata["samples"][0]["file"] == "requesterPays.js"
-    assert len(metadata["samples"]) == 1
+    assert metadata["samples"][1]["name"] == "Requester Pays"
+    assert metadata["samples"][1]["file"] == "requesterPays.js"
+    assert len(metadata["samples"]) == 2
     # should have loaded the special quickstart sample (ignoring header).
     assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
     assert "limitations under the License" not in metadata["quickstart"]
@@ -96,7 +96,7 @@ def test_hide_billing():
     t = templates.Templates(NODE_TEMPLATES)
 
     result = t.render(
-        "README.md", metadata={"repo": {"requires_billing": True}}
+        "README.md", metadata={"repo": {"requires_billing": True, "api_id": "fooapi"}}
     ).read_text()
     assert "Enable billing for your project" in result
 

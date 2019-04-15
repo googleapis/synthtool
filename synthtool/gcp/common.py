@@ -17,7 +17,7 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 from synthtool.languages import node
 from synthtool.sources import templates
@@ -40,6 +40,10 @@ class CommonTemplates:
         # load common repo meta information (metadata that's not language specific).
         if "metadata" in kwargs:
             self._load_generic_metadata(kwargs["metadata"])
+            # if no samples were found, don't attempt to render a
+            # samples/README.md.
+            if not kwargs["metadata"]["samples"]:
+                self.excludes.append("samples/README.md")
 
         t = templates.TemplateGroup(_TEMPLATES_DIR / directory, self.excludes)
         result = t.render(**kwargs)
@@ -57,6 +61,8 @@ class CommonTemplates:
         #  .repo-metadata.json, or excluding README.md, we can remove this.
         if not os.path.exists("./.repo-metadata.json"):
             self.excludes.append("README.md")
+            if "samples/README.md" not in self.excludes:
+                self.excludes.append("samples/README.md")
 
         kwargs["metadata"] = node.read_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
@@ -68,10 +74,10 @@ class CommonTemplates:
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
 
-    #
-    # loads additional meta information from .repo-metadata.json.
-    #
-    def _load_generic_metadata(self, metadata):
+    def _load_generic_metadata(self, metadata: Dict):
+        """
+        loads additional meta information from .repo-metadata.json.
+        """
         self._load_samples(metadata)
         self._load_partials(metadata)
 
@@ -80,15 +86,15 @@ class CommonTemplates:
             with open("./.repo-metadata.json") as f:
                 metadata["repo"] = json.load(f)
 
-    #
-    # walks samples directory and builds up samples data-structure:
-    #
-    # {
-    #   "name": "Requester Pays",
-    #   "file": "requesterPays.js"
-    # }
-    #
-    def _load_samples(self, metadata):
+    def _load_samples(self, metadata: Dict):
+        """
+        walks samples directory and builds up samples data-structure:
+
+        {
+            "name": "Requester Pays",
+            "file": "requesterPays.js"
+        }
+        """
         metadata["samples"] = []
         samples_dir = Path(os.getcwd()) / "samples"
         if os.path.exists(samples_dir):
@@ -98,16 +104,18 @@ class CommonTemplates:
                 if re.match(r"\w+\.js$", file):
                     if file == "quickstart.js":
                         metadata["quickstart"] = self._read_quickstart(samples_dir)
-                    else:
-                        metadata["samples"].append(
-                            {"name": decamelize(file[:-3]), "file": file}
-                        )
+                    # only add quickstart file to samples list if code sample is found.
+                    if file == "quickstart.js" and not metadata.get("quickstart", None):
+                        continue
+                    metadata["samples"].append(
+                        {"name": decamelize(file[:-3]), "file": file}
+                    )
 
-    #
-    # quickstart is a special case, it should be read from disk and displayed
-    # in README.md rather than pushed into samples array.
-    #
-    def _read_quickstart(self, samples_dir):
+    def _read_quickstart(self, samples_dir: Path) -> str:
+        """
+        quickstart is a special case, it should be read from disk and displayed
+        in README.md rather than pushed into samples array.
+        """
         reading = False
         quickstart = ""
 
@@ -123,14 +131,14 @@ class CommonTemplates:
 
         return quickstart
 
-    #
-    # hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
-    # The following fields are currently supported:
-    #
-    # introduction: a more thorough introduction than metadata["description"].
-    # quickstart_footer: add additional context to footer of quickstart.
-    #
-    def _load_partials(self, metadata):
+    def _load_partials(self, metadata: Dict):
+        """
+        hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
+        The following fields are currently supported:
+
+        introduction: a more thorough introduction than metadata["description"].
+        body: custom body to include in the usage section of the document.
+        """
         cwd_path = Path(os.getcwd())
         partials_file = None
         for file in [".readme-partials.yml", ".readme-partials.yaml"]:
@@ -143,14 +151,12 @@ class CommonTemplates:
             metadata["partials"] = yaml.load(f, Loader=yaml.SafeLoader)
 
 
-#
-# parser to convert fooBar.js to Foo Bar.
-#
-def decamelize(str):
-    str2 = str[0].upper()
-    for chr in str[1:]:
-        if re.match(r"[A-Z]", chr):
-            str2 += " " + chr.upper()
-        else:
-            str2 += chr
-    return str2
+def decamelize(value: str):
+    """ parser to convert fooBar.js to Foo Bar. """
+    if not value:
+        return ""
+    str_decamelize = re.sub("^.", value[0].upper(), value)  # apple -> Apple.
+    str_decamelize = re.sub(
+        "([A-Z]+)([A-Z])([a-z0-9])", r"\1 \2\3", str_decamelize
+    )  # ACLBatman -> ACL Batman.
+    return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.

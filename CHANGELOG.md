@@ -4,6 +4,37 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2019.04.10
+
+04-10-2019 12:44 PDT
+
+### Python templates
+
+- Update noxfile template, add comment explaining why 3.6 ([#193](https://github.com/googleapis/synthtool/pull/193))
+
+### Node.js templates
+
+- node: use per-repo publish token ([#204](https://github.com/googleapis/synthtool/pull/204))
+- node: use wombat to publish npm packages ([#205](https://github.com/googleapis/synthtool/pull/205))
+- node(kokoro): Fetch credentials for magic github proxy ([#196](https://github.com/googleapis/synthtool/pull/196))
+- node: use node10 to run system-test and samples tests etc ([#198](https://github.com/googleapis/synthtool/pull/198))
+- Add docuploader credentials to node publish jobs ([#197](https://github.com/googleapis/synthtool/pull/197))
+
+### Implementation changes
+
+- Check 'metadata' in kwargs. ([#211](https://github.com/googleapis/synthtool/pull/211))
+
+### New Features
+
+- Add README generation, ported from nodejs-repo-tools ([#206](https://github.com/googleapis/synthtool/pull/206), [#208](https://github.com/googleapis/synthtool/pull/208), [#213](https://github.com/googleapis/synthtool/pull/213), [#220](https://github.com/googleapis/synthtool/pull/220))
+- Add support for README partials ([#207](https://github.com/googleapis/synthtool/pull/207))
+- Add support for generating samples/README.md from samples folder ([#214](https://github.com/googleapis/synthtool/pull/214), [#218](https://github.com/googleapis/synthtool/pull/218))
+
+### Documentation
+
+- s/GoogleCloudPlatform/googleapis/g in README ([#199](https://github.com/googleapis/synthtool/pull/199))
+- Add a helpful tips section to the readme ([#200](https://github.com/googleapis/synthtool/pull/200))
+
 ## 2019.02.26
 
 02-26-2019 11:11 PST
