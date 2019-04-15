@@ -58,16 +58,35 @@ class Artman:
     def docker_image(self) -> str:
         return self._docker_image_info()["RepoDigests"][0]
 
-    def run(self, image, root_dir, config, *args):
+    def run(self, image, root_dir, config, *args, generator_args=None):
         """Executes artman command in the artman container.
-          Args:
-              root_dir: The input directory that will be mounted to artman docker
-                  container as local googleapis directory.
-          Returns:
-              The output directory with artman-generated files.
-          """
+
+        Args:
+            image:
+                The Docker image for artman.
+            root_dir:
+                The input directory that will be mounted to artman docker
+                container as local googleapis directory.
+            config:
+                Path to artman configuration YAML file.
+            *args:
+                Arguments to artman that follow ``generate``. Defines which
+                artifacts to generate.
+            generator_args (Optional[List[str]]):
+                Additional arguments to pass to the gapic generator, such as
+                ``--dev_samples``.
+        Returns:
+            The output directory with artman-generated files.
+        """
         container_name = "artman-docker"
         output_dir = root_dir / "artman-genfiles"
+
+        additional_flags = []
+
+        if generator_args:
+            additional_flags.append(
+                "--generator-args='{}'".format(" ".join(generator_args))
+            )
 
         docker_cmd = [
             "docker",
@@ -94,7 +113,13 @@ class Artman:
         ]
 
         artman_command = " ".join(
-            map(str, ["artman", "--local", "--config", config, "generate"] + list(args))
+            map(
+                str,
+                ["artman", "--local", "--config", config]
+                + additional_flags
+                + ["generate"]
+                + list(args),
+            )
         )
 
         cmd = docker_cmd + [artman_command]

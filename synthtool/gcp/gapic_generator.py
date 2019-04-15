@@ -65,6 +65,7 @@ class GAPICGenerator:
         artman_output_name=None,
         private=False,
         include_protos=False,
+        generator_args=None,
     ):
         # map the language to the artman argument and subdir of genfiles
         GENERATE_FLAG_LANGUAGE = {
@@ -115,6 +116,7 @@ class GAPICGenerator:
             googleapis,
             config_path,
             gapic_language_arg,
+            generator_args=generator_args,
         )
 
         # Expect the output to be in the artman-genfiles directory.
