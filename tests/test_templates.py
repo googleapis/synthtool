@@ -22,6 +22,7 @@ from synthtool.sources import templates
 
 FIXTURES = Path(__file__).parent / "fixtures"
 NODE_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/node_library"
+RUBY_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/ruby_library"
 
 
 def test_render():
@@ -119,3 +120,16 @@ def test_readme_partials():
     )
 
     os.chdir(cwd)
+
+
+def test_ruby_authentication():
+    t = templates.Templates(RUBY_TEMPLATES)
+    metadata = {
+        "package_name": "google-cloud-bigquery-data_transfer",
+        "module_name": "Bigquery::DataTransfer",
+        "module_name_credentials": "Bigquery::DataTransfer::V1",
+        "constant_name": "DATA_TRANSFER",
+    }
+    result = t.render("AUTHENTICATION.md", metadata=metadata).read_text()
+
+    assert 'require "google/cloud/bigquery/data_transfer"' in result
