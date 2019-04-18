@@ -126,7 +126,7 @@ def test_ruby_authentication():
     t = templates.Templates(RUBY_TEMPLATES)
     # .repo-metadata.json in google-cloud-ruby package directories
     repo_metadata = {
-        "name": "google-cloud-bigquery-data_transfer",
+        "distribution_name": "google-cloud-bigquery-data_transfer",
         "module_name": "Bigquery::DataTransfer",
         "module_name_credentials": "Bigquery::DataTransfer::V1",
         "env_var_prefix": "DATA_TRANSFER",
