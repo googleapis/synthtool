@@ -2,14 +2,32 @@
 
 In general, the {{ metadata['repo']['distribution_name'] }} library uses [Service
 Account](https://cloud.google.com/iam/docs/creating-managing-service-accounts)
-credentials to connect to Google Cloud services. When running on Compute Engine
+credentials to connect to Google Cloud services. When running within [Google
+Cloud Platform environments](#google-cloud-platform-environments)
 the credentials will be discovered automatically. When running on other
 environments, the Service Account credentials can be specified by providing the
 path to the [JSON
 keyfile](https://cloud.google.com/iam/docs/managing-service-account-keys) for
-the account (or the JSON itself) in environment variables. Additionally, Cloud
-SDK credentials can also be discovered automatically, but this is only
-recommended during development.
+the account (or the JSON itself) in [environment
+variables](#environment-variables). Additionally, Cloud SDK credentials can also
+be discovered automatically, but this is only recommended during development.
+
+## Quickstart
+
+1. [Create a service account and credentials](#creating-a-service-account).
+2. Set the [environment variable](#environment-variables).
+
+```sh
+export {{ metadata['repo']['env_var_prefix'] }}_CREDENTIALS=/path/to/json`
+```
+
+3. Initialize the client.
+
+```ruby
+require "{{ metadata['repo']['distribution_name'].replace("-", "/") }}"
+
+client = Google::Cloud::{{ metadata['repo']['module_name'] }}.new
+```
 
 ## Project and Credential Lookup
 
@@ -24,6 +42,7 @@ code.
 2. Specify project ID in configuration
 3. Discover project ID in environment variables
 4. Discover GCE project ID
+5. Discover project ID in credentials JSON
 
 **Credentials** are discovered in the following order:
 
@@ -141,7 +160,8 @@ Google Cloud requires a **Project ID** and **Service Account Credentials** to
 connect to the APIs. You will use the **Project ID** and **JSON key file** to
 connect to most services with {{ metadata['repo']['distribution_name'] }}.
 
-If you are not running this client on Google Compute Engine, you need a Google
+If you are not running this client within [Google Cloud Platform
+environments](#google-cloud-platform-environments), you need a Google
 Developers service account.
 
 1. Visit the [Google Developers Console][dev-console].
