@@ -1,6 +1,6 @@
 # Authentication
 
-In general, the {{ metadata["package_name"] }} library uses [Service
+In general, the {{ metadata['repo']['name'] }} library uses [Service
 Account](https://cloud.google.com/iam/docs/creating-managing-service-accounts)
 credentials to connect to Google Cloud services. When running on Compute Engine
 the credentials will be discovered automatically. When running on other
@@ -13,7 +13,7 @@ recommended during development.
 
 ## Project and Credential Lookup
 
-The {{ metadata["package_name"] }} library aims to make authentication
+The {{ metadata['repo']['name'] }} library aims to make authentication
 as simple as possible, and provides several mechanisms to configure your system
 without providing **Project ID** and **Service Account Credentials** directly in
 code.
@@ -74,26 +74,26 @@ environment variable, or the **Credentials JSON** itself can be stored for
 environments such as Docker containers where writing files is difficult or not
 encouraged.
 
-The environment variables that {{ metadata["package_name"] }} checks for project ID are:
+The environment variables that {{ metadata['repo']['name'] }} checks for project ID are:
 
-1. `{{ metadata["constant_name"] }}_PROJECT`
+1. `{{ metadata['repo']['env_var_prefix'] }}_PROJECT`
 2. `GOOGLE_CLOUD_PROJECT`
 
-The environment variables that {{ metadata["package_name"] }} checks for credentials are configured on {Google::Cloud::{{ metadata["module_name_credentials"] }}::Credentials}:
+The environment variables that {{ metadata['repo']['name'] }} checks for credentials are configured on {Google::Cloud::{{ metadata['repo']['module_name_credentials'] }}::Credentials}:
 
-1. `{{ metadata["constant_name"] }}_CREDENTIALS` - Path to JSON file, or JSON contents
-2. `{{ metadata["constant_name"] }}_KEYFILE` - Path to JSON file, or JSON contents
+1. `{{ metadata['repo']['env_var_prefix'] }}_CREDENTIALS` - Path to JSON file, or JSON contents
+2. `{{ metadata['repo']['env_var_prefix'] }}_KEYFILE` - Path to JSON file, or JSON contents
 3. `GOOGLE_CLOUD_CREDENTIALS` - Path to JSON file, or JSON contents
 4. `GOOGLE_CLOUD_KEYFILE` - Path to JSON file, or JSON contents
 5. `GOOGLE_APPLICATION_CREDENTIALS` - Path to JSON file
 
 ```ruby
-require "{{ metadata["package_name"].replace("-", "/") }}"
+require "{{ metadata['repo']['name'].replace("-", "/") }}"
 
-ENV["{{ metadata["constant_name"] }}_PROJECT"]     = "my-project-id"
-ENV["{{ metadata["constant_name"] }}_CREDENTIALS"] = "path/to/keyfile.json"
+ENV["{{ metadata['repo']['env_var_prefix'] }}_PROJECT"]     = "my-project-id"
+ENV["{{ metadata['repo']['env_var_prefix'] }}_CREDENTIALS"] = "path/to/keyfile.json"
 
-client = Google::Cloud::{{ metadata["module_name"] }}.new
+client = Google::Cloud::{{ metadata['repo']['module_name'] }}.new
 ```
 
 ### Configuration
@@ -101,14 +101,14 @@ client = Google::Cloud::{{ metadata["module_name"] }}.new
 The **Project ID** and **Credentials JSON** can be configured instead of placing them in environment variables or providing them as arguments.
 
 ```ruby
-require "{{ metadata["package_name"].replace("-", "/") }}"
+require "{{ metadata['repo']['name'].replace("-", "/") }}"
 
-Google::Cloud::{{ metadata["module_name"] }}.configure do |config|
+Google::Cloud::{{ metadata['repo']['module_name'] }}.configure do |config|
   config.project_id  = "my-project-id"
   config.credentials = "path/to/keyfile.json"
 end
 
-client = Google::Cloud::{{ metadata["module_name"] }}.new
+client = Google::Cloud::{{ metadata['repo']['module_name'] }}.new
 ```
 
 ### Cloud SDK
@@ -139,7 +139,7 @@ To configure your system for this, simply:
 
 Google Cloud requires a **Project ID** and **Service Account Credentials** to
 connect to the APIs. You will use the **Project ID** and **JSON key file** to
-connect to most services with {{ metadata["package_name"] }}.
+connect to most services with {{ metadata['repo']['name'] }}.
 
 If you are not running this client on Google Compute Engine, you need a Google
 Developers service account.

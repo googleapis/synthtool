@@ -124,12 +124,17 @@ def test_readme_partials():
 
 def test_ruby_authentication():
     t = templates.Templates(RUBY_TEMPLATES)
-    metadata = {
-        "package_name": "google-cloud-bigquery-data_transfer",
+    # .repo-metadata.json in google-cloud-ruby package directories
+    repo_metadata = {
+        "name": "google-cloud-bigquery-data_transfer",
         "module_name": "Bigquery::DataTransfer",
         "module_name_credentials": "Bigquery::DataTransfer::V1",
-        "constant_name": "DATA_TRANSFER",
+        "env_var_prefix": "DATA_TRANSFER",
     }
+    metadata = {"repo": repo_metadata}
     result = t.render("AUTHENTICATION.md", metadata=metadata).read_text()
 
     assert 'require "google/cloud/bigquery/data_transfer"' in result
+    assert "Google::Cloud::Bigquery::DataTransfer.new" in result
+    assert "Google::Cloud::Bigquery::DataTransfer::V1::Credentials" in result
+    assert "DATA_TRANSFER_CREDENTIALS" in result
