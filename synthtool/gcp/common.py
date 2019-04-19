@@ -71,6 +71,12 @@ class CommonTemplates:
     def php_library(self, **kwargs) -> Path:
         return self._generic_library("php_library", **kwargs)
 
+    def ruby_library(self, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+        return self._generic_library("ruby_library", **kwargs)
+
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
 
