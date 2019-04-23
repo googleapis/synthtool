@@ -142,8 +142,9 @@ class CommonTemplates:
         hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
         The following fields are currently supported:
 
-        introduction: a more thorough introduction than metadata["description"].
         body: custom body to include in the usage section of the document.
+        introduction: a more thorough introduction than metadata["description"].
+        title: provide markdown to use as a custom title.
         """
         cwd_path = Path(os.getcwd())
         partials_file = None
