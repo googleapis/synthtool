@@ -2,7 +2,11 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
+{% if 'partials' in metadata and metadata['partials']['title'] -%}
+{{ metadata['partials']['title'] }}
+{% else -%}
 # [{{ metadata['repo']['name_pretty'] }}: {{ metadata['repo']['language']|language_pretty }} Client](https://github.com/{{ metadata['repo']['repo'] }})
+{%- endif %}
 
 {{ metadata['repo']['release_level']|release_quality_badge }}
 [![npm version](https://img.shields.io/npm/v/{{ metadata['name'] }}.svg)](https://www.npmjs.org/package/{{ metadata['name'] }})
@@ -14,7 +18,7 @@
 | This library is **deprecated**. {{ metadata['deprecated'] }} |
 {% endif %}
 
-{% if metadata['partials'] and metadata['partials']['introduction'] %}
+{% if 'partials' in metadata and metadata['partials']['introduction'] %}
 {{ metadata['partials']['introduction'] }}
 {% else %}
 {{ metadata['description'] }}
@@ -63,7 +67,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 ```{{ metadata['repo']['language']|syntax_highlighter }}
 {{ metadata['quickstart'] }}
 ```
-{% endif %}{% if metadata['partials'] and metadata['partials']['body'] %}{{ metadata['partials']['body'] }}{% endif %}
+{% endif %}{% if 'partials' in metadata and metadata['partials']['body'] %}{{ metadata['partials']['body'] }}{% endif %}
 
 {% if metadata['samples']|length %}
 ## Samples
