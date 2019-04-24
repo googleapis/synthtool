@@ -16,7 +16,7 @@
 
 * [Before you begin](#before-you-begin)
 * [Samples](#samples){% if metadata['samples']|length %}{% for sample in metadata['samples'] %}
-  * [{{ sample.name }}](#{{ sample.name|slugify }}){% endfor %}{% endif %}
+  * [{{ sample.title }}](#{{ sample.title|slugify }}){% endfor %}{% endif %}
 
 ## Before you begin
 
@@ -27,7 +27,13 @@ Before running the samples, make sure you've followed the steps outlined in
 {% if metadata['samples']|length %}
 {% for sample in metadata['samples'] %}
 
-### {{sample.name}}
+### {{sample.title}}
+
+{%- if 'description' in sample %}
+
+{{ sample.description }}
+
+{%- endif %}
 
 View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/samples/{{ sample.file }}).
 
@@ -36,7 +42,7 @@ View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/m
 __Usage:__
 
 
-`node {{ sample.file }}`
+{% if 'usage' in sample %}`{{ sample.usage }}`{% else %}`node {{ sample.file }}`{% endif %}
 
 {% if not loop.last %}
 -----
