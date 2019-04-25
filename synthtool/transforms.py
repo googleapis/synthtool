@@ -116,8 +116,8 @@ def _copy_dir_to_existing_dir(
                 e
                 for e in excludes
                 if (
-                    Path(e).relative_to(".") == Path(rel_path)
-                    or Path(e).relative_to(".") == Path(rel_path) / name
+                    Path(e) == _tracked_paths.relativize(root)
+                    or Path(e) == _tracked_paths.relativize(Path(root) / name)
                 )
             ]
             if not exclude:
