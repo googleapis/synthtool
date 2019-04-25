@@ -134,6 +134,7 @@ def test__move_to_dest(expand_path_fixtures):
         "dest/dirb/suba/g.py",
     ]
 
+
 def test__move_to_dest_subdir(expand_path_fixtures):
     tmp_path = Path(str(expand_path_fixtures))
     _tracked_paths.add(expand_path_fixtures)
@@ -147,7 +148,4 @@ def test__move_to_dest_subdir(expand_path_fixtures):
     files = sorted([str(x) for x in transforms._expand_paths("**/*", root="dest")])
 
     # Assert destination does not contain dira/f.py (excluded)
-    assert files == [
-        "dest/dira",
-        "dest/dira/e.txt",
-    ]
+    assert files == ["dest/dira", "dest/dira/e.txt"]
