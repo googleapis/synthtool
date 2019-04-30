@@ -16,6 +16,7 @@ from typing import Union, List
 from pathlib import Path
 
 import jinja2
+import re
 
 from synthtool import log
 from synthtool import tmp
@@ -122,7 +123,8 @@ def language_pretty(input: str) -> str:
 
 def slugify(input: str) -> str:
     """Converts Foo Bar into foo-bar, for use wih anchor links."""
-    return input.lower().replace(" ", "-")
+    input = re.sub(r"([() ]+)", "-", input.lower())
+    return re.sub(r"-$", "", input)
 
 
 def syntax_highlighter(input: str) -> str:

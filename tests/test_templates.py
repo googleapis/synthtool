@@ -22,6 +22,7 @@ from synthtool.sources import templates
 
 FIXTURES = Path(__file__).parent / "fixtures"
 NODE_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/node_library"
+RUBY_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/ruby_library"
 
 
 def test_render():
@@ -73,12 +74,17 @@ def test_load_samples():
     metadata = {}
     common_templates._load_samples(metadata)
     # should have loaded samples.
-    assert metadata["samples"][1]["name"] == "Requester Pays"
-    assert metadata["samples"][1]["file"] == "requesterPays.js"
-    assert len(metadata["samples"]) == 2
+    assert metadata["samples"][3]["title"] == "Requester Pays"
+    assert metadata["samples"][3]["file"] == "requesterPays.js"
+    assert len(metadata["samples"]) == 4
     # should have loaded the special quickstart sample (ignoring header).
     assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
     assert "limitations under the License" not in metadata["quickstart"]
+    # should have included additional meta-information provided.
+    assert metadata["samples"][0]["title"] == "Metadata Example 1"
+    assert metadata["samples"][0]["usage"] == "node hello-world.js"
+    assert metadata["samples"][1]["title"] == "Metadata Example 2"
+    assert metadata["samples"][1]["usage"] == "node goodnight-moon.js"
 
     os.chdir(cwd)
 
@@ -119,3 +125,26 @@ def test_readme_partials():
     )
 
     os.chdir(cwd)
+
+
+def test_ruby_authentication():
+    t = templates.Templates(RUBY_TEMPLATES)
+    # .repo-metadata.json in google-cloud-ruby package directories
+    repo_metadata = {
+        "distribution_name": "google-cloud-bigquery-data_transfer",
+        "module_name": "Bigquery::DataTransfer",
+        "module_name_credentials": "Bigquery::DataTransfer::V1",
+        "env_var_prefix": "DATA_TRANSFER",
+    }
+    metadata = {"repo": repo_metadata}
+    result = t.render("AUTHENTICATION.md", metadata=metadata).read_text()
+
+    assert 'require "google/cloud/bigquery/data_transfer"' in result
+    assert "Google::Cloud::Bigquery::DataTransfer.new" in result
+    assert "Google::Cloud::Bigquery::DataTransfer::V1::Credentials" in result
+    assert "DATA_TRANSFER_CREDENTIALS" in result
+
+
+def test_slugify():
+    assert templates.slugify("Foo Bar") == "foo-bar"
+    assert templates.slugify("ACL (Access Control)") == "acl-access-control"
