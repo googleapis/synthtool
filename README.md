@@ -35,7 +35,7 @@ to author a synth.py script. You can grab one from another package
 
 We run synthtool as follows:
 ```
-python -m synthtool
+python3 -m synthtool
 ```
 
 Once you run synthtool without errors:
