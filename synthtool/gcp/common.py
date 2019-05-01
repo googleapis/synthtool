@@ -71,6 +71,12 @@ class CommonTemplates:
     def php_library(self, **kwargs) -> Path:
         return self._generic_library("php_library", **kwargs)
 
+    def ruby_library(self, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+        return self._generic_library("ruby_library", **kwargs)
+
     def render(self, template_name: str, **kwargs) -> Path:
         return self._templates.render(template_name, **kwargs)
 
@@ -107,9 +113,37 @@ class CommonTemplates:
                     # only add quickstart file to samples list if code sample is found.
                     if file == "quickstart.js" and not metadata.get("quickstart", None):
                         continue
-                    metadata["samples"].append(
-                        {"name": decamelize(file[:-3]), "file": file}
+                    sample_metadata = {"title": decamelize(file[:-3]), "file": file}
+                    sample_metadata.update(
+                        self._read_sample_metadata_comment(samples_dir, file)
                     )
+                    metadata["samples"].append(sample_metadata)
+
+    def _read_sample_metadata_comment(self, samples_dir: Path, file: str) -> Dict:
+        """
+        Additional meta-information can be provided through embedded comments:
+
+        // sample-metadata:
+        //   title: ACL (Access Control)
+        //   description: Demonstrates setting access control rules.
+        //   usage: node iam.js --help
+        """
+        sample_metadata = {}  # type: Dict[str, str]
+        with open(samples_dir / file) as f:
+            contents = f.read()
+            match = re.search(
+                r"(?P<metadata>// *sample-metadata:([^\n]+|\n//)+)", contents, re.DOTALL
+            )
+            if match:
+                # the metadata yaml is stored in a comments, remove the
+                # prefix so that we can parse the yaml contained.
+                sample_metadata_string = re.sub(
+                    r"((#|//) ?)", "", match.group("metadata")
+                )
+                sample_metadata = yaml.load(
+                    sample_metadata_string, Loader=yaml.SafeLoader
+                )["sample-metadata"]
+        return sample_metadata
 
     def _read_quickstart(self, samples_dir: Path) -> str:
         """
@@ -136,8 +170,9 @@ class CommonTemplates:
         hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
         The following fields are currently supported:
 
-        introduction: a more thorough introduction than metadata["description"].
         body: custom body to include in the usage section of the document.
+        introduction: a more thorough introduction than metadata["description"].
+        title: provide markdown to use as a custom title.
         """
         cwd_path = Path(os.getcwd())
         partials_file = None

@@ -2,7 +2,11 @@
 [//]: # "To regenerate it, use `python -m synthtool`."
 <img src="https://avatars2.githubusercontent.com/u/2810941?v=3&s=96" alt="Google Cloud Platform logo" title="Google Cloud Platform" align="right" height="96" width="96"/>
 
+{% if 'partials' in metadata and metadata['partials']['title'] -%}
+{{ metadata['partials']['title'] }} Samples
+{% else -%}
 # [{{ metadata['repo']['name_pretty'] }}: {{ metadata['repo']['language']|language_pretty }} Samples](https://github.com/{{ metadata['repo']['repo'] }})
+{%- endif %}
 
 [![Open in Cloud Shell][shell_img]][shell_link]
 
@@ -12,7 +16,7 @@
 
 * [Before you begin](#before-you-begin)
 * [Samples](#samples){% if metadata['samples']|length %}{% for sample in metadata['samples'] %}
-  * [{{ sample.name }}](#{{ sample.name|slugify }}){% endfor %}{% endif %}
+  * [{{ sample.title }}](#{{ sample.title|slugify }}){% endfor %}{% endif %}
 
 ## Before you begin
 
@@ -23,7 +27,13 @@ Before running the samples, make sure you've followed the steps outlined in
 {% if metadata['samples']|length %}
 {% for sample in metadata['samples'] %}
 
-### {{sample.name}}
+### {{sample.title}}
+
+{%- if 'description' in sample %}
+
+{{ sample.description }}
+
+{%- endif %}
 
 View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/samples/{{ sample.file }}).
 
@@ -32,7 +42,7 @@ View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/m
 __Usage:__
 
 
-`node {{ sample.file }}`
+{% if 'usage' in sample %}`{{ sample.usage }}`{% else %}`node {{ sample.file }}`{% endif %}
 
 {% if not loop.last %}
 -----
