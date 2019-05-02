@@ -4,6 +4,37 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2019.05.02
+
+05-02-2019 12:29 PDT
+
+
+### Implementation Changes
+- Fix move excludes. ([#232](https://github.com/GoogleCloudPlatform/synthtool/pull/232))
+- None was printing in samples/README if introduction missing. ([#222](https://github.com/GoogleCloudPlatform/synthtool/pull/222))
+
+### New Features
+- Rework .nycrc to support --all. ([#226](https://github.com/GoogleCloudPlatform/synthtool/pull/226))
+- Add support for metadata comments in samples. ([#230](https://github.com/GoogleCloudPlatform/synthtool/pull/230))
+- Provide 'title' in .readme-partials.yaml to override the default. ([#229](https://github.com/GoogleCloudPlatform/synthtool/pull/229))
+- Add `generator_args` arg to populate `--generator-args` artman option. ([#224](https://github.com/GoogleCloudPlatform/synthtool/pull/224))
+
+### Documentation
+- Update README run command python3. ([#235](https://github.com/GoogleCloudPlatform/synthtool/pull/235))
+
+### Template Changes
+#### Node
+- node: remove grpc-js tests from Node.js builds. ([#236](https://github.com/GoogleCloudPlatform/synthtool/pull/236))
+- build: remove Node 6 from our build templates. ([#234](https://github.com/GoogleCloudPlatform/synthtool/pull/234))
+
+#### Ruby
+- ruby: add AUTHENTICATION.md template. ([#225](https://github.com/GoogleCloudPlatform/synthtool/pull/225))
+
+#### Python
+- Update noxfile.py template. ([#228](https://github.com/GoogleCloudPlatform/synthtool/pull/228))
+- Add `shutil` import to python noxfile template. ([#227](https://github.com/GoogleCloudPlatform/synthtool/pull/227))
+- Add docs session to noxfile. ([#202](https://github.com/GoogleCloudPlatform/synthtool/pull/202))
+
 ## 2019.04.10
 
 04-10-2019 12:44 PDT
