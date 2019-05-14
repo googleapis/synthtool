@@ -44,6 +44,11 @@ Run `synthtool`:
 python3 -m synthtool
 ```
 
+> You can specify a specific synthfile via:
+> ```
+> python3 -m synthtool path/to/synth.py
+> ```
+
 After `synthtool` runs successfully:
  - Investigate the changes it made
  - Run the library tests
