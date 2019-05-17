@@ -171,6 +171,8 @@ class CommonTemplates:
         The following fields are currently supported:
 
         body: custom body to include in the usage section of the document.
+        sample_body: an optional body to place below the table of contents
+          in samples/README.md.
         introduction: a more thorough introduction than metadata["description"].
         title: provide markdown to use as a custom title.
         """

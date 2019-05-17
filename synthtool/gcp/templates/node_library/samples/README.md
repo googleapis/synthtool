@@ -23,6 +23,10 @@
 Before running the samples, make sure you've followed the steps outlined in
 [Using the client library](https://github.com/{{ metadata['repo']['repo']  }}#using-the-client-library).
 
+{% if 'partials' in metadata and metadata['partials']['samples_body'] %}{{ metadata['partials']['samples_body'] }}
+
+{% endif -%}
+
 ## Samples
 {% if metadata['samples']|length %}
 {% for sample in metadata['samples'] %}
