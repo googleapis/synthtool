@@ -23,6 +23,8 @@ import nox
 
 LOCAL_DEPS = (os.path.join("..", "api_core"), os.path.join("..", "core"))
 
+BLACK_PATHS = ("docs", "google", "samples", "tests", "noxfile.py", "setup.py")
+
 @nox.session(python="3.7")
 def lint(session):
     """Run linters.
@@ -34,9 +36,7 @@ def lint(session):
     session.run(
         "black",
         "--check",
-        "google",
-        "tests",
-        "docs",
+        *BLACK_PATHS,
     )
     session.run("flake8", "google", "tests")
 
@@ -54,9 +54,7 @@ def blacken(session):
     session.install("black")
     session.run(
         "black",
-        "google",
-        "tests",
-        "docs",
+        *BLACK_PATHS,
     )
 
 
