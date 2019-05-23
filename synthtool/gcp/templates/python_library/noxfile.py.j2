@@ -23,7 +23,10 @@ import nox
 
 LOCAL_DEPS = (os.path.join("..", "api_core"), os.path.join("..", "core"))
 
-BLACK_PATHS = ("docs", "google", "samples", "tests", "noxfile.py", "setup.py")
+BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
+
+if os.path.exists("samples"):
+    BLACK_PATHS.append("samples")
 
 @nox.session(python="3.7")
 def lint(session):
