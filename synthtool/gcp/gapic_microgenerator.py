@@ -35,6 +35,7 @@ class GAPICMicrogenerator:
     A microgenerator is any code generator that follows the code
     generation specification defined at https://aip.dev/client-libraries
     """
+
     def __init__(self):
         # Docker on mac by default cannot use the default temp file location
         # instead use the more standard *nix /tmp location.
@@ -87,12 +88,17 @@ class GAPICMicrogenerator:
 
         # Pull the code generator for the requested language.
         # If a code generator version was specified, honor that.
-        log.debug("Pulling Docker image: gapic-generator-{language}:{generator_version}")
-        shell.run([
-            "docker",
-            "pull",
-            f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}",
-        ], hide_output=False)
+        log.debug(
+            "Pulling Docker image: gapic-generator-{language}:{generator_version}"
+        )
+        shell.run(
+            [
+                "docker",
+                "pull",
+                f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}",
+            ],
+            hide_output=False,
+        )
 
         # Determine where the protos we are generating actually live.
         # We can sometimes (but not always) determine this from the service
@@ -124,19 +130,27 @@ class GAPICMicrogenerator:
         # the code generator.
         log.debug(f"Generating code for: {proto_path}.")
         sep = os.path.sep
-        shell.run([
-            "docker", "run",
-            "--mount", f"type=bind,source={googleapis / proto_path}{sep},destination={Path('/in') / proto_path}{sep},readonly",
-            "--mount", f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
-            "--rm",
-            "--user", str(os.getuid()),
-            f"gcr.io/gapic-images/gapic-generator-{language}",
-        ])
+        shell.run(
+            [
+                "docker",
+                "run",
+                "--mount",
+                f"type=bind,source={googleapis / proto_path}{sep},destination={Path('/in') / proto_path}{sep},readonly",
+                "--mount",
+                f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
+                "--rm",
+                "--user",
+                str(os.getuid()),
+                f"gcr.io/gapic-images/gapic-generator-{language}",
+            ]
+        )
 
         # Sanity check: Does the output location have code in it?
         # If not, complain.
         if not tuple(output_dir.iterdir()):
-            raise RuntimeError(f"Code generation seemed to succeed, but {output_dir} is empty.")
+            raise RuntimeError(
+                f"Code generation seemed to succeed, but {output_dir} is empty."
+            )
 
         # Huzzah, it worked.
         log.success(f"Generated code into {output_dir}.")
