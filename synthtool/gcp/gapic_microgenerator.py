@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pathlib import Path
-from typing import Mapping, Optional
+from typing import Mapping, Optional, Union
 import os
 import platform
 import tempfile
@@ -67,8 +67,8 @@ class GAPICMicrogenerator:
         language: str,
         *,
         private: bool = False,
-        proto_path: str = None,
-        output_dir: str = None,
+        proto_path: Union[str, Path] = None,
+        output_dir: Union[str, Path] = None,
         generator_version: str = "latest",
         generator_args: Mapping[str, str] = None,
     ):
