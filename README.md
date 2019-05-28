@@ -27,7 +27,7 @@ cd google-cloud-python/
 
 Navigate to the destination directory to generate the library.
 ```
-cd google-cloud-tasks/
+cd tasks/
 ```
 
 ### Running `synthtool`
@@ -59,7 +59,7 @@ Find examples below in different programming languages (Cloud Tasks API used as 
   ```
 - Navigate to the destination directory to generate the library:
   ```
-  cd google-cloud-tasks/
+  cd tasks/
   ```
 - Run `synthtool` to generate using the existing [`synth.py`][python_tasks_synth_py]
   file for the [Python Client for Cloud Tasks API][python_tasks_library]:
