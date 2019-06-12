@@ -25,8 +25,7 @@ dependencies = [
     "packaging",
     "PyYAML",
     "requests",
-    "protobuf",
-    "google-cloud-storage"
+    "protobuf"
 ]
 
 packages = setuptools.find_packages()

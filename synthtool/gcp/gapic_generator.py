@@ -226,24 +226,21 @@ class GAPICGenerator:
         #
         # Code follows happy path. An error is desired if YAML is invalid.
         if googleapis_resources_yaml.is_file():
-            import re
             import yaml
-            from google.cloud import storage
-            with open(googleapis_resources_yaml, "r") as stream:
-                resources_data = yaml.load(stream, Loader=yaml.SafeLoader)
-            stream.close()
+            import requests
+            with open(googleapis_resources_yaml, "r") as f:
+                resources_data = yaml.load(f, Loader=yaml.SafeLoader)
             resource_list = resources_data.get("sample_resources")
-            storage_client = storage.Client()
             for resource in resource_list:
-                resource_uri = resource.get('uri')
-                uri_pattern = "gs://(?P<bucket>[^\/]+)/(?P<path>.*)"
-                uri_parts = re.match(uri_pattern, resource_uri)
-                filename = os.path.basename(uri_parts.get('path'))
-                download_path = samples_resources_dir / filename
-                bucket = storage_client.get_bucket(resource.get('bucket'))
-                blob = bucket.blob(uri_parts.get('path'))
-                log.debug(f"Download {resource_uri} to {download_path}")
-                blob.download_to_file(download_path.name)
+                uri = resource.get("uri")
+                if uri.startswith("gs://"):
+                    uri = uri.replace("gs://", "https://storage.googleapis.com/")
+                response = requests.get(uri, allow_redirects=True)
+                download_path = samples_resources_dir / os.path.basename(uri)
+                os.makedirs(samples_resources_dir, exist_ok=True)
+                log.debug(f"Download {uri} to {download_path}")
+                with open(download_path, "wb") as f:
+                    f.write(response.content)
 
         # Generate manifest file at samples/{version}/samples.manifest.yaml
 
