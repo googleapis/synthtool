@@ -175,6 +175,36 @@ class GAPICGenerator:
         _tracked_paths.add(genfiles)
         return genfiles
 
+    def _clone_googleapis(self):
+        if self._googleapis is not None:
+            return self._googleapis
+
+        if LOCAL_GOOGLEAPIS:
+            self._googleapis = Path(LOCAL_GOOGLEAPIS).expanduser()
+            log.debug(f"Using local googleapis at {self._googleapis}")
+
+        else:
+            log.debug("Cloning googleapis.")
+            self._googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
+
+        return self._googleapis
+
+    def _clone_googleapis_private(self):
+        if self._googleapis_private is not None:
+            return self._googleapis_private
+
+        if LOCAL_GOOGLEAPIS:
+            self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
+            log.debug(
+                f"Using local googleapis at {self._googleapis_private} for googleapis-private"
+            )
+
+        else:
+            log.debug("Cloning googleapis-private.")
+            self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
+
+        return self._googleapis_private
+
     def _include_samples(self, version, genfiles, googleapis_service_dir):
         """Include code samples and supporting resources in generated output.
 
@@ -243,33 +273,4 @@ class GAPICGenerator:
                     f.write(response.content)
 
         # Generate manifest file at samples/{version}/samples.manifest.yaml
-
-    def _clone_googleapis(self):
-        if self._googleapis is not None:
-            return self._googleapis
-
-        if LOCAL_GOOGLEAPIS:
-            self._googleapis = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(f"Using local googleapis at {self._googleapis}")
-
-        else:
-            log.debug("Cloning googleapis.")
-            self._googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
-
-        return self._googleapis
-
-    def _clone_googleapis_private(self):
-        if self._googleapis_private is not None:
-            return self._googleapis_private
-
-        if LOCAL_GOOGLEAPIS:
-            self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(
-                f"Using local googleapis at {self._googleapis_private} for googleapis-private"
-            )
-
-        else:
-            log.debug("Cloning googleapis-private.")
-            self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
-
-        return self._googleapis_private
+        # TODO
