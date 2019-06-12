@@ -65,6 +65,7 @@ class GAPICGenerator:
         artman_output_name=None,
         private=False,
         include_protos=False,
+        include_samples=False,
         generator_args=None,
     ):
         # map the language to the artman argument and subdir of genfiles
@@ -111,6 +112,12 @@ class GAPICGenerator:
 
         log.debug(f"Running generator for {config_path}.")
 
+        if include_samples:
+            if generator_args is None:
+                generator_args = []
+            # Add feature flag for generating code samples with code generator.
+            generator_args.append('--dev_samples')
+
         output_root = self._artman.run(
             f"googleapis/artman:{artman.ARTMAN_VERSION}",
             googleapis,
@@ -152,6 +159,10 @@ class GAPICGenerator:
                 shutil.copyfile(i, proto_output_path / i.name)
             log.success(f"Placed proto files into {proto_output_path}.")
 
+        if include_samples:
+            googleapis_service_dir = googleapis / config_path.parent
+            self._include_samples(version, genfiles, googleapis_service_dir)
+
         metadata.add_client_destination(
             source="googleapis" if not private else "googleapis-private",
             api_name=service,
@@ -163,6 +174,51 @@ class GAPICGenerator:
 
         _tracked_paths.add(genfiles)
         return genfiles
+
+    def _include_samples(self, version, genfiles, googleapis_service_dir):
+        """Include code samples and supporting resources in generated output.
+
+        Resulting directory structure in generated output:
+            samples/
+            ├── resources
+            │   └── file.csv
+            └── v1
+                ├── samples.manifest.yaml
+                ├── sample.py
+                └── test
+                    └── sample.test.yaml
+
+        Samples (.py) are included in the genfiles output of the generator.
+        Samples (.py) each include YAML comments for sample metedata.
+        Sample tests come from googleapis under {service}/{version}/samples/.
+        Sample resources are declared in {service}/sample_resources.yaml
+        which includes a list of files with public gs:// URIs for download.
+        Sample manifest file is generated which defines invocation commands
+        for each code sample, used by sample-tester to invoke samples.
+        """
+
+        samples_root_dir = genfiles / 'samples'
+        samples_version_dir = samples_root_dir / version
+        samples_test_dir = samples_version_dir / 'test'
+        googleapis_samples_dir = googleapis_service_dir / version / 'samples'
+
+        # Do not proceed if genfiles does not include samples/{version} dir.
+        if not samples_version_dir.is_dir():
+            return None
+
+        import shutil
+
+        # Get the *.test.yaml sample system test files and copy them into a
+        # samples/{version}/test/ directory in the output.
+        test_files = googleapis_samples_dir.glob('**/*.test.yaml')
+        os.makedirs(samples_test_dir, exist_ok=True)
+        for i in test_files:
+                log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
+                shutil.copyfile(i, samples_test_dir / i.name)
+
+        # Download sample resources from sample_resources.yaml storage URIs.
+
+        # Generate manifest file at samples/{version}/samples.manifest.yaml
 
     def _clone_googleapis(self):
         if self._googleapis is not None:
