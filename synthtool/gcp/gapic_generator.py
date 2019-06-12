@@ -116,7 +116,7 @@ class GAPICGenerator:
             if generator_args is None:
                 generator_args = []
             # Add feature flag for generating code samples with code generator.
-            generator_args.append('--dev_samples')
+            generator_args.append("--dev_samples")
 
         output_root = self._artman.run(
             f"googleapis/artman:{artman.ARTMAN_VERSION}",
@@ -197,10 +197,12 @@ class GAPICGenerator:
         for each code sample, used by sample-tester to invoke samples.
         """
 
-        samples_root_dir = genfiles / 'samples'
+        samples_root_dir = genfiles / "samples"
         samples_version_dir = samples_root_dir / version
-        samples_test_dir = samples_version_dir / 'test'
-        googleapis_samples_dir = googleapis_service_dir / version / 'samples'
+        samples_test_dir = samples_version_dir / "test"
+        samples_resources_dir = samples_root_dir / "resources"
+        googleapis_samples_dir = googleapis_service_dir / version / "samples"
+        googleapis_resources_yaml = googleapis_service_dir / "sample_resources.yaml"
 
         # Do not proceed if genfiles does not include samples/{version} dir.
         if not samples_version_dir.is_dir():
@@ -210,13 +212,38 @@ class GAPICGenerator:
 
         # Get the *.test.yaml sample system test files and copy them into a
         # samples/{version}/test/ directory in the output.
-        test_files = googleapis_samples_dir.glob('**/*.test.yaml')
+        test_files = googleapis_samples_dir.glob("**/*.test.yaml")
         os.makedirs(samples_test_dir, exist_ok=True)
         for i in test_files:
                 log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
                 shutil.copyfile(i, samples_test_dir / i.name)
 
         # Download sample resources from sample_resources.yaml storage URIs.
+        #
+        #  sample_resources:
+        #  - uri: gs://bucket/the/file/path.csv
+        #    description: Description of this resource
+        #
+        # Code follows happy path. An error is desired if YAML is invalid.
+        if googleapis_resources_yaml.is_file():
+            import re
+            import yaml
+            from google.cloud import storage
+            with open(googleapis_resources_yaml, "r") as stream:
+                resources_data = yaml.load(stream, Loader=yaml.SafeLoader)
+            stream.close()
+            resource_list = resources_data.get("sample_resources")
+            storage_client = storage.Client()
+            for resource in resource_list:
+                resource_uri = resource.get('uri')
+                uri_pattern = "gs://(?P<bucket>[^\/]+)/(?P<path>.*)"
+                uri_parts = re.match(uri_pattern, resource_uri)
+                filename = os.path.basename(uri_parts.get('path'))
+                download_path = samples_resources_dir / filename
+                bucket = storage_client.get_bucket(resource.get('bucket'))
+                blob = bucket.blob(uri_parts.get('path'))
+                log.debug(f"Download {resource_uri} to {download_path}")
+                blob.download_to_file(download_path.name)
 
         # Generate manifest file at samples/{version}/samples.manifest.yaml
 
