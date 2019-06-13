@@ -212,10 +212,10 @@ class GAPICGenerator:
             samples/
             ├── resources
             │   └── file.csv
-            └── v1
+            └── v1/
                 ├── samples.manifest.yaml
                 ├── sample.py
-                └── test
+                └── test/
                     └── sample.test.yaml
 
         Samples (.py) are included in the genfiles output of the generator.
@@ -228,10 +228,11 @@ class GAPICGenerator:
         """
 
         samples_root_dir = genfiles / "samples"
+        samples_resources_dir = samples_root_dir / "resources"
         samples_version_dir = samples_root_dir / version
         samples_test_dir = samples_version_dir / "test"
-        samples_resources_dir = samples_root_dir / "resources"
         samples_manifest_yaml = samples_version_dir / "test" / "samples.manifest.yaml"
+
         googleapis_samples_dir = googleapis_service_dir / version / "samples"
         googleapis_resources_yaml = googleapis_service_dir / "sample_resources.yaml"
 
@@ -242,16 +243,17 @@ class GAPICGenerator:
         import os
         import requests
         import shutil
-        from synthtool import shell
         import yaml
+        from synthtool import shell
 
-        # Get the *.test.yaml sample system test files and copy them into a
-        # samples/{version}/test/ directory in the output.
+        # Copy system tests from googleapis {service}/{version}/samples/*.test.yaml
+        # into generated output as samples/{version}/test/*.test.yaml
         test_files = googleapis_samples_dir.glob("**/*.test.yaml")
-        os.makedirs(samples_test_dir, exist_ok=True)
-        for i in test_files:
-                log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
-                shutil.copyfile(i, samples_test_dir / i.name)
+        if len(test_files):
+            os.makedirs(samples_test_dir, exist_ok=True)
+            for i in test_files:
+                    log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
+                    shutil.copyfile(i, samples_test_dir / i.name)
 
         # Download sample resources from sample_resources.yaml storage URIs.
         #
@@ -259,7 +261,7 @@ class GAPICGenerator:
         #  - uri: gs://bucket/the/file/path.csv
         #    description: Description of this resource
         #
-        # Code follows happy path. An error is desired if YAML is invalid.
+        # Code follows happy path. An error is desirable if YAML is invalid.
         if googleapis_resources_yaml.is_file():
             with open(googleapis_resources_yaml, "r") as f:
                 resources_data = yaml.load(f, Loader=yaml.SafeLoader)
@@ -275,26 +277,27 @@ class GAPICGenerator:
                 with open(download_path, "wb") as f:
                     f.write(response.content)
 
-        # Generate manifest file at samples/{version}/samples.manifest.yaml
+        # Generate manifest file at samples/{version}/test/samples.manifest.yaml
+        # Includes a reference to every sample (via its "region tag" identifier)
+        # along with structured instructions on how to invoke that code sample,
+        # e.g. by running `python3` or `mvn exec:java` from a certain directory.
+        relative_manifest_path = str(samples_manifest_yaml.relative_to(samples_root_dir))
         MANIFEST_GEN_LANGUAGE_ARGUMENTS = {
             "python": ["--bin", "python3"],
             "nodejs": ["--bin", "node"],
             "ruby": ["--bin", "bundle exec ruby"],
             "php": ["--bin", "php"],
-            "java": ["--invocation", "mvn exec,java -q -D[sample] '-Dexec.arguments=@args'"]
+            "java": ["--invocation", "mvn exec:java -q -D[sample] '-Dexec.arguments=@args'"]
         }
-
-        relative_manifest_path = str(samples_manifest_yaml.relative_to(samples_root_dir))
-
         manifest_arguments = ["sample-tester", "gen-manifest"]
         manifest_arguments.extend(MANIFEST_GEN_LANGUAGE_ARGUMENTS[language])
         manifest_arguments.extend(["--env", language])
+        manifest_arguments.extend(["--chdir", "samples"])
         manifest_arguments.extend(["--output", relative_manifest_path])
         for code_sample in samples_version_dir.glob("*"):
             sample_path = str(code_sample.relative_to(samples_root_dir))
             if os.path.isfile(code_sample):
                 manifest_arguments.append(sample_path)
-
         try:
             log.debug(f"Writing samples manifest {manifest_arguments}")
             shell.run(manifest_arguments, cwd=samples_root_dir)
@@ -308,7 +311,6 @@ class GAPICGenerator:
             manifest_data = yaml.load(f, Loader=yaml.SafeLoader)
         for set in manifest_data["sets"]:
             set.pop("path", None)
-            set["chdir"] = "samples/"
         log.debug(f"Writing updated samples manifest {samples_manifest_yaml}")
         with open(samples_manifest_yaml, "w") as f:
             f.write(yaml.dump(manifest_data, default_flow_style=False))
