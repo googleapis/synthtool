@@ -221,8 +221,7 @@ class GAPICGenerator:
                 └── test/
                     └── sample.test.yaml
 
-        Samples (.py) are included in the genfiles output of the generator.
-        Samples (.py) each include YAML comments for sample metedata.
+        Samples are included in the genfiles output of the generator.
         Sample tests come from googleapis under {service}/{version}/samples/.
         Sample resources are declared in {service}/sample_resources.yaml
         which includes a list of files with public gs:// URIs for download.
