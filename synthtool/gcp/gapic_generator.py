@@ -161,7 +161,7 @@ class GAPICGenerator:
 
         if include_samples:
             googleapis_service_dir = googleapis / config_path.parent
-            self._include_samples(version, genfiles, googleapis_service_dir)
+            self._include_samples(language, version, genfiles, googleapis_service_dir)
 
         metadata.add_client_destination(
             source="googleapis" if not private else "googleapis-private",
@@ -205,7 +205,7 @@ class GAPICGenerator:
 
         return self._googleapis_private
 
-    def _include_samples(self, version, genfiles, googleapis_service_dir):
+    def _include_samples(self, language, version, genfiles, googleapis_service_dir):
         """Include code samples and supporting resources in generated output.
 
         Resulting directory structure in generated output:
@@ -231,6 +231,7 @@ class GAPICGenerator:
         samples_version_dir = samples_root_dir / version
         samples_test_dir = samples_version_dir / "test"
         samples_resources_dir = samples_root_dir / "resources"
+        samples_manifest_yaml = samples_version_dir / "test" / "samples.manifest.yaml"
         googleapis_samples_dir = googleapis_service_dir / version / "samples"
         googleapis_resources_yaml = googleapis_service_dir / "sample_resources.yaml"
 
@@ -238,7 +239,11 @@ class GAPICGenerator:
         if not samples_version_dir.is_dir():
             return None
 
+        import os
+        import requests
         import shutil
+        from synthtool import shell
+        import yaml
 
         # Get the *.test.yaml sample system test files and copy them into a
         # samples/{version}/test/ directory in the output.
@@ -256,8 +261,6 @@ class GAPICGenerator:
         #
         # Code follows happy path. An error is desired if YAML is invalid.
         if googleapis_resources_yaml.is_file():
-            import yaml
-            import requests
             with open(googleapis_resources_yaml, "r") as f:
                 resources_data = yaml.load(f, Loader=yaml.SafeLoader)
             resource_list = resources_data.get("sample_resources")
@@ -273,4 +276,39 @@ class GAPICGenerator:
                     f.write(response.content)
 
         # Generate manifest file at samples/{version}/samples.manifest.yaml
-        # TODO
+        MANIFEST_GEN_LANGUAGE_ARGUMENTS = {
+            "python": ["--bin", "python3"],
+            "nodejs": ["--bin", "node"],
+            "ruby": ["--bin", "bundle exec ruby"],
+            "php": ["--bin", "php"],
+            "java": ["--invocation", "mvn exec,java -q -D[sample] '-Dexec.arguments=@args'"]
+        }
+
+        relative_manifest_path = str(samples_manifest_yaml.relative_to(samples_root_dir))
+
+        manifest_arguments = ["sample-tester", "gen-manifest"]
+        manifest_arguments.extend(MANIFEST_GEN_LANGUAGE_ARGUMENTS[language])
+        manifest_arguments.extend(["--env", language])
+        manifest_arguments.extend(["--output", relative_manifest_path])
+        for code_sample in samples_version_dir.glob("*"):
+            sample_path = str(code_sample.relative_to(samples_root_dir))
+            if os.path.isfile(code_sample):
+                manifest_arguments.append(sample_path)
+
+        try:
+            log.debug(f"Writing samples manifest {manifest_arguments}")
+            shell.run(manifest_arguments, cwd=samples_root_dir)
+        except FileNotFoundError as e:
+            log.warning("Sample manifest not created: {e}")
+
+        # Pending https://github.com/googleapis/sample-tester/issues/70
+        # Remove the 'path:' from the manifest file because it has an
+        # absolute path tied to the artman-genfiles location.
+        with open(samples_manifest_yaml, "r") as f:
+            manifest_data = yaml.load(f, Loader=yaml.SafeLoader)
+        for set in manifest_data["sets"]:
+            set.pop("path", None)
+            set["chdir"] = "samples/"
+        log.debug(f"Writing updated samples manifest {samples_manifest_yaml}")
+        with open(samples_manifest_yaml, "w") as f:
+            f.write(yaml.dump(manifest_data, default_flow_style=False))
