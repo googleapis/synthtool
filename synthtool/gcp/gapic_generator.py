@@ -246,7 +246,7 @@ class GAPICGenerator:
         if not samples_version_dir.is_dir():
             return None
 
-        # Copy system tests from googleapis {service}/{version}/samples/*.test.yaml
+        # Copy sample tests from googleapis {service}/{version}/samples/*.test.yaml
         # into generated output as samples/{version}/test/*.test.yaml
         test_files = googleapis_samples_dir.glob("**/*.test.yaml")
         os.makedirs(samples_test_dir, exist_ok=True)
