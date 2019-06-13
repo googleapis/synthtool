@@ -286,7 +286,7 @@ class GAPICGenerator:
             "nodejs": ["--bin", "node"],
             "ruby": ["--bin", "bundle exec ruby"],
             "php": ["--bin", "php"],
-            "java": ["--invocation", "mvn exec:java -q -D[sample] '-Dexec.arguments=@args'"]
+            "java": ["--invocation", "mvn exec:java -q -D{sample} '-Dexec.arguments=@args'"]
         }
         manifest_arguments = ["sample-tester", "gen-manifest"]
         manifest_arguments.extend(MANIFEST_GEN_LANGUAGE_ARGUMENTS[language])
