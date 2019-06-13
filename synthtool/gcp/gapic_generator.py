@@ -222,7 +222,7 @@ class GAPICGenerator:
                     └── sample.test.yaml
 
         Samples are included in the genfiles output of the generator.
-        
+
         Sample tests are defined in googleapis:
             {service}/{version}/samples/*.test.yaml
 
@@ -237,7 +237,7 @@ class GAPICGenerator:
         samples_resources_dir = samples_root_dir / "resources"
         samples_version_dir = samples_root_dir / version
         samples_test_dir = samples_version_dir / "test"
-        samples_manifest_yaml = samples_version_dir / "test" / "samples.manifest.yaml"
+        samples_manifest_yaml = samples_test_dir / "samples.manifest.yaml"
 
         googleapis_samples_dir = googleapis_service_dir / version / "samples"
         googleapis_resources_yaml = googleapis_service_dir / "sample_resources.yaml"
