@@ -13,11 +13,12 @@
 # limitations under the License.
 
 import os
-from pathlib import Path
 import requests
 import shutil
-from typing import Optional
 import yaml
+
+from pathlib import Path
+from typing import Optional
 
 from synthtool import _tracked_paths
 from synthtool import log
