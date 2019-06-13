@@ -14,11 +14,15 @@
 
 import os
 from pathlib import Path
+import requests
+import shutil
 from typing import Optional
+import yaml
 
 from synthtool import _tracked_paths
 from synthtool import log
 from synthtool import metadata
+from synthtool import shell
 from synthtool.gcp import artman
 from synthtool.sources import git
 
@@ -141,8 +145,6 @@ class GAPICGenerator:
 
         # Get the *.protos files and put them in a protos dir in the output
         if include_protos:
-            import shutil
-
             source_dir = googleapis / config_path.parent / version
             proto_files = source_dir.glob("**/*.proto")
             # By default, put the protos at the root in a folder named 'protos'.
@@ -239,12 +241,6 @@ class GAPICGenerator:
         # Do not proceed if genfiles does not include samples/{version} dir.
         if not samples_version_dir.is_dir():
             return None
-
-        import os
-        import requests
-        import shutil
-        import yaml
-        from synthtool import shell
 
         # Copy system tests from googleapis {service}/{version}/samples/*.test.yaml
         # into generated output as samples/{version}/test/*.test.yaml
