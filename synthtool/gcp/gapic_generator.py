@@ -249,11 +249,10 @@ class GAPICGenerator:
         # Copy system tests from googleapis {service}/{version}/samples/*.test.yaml
         # into generated output as samples/{version}/test/*.test.yaml
         test_files = googleapis_samples_dir.glob("**/*.test.yaml")
-        if len(test_files):
-            os.makedirs(samples_test_dir, exist_ok=True)
-            for i in test_files:
-                    log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
-                    shutil.copyfile(i, samples_test_dir / i.name)
+        os.makedirs(samples_test_dir, exist_ok=True)
+        for i in test_files:
+                log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
+                shutil.copyfile(i, samples_test_dir / i.name)
 
         # Download sample resources from sample_resources.yaml storage URIs.
         #
