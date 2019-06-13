@@ -222,11 +222,15 @@ class GAPICGenerator:
                     └── sample.test.yaml
 
         Samples are included in the genfiles output of the generator.
-        Sample tests come from googleapis under {service}/{version}/samples/.
+        
+        Sample tests are defined in googleapis:
+            {service}/{version}/samples/*.test.yaml
+
         Sample resources are declared in {service}/sample_resources.yaml
         which includes a list of files with public gs:// URIs for download.
-        Sample manifest file is generated which defines invocation commands
-        for each code sample, used by sample-tester to invoke samples.
+
+        Sample manifest is a generated file which defines invocation commands
+        for each code sample (used by sample-tester to invoke samples).
         """
 
         samples_root_dir = genfiles / "samples"
