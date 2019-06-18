@@ -39,8 +39,8 @@ fi
 # if release-please keys set, we kick off a task to update the release-PR.
 if [ -f ${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-url-release-please ]; then
   npx release-please release-pr --token=${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-token-release-please \
-    --repo-url=googleapis/release-please \
-    --package-name=release-please \
+    --repo-url=googleapis/{{ metadata['repository_name'] }} \
+    --package-name={{ metadata['name'] }} \
     --api-url=${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-url-release-please \
     --proxy-key=${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-key-release-please
 fi
