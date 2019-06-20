@@ -25,6 +25,7 @@ from synthtool.sources import git
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
 GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
 LOCAL_GOOGLEAPIS: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
+LOCAL_GENERATOR: Optional[str] = os.environ.get("SYNTHTOOL_GENERATOR")
 
 
 class GAPICGenerator:
@@ -93,6 +94,10 @@ class GAPICGenerator:
                 "is unavailable."
             )
 
+        generator_dir = LOCAL_GENERATOR
+        if generator_dir is not None:
+            log.debug(f"Using local generator at {generator_dir}")
+
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
         if config_path is None:
@@ -116,6 +121,7 @@ class GAPICGenerator:
             googleapis,
             config_path,
             gapic_language_arg,
+            generator_dir=generator_dir,
             generator_args=generator_args,
         )
 
