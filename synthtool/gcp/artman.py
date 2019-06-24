@@ -59,13 +59,8 @@ class Artman:
         return self._docker_image_info()["RepoDigests"][0]
 
     def run(
-        self,
-        image,
-        root_dir,
-        config,
-        *args,
-        generator_dir=None,
-        generator_args=None):
+        self, image, root_dir, config, *args, generator_dir=None, generator_args=None
+    ):
         """Executes artman command in the artman container.
 
         Args:
@@ -101,25 +96,28 @@ class Artman:
         docker_cmd = ["docker", "run", "--name", container_name, "--rm", "-i"]
 
         # Environment variables
-        docker_cmd.extend([
-            "-e",
-            f"HOST_USER_ID={os.getuid()}",
-            "-e",
-            f"HOST_GROUP_ID={os.getgid()}",
-            "-e",
-            "RUNNING_IN_ARTMAN_DOCKER=True",
-        ])
-
+        docker_cmd.extend(
+            [
+                "-e",
+                f"HOST_USER_ID={os.getuid()}",
+                "-e",
+                f"HOST_GROUP_ID={os.getgid()}",
+                "-e",
+                "RUNNING_IN_ARTMAN_DOCKER=True",
+            ]
+        )
 
         # Local directories to mount as volumes (and set working directory -w)
-        docker_cmd.extend([
-            "-v",
-            f"{root_dir}:{root_dir}",
-            "-v",
-            f"{output_dir}:{output_dir}",
-            "-w",
-            root_dir
-        ])
+        docker_cmd.extend(
+            [
+                "-v",
+                f"{root_dir}:{root_dir}",
+                "-v",
+                f"{output_dir}:{output_dir}",
+                "-w",
+                root_dir,
+            ]
+        )
 
         # Use local copy of GAPIC generator to generate, if path provided
         if generator_dir:
