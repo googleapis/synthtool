@@ -196,7 +196,11 @@ def _replace_in_file(path, expr, replacement):
 
 
 def replace(
-    sources: ListOfPathsOrStrs, before: str, after: str, flags: int = re.MULTILINE
+    sources: ListOfPathsOrStrs,
+    before: str,
+    after: str,
+    flags: int = re.MULTILINE,
+    required=False,
 ):
     """Replaces occurrences of before with after in all the given sources."""
     expr = re.compile(before, flags=flags or 0)
@@ -213,7 +217,12 @@ def replace(
             log.info(f"Replaced {before!r} in {path}.")
 
     if not any_replaced:
-        log.warning(
-            f"No replacements made in {sources} for pattern {before}, maybe "
-            "replacement is not longer needed?"
-        )
+        if required:
+            log.error(
+                f"No replacements made in {sources} for required pattern {before}."
+            )
+        else:
+            log.warning(
+                f"No replacements made in {sources} for pattern {before}, maybe "
+                "replacement is not longer needed?"
+            )
