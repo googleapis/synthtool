@@ -58,7 +58,9 @@ class Artman:
     def docker_image(self) -> str:
         return self._docker_image_info()["RepoDigests"][0]
 
-    def run(self, image, root_dir, config, *args, generator_args=None):
+    def run(
+        self, image, root_dir, config, *args, generator_dir=None, generator_args=None
+    ):
         """Executes artman command in the artman container.
 
         Args:
@@ -72,6 +74,9 @@ class Artman:
             *args:
                 Arguments to artman that follow ``generate``. Defines which
                 artifacts to generate.
+            generator_dir (Optional[str]):
+                Path to local gapic-generator directory to use for generation.
+                By default, the latest version of gapic-generator will be used.
             generator_args (Optional[List[str]]):
                 Additional arguments to pass to the gapic generator, such as
                 ``--dev_samples``.
@@ -88,29 +93,38 @@ class Artman:
                 "--generator-args='{}'".format(" ".join(generator_args))
             )
 
-        docker_cmd = [
-            "docker",
-            "run",
-            "--name",
-            container_name,
-            "--rm",
-            "-i",
-            "-e",
-            f"HOST_USER_ID={os.getuid()}",
-            "-e",
-            f"HOST_GROUP_ID={os.getgid()}",
-            "-e",
-            "RUNNING_IN_ARTMAN_DOCKER=True",
-            "-v",
-            f"{root_dir}:{root_dir}",
-            "-v",
-            f"{output_dir}:{output_dir}",
-            "-w",
-            root_dir,
-            image,
-            "/bin/bash",
-            "-c",
-        ]
+        docker_cmd = ["docker", "run", "--name", container_name, "--rm", "-i"]
+
+        # Environment variables
+        docker_cmd.extend(
+            [
+                "-e",
+                f"HOST_USER_ID={os.getuid()}",
+                "-e",
+                f"HOST_GROUP_ID={os.getgid()}",
+                "-e",
+                "RUNNING_IN_ARTMAN_DOCKER=True",
+            ]
+        )
+
+        # Local directories to mount as volumes (and set working directory -w)
+        docker_cmd.extend(
+            [
+                "-v",
+                f"{root_dir}:{root_dir}",
+                "-v",
+                f"{output_dir}:{output_dir}",
+                "-w",
+                root_dir,
+            ]
+        )
+
+        # Use local copy of GAPIC generator to generate, if path provided
+        if generator_dir:
+            docker_cmd.extend(["-v", f"{generator_dir}:/toolkit"])
+
+        # Run /bin/bash in the image and then provide the shell command to run
+        docker_cmd.extend([image, "/bin/bash", "-c"])
 
         artman_command = " ".join(
             map(
