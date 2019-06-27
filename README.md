@@ -247,6 +247,21 @@ Specify the path to`googleapis` in the environment variable `SYNTHTOOL_GOOGLEAPI
 export SYNTHTOOL_GOOGLEAPIS=path/to/local/googleapis
 ```
 
+### Local GAPIC Generator
+SynthTool supports generation from a local copy of [gapic-generator](https://github.com/googleapis/gapic-generator).
+Specify the path to`gapic-generator` in the environment variable `SYNTHTOOL_GENERATOR`.
+
+```
+export SYNTHTOOL_GENERATOR=path/to/local/gapic-generator
+```
+
+Don't forget to compile `gapic-generator` before running SynthTool.
+
+```
+cd path/to/local/gapic-generator
+./gradlew fatJar
+```
+
 ### Include .proto files
 SynthTool supports copying .proto API definition files from googleapis.
 

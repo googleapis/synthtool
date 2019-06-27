@@ -41,5 +41,8 @@ module.exports = {
     sourceFiles: false,
     systemName: '{{ metadata['name'] }}',
     theme: 'lumen'
+  },
+  markdown: {
+    idInHeadings: true
   }
 };
