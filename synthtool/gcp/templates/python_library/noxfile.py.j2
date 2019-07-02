@@ -37,7 +37,7 @@ def lint(session):
     Returns a failure if the linters find linting errors or sufficiently
     serious code quality issues.
     """
-    session.install("flake8", "black", *LOCAL_DEPS)
+    session.install("flake8", "black==19.3b0", *LOCAL_DEPS)
     session.run(
         "black",
         "--check",
@@ -56,7 +56,7 @@ def blacken(session):
     That run uses an image that doesn't have 3.6 installed. Before updating this
     check the state of the `gcp_ubuntu_config` we use for that Kokoro run.
     """
-    session.install("black")
+    session.install("black==19.3b0")
     session.run(
         "black",
         *BLACK_PATHS,
