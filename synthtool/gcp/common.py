@@ -27,8 +27,8 @@ from synthtool import metadata
 
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
-_RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart]"
-_RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart]"
+_RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart\w*]"
+_RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart\w*]"
 
 
 class CommonTemplates:
@@ -107,7 +107,7 @@ class CommonTemplates:
             files = os.listdir(samples_dir)
             files.sort()
             for file in files:
-                if re.match(r"\w+\.js$", file):
+                if re.match(r"[\w.]+\.js$", file):
                     if file == "quickstart.js":
                         metadata["quickstart"] = self._read_quickstart(samples_dir)
                     # only add quickstart file to samples list if code sample is found.
