@@ -56,6 +56,12 @@ class CommonTemplates:
     def py_library(self, **kwargs) -> Path:
         return self._generic_library("python_library", **kwargs)
 
+    def java_library(self, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+        return self._generic_library("java_library", **kwargs)
+
     def node_library(self, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
         #  .repo-metadata.json, or excluding README.md, we can remove this.
