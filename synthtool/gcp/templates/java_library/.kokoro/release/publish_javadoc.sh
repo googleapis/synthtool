@@ -33,7 +33,7 @@ python3 -m pip install gcp-docuploader
 # compile all packages
 mvn clean install -B -DskipTests=true
 
-NAME={{ metadata['repository_name'] }}
+NAME={{ metadata['repo']['name'] }}
 VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 
 # build the docs

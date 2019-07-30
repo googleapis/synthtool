@@ -21,8 +21,8 @@ export NPM_CONFIG_PREFIX=/home/node/.npm-global
 if [ -f ${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-url-release-please ]; then
   # Groom the snapshot release PR immediately after publishing a release
   npx release-please release-pr --token=${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-token-release-please \
-    --repo-url=googleapis/{{ metadata['repository_name'] }} \
-    --package-name="{{ metadata['repository_name'] }}" \
+    --repo-url={{ metadata['repo']['repo'] }} \
+    --package-name="{{ metadata['repo']['name'] }}" \
     --api-url=${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-url-release-please \
     --proxy-key=${KOKORO_KEYSTORE_DIR}/73713_github-magic-proxy-key-release-please \
     --snapshot \

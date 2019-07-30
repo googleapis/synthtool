@@ -10,7 +10,7 @@ Thanks for stopping by to let us know something could be better!
 
 Please run down the following list and make sure you've tried the usual "quick fixes":
 
-  - Search the issues already opened: https://github.com/googleapis/{{metadata['repository']}}/issues
+  - Search the issues already opened: https://github.com/googleapis/{{metadata['repo']['name']}}/issues
   - Check for answers on StackOverflow: http://stackoverflow.com/questions/tagged/google-cloud-platform
 
 If you are still having issues, please be sure to include as much information as possible:
@@ -21,7 +21,7 @@ If you are still having issues, please be sure to include as much information as
    General, Core, and Other are also allowed as types
 2. OS type and version:
 3. Java version:
-4. {{metadata['repository']}} version(s):
+4. {{metadata['repo']['name']}} version(s):
 
 #### Steps to reproduce
 
