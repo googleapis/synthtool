@@ -94,8 +94,8 @@ Apache 2.0 - See [LICENSE][license] for more information.
 [api-reference]: {{metadata['repo']['api_reference']}}
 [product-docs]: {{metadata['repo']['product_documentation']}}
 [javadocs]: {{metadata['repo']['client_documentation']}}
-[kokoro-badge-image]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['name']}}/master.svg
-[kokoro-badge-link]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['name']}}/master.html
+[kokoro-badge-image]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/master.svg
+[kokoro-badge-link]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/master.html
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/{{metadata['repo']['name']}}.svg
 [maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:{{metadata['repo']['name']}}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
