@@ -40,7 +40,7 @@ See the [Authentication][authentication] section in the base directory's README.
 
 [{{metadata['repo']['name_pretty']}}][api-reference] is a suite of Machine Learning products.
 
-See the [[{{metadata['repo']['name_pretty']}}][api-reference] client library docs][javadocs] to learn how to
+See the [{{metadata['repo']['name_pretty']}} client library docs][javadocs] to learn how to
 use this {{metadata['repo']['name_pretty']}} Client Library.
 
 ## Getting Started
