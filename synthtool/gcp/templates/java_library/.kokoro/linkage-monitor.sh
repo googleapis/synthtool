@@ -17,7 +17,7 @@ set -eo pipefail
 # Display commands being run.
 set -x
 
-cd github/{{ metadata['repository_name'] }}/
+cd github/{{ metadata['repo']['repo_short'] }}/
 
 # Print out Java version
 java -version

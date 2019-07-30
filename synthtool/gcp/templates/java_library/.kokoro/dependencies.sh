@@ -15,7 +15,7 @@
 
 set -eo pipefail
 
-cd github/{{ metadata['repository_name'] }}/
+cd github/{{ metadata['repo']['repo_short'] }}/
 
 # Print out Java
 java -version
