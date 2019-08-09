@@ -721,88 +721,88 @@ _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 Metadata = _reflection.GeneratedProtocolMessageType(
     "Metadata",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _METADATA,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_METADATA,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Metadata)
-    },
+    ),
 )
 _sym_db.RegisterMessage(Metadata)
 
 Source = _reflection.GeneratedProtocolMessageType(
     "Source",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _SOURCE,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_SOURCE,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Source)
-    },
+    ),
 )
 _sym_db.RegisterMessage(Source)
 
 GitSource = _reflection.GeneratedProtocolMessageType(
     "GitSource",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _GITSOURCE,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_GITSOURCE,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.GitSource)
-    },
+    ),
 )
 _sym_db.RegisterMessage(GitSource)
 
 GeneratorSource = _reflection.GeneratedProtocolMessageType(
     "GeneratorSource",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _GENERATORSOURCE,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_GENERATORSOURCE,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.GeneratorSource)
-    },
+    ),
 )
 _sym_db.RegisterMessage(GeneratorSource)
 
 TemplateSource = _reflection.GeneratedProtocolMessageType(
     "TemplateSource",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _TEMPLATESOURCE,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_TEMPLATESOURCE,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.TemplateSource)
-    },
+    ),
 )
 _sym_db.RegisterMessage(TemplateSource)
 
 Destination = _reflection.GeneratedProtocolMessageType(
     "Destination",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _DESTINATION,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_DESTINATION,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Destination)
-    },
+    ),
 )
 _sym_db.RegisterMessage(Destination)
 
 ClientDestination = _reflection.GeneratedProtocolMessageType(
     "ClientDestination",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _CLIENTDESTINATION,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_CLIENTDESTINATION,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.ClientDestination)
-    },
+    ),
 )
 _sym_db.RegisterMessage(ClientDestination)
 
 FileSetDestination = _reflection.GeneratedProtocolMessageType(
     "FileSetDestination",
     (_message.Message,),
-    {
-        "DESCRIPTOR": _FILESETDESTINATION,
-        "__module__": "metadata_pb2"
+    dict(
+        DESCRIPTOR=_FILESETDESTINATION,
+        __module__="metadata_pb2"
         # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.FileSetDestination)
-    },
+    ),
 )
 _sym_db.RegisterMessage(FileSetDestination)
 
