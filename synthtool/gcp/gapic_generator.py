@@ -315,15 +315,3 @@ class GAPICGenerator:
             shell.run(manifest_arguments, cwd=samples_root_dir)
         except subprocess.CalledProcessError as exp:
             log.warning("sample-tester failed to run (may not be installed)")
-
-        # Pending https://github.com/googleapis/sample-tester/issues/70
-        # Remove the 'path:' from the manifest file because it has an
-        # absolute path tied to the artman-genfiles location.
-        if os.path.isfile(samples_manifest_yaml):
-            with open(samples_manifest_yaml, "r") as f:
-                manifest_data = yaml.load(f, Loader=yaml.SafeLoader)
-            for set in manifest_data["sets"]:
-                set.pop("path", None)
-            log.debug(f"Writing updated samples manifest {samples_manifest_yaml}")
-            with open(samples_manifest_yaml, "w") as f:
-                f.write(yaml.dump(manifest_data, default_flow_style=False))
