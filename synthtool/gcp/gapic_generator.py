@@ -221,20 +221,27 @@ class GAPICGenerator:
         Resulting directory structure in generated output:
             samples/
             ├── resources
-            │   └── file.csv
+            │   ├── example_text_file.txt
+            │   └── example_data.csv
             └── v1/
-                ├── samples.manifest.yaml
-                ├── sample.py
+                ├── sample_one.py
+                ├── sample_two.py
                 └── test/
-                    └── sample.test.yaml
+                    ├── samples.manifest.yaml
+                    ├── sample_one.test.yaml
+                    └── sample_two.test.yaml
 
         Samples are included in the genfiles output of the generator.
 
         Sample tests are defined in googleapis:
-            {service}/{version}/samples/*.test.yaml
+            {service}/{version}/samples/test/*.test.yaml
 
         Sample resources are declared in {service}/sample_resources.yaml
         which includes a list of files with public gs:// URIs for download.
+
+        Sample resources are files needed to run code samples or system tests.
+        Synth keeps resources in sync by always pulling down the latest version.
+        It is recommended to store resources in the `cloud-samples-data` bucket.
 
         Sample manifest is a generated file which defines invocation commands
         for each code sample (used by sample-tester to invoke samples).
