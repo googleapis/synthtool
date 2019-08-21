@@ -243,15 +243,21 @@ class GAPICGenerator:
         samples_root_dir = genfiles / "samples"
         samples_resources_dir = samples_root_dir / "resources"
         samples_version_dir = samples_root_dir / version
+
+        # Some languages capitalize their `V` prefix for version numbers
+        if not samples_version_dir.is_dir():
+            samples_version_dir = samples_root_dir / version.capitalize()
+
+        # Do not proceed if genfiles does not include samples/{version} dir.
+        if not samples_version_dir.is_dir():
+            return None
+
         samples_test_dir = samples_version_dir / "test"
         samples_manifest_yaml = samples_test_dir / "samples.manifest.yaml"
 
         googleapis_samples_dir = googleapis_service_dir / version / "samples"
         googleapis_resources_yaml = googleapis_service_dir / "sample_resources.yaml"
 
-        # Do not proceed if genfiles does not include samples/{version} dir.
-        if not samples_version_dir.is_dir():
-            return None
 
         # Copy sample tests from googleapis {service}/{version}/samples/*.test.yaml
         # into generated output as samples/{version}/test/*.test.yaml
