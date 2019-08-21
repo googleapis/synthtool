@@ -265,7 +265,6 @@ class GAPICGenerator:
         googleapis_samples_dir = googleapis_service_dir / version / "samples"
         googleapis_resources_yaml = googleapis_service_dir / "sample_resources.yaml"
 
-
         # Copy sample tests from googleapis {service}/{version}/samples/*.test.yaml
         # into generated output as samples/{version}/test/*.test.yaml
         test_files = googleapis_samples_dir.glob("**/*.test.yaml")
@@ -300,17 +299,21 @@ class GAPICGenerator:
         # Includes a reference to every sample (via its "region tag" identifier)
         # along with structured instructions on how to invoke that code sample.
         relative_manifest_path = str(samples_manifest_yaml.relative_to(samples_root_dir))
-        MANIFEST_GEN_LANGUAGE_ARGUMENTS = {
-            "python": ["--bin=python3"],
-            "nodejs": ["--bin=node"],
-            "ruby": ["--bin=bundle exec ruby"],
-            "php": ["--bin=php"]
+
+        LANGUAGE_EXECUTABLES = {
+            "nodejs": "node",
+            "php": "php",
+            "python": "python3",
+            "ruby": "bundle exec ruby"
         }
-        manifest_arguments = ["gen-manifest"]
-        manifest_arguments.extend(MANIFEST_GEN_LANGUAGE_ARGUMENTS[language])
-        manifest_arguments.extend([f"--env={language}"])
-        manifest_arguments.extend(["--chdir={@manifest_dir}/../.."])
-        manifest_arguments.extend([f"--output={relative_manifest_path}"])
+        manifest_arguments = [
+            "gen-manifest",
+            f"--env={language}",
+            f"--bin={LANGUAGE_EXECUTABLES[language]}",
+            f"--output={relative_manifest_path}",
+            "--chdir={@manifest_dir}/../.."
+        ]
+
         for code_sample in samples_version_dir.glob("*"):
             sample_path = str(code_sample.relative_to(samples_root_dir))
             if os.path.isfile(code_sample):
