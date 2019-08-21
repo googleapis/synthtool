@@ -291,8 +291,7 @@ class GAPICGenerator:
 
         # Generate manifest file at samples/{version}/test/samples.manifest.yaml
         # Includes a reference to every sample (via its "region tag" identifier)
-        # along with structured instructions on how to invoke that code sample,
-        # e.g. by running `python3` or `mvn exec:java` from a certain directory.
+        # along with structured instructions on how to invoke that code sample.
         relative_manifest_path = str(samples_manifest_yaml.relative_to(samples_root_dir))
         MANIFEST_GEN_LANGUAGE_ARGUMENTS = {
             "python": ["--bin", "python3"],
