@@ -13,9 +13,19 @@
 # limitations under the License.
 
 from . import gapic_generator
+from . import gapic_microgenerator
 from . import discogapic_generator
 from . import common
 
 DiscoGAPICGenerator = discogapic_generator.DiscoGAPICGenerator
 GAPICGenerator = gapic_generator.GAPICGenerator
+GAPICMicrogenerator = gapic_microgenerator.GAPICMicrogenerator
 CommonTemplates = common.CommonTemplates
+
+
+__all__ = (
+    "CommonTemplates",
+    "DiscoGAPICGenerator",
+    "GAPICGenerator",
+    "GAPICMicrogenerator",
+)
