@@ -313,4 +313,4 @@ class GAPICGenerator:
             log.debug(f"Writing samples manifest {manifest_arguments}")
             shell.run(manifest_arguments, cwd=samples_root_dir)
         except subprocess.CalledProcessError as exp:
-            log.warning("sample-tester failed to run (may not be installed)")
+            log.warning("gen-manifest failed (sample-tester may not be installed)")
