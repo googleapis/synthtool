@@ -301,7 +301,7 @@ class GAPICGenerator:
             "php": ["--bin", "php"],
             "java": ["--invocation", "mvn exec:java -q -D{sample} '-Dexec.arguments=@args'"]
         }
-        manifest_arguments = ["sample-tester", "gen-manifest"]
+        manifest_arguments = ["gen-manifest"]
         manifest_arguments.extend(MANIFEST_GEN_LANGUAGE_ARGUMENTS[language])
         manifest_arguments.extend(["--env", language])
         manifest_arguments.extend(["--chdir", "samples"])
