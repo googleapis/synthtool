@@ -294,16 +294,16 @@ class GAPICGenerator:
         # along with structured instructions on how to invoke that code sample.
         relative_manifest_path = str(samples_manifest_yaml.relative_to(samples_root_dir))
         MANIFEST_GEN_LANGUAGE_ARGUMENTS = {
-            "python": ["--bin", "python3"],
-            "nodejs": ["--bin", "node"],
-            "ruby": ["--bin", "bundle exec ruby"],
-            "php": ["--bin", "php"]
+            "python": ["--bin=python3"],
+            "nodejs": ["--bin=node"],
+            "ruby": ["--bin=bundle exec ruby"],
+            "php": ["--bin=php"]
         }
         manifest_arguments = ["gen-manifest"]
         manifest_arguments.extend(MANIFEST_GEN_LANGUAGE_ARGUMENTS[language])
-        manifest_arguments.extend(["--env", language])
-        manifest_arguments.extend(["--chdir", "samples"])
-        manifest_arguments.extend(["--output", relative_manifest_path])
+        manifest_arguments.extend([f"--env={language}"])
+        manifest_arguments.extend(["--chdir={@manifest_dir}/../.."])
+        manifest_arguments.extend([f"--output={relative_manifest_path}"])
         for code_sample in samples_version_dir.glob("*"):
             sample_path = str(code_sample.relative_to(samples_root_dir))
             if os.path.isfile(code_sample):
