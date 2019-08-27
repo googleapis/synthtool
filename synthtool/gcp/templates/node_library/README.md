@@ -126,12 +126,10 @@ Apache Version 2.0
 
 See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/LICENSE)
 
-{% if metadata['repo']['client_documentation'] %}[client-docs]: {{ metadata['repo']['client_documentation'] }}#reference{% endif %}
+{% if metadata['repo']['client_documentation'] %}[client-docs]: {{ metadata['repo']['client_documentation'] }}{% endif %}
 {% if metadata['repo']['product_documentation'] %}[product-docs]: {{ metadata['repo']['product_documentation'] }}{% endif %}
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 {% if metadata['repo']['api_id'] %}[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [auth]: https://cloud.google.com/docs/authentication/getting-started
-
-<a name="reference"></a>
