@@ -19,7 +19,7 @@ import yaml
 from pathlib import Path
 from typing import List, Dict
 
-from synthtool.languages import node
+from synthtool.languages import node, python
 from synthtool.sources import templates
 from synthtool import __main__
 from synthtool import _tracked_paths
@@ -54,6 +54,7 @@ class CommonTemplates:
         return result
 
     def py_library(self, **kwargs) -> Path:
+        kwargs["metadata"] = python.read_metadata()
         return self._generic_library("python_library", **kwargs)
 
     def node_library(self, **kwargs) -> Path:
