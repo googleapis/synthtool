@@ -22,13 +22,11 @@ import shutil
 
 import nox
 
+BLACK_PATHS = []
 
-LOCAL_DEPS = (os.path.join("..", "api_core"), os.path.join("..", "core"))
-
-BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
-
-if os.path.exists("samples"):
-    BLACK_PATHS.append("samples")
+for path in ["docs", "google", "tests", "noxfile.py", "setup.py", "samples"]:
+    if os.path.exists(path):
+        BLACK_PATHS.append(path)
 
 @nox.session(python="3.7")
 def lint(session):
@@ -37,7 +35,6 @@ def lint(session):
     Returns a failure if the linters find linting errors or sufficiently
     serious code quality issues.
     """
-    session.install("flake8", "black", *LOCAL_DEPS)
     session.run(
         "black",
         "--check",
@@ -73,8 +70,6 @@ def lint_setup_py(session):
 def default(session):
     # Install all test dependencies, then install this package in-place.
     session.install("mock", "pytest", "pytest-cov")
-    for local_dep in LOCAL_DEPS:
-        session.install("-e", local_dep)
     session.install("-e", "."){% for dependency in unit_test_dependencies %}
     session.install("-e", "{{dependency}}"){% endfor %}
 
@@ -120,8 +115,6 @@ def system(session):
     # Install all test dependencies, then install this package into the
     # virtualenv's dist-packages.
     session.install("mock", "pytest")
-    for local_dep in LOCAL_DEPS:
-        session.install("-e", local_dep)
     session.install("-e", "../test_utils/"){% for dependency in system_test_dependencies %}
     session.install("-e", "{{dependency}}"){% endfor %}
     session.install("-e", ".")
@@ -143,8 +136,6 @@ def samples(session):
         session.skip("Credentials must be set via environment variable")
 
     session.install("mock", "pytest")
-    for local_dep in LOCAL_DEPS:
-        session.install("-e", local_dep)
     if requirements_exists:
         session.install("-r", requirements_path)
     session.install("-e", ".")
