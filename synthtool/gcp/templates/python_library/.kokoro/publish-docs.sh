@@ -5,7 +5,7 @@ set -eo pipefail
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
-cd github/google-resumable-media-python
+cd github/{{ metadata['repo']['repo'].split('/')[1] }}
 
 # Remove old nox
 python3.6 -m pip uninstall --yes --quiet nox-automation

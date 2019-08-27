@@ -16,7 +16,7 @@
 
 set -eo pipefail
 
-cd github/google-resumable-media-python
+cd github/{{ metadata['repo']['repo'].split('/')[1] }}
 
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
