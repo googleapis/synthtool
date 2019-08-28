@@ -23,8 +23,8 @@ import shutil
 import nox
 
 BLACK_PATHS = []
-
-for path in ["docs", "google", "tests", "noxfile.py", "setup.py", "samples"]:
+candidate_black_paths = ["docs", "google", "tests", "noxfile.py", "setup.py", "samples", {% for path in black_paths %}"{{path}}",{% endfor %}]
+for path in set(candidate_black_paths):
     if os.path.exists(path):
         BLACK_PATHS.append(path)
 
