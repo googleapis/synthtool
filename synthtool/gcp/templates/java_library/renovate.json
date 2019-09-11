@@ -25,7 +25,7 @@
     {
       "packagePatterns": ["^io.opencensus:opencensus-"],
       "groupName": "OpenCensus packages"
-    },
+    }
   ],
   "semanticCommits": true
 }
