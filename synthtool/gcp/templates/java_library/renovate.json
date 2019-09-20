@@ -25,6 +25,11 @@
     {
       "packagePatterns": ["^io.opencensus:opencensus-"],
       "groupName": "OpenCensus packages"
+    },
+    {
+      "managers": ["maven"],
+      "packageNames": ["com.google.guava:guava"],
+      "versionScheme": "docker"
     }
   ],
   "semanticCommits": true
