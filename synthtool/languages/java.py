@@ -56,6 +56,7 @@ BAD_LICENSE = """/\\*
  \\*/
 """
 
+
 def format_code(
     path: str, version: str = DEFAULT_FORMAT_VERSION, times: int = 2
 ) -> None:
@@ -88,20 +89,16 @@ def _download_formatter(version: str, dest: Path) -> None:
 
 def fix_proto_headers(proto_root: Path) -> None:
     s.replace(
-        proto_root / "src/**/*.java",
+        [proto_root / "src/**/*.java"],
         PROTOBUF_HEADER,
-        f"{GOOD_LICENSE}{PROTOBUF_HEADER}"
+        f"{GOOD_LICENSE}{PROTOBUF_HEADER}",
     )
-    s.replace(
-        proto_root / "src/**/*Name.java",
-        BAD_LICENSE,
-        GOOD_LICENSE
-    )
+    s.replace([proto_root / "src/**/*Name.java"], BAD_LICENSE, GOOD_LICENSE)
 
 
 def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
     s.replace(
-        grpc_root / "src/**/*.java",
+        [grpc_root / "src/**/*.java"],
         f"package {package_name};",
-        f"{GOOD_LICENSE}package {package_name};"
+        f"{GOOD_LICENSE}package {package_name};",
     )
