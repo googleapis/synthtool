@@ -2,8 +2,8 @@
 
 Java idiomatic client for [{{metadata['repo']['name_pretty']}}][api-reference].
 
-[![Kokoro CI][kokoro-badge-image]][kokoro-badge-link]
 [![Maven][maven-version-image]][maven-version-link]
+![Stability][stability-image]
 
 - [Product Documentation][product-docs]
 - [Client Library Documentation][javadocs]
@@ -18,17 +18,17 @@ If you are using Maven, add this to your pom.xml file
 ```xml
 <dependency>
   <groupId>com.google.cloud</groupId>
-  <artifactId>{{metadata['repo']['name']}}</artifactId>
+  <artifactId>google-cloud-{{metadata['repo']['name']}}</artifactId>
   <version>0.102.0-beta</version>
 </dependency>
 ```
 If you are using Gradle, add this to your dependencies
 ```Groovy
-compile 'com.google.cloud:{{metadata['repo']['name']}}:0.102.0-beta'
+compile 'com.google.cloud:google-cloud-{{metadata['repo']['name']}}:0.102.0-beta'
 ```
 If you are using SBT, add this to your dependencies
 ```Scala
-libraryDependencies += "com.google.cloud" % "{{metadata['repo']['name']}}" % "0.102.0-beta"
+libraryDependencies += "com.google.cloud" % "google-cloud-{{metadata['repo']['name']}}" % "0.102.0-beta"
 ```
 [//]: # ({x-version-update-end})
 
@@ -55,8 +55,8 @@ project set up. You will also need to set up the local development environment b
 
 ### Installation and setup
 
-You'll need to obtain the `{{metadata['repo']['name']}}` library.  See the [Quickstart](#quickstart) section
-to add `{{metadata['repo']['name']}}` as a dependency in your code.
+You'll need to obtain the `google-cloud-{{metadata['repo']['name']}}` library.  See the [Quickstart](#quickstart) section
+to add `google-cloud-{{metadata['repo']['name']}}` as a dependency in your code.
 
 ## Troubleshooting
 
@@ -91,19 +91,37 @@ information.
 
 Apache 2.0 - See [LICENSE][license] for more information.
 
+## CI Status
+
+Java Version | Status
+------------ | ------
+Java 7 | [![Kokoro CI][kokoro-badge-image-1]][kokoro-badge-link-1]
+Java 8 | [![Kokoro CI][kokoro-badge-image-2]][kokoro-badge-link-2]
+Java 8 OSX | [![Kokoro CI][kokoro-badge-image-3]][kokoro-badge-link-3]
+Java 8 Windows | [![Kokoro CI][kokoro-badge-image-4]][kokoro-badge-link-4]
+Java 11 | [![Kokoro CI][kokoro-badge-image-5]][kokoro-badge-link-5]
+
 [api-reference]: {{metadata['repo']['api_reference']}}
 [product-docs]: {{metadata['repo']['product_documentation']}}
 [javadocs]: {{metadata['repo']['client_documentation']}}
-[kokoro-badge-image]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/master.svg
-[kokoro-badge-link]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/master.html
-[maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/{{metadata['repo']['name']}}.svg
-[maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:{{metadata['repo']['name']}}&core=gav
+[kokoro-badge-image-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java7.svg
+[kokoro-badge-link-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java7.html
+[kokoro-badge-image-2]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8.svg
+[kokoro-badge-link-2]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8.html
+[kokoro-badge-image-3]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-osx.svg
+[kokoro-badge-link-3]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-osx.html
+[kokoro-badge-image-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-win.svg
+[kokoro-badge-link-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-win.html
+[kokoro-badge-image-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java11.svg
+[kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java11.html
+[stability-image]: https://img.shields.io/badge/stability-{% if metadata['repo']['release_level'] == 'ga' %}ga-green{% elif metadata['repo']['release_level'] == 'beta' %}beta-yellow{% elif metadata['repo']['release_level'] == 'alpha' %}alpha-orange{% else %}unknown-red{% endif %}
+[maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-{{metadata['repo']['name']}}.svg
+[maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-{{metadata['repo']['name']}}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
 [developer-console]: https://console.developers.google.com/
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-sdk]: https://cloud.google.com/sdk/
 [troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/master/troubleshooting/readme.md#troubleshooting
-
 [contributing]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CONTRIBUTING.md
 [code-of-conduct]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CODE_OF_CONDUCT.md#contributor-code-of-conduct
 [license]: https://github.com/{{metadata['repo']['repo']}}/blob/master/LICENSE
