@@ -105,13 +105,14 @@ def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
         f"{GOOD_LICENSE}package {package_name};",
     )
 
+
 def gapic_library(
     service: str,
     version: str,
-    config_pattern: '/google/cloud/{service}/artman_{service}_{version}.yaml',
-    package_pattern: str = 'com.google.cloud.{service}.{version}',
+    config_pattern: "/google/cloud/{service}/artman_{service}_{version}.yaml",
+    package_pattern: str = "com.google.cloud.{service}.{version}",
     gapic: gcp.GAPICGenerator = None,
-    **kwargs
+    **kwargs,
 ) -> Path:
     if gapic is None:
         gapic = gcp.GAPICGenerator()
@@ -120,18 +121,27 @@ def gapic_library(
         service=service,
         version=version,
         config_path=config_pattern.format(service=service, version=version),
-        artman_output_name='',
+        artman_output_name="",
         include_samples=True,
         **kwargs,
     )
     package_name = package_pattern.format(service=service, version=version)
-    fix_proto_headers(library / f'proto-google-cloud-{service}-{version}')
-    fix_grpc_headers(library / f'grpc-google-cloud-{service}-{version}', package_name)
+    fix_proto_headers(library / f"proto-google-cloud-{service}-{version}")
+    fix_grpc_headers(library / f"grpc-google-cloud-{service}-{version}", package_name)
 
-    s.copy(library / f'gapic-google-cloud-{service}-{version}/src', f'google-cloud-{service}/src')
-    s.copy(library / f'grpc-google-cloud-{service}-{version}/src', f'grpc-google-cloud-{service}-{version}/src')
-    s.copy(library / f'proto-google-cloud-{service}-{version}/src', f'proto-google-cloud-{service}-{version}/src')
+    s.copy(
+        library / f"gapic-google-cloud-{service}-{version}/src",
+        f"google-cloud-{service}/src",
+    )
+    s.copy(
+        library / f"grpc-google-cloud-{service}-{version}/src",
+        f"grpc-google-cloud-{service}-{version}/src",
+    )
+    s.copy(
+        library / f"proto-google-cloud-{service}-{version}/src",
+        f"proto-google-cloud-{service}-{version}/src",
+    )
 
-    format_code(f'google-cloud-{service}/src')
-    format_code(f'grpc-google-cloud-{service}-{version}/src')
-    format_code(f'proto-google-cloud-{service}-{version}/src')
+    format_code(f"google-cloud-{service}/src")
+    format_code(f"grpc-google-cloud-{service}-{version}/src")
+    format_code(f"proto-google-cloud-{service}-{version}/src")
