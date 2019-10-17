@@ -1,1 +1,2 @@
 releaseType: node
+packageName: '{{ metadata['name'] }}'
