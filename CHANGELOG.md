@@ -4,6 +4,87 @@
 
 [1]: https://pypi.org/project/gcp-synthtool/#history
 
+## 2019.10.17
+
+10-17-2019 14:59 PDT
+
+### Implementation Changes
+- Catch FileNotFoundError. ([#286](https://github.com/GoogleCloudPlatform/synthtool/pull/286))
+- fix: allow multiple periods in filename ([#261](https://github.com/GoogleCloudPlatform/synthtool/pull/261))
+
+### New Features
+- Add include_samples=True ([#263](https://github.com/GoogleCloudPlatform/synthtool/pull/263))
+- Add Python microgenerator support to synthtool. ([#252](https://github.com/GoogleCloudPlatform/synthtool/pull/252))
+- Add support for using local GAPIC generator ([#265](https://github.com/GoogleCloudPlatform/synthtool/pull/265))
+
+### Documentation
+- Fix a small README error. ([#251](https://github.com/GoogleCloudPlatform/synthtool/pull/251))
+- README updates (various) ([#242](https://github.com/GoogleCloudPlatform/synthtool/pull/242))
+
+### Template Changes
+
+#### Node
+- docs: tweaks to testing instructions ([#303](https://github.com/GoogleCloudPlatform/synthtool/pull/303))
+- feat: make node release type explicit ([#302](https://github.com/GoogleCloudPlatform/synthtool/pull/302))
+- bug: update bug_report.md template to use `repo_short` ([#301](https://github.com/GoogleCloudPlatform/synthtool/pull/301))
+- docs(node): update contributing docs to include running tests ([#298](https://github.com/GoogleCloudPlatform/synthtool/pull/298))
+- fix: use repo rather than name ([#296](https://github.com/GoogleCloudPlatform/synthtool/pull/296))
+- fix(node): add a common pull request template ([#295](https://github.com/GoogleCloudPlatform/synthtool/pull/295))
+- fix: do not eslint in protos/ ([#293](https://github.com/GoogleCloudPlatform/synthtool/pull/293))
+- fix release-please config file name ([#291](https://github.com/GoogleCloudPlatform/synthtool/pull/291))
+- fix: use repo's default language ([#290](https://github.com/GoogleCloudPlatform/synthtool/pull/290))
+- build: switching to GitHub app for release-please ([#289](https://github.com/GoogleCloudPlatform/synthtool/pull/289))
+- test: exclude conformance tests from code coverage ([#278](https://github.com/GoogleCloudPlatform/synthtool/pull/278))
+- fix: with new jsdoc template API docs are no longer in footer ([#282](https://github.com/GoogleCloudPlatform/synthtool/pull/282))
+- node: use the jsdoc-fresh theme ([#272](https://github.com/GoogleCloudPlatform/synthtool/pull/272))
+- fix: some quickstart region tags include suffix ([#257](https://github.com/GoogleCloudPlatform/synthtool/pull/257))
+- fix: shell jobs were outputting too much information ([#254](https://github.com/GoogleCloudPlatform/synthtool/pull/254))
+- fix: Ignore "protos" directory for Node coverage ([#253](https://github.com/GoogleCloudPlatform/synthtool/pull/253))
+- fix: codecov token should be available in presubmit ([#241](https://github.com/GoogleCloudPlatform/synthtool/pull/241))
+- fix: move codecov token to node10 ([#239](https://github.com/GoogleCloudPlatform/synthtool/pull/239))
+- fix: temporary patch for broken Windows image ([#240](https://github.com/GoogleCloudPlatform/synthtool/pull/240))
+- feat: add Node@12 to test matrix (remove 11) ([#274](https://github.com/GoogleCloudPlatform/synthtool/pull/274))
+- feat: add anchor so that we can link directly to reference docs ([#268](https://github.com/GoogleCloudPlatform/synthtool/pull/268))
+- build: switch to using GitHub magic proxy for release-please ([#264](https://github.com/GoogleCloudPlatform/synthtool/pull/264))
+- build: add job for publishing docs to googleapis.dev ([#249](https://github.com/GoogleCloudPlatform/synthtool/pull/249))
+- feat: add support for samples_body partial in samples/README.md ([#246](https://github.com/GoogleCloudPlatform/synthtool/pull/246))
+- feat: add configuration for release-please, and mult-environment coverage ([#244](https://github.com/GoogleCloudPlatform/synthtool/pull/244))
+- build: build script tweaks for non-standard libraries ([#238](https://github.com/GoogleCloudPlatform/synthtool/pull/238))
+
+#### Java
+- fix(java): prefix job name to prevent overlap of uploaded logs ([#310](https://github.com/GoogleCloudPlatform/synthtool/pull/310))
+- fix(java): release jobs should not run the tests ([#307](https://github.com/GoogleCloudPlatform/synthtool/pull/307))
+- feat: add helper for the most common Java library synth generation ([#306](https://github.com/GoogleCloudPlatform/synthtool/pull/306))
+- fix: skip snapshot unless a snapshot is detected ([#305](https://github.com/GoogleCloudPlatform/synthtool/pull/305))
+- fix(java): explicitly declare the release-please type ([#300](https://github.com/GoogleCloudPlatform/synthtool/pull/300))
+- fix: relax guava package name ([#299](https://github.com/GoogleCloudPlatform/synthtool/pull/299))
+- fix(java): add stability badge to README, update renovate config ([#297](https://github.com/GoogleCloudPlatform/synthtool/pull/297))
+- feat: add java helper for fixing missing license headers ([#294](https://github.com/GoogleCloudPlatform/synthtool/pull/294))
+- Java: enable release-please bot ([#288](https://github.com/GoogleCloudPlatform/synthtool/pull/288))
+- Java templates: update renovate config ([#287](https://github.com/GoogleCloudPlatform/synthtool/pull/287))
+- Java: update default integration template ([#285](https://github.com/GoogleCloudPlatform/synthtool/pull/285))
+- fix: snapshot script should be executable ([#284](https://github.com/GoogleCloudPlatform/synthtool/pull/284))
+- Java templates: use generic java-yoshi strategy ([#281](https://github.com/GoogleCloudPlatform/synthtool/pull/281))
+- Java: Fix propose_release.cfg template ([#280](https://github.com/GoogleCloudPlatform/synthtool/pull/280))
+- Java address feedback for issue templates ([#279](https://github.com/GoogleCloudPlatform/synthtool/pull/279))
+- fix(java templates): fix whitespace for kokoro configs ([#275](https://github.com/GoogleCloudPlatform/synthtool/pull/275))
+- Update language in common Java issue templates ([#273](https://github.com/GoogleCloudPlatform/synthtool/pull/273))
+- Java templates: Fix template replacements, add README ([#271](https://github.com/GoogleCloudPlatform/synthtool/pull/271))
+
+- feat(java): process sponge logs after tests ([#309](https://github.com/GoogleCloudPlatform/synthtool/pull/309))
+- feat: add common Java templates ([#270](https://github.com/GoogleCloudPlatform/synthtool/pull/270))
+
+#### Ruby
+- add update_gemspec ([#276](https://github.com/GoogleCloudPlatform/synthtool/pull/276))
+
+#### Python
+- Pin black to avoid automated synth updates. ([#269](https://github.com/GoogleCloudPlatform/synthtool/pull/269))
+- Add disclaimer that files are automatically generated. ([#262](https://github.com/GoogleCloudPlatform/synthtool/pull/262))
+- Suppress checking 'cov-fail-under' in default session. ([#259](https://github.com/GoogleCloudPlatform/synthtool/pull/259))
+- Python: Update noxfile to blacken samples directory. ([#248](https://github.com/GoogleCloudPlatform/synthtool/pull/248))
+- Add samples session to noxfile, controlled by `samples_test` arg. ([#260](https://github.com/GoogleCloudPlatform/synthtool/pull/260))
+
+
 ## 2019.05.02
 
 05-02-2019 12:29 PDT
