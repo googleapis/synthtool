@@ -170,8 +170,20 @@ class GAPICGenerator:
             log.success(f"Placed proto files into {proto_output_path}.")
 
         if include_samples:
+            samples_root_dir = None
+            samples_resource_dir = None
+            if language == "java":
+                samples_root_dir = genfiles / f"gapic-google-cloud-{service}-{version}/samples/src/main/java/com/google/cloud/examples/{service}"
+                samples_resource_dir = genfiles / f"gapic-google-cloud-{service}-{version}/samples/resources"
             googleapis_service_dir = googleapis / config_path.parent
-            self._include_samples(language, version, genfiles, googleapis_service_dir)
+            self._include_samples(
+                language=language,
+                version=version,
+                genfiles=genfiles,
+                googleapis_service_dir=googleapis_service_dir,
+                samples_root_dir=samples_root_dir,
+                samples_resources_dir=samples_resource_dir,
+            )
 
         metadata.add_client_destination(
             source="googleapis" if not private else "googleapis-private",
@@ -215,7 +227,16 @@ class GAPICGenerator:
 
         return self._googleapis_private
 
-    def _include_samples(self, language, version, genfiles, googleapis_service_dir):
+    def _include_samples(
+        self,
+        language: str,
+        version: str,
+        genfiles: Path,
+        googleapis_service_dir: Path,
+        samples_root_dir: Path = None,
+        samples_resources_dir: Path = None,
+        samples_version_dir: Path = None,
+    ):
         """Include code samples and supporting resources in generated output.
 
         Resulting directory structure in generated output:
@@ -247,8 +268,12 @@ class GAPICGenerator:
         for each code sample (used by sample-tester to invoke samples).
         """
 
-        samples_root_dir = genfiles / "samples"
-        samples_resources_dir = samples_root_dir / "resources"
+        if samples_root_dir is None:
+            samples_root_dir = genfiles / "samples"
+
+        if samples_resources_dir is None:
+            samples_resources_dir = samples_root_dir / "resources"
+
         samples_version_dir = samples_root_dir / version
 
         # Some languages capitalize their `V` prefix for version numbers
@@ -308,6 +333,10 @@ class GAPICGenerator:
             "python": "python3",
             "ruby": "bundle exec ruby",
         }
+        if not language in LANGUAGE_EXECUTABLES:
+            log.info("skipping manifest gen")
+            return None
+
         manifest_arguments = [
             "gen-manifest",
             f"--env={language}",
