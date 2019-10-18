@@ -322,8 +322,8 @@ class GAPICGenerator:
                 download_path = samples_resources_dir / os.path.basename(uri)
                 os.makedirs(samples_resources_dir, exist_ok=True)
                 log.debug(f"Download {uri} to {download_path}")
-                with open(download_path, "wb") as f:
-                    f.write(response.content)
+                with open(download_path, "wb") as output:  # type: ignore
+                    output.write(response.content)
 
         # Generate manifest file at samples/{version}/test/samples.manifest.yaml
         # Includes a reference to every sample (via its "region tag" identifier)
