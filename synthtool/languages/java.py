@@ -154,7 +154,10 @@ def gapic_library(
         "samples/resources",
     )
     s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}/samples/src/**/*.manifest.yaml"],
+        [
+            library
+            / f"gapic-google-cloud-{service}-{version}/samples/src/**/*.manifest.yaml"
+        ],
         f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
     )
 

@@ -173,8 +173,14 @@ class GAPICGenerator:
             samples_root_dir = None
             samples_resource_dir = None
             if language == "java":
-                samples_root_dir = genfiles / f"gapic-google-cloud-{service}-{version}/samples/src/main/java/com/google/cloud/examples/{service}"
-                samples_resource_dir = genfiles / f"gapic-google-cloud-{service}-{version}/samples/resources"
+                samples_root_dir = (
+                    genfiles
+                    / f"gapic-google-cloud-{service}-{version}/samples/src/main/java/com/google/cloud/examples/{service}"
+                )
+                samples_resource_dir = (
+                    genfiles
+                    / f"gapic-google-cloud-{service}-{version}/samples/resources"
+                )
             googleapis_service_dir = googleapis / config_path.parent
             self._include_samples(
                 language=language,
@@ -333,7 +339,7 @@ class GAPICGenerator:
             "python": "python3",
             "ruby": "bundle exec ruby",
         }
-        if not language in LANGUAGE_EXECUTABLES:
+        if language not in LANGUAGE_EXECUTABLES:
             log.info("skipping manifest gen")
             return None
 
