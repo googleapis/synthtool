@@ -37,9 +37,9 @@ NAME={{ metadata['repo']['name'] }}
 VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 
 # build the docs
-mvn site -B
+mvn -B javadoc:aggregate-jar
 
-pushd target/site/apidocs
+pushd target/apidocs
 
 # create metadata
 python3 -m docuploader create-metadata \
