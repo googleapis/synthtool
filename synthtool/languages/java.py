@@ -144,9 +144,26 @@ def gapic_library(
         [library / f"proto-google-cloud-{service}-{version}/src"],
         f"proto-google-cloud-{service}-{version}/src",
     )
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}/samples/src"],
+        "samples/src",
+        excludes=["**/*.manifest.yaml"],
+    )
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}/samples/resources"],
+        "samples/resources",
+    )
+    s.copy(
+        [
+            library
+            / f"gapic-google-cloud-{service}-{version}/samples/src/**/*.manifest.yaml"
+        ],
+        f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
+    )
 
     format_code(f"google-cloud-{service}/src")
     format_code(f"grpc-google-cloud-{service}-{version}/src")
     format_code(f"proto-google-cloud-{service}-{version}/src")
+    format_code("samples/src")
 
     return library
