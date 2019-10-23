@@ -1,14 +1,23 @@
 # SynthTool (for client libraries)
-This tool helps to generate and layout cloud client libraries. 
+This tool helps to generate and layout cloud client libraries. Synthtool runs the [GAPIC (Generated API Client) Generator][GAPIC] via [Google API Artifact Manager (artman)][artman].
+
+[GAPIC]: https://github.com/googleapis/gapic-generator
+[artman]: https://github.com/googleapis/artman
 
 ## Installation
+
 This tool requires Python 3.6. Either install it from [python.org][python_downloads] or use
-[pyenv][] to get 3.6.
+[pyenv][pyenv] to get 3.6.
 
 [python_downloads]: https://www.python.org/downloads/
 [pyenv]: https://github.com/pyenv/pyenv
 
+If you are using GAPIC generator `synthtool.gcp.GAPICGenerator` or DiscoGAPIC generator `synthtool.gcp.DiscoGAPICGenerator`, install [Docker](Docker).
+
+[Docker]: https://docs.docker.com/v17.09/engine/installation/#desktop
+
 ### Install latest
+
 ```
 python3 -m pip install --user --upgrade git+https://github.com/googleapis/synthtool.git
 ```
