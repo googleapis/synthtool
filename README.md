@@ -7,12 +7,12 @@ This tool helps to generate and layout cloud client libraries. Synthtool runs th
 ## Installation
 
 This tool requires Python 3.6. Either install it from [python.org][python_downloads] or use
-[pyenv][pyenv] to get 3.6.
+[pyenv][] to get 3.6.
 
 [python_downloads]: https://www.python.org/downloads/
 [pyenv]: https://github.com/pyenv/pyenv
 
-If you are using GAPIC generator `synthtool.gcp.GAPICGenerator` or DiscoGAPIC generator `synthtool.gcp.DiscoGAPICGenerator`, install [Docker](Docker).
+If you are using GAPIC generator `synthtool.gcp.GAPICGenerator` or DiscoGAPIC generator `synthtool.gcp.DiscoGAPICGenerator`, install [Docker][].
 
 [Docker]: https://docs.docker.com/v17.09/engine/installation/#desktop
 
