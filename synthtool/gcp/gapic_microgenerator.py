@@ -142,7 +142,7 @@ class GAPICMicrogenerator:
             "--rm",
             "--user",
             str(os.getuid()),
-            f"gcr.io/gapic-images/gapic-generator-{language}",
+            f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}",
         ]
 
         # Populate any additional CLI arguments provided for Docker.
