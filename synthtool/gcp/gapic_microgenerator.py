@@ -60,6 +60,9 @@ class GAPICMicrogenerator:
     def kotlin_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, "kotlin", **kwargs)
 
+    def typescript_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "typescript", **kwargs)
+
     def _generate_code(
         self,
         service: str,
@@ -128,22 +131,28 @@ class GAPICMicrogenerator:
 
         # The time has come, the walrus said, to talk of actually running
         # the code generator.
-        log.debug(f"Generating code for: {proto_path}.")
         sep = os.path.sep
-        shell.run(
-            [
-                "docker",
-                "run",
-                "--mount",
-                f"type=bind,source={googleapis / proto_path}{sep},destination={Path('/in') / proto_path}{sep},readonly",
-                "--mount",
-                f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
-                "--rm",
-                "--user",
-                str(os.getuid()),
-                f"gcr.io/gapic-images/gapic-generator-{language}",
-            ]
-        )
+        docker_run_args = [
+            "docker",
+            "run",
+            "--mount",
+            f"type=bind,source={googleapis / proto_path}{sep},destination={Path('/in') / proto_path}{sep},readonly",
+            "--mount",
+            f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
+            "--rm",
+            "--user",
+            str(os.getuid()),
+            f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}",
+        ]
+
+        # Populate any additional CLI arguments provided for Docker.
+        if generator_args:
+            for key, value in generator_args.items():
+                docker_run_args.append(f"--{key}")
+                docker_run_args.append(value)
+
+        log.debug(f"Generating code for: {proto_path}.")
+        shell.run(docker_run_args)
 
         # Sanity check: Does the output location have code in it?
         # If not, complain.
