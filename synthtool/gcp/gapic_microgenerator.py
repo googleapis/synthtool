@@ -92,7 +92,7 @@ class GAPICMicrogenerator:
         # Pull the code generator for the requested language.
         # If a code generator version was specified, honor that.
         log.debug(
-            "Pulling Docker image: gapic-generator-{language}:{generator_version}"
+            f"Pulling Docker image: gapic-generator-{language}:{generator_version}"
         )
         shell.run(
             [
