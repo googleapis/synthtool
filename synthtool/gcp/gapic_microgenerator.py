@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pathlib import Path
-from typing import Mapping, Optional, Union
+from typing import List, Mapping, Optional, Union
 import os
 import platform
 import tempfile
@@ -71,6 +71,7 @@ class GAPICMicrogenerator:
         *,
         private: bool = False,
         proto_path: Union[str, Path] = None,
+        extra_proto_files: List[str] = [],
         output_dir: Union[str, Path] = None,
         generator_version: str = "latest",
         generator_args: Mapping[str, str] = None,
@@ -142,14 +143,39 @@ class GAPICMicrogenerator:
             "--rm",
             "--user",
             str(os.getuid()),
-            f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}",
         ]
+
+        # Process extra proto files, e.g. google/cloud/common_resources.proto,
+        # if they are required by this API.
+        # First, bind mount all the extra proto files into the container.
+        for proto in extra_proto_files:
+            source_proto = googleapis / Path(proto)
+            if not source_proto.exists():
+                raise FileNotFoundError(
+                    f"Unable to find extra proto file: {source_proto}."
+                )
+            docker_run_args.extend(
+                [
+                    "--mount",
+                    f"type=bind,source={source_proto},destination={Path('/extra') / proto},readonly",
+                ]
+            )
+
+        docker_run_args.append(
+            f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}"
+        )
 
         # Populate any additional CLI arguments provided for Docker.
         if generator_args:
             for key, value in generator_args.items():
                 docker_run_args.append(f"--{key}")
                 docker_run_args.append(value)
+
+        # Now, add the mounted extra proto files to the generator command line.
+        if len(extra_proto_files) > 0:
+            docker_run_args.extend(["-I", "/extra"])
+            for proto in extra_proto_files:
+                docker_run_args.append(proto)
 
         log.debug(f"Generating code for: {proto_path}.")
         shell.run(docker_run_args)
