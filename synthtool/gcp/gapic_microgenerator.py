@@ -176,7 +176,6 @@ class GAPICMicrogenerator:
                 docker_run_args.append(proto)
 
         log.debug(f"Generating code for: {proto_path}.")
-        log.debug(docker_run_args)
         shell.run(docker_run_args)
 
         # Sanity check: Does the output location have code in it?
