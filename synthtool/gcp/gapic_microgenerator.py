@@ -154,10 +154,12 @@ class GAPICMicrogenerator:
                 raise FileNotFoundError(
                     f"Unable to find extra proto file: {source_proto}."
                 )
-            docker_run_args.extend([
-                "--mount",
-                f"type=bind,source={source_proto},destination={Path('/extra') / proto},readonly"
-            ])
+            docker_run_args.extend(
+                [
+                    "--mount",
+                    f"type=bind,source={source_proto},destination={Path('/extra') / proto},readonly",
+                ]
+            )
 
         docker_run_args.append(
             f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}"
