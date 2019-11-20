@@ -13,22 +13,43 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][api-reference].
 
 ## Quickstart
 
-[//]: # ({x-version-update-start:{{metadata['repo']['name']}}:released})
+If you are using Maven with Bom, add this to your pom.xml file:
+
+```xml
+<dependencyManagement>
+ <dependencies>
+  <dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>libraries-bom</artifactId>
+    <version>{{ metadata['latestBomVersion'] }}</version>
+    <type>pom</type>
+    <scope>import</scope>
+   </dependency>
+ </dependencies>
+</dependencyManagement>
+
+<dependency>
+  <groupId>com.google.cloud</groupId>
+  <artifactId>google-cloud-asset</artifactId>
+</dependency>
+```
+
+[//]: # ({x-version-update-start:{{ metadata['repo']['distribution_name'].split(':')|last }}:released})
 If you are using Maven, add this to your pom.xml file
 ```xml
 <dependency>
   <groupId>com.google.cloud</groupId>
-  <artifactId>google-cloud-{{metadata['repo']['name']}}</artifactId>
-  <version>0.102.0-beta</version>
+  <artifactId>{{ metadata['repo']['distribution_name'].split(':')|last }}</artifactId>
+  <version>{{ metadata['latestVersion'] }}</version>
 </dependency>
 ```
 If you are using Gradle, add this to your dependencies
 ```Groovy
-compile 'com.google.cloud:google-cloud-{{metadata['repo']['name']}}:0.102.0-beta'
+compile 'com.google.cloud:{{ metadata['repo']['distribution_name'].split(':')|last }}:{{ metadata['latestVersion'] }}'
 ```
 If you are using SBT, add this to your dependencies
 ```Scala
-libraryDependencies += "com.google.cloud" % "google-cloud-{{metadata['repo']['name']}}" % "0.102.0-beta"
+libraryDependencies += "com.google.cloud" % "{{ metadata['repo']['distribution_name'].split(':')|last }}" % "{{ metadata['latestVersion'] }}"
 ```
 [//]: # ({x-version-update-end})
 
@@ -55,8 +76,8 @@ project set up. You will also need to set up the local development environment b
 
 ### Installation and setup
 
-You'll need to obtain the `google-cloud-{{metadata['repo']['name']}}` library.  See the [Quickstart](#quickstart) section
-to add `google-cloud-{{metadata['repo']['name']}}` as a dependency in your code.
+You'll need to obtain the `{{ metadata['repo']['distribution_name'].split(':')|last }}` library.  See the [Quickstart](#quickstart) section
+to add `{{ metadata['repo']['distribution_name'].split(':')|last }}` as a dependency in your code.
 
 ## Troubleshooting
 
@@ -115,8 +136,8 @@ Java 11 | [![Kokoro CI][kokoro-badge-image-5]][kokoro-badge-link-5]
 [kokoro-badge-image-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java11.svg
 [kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java11.html
 [stability-image]: https://img.shields.io/badge/stability-{% if metadata['repo']['release_level'] == 'ga' %}ga-green{% elif metadata['repo']['release_level'] == 'beta' %}beta-yellow{% elif metadata['repo']['release_level'] == 'alpha' %}alpha-orange{% else %}unknown-red{% endif %}
-[maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-{{metadata['repo']['name']}}.svg
-[maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-{{metadata['repo']['name']}}&core=gav
+[maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/{{ metadata['repo']['distribution_name'].split(':')|last }}.svg
+[maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:{{ metadata['repo']['distribution_name'].split(':')|last }}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
 [developer-console]: https://console.developers.google.com/
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
