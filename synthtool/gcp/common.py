@@ -12,20 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import os
-import re
-import yaml
 from pathlib import Path
-from typing import List, Dict
+from typing import List
 
 from synthtool.languages import node
 from synthtool.sources import templates
-from synthtool.gcp.templates.metadata import Metadata, JavaMetadata, NodejsMetadata
+from synthtool.gcp.templates.metadata import (
+    Metadata,
+    JavaMetadata,
+    NodejsMetadata,
+)
 from synthtool import __main__
 from synthtool import _tracked_paths
 from synthtool import metadata
-
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
 _RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart\w*]"

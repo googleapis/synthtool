@@ -17,12 +17,13 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict
 
 import requests
 
 _RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart\w*]"
 _RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart\w*]"
+
 
 class Metadata:
     def __init__(self, initial_data: dict = {}):
@@ -59,9 +60,11 @@ class Metadata:
             for file in files:
                 if re.match(r"[\w.]+\.js$", file):
                     if file == "quickstart.js":
-                        metadata["quickstart"] = self._read_quickstart(samples_dir)
+                        self._data["quickstart"] = self._read_quickstart(samples_dir)
                     # only add quickstart file to samples list if code sample is found.
-                    if file == "quickstart.js" and not self._data.get("quickstart", None):
+                    if file == "quickstart.js" and not self._data.get(
+                        "quickstart", None
+                    ):
                         continue
                     sample_metadata = {"title": decamelize(file[:-3]), "file": file}
                     sample_metadata.update(
@@ -145,19 +148,20 @@ class JavaMetadata(Metadata):
     def __init__(self, initial_data: dict = {}):
         Metadata.__init__(self, initial_data)
         group_id, artifact_id = self._data["repo"]["distribution_name"].split(":")
-        self._data["latestVersion"] = self._latest_artifact_version(group_id, artifact_id)
-        self._data["latestBomVersion"] = self._latest_artifact_version("com.google.cloud", "libraries-bom")
+        self._data["latestVersion"] = self._latest_artifact_version(
+            group_id, artifact_id
+        )
+        self._data["latestBomVersion"] = self._latest_artifact_version(
+            "com.google.cloud", "libraries-bom"
+        )
         print(self._data)
 
     def _latest_artifact_version(self, group_id: str, artifact_id: str) -> str:
         url = "https://search.maven.org/solrsearch/select"
-        params = {
-            'q': f'g:{group_id} AND a:{artifact_id}',
-            'start': '0',
-            'rows': '20'
-        }
+        params = {"q": f"g:{group_id} AND a:{artifact_id}", "start": "0", "rows": "20"}
         r = requests.get(url, params=params)
         return r.json()["response"]["docs"][0]["latestVersion"]
+
 
 class NodejsMetadata(Metadata):
     def __init__(self, initial_data: dict = {}):
@@ -168,6 +172,7 @@ class NodejsMetadata(Metadata):
             self.excludes.append("README.md")
             if "samples/README.md" not in self.excludes:
                 self.excludes.append("samples/README.md")
+
 
 def decamelize(value: str) -> str:
     """ parser to convert fooBar.js to Foo Bar. """
