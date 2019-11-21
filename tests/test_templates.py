@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import stat
 from pathlib import Path
 
-from synthtool.gcp import common
 from synthtool.sources import templates
 
 
@@ -66,29 +64,6 @@ def test_release_quality_badge():
     assert "This library is considered to be in **beta**" in result
 
 
-def test_load_samples():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
-
-    common_templates = common.CommonTemplates()
-    metadata = {}
-    common_templates._load_samples(metadata)
-    # should have loaded samples.
-    assert metadata["samples"][3]["title"] == "Requester Pays"
-    assert metadata["samples"][3]["file"] == "requesterPays.js"
-    assert len(metadata["samples"]) == 4
-    # should have loaded the special quickstart sample (ignoring header).
-    assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
-    assert "limitations under the License" not in metadata["quickstart"]
-    # should have included additional meta-information provided.
-    assert metadata["samples"][0]["title"] == "Metadata Example 1"
-    assert metadata["samples"][0]["usage"] == "node hello-world.js"
-    assert metadata["samples"][1]["title"] == "Metadata Example 2"
-    assert metadata["samples"][1]["usage"] == "node goodnight-moon.js"
-
-    os.chdir(cwd)
-
-
 def test_syntax_highlighter():
     t = templates.Templates(NODE_TEMPLATES)
     result = t.render(
@@ -110,21 +85,6 @@ def test_hide_billing():
         "README.md", metadata={"repo": {"requires_billing": False}}
     ).read_text()
     assert "Enable billing for your project" not in result
-
-
-def test_readme_partials():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
-
-    common_templates = common.CommonTemplates()
-    metadata = {}
-    common_templates._load_partials(metadata)
-    # should have populated introduction from partial.
-    assert (
-        "objects to users via direct download" in metadata["partials"]["introduction"]
-    )
-
-    os.chdir(cwd)
 
 
 def test_ruby_authentication():

@@ -21,6 +21,7 @@ from synthtool.gcp.templates.metadata import (
     Metadata,
     JavaMetadata,
     NodejsMetadata,
+    decamelize,
 )
 from synthtool import __main__
 from synthtool import _tracked_paths
@@ -29,6 +30,8 @@ from synthtool import metadata
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
 _RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart\w*]"
 _RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart\w*]"
+
+decamelize = decamelize
 
 
 class CommonTemplates:
