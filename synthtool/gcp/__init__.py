@@ -14,12 +14,14 @@
 
 from . import gapic_generator
 from . import gapic_microgenerator
+from . import gapic_bazel
 from . import discogapic_generator
 from . import common
 
 DiscoGAPICGenerator = discogapic_generator.DiscoGAPICGenerator
 GAPICGenerator = gapic_generator.GAPICGenerator
 GAPICMicrogenerator = gapic_microgenerator.GAPICMicrogenerator
+GAPICBazel = gapic_bazel.GAPICBazel
 CommonTemplates = common.CommonTemplates
 
 
@@ -28,4 +30,5 @@ __all__ = (
     "DiscoGAPICGenerator",
     "GAPICGenerator",
     "GAPICMicrogenerator",
+    "GAPICBazel",
 )
