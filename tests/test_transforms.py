@@ -14,6 +14,8 @@
 
 import os
 import stat
+import sys
+from os.path import normpath
 from pathlib import Path
 import tempfile
 
@@ -25,7 +27,14 @@ from synthtool import _tracked_paths
 
 @pytest.fixture()
 def expand_path_fixtures(tmpdir):
-    files = ["a.txt", "b.py", "c.md", "dira/e.txt", "dira/f.py", "dirb/suba/g.py"]
+    files = [
+        "a.txt",
+        "b.py",
+        "c.md",
+        normpath("dira/e.txt"),
+        normpath("dira/f.py"),
+        normpath("dirb/suba/g.py"),
+    ]
 
     for file in files:
         path = tmpdir.join(file)
@@ -57,7 +66,7 @@ def executable_fixtures(tmpdir):
         ("a.txt", ["a.txt"]),
         ("*", ["a.txt", "b.py", "c.md", "dira", "dirb"]),
         ("*.py", ["b.py"]),
-        ("**/*.py", ["b.py", "dira/f.py", "dirb/suba/g.py"]),
+        ("**/*.py", ["b.py", normpath("dira/f.py"), normpath("dirb/suba/g.py")]),
         (
             "**/*",
             [
@@ -65,11 +74,11 @@ def executable_fixtures(tmpdir):
                 "b.py",
                 "c.md",
                 "dira",
-                "dira/e.txt",
-                "dira/f.py",
+                normpath("dira/e.txt"),
+                normpath("dira/f.py"),
                 "dirb",
-                "dirb/suba",
-                "dirb/suba/g.py",
+                normpath("dirb/suba"),
+                normpath("dirb/suba/g.py"),
             ],
         ),
     ],
@@ -81,7 +90,10 @@ def test__expand_paths(expand_path_fixtures, input, expected):
 
 @pytest.mark.parametrize(
     ["input", "expected"],
-    [("e.txt", ["dira/e.txt"]), ("*", ["dira/e.txt", "dira/f.py"])],
+    [
+        ("e.txt", [normpath("dira/e.txt")]),
+        ("*", [normpath("dira/e.txt"), normpath("dira/f.py")]),
+    ],
 )
 def test__expand_paths_with_root(expand_path_fixtures, input, expected):
     paths = sorted([str(x) for x in transforms._expand_paths(input, root="dira")])
@@ -97,9 +109,9 @@ def test__filter_files(expand_path_fixtures):
         "a.txt",
         "b.py",
         "c.md",
-        "dira/e.txt",
-        "dira/f.py",
-        "dirb/suba/g.py",
+        normpath("dira/e.txt"),
+        normpath("dira/f.py"),
+        normpath("dirb/suba/g.py"),
     ]
 
 
@@ -110,7 +122,8 @@ def test__file_copy_mode(executable_fixtures):
     transforms.move([executable], destination)
 
     # Check if destination file has execute permission for USER
-    assert destination.stat().mode & stat.S_IXUSR
+    if sys.platform != 'win32':
+        assert destination.stat().mode & stat.S_IXUSR
 
 
 def test__move_to_dest(expand_path_fixtures):
@@ -118,27 +131,30 @@ def test__move_to_dest(expand_path_fixtures):
     _tracked_paths.add(expand_path_fixtures)
     dest = Path(str(expand_path_fixtures / "dest"))
 
-    transforms.move(tmp_path, dest, excludes=["dira/f.py"])
+    transforms.move(tmp_path, dest, excludes=[normpath("dira/f.py")])
 
     files = sorted([str(x) for x in transforms._expand_paths("**/*", root="dest")])
 
     # Assert destination does not contain dira/f.py (excluded)
     assert files == [
-        "dest/a.txt",
-        "dest/b.py",
-        "dest/c.md",
-        "dest/dira",
-        "dest/dira/e.txt",
-        "dest/dirb",
-        "dest/dirb/suba",
-        "dest/dirb/suba/g.py",
+        normpath(path)
+        for path in [
+            "dest/a.txt",
+            "dest/b.py",
+            "dest/c.md",
+            "dest/dira",
+            "dest/dira/e.txt",
+            "dest/dirb",
+            "dest/dirb/suba",
+            "dest/dirb/suba/g.py",
+        ]
     ]
 
 
 def test__move_to_dest_subdir(expand_path_fixtures):
     tmp_path = Path(str(expand_path_fixtures))
     _tracked_paths.add(expand_path_fixtures)
-    dest = Path(str(expand_path_fixtures / "dest/dira"))
+    dest = Path(str(expand_path_fixtures / normpath("dest/dira")))
 
     # Move to a different dir to make sure that move doesn't depend on the cwd
     os.chdir(tempfile.gettempdir())
@@ -148,4 +164,4 @@ def test__move_to_dest_subdir(expand_path_fixtures):
     files = sorted([str(x) for x in transforms._expand_paths("**/*", root="dest")])
 
     # Assert destination does not contain dira/f.py (excluded)
-    assert files == ["dest/dira", "dest/dira/e.txt"]
+    assert files == [normpath("dest/dira"), normpath("dest/dira/e.txt")]
