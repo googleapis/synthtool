@@ -14,6 +14,7 @@
 
 import os
 import stat
+import sys
 from pathlib import Path
 
 from synthtool.gcp import common
@@ -49,7 +50,8 @@ def test_render_preserve_mode():
     source_mode = source_file.stat().st_mode
 
     # Verify source fixture has execute permission for USER
-    assert source_mode & stat.S_IXUSR
+    if sys.platform != "win32":
+        assert source_mode & stat.S_IXUSR
 
     t = templates.Templates(FIXTURES)
     result = t.render("executable.j2", name="executable")
