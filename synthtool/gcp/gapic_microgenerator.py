@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import getpass
 from pathlib import Path
 from typing import List, Mapping, Optional, Union
 import os
@@ -142,7 +143,7 @@ class GAPICMicrogenerator:
             f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
             "--rm",
             "--user",
-            str(os.getuid()),
+            getpass.getuser(),
         ]
 
         # Process extra proto files, e.g. google/cloud/common_resources.proto,
