@@ -113,7 +113,7 @@ class CommonTemplates:
             files = os.listdir(samples_dir)
             files.sort()
             for file in files:
-                if re.match(r"[\w.]+\.js$", file):
+                if re.match(r"[\w.\-]+\.js$", file):
                     if file == "quickstart.js":
                         metadata["quickstart"] = self._read_quickstart(samples_dir)
                     # only add quickstart file to samples list if code sample is found.
