@@ -54,6 +54,8 @@ def add_client_destination(**kwargs) -> None:
     """Adds a client library destination to the current metadata."""
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
+def add_new_files():
+    pass
 
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""

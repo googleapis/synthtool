@@ -24,6 +24,10 @@ message Metadata {
 
     repeated Source sources = 2;
     repeated Destination destinations = 3;
+    // New files written during the generation process.
+    // Includes existing files that were freshly overwritten with the identical
+    // content.
+    repeated NewFile new_files = 4;
 }
 
 message Source {
@@ -61,6 +65,10 @@ message Destination {
         ClientDestination client = 1;
         FileSetDestination fileset = 2;
     }
+}
+
+message NewFile {
+    string path = 1;
 }
 
 message ClientDestination {
