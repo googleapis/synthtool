@@ -20,6 +20,7 @@ import google.protobuf.json_format
 
 from synthtool import log
 from synthtool.protos import metadata_pb2
+import os
 
 
 _metadata = metadata_pb2.Metadata()
@@ -55,8 +56,22 @@ def add_client_destination(**kwargs) -> None:
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
 
-def add_new_files():
-    pass
+def add_new_files(newer_than:float, path:str=None) -> None:
+    """Searchs a directory for files new files and adds them to metadata.
+
+    Parameters:
+    newer_than: any file modified after this timestamp (from time.time())
+        will be added to the metadata
+    path: path of the directory to explore. defaults to current working 
+        directory.
+    """
+    for (root, dirs, files) in os.walk(path or os.getcwd()):
+        for filename in files:
+            filepath = os.path.join(root, filename)
+            mtime = os.path.getmtime(filepath)
+            if mtime > newer_than:
+                new_file = _metadata.new_files.add()
+                new_file.path = os.path.relpath(filepath)
 
 
 def write(outfile: str = "synth.metadata") -> None:

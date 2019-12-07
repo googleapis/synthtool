@@ -22,6 +22,7 @@ import pkg_resources
 
 import synthtool.log
 import synthtool.metadata
+import time
 
 
 try:
@@ -61,6 +62,7 @@ def extra_args() -> List[str]:
 @click.option("--metadata", default="synth.metadata")
 @click.argument("extra_args", nargs=-1)
 def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
+    start_time = time.time()
     _extra_args.extend(extra_args)
 
     synthtool.metadata.register_exit_hook(outfile=metadata)
@@ -76,7 +78,10 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
         if spec.loader is None:
             raise ImportError("Could not import synth.py")
 
-        spec.loader.exec_module(synth_module)  # type: ignore
+        try:
+            spec.loader.exec_module(synth_module)  # type: ignore
+        finally:
+            synthtool.metadata.add_new_files(start_time)
 
     else:
         synthtool.log.exception(f"{synth_file} not found.")
