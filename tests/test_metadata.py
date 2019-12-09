@@ -97,7 +97,7 @@ def test_write(tmpdir):
 
 def test_new_files(tmpdir):
     metadata.reset()
-    
+
     # Create some files in nested directories:
     # old: src/a
     # new: src/code/b
@@ -118,7 +118,7 @@ def test_new_files(tmpdir):
     c_path = os.path.join(codedir, "c")
     with open(c_path, "wt") as file:
         file.write("c")
-    
+
     # Confirm add_new_files found the new files and ignored the old one.
     metadata.add_new_files(after_a_before_b, srcdir)
     assert 2 == len(metadata._metadata.new_files)

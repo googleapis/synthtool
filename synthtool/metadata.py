@@ -57,7 +57,7 @@ def add_client_destination(**kwargs) -> None:
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
 
-def add_new_files(newer_than:float, path:str=None) -> None:
+def add_new_files(newer_than: float, path: str = None) -> None:
     """Searchs a directory for files new files and adds them to metadata.
 
     Parameters:
