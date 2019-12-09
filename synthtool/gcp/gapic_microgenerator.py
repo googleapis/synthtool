@@ -139,7 +139,7 @@ class GAPICMicrogenerator:
         # If there is no `os.getuid()`, fallback to `getpass.getuser()`
         try:
             user = str(os.getuid())
-        except:
+        except AttributeError:
             user = getpass.getuser()
 
         docker_run_args = [
@@ -151,7 +151,7 @@ class GAPICMicrogenerator:
             f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
             "--rm",
             "--user",
-            user
+            user,
         ]
 
         # Process extra proto files, e.g. google/cloud/common_resources.proto,
