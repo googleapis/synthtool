@@ -134,6 +134,14 @@ class GAPICMicrogenerator:
         # The time has come, the walrus said, to talk of actually running
         # the code generator.
         sep = os.path.sep
+
+        # try to figure out user ID and stay compatible.
+        # If there is no `os.getuid()`, fallback to `getpass.getuser()`
+        try:
+            user = str(os.getuid())
+        except AttributeError:
+            user = getpass.getuser()
+
         docker_run_args = [
             "docker",
             "run",
