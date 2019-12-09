@@ -89,6 +89,7 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
             obsolete_files = synthtool.metadata.diff_new_files(old_metadata)
             for file_path in obsolete_files:
                 try:
+                    synthtool.log.info(f"Removing obsolete file {file_path}...")
                     os.unlink(file_path)
                 except FileNotFoundError:
                     pass  # Already deleted.  That's OK.

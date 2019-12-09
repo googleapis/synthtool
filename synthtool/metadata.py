@@ -80,7 +80,7 @@ def read_or_empty(path: str = "synth.metadata") -> metadata_pb2.Metadata:
     try:
         with open(path, "rt") as file:
             text = file.read()
-            return google.protobuf.json_format.Parse(text, metadata_pb2.Metadata)
+        return google.protobuf.json_format.Parse(text, metadata_pb2.Metadata())
     except FileNotFoundError:
         return metadata_pb2.Metadata()
 
