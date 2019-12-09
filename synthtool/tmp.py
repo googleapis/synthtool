@@ -18,9 +18,6 @@ import shutil
 import tempfile
 from typing import List
 
-from synthtool import log
-
-
 _tempdirs: List[str] = []
 
 

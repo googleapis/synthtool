@@ -12,11 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import atexit
 import datetime
-import functools
 import os
-import typing
 
 import google.protobuf.json_format
 
@@ -63,7 +60,7 @@ def add_new_files(newer_than: float, path: str = None) -> None:
     Parameters:
     newer_than: any file modified after this timestamp (from time.time())
         will be added to the metadata
-    path: path of the directory to explore. defaults to current working 
+    path: path of the directory to explore. defaults to current working
         directory.
     """
     for (root, dirs, files) in os.walk(path or os.getcwd()):
