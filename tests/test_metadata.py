@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import json
+import os
+import time
 
 from synthtool import metadata
 
@@ -91,3 +93,56 @@ def test_write(tmpdir):
     data = json.loads(raw)
     assert data
     assert data["updateTime"] is not None
+
+
+def test_new_files(tmpdir):
+    metadata.reset()
+    
+    # Create some files in nested directories:
+    # old: src/a
+    # new: src/code/b
+    # new: src/code/c
+    srcdir = tmpdir / "src"
+    os.mkdir(srcdir)
+    codedir = srcdir / "code"
+    os.mkdir(codedir)
+    with open(srcdir / "a", "wt") as file:
+        file.write("a")
+    time.sleep(1)
+    after_a_before_b = time.time()
+    time.sleep(1)
+    b_path = os.path.join(codedir, "b")
+    with open(b_path, "wt") as file:
+        file.write("b")
+    time.sleep(1)
+    after_b_before_c = time.time()
+    time.sleep(1)
+    c_path = os.path.join(codedir, "c")
+    with open(c_path, "wt") as file:
+        file.write("c")
+    
+    # Confirm add_new_files found the new files and ignored the old one.
+    metadata.add_new_files(after_a_before_b, srcdir)
+    assert 2 == len(metadata._metadata.new_files)
+    new_file_paths = [new_file.path for new_file in metadata._metadata.new_files]
+    assert os.path.relpath(b_path) in new_file_paths
+    assert os.path.relpath(c_path) in new_file_paths
+
+    # Prepare fresh metadata, with c as a new file and b as an obsolete file.
+    old_metadata = metadata._metadata
+    metadata.reset()
+    metadata.add_new_files(after_b_before_c, srcdir)
+    assert 1 == len(metadata._metadata.new_files)
+    assert os.path.relpath(c_path) == metadata._metadata.new_files[0].path
+
+    # Confirm remove_obsolete_files deletes b but not c.
+    metadata.remove_obsolete_files(old_metadata)
+    assert not os.path.exists(b_path)
+    assert os.path.exists(c_path)
+
+
+
+
+
+    
+
