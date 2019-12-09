@@ -70,7 +70,7 @@ def add_new_files(newer_than:float, path:str=None) -> None:
         for filename in files:
             filepath = os.path.join(root, filename)
             mtime = os.path.getmtime(filepath)
-            if mtime > newer_than:
+            if mtime >= newer_than:
                 new_file = _metadata.new_files.add()
                 new_file.path = os.path.relpath(filepath)
 
