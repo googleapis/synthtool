@@ -75,7 +75,8 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
         if spec.loader is None:
             raise ImportError("Could not import synth.py")
 
-        start_time = time.time()
+        start_time = time.time() - 1  # -1 fudge factor to make sure we don't
+        # miss files that were quickly created.
         old_metadata = synthtool.metadata.read_or_empty(metadata)
 
         try:
