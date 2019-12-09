@@ -139,10 +139,3 @@ def test_new_files(tmpdir):
     metadata.remove_obsolete_files(old_metadata)
     assert not os.path.exists(b_path)
     assert os.path.exists(c_path)
-
-
-
-
-
-    
-
