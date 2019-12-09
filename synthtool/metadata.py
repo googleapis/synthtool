@@ -96,14 +96,18 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def diff_new_files(old_metadata: metadata_pb2.Metadata, 
-    new_metadata: metadata_pb2.Metadata = None) -> typing.Iterable[str]:
-    """Finds files present in old_metadata.new_files and absent from new_metadata."""
-    new_metadata = new_metadata or _metadata
+def remove_obsolete_files(old_metadata: metadata_pb2.Metadata):
+    """Remove obsolete files from the file system.
+
+    Call add_new_files() before this function or it will remove all generated
+    files.
+    """
     old_files = set([new_file.path for new_file in old_metadata.new_files])
-    new_files = set([new_file.path for new_file in new_metadata.new_files])
-    return old_files - new_files
-
-
-def register_exit_hook(**kwargs) -> None:
-    atexit.register(functools.partial(write, **kwargs))
+    new_files = set([new_file.path for new_file in _metadata.new_files])
+    obsolete_files = old_files - new_files
+    for file_path in obsolete_files:
+        try:
+            log.info(f"Removing obsolete file {file_path}...")
+            os.unlink(file_path)
+        except FileNotFoundError:
+            pass  # Already deleted.  That's OK.
