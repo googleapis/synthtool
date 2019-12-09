@@ -15,12 +15,13 @@
 import atexit
 import datetime
 import functools
+import os
+import typing
 
 import google.protobuf.json_format
 
 from synthtool import log
 from synthtool.protos import metadata_pb2
-import os
 
 
 _metadata = metadata_pb2.Metadata()
@@ -74,6 +75,16 @@ def add_new_files(newer_than:float, path:str=None) -> None:
                 new_file.path = os.path.relpath(filepath)
 
 
+def read_or_empty(path: str = "synth.metadata") -> metadata_pb2.Metadata:
+    """Reads a metadata json file.  Returns empty if that file is not found."""
+    try:
+        with open(path, "rt") as file:
+            text = file.read()
+            return google.protobuf.json_format.Parse(text, metadata_pb2.Metadata)
+    except FileNotFoundError:
+        return metadata_pb2.Metadata()
+
+
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
     _metadata.update_time.FromDatetime(datetime.datetime.utcnow())
@@ -83,6 +94,15 @@ def write(outfile: str = "synth.metadata") -> None:
         fh.write(jsonified)
 
     log.debug(f"Wrote metadata to {outfile}.")
+
+
+def diff_new_files(old_metadata: metadata_pb2.Metadata, 
+    new_metadata: metadata_pb2.Metadata = None) -> typing.Iterable[str]:
+    """Finds files present in old_metadata.new_files and absent from new_metadata."""
+    new_metadata = new_metadata or _metadata
+    old_files = set([new_file.path for new_file in old_metadata.new_files])
+    new_files = set([new_file.path for new_file in new_metadata.new_files])
+    return old_files - new_files
 
 
 def register_exit_hook(**kwargs) -> None:
