@@ -151,7 +151,7 @@ class GAPICMicrogenerator:
             f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
             "--rm",
             "--user",
-            getpass.getuser(),
+            user,
         ]
 
         # Process extra proto files, e.g. google/cloud/common_resources.proto,
