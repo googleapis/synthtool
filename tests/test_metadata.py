@@ -108,13 +108,13 @@ def test_new_files(tmpdir):
     os.mkdir(codedir)
     with open(srcdir / "a", "wt") as file:
         file.write("a")
-    after_a_before_b = time.time()
     time.sleep(1)
+    after_a_before_b = time.time()
     b_path = os.path.join(codedir, "b")
     with open(b_path, "wt") as file:
         file.write("b")
-    after_b_before_c = time.time()
     time.sleep(1)
+    after_b_before_c = time.time()
     c_path = os.path.join(codedir, "c")
     with open(c_path, "wt") as file:
         file.write("c")
