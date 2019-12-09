@@ -72,7 +72,7 @@ def add_new_files(newer_than: float, path: str = None) -> None:
                 new_file.path = os.path.relpath(filepath)
 
 
-def read_or_empty(path: str = "synth.metadata") -> metadata_pb2.Metadata:
+def read_or_empty(path: str = "synth.metadata"):
     """Reads a metadata json file.  Returns empty if that file is not found."""
     try:
         with open(path, "rt") as file:
@@ -93,11 +93,14 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def remove_obsolete_files(old_metadata: metadata_pb2.Metadata):
+def remove_obsolete_files(old_metadata):
     """Remove obsolete files from the file system.
 
     Call add_new_files() before this function or it will remove all generated
     files.
+
+    Parameters:
+    old_metadata:  old metadata loaded from a call to read_or_empty().
     """
     old_files = set([new_file.path for new_file in old_metadata.new_files])
     new_files = set([new_file.path for new_file in _metadata.new_files])
