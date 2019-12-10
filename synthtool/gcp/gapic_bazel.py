@@ -93,7 +93,14 @@ class GAPICBazel:
         else:
             proto_path = Path("google/cloud") / service / version
 
-        # Determine bazel target
+        # Determine bazel target based on per-language patterns
+        # Java:    google-cloud-{{assembly_name}}-{{version}}-java
+        # Go:      gapi-cloud-{{assembly_name}}-{{version}}-go
+        # Python:  {{assembly_name}}-{{version}}-py
+        # PHP:     google-cloud-{{assembly_name}}-{{version}}-php
+        # Node.js: {{assembly_name}}-{{version}}-nodejs
+        # Ruby:    google-cloud-{{assembly_name}}-{{version}}-ruby
+        # C#:      google-cloud-{{assembly_name}}-{{version}}-csharp
         if bazel_target is None:
             parts = list(proto_path.parts)
             while len(parts) > 0 and parts[0] != "google":
@@ -107,8 +114,10 @@ class GAPICBazel:
                 suffix = f"{service}-{version}-py"
             elif language == "nodejs":
                 suffix = f"{service}-{version}-nodejs"
+            elif language == "go":
+                suffix = f"gapi-{'-'.join(parts[1:])}-go"
             else:
-                suffix = f"{'-'.join(parts)}-{version}-{language}"
+                suffix = f"{'-'.join(parts)}-{language}"
             bazel_target = f"//{os.path.sep.join(parts)}:{suffix}"
 
         # Sanity check: Do we have protos where we think we should?
