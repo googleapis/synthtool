@@ -65,6 +65,7 @@ def add_sample_client_destination():
         config="config",
     )
 
+
 def test_add_client_destination():
     metadata.reset()
 
@@ -163,8 +164,7 @@ def test_old_file_removed(source_tree_fixture):
     )
     assert 1 == len(metadata.get().new_files)
     assert (
-        os.path.relpath(source_tree_fixture.c_path)
-        == metadata.get().new_files[0].path
+        os.path.relpath(source_tree_fixture.c_path) == metadata.get().new_files[0].path
     )
     # Confirm remove_obsolete_files deletes b but not c.
     metadata.remove_obsolete_files(old_metadata)
@@ -176,7 +176,7 @@ def test_old_file_removed(source_tree_fixture):
 
 
 def test_read_metadata(tmpdir):
-    metadata.reset()    
+    metadata.reset()
     add_sample_client_destination()
     metadata.write(tmpdir / "synth.metadata")
     read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
@@ -186,6 +186,5 @@ def test_read_metadata(tmpdir):
 def test_read_nonexistent_metadata(tmpdir):
     # The file doesn't exist.
     read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
-    metadata.reset()    
+    metadata.reset()
     assert metadata.get() == read_metadata
-    
