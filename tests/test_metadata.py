@@ -14,9 +14,11 @@
 
 import json
 import os
+import pytest
 import time
 
 from synthtool import metadata
+from synthtool.tmp import tmpdir
 
 
 def test_add_git_source():
@@ -95,47 +97,66 @@ def test_write(tmpdir):
     assert data["updateTime"] is not None
 
 
-def test_new_files(tmpdir):
+class SourceTree:
+    """Creates a sample nested source file structure with known timestamps."""
+    def __init__(self):
+        self.tmpdir = tmpdir()
+        # Create some files in nested directories:
+        # src/a
+        # src/code/b
+        # src/code/c
+        self.srcdir = self.tmpdir / "src"
+        os.mkdir(self.srcdir)
+        self.codedir = self.srcdir / "code"
+        os.mkdir(self.codedir)
+        with open(self.srcdir / "a", "wt") as file:
+            file.write("a")
+        # File systems timestamps have resolutions of about 1 second, so some
+        # sleeping is necessary.
+        time.sleep(1)  
+        self.after_a_before_b = time.time()
+        time.sleep(1)
+        self.b_path = os.path.join(self.codedir, "b")
+        with open(self.b_path, "wt") as file:
+            file.write("b")
+        time.sleep(1)
+        self.after_b_before_c = time.time()
+        time.sleep(1)
+        self.c_path = os.path.join(self.codedir, "c")
+        with open(self.c_path, "wt") as file:
+            file.write("c")
+
+
+@pytest.fixture()
+def source_tree_fixture():
+    return SourceTree()
+
+
+def test_new_files_found(source_tree_fixture):
     metadata.reset()
 
-    # Create some files in nested directories:
-    # old: src/a
-    # new: src/code/b
-    # new: src/code/c
-    srcdir = tmpdir / "src"
-    os.mkdir(srcdir)
-    codedir = srcdir / "code"
-    os.mkdir(codedir)
-    with open(srcdir / "a", "wt") as file:
-        file.write("a")
-    time.sleep(1)
-    after_a_before_b = time.time()
-    time.sleep(1)
-    b_path = os.path.join(codedir, "b")
-    with open(b_path, "wt") as file:
-        file.write("b")
-    time.sleep(1)
-    after_b_before_c = time.time()
-    time.sleep(1)
-    c_path = os.path.join(codedir, "c")
-    with open(c_path, "wt") as file:
-        file.write("c")
-
     # Confirm add_new_files found the new files and ignored the old one.
-    metadata.add_new_files(after_a_before_b, srcdir)
+    metadata.add_new_files(source_tree_fixture.after_a_before_b,
+        source_tree_fixture.srcdir)
     assert 2 == len(metadata._metadata.new_files)
     new_file_paths = [new_file.path for new_file in metadata._metadata.new_files]
-    assert os.path.relpath(b_path) in new_file_paths
-    assert os.path.relpath(c_path) in new_file_paths
+    assert os.path.relpath(source_tree_fixture.b_path) in new_file_paths
+    assert os.path.relpath(source_tree_fixture.c_path) in new_file_paths
+
+
+def test_old_file_removed(source_tree_fixture):
+    # Capture the list of files as old metadata.
+    metadata.add_new_files(source_tree_fixture.after_a_before_b,
+        source_tree_fixture.srcdir)
 
     # Prepare fresh metadata, with c as a new file and b as an obsolete file.
     old_metadata = metadata._metadata
     metadata.reset()
-    metadata.add_new_files(after_b_before_c, srcdir)
+    metadata.add_new_files(source_tree_fixture.after_b_before_c, source_tree_fixture.srcdir)
     assert 1 == len(metadata._metadata.new_files)
-    assert os.path.relpath(c_path) == metadata._metadata.new_files[0].path
+    assert os.path.relpath(source_tree_fixture.c_path) == metadata._metadata.new_files[0].path
 
     # Confirm remove_obsolete_files deletes b but not c.
     metadata.remove_obsolete_files(old_metadata)
-    assert not os.path.exists(b_path)
-    assert os.path.exists(c_path)
+    assert not os.path.exists(source_tree_fixture.b_path)
+    assert os.path.exists(source_tree_fixture.c_path)
