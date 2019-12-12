@@ -55,9 +55,7 @@ def test_add_template_source():
     assert current.sources[0].template.version == "1.2.3"
 
 
-def test_add_client_destination():
-    metadata.reset()
-
+def add_sample_client_destination():
     metadata.add_client_destination(
         source="source",
         api_name="api",
@@ -66,6 +64,11 @@ def test_add_client_destination():
         generator="gen",
         config="config",
     )
+
+def test_add_client_destination():
+    metadata.reset()
+
+    add_sample_client_destination()
 
     current = metadata.get()
 
@@ -163,8 +166,26 @@ def test_old_file_removed(source_tree_fixture):
         os.path.relpath(source_tree_fixture.c_path)
         == metadata.get().new_files[0].path
     )
-
     # Confirm remove_obsolete_files deletes b but not c.
     metadata.remove_obsolete_files(old_metadata)
     assert not os.path.exists(source_tree_fixture.b_path)
     assert os.path.exists(source_tree_fixture.c_path)
+
+    # Confirm attempting to delete b a second time doesn't throw an exception.
+    metadata.remove_obsolete_files(old_metadata)
+
+
+def test_read_metadata(tmpdir):
+    metadata.reset()    
+    add_sample_client_destination()
+    metadata.write(tmpdir / "synth.metadata")
+    read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
+    assert metadata.get() == read_metadata
+
+
+def test_read_nonexistent_metadata(tmpdir):
+    # The file doesn't exist.
+    read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
+    metadata.reset()    
+    assert metadata.get() == read_metadata
+    
