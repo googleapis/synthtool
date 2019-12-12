@@ -140,8 +140,8 @@ def test_new_files_found(source_tree_fixture):
     metadata.add_new_files(
         source_tree_fixture.after_a_before_b, source_tree_fixture.srcdir
     )
-    assert 2 == len(metadata._metadata.new_files)
-    new_file_paths = [new_file.path for new_file in metadata._metadata.new_files]
+    assert 2 == len(metadata.get().new_files)
+    new_file_paths = [new_file.path for new_file in metadata.get().new_files]
     assert os.path.relpath(source_tree_fixture.b_path) in new_file_paths
     assert os.path.relpath(source_tree_fixture.c_path) in new_file_paths
 
@@ -153,15 +153,15 @@ def test_old_file_removed(source_tree_fixture):
     )
 
     # Prepare fresh metadata, with c as a new file and b as an obsolete file.
-    old_metadata = metadata._metadata
+    old_metadata = metadata.get()
     metadata.reset()
     metadata.add_new_files(
         source_tree_fixture.after_b_before_c, source_tree_fixture.srcdir
     )
-    assert 1 == len(metadata._metadata.new_files)
+    assert 1 == len(metadata.get().new_files)
     assert (
         os.path.relpath(source_tree_fixture.c_path)
-        == metadata._metadata.new_files[0].path
+        == metadata.get().new_files[0].path
     )
 
     # Confirm remove_obsolete_files deletes b but not c.
