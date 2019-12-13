@@ -15,6 +15,7 @@
 import json
 import os
 import pytest
+import sys
 import time
 
 from synthtool import metadata
@@ -179,7 +180,13 @@ def test_add_new_files_with_bad_file(tmpdir):
     metadata.reset()
     start_time = time.time()
     time.sleep(1)  # File systems have resolution of about 1 second.
-    os.symlink(tmpdir / "does-not-exist", tmpdir / "badlink")
+    try:
+        os.symlink(tmpdir / "does-not-exist", tmpdir / "badlink")
+    except OSError:
+        # On Windows, creating a symlink requires Admin priveleges, which
+        # should never be granted to test runners.
+        assert "win32" == sys.platform
+        return
     # Confirm this doesn't throw an exception.
     metadata.add_new_files(start_time, tmpdir)
     # And a bad link does not exist and shouldn't be recorded as a new file.
