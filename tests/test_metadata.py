@@ -13,8 +13,12 @@
 # limitations under the License.
 
 import json
+import os
+import pytest
+import time
 
 from synthtool import metadata
+from synthtool.tmp import tmpdir
 
 
 def test_add_git_source():
@@ -51,9 +55,7 @@ def test_add_template_source():
     assert current.sources[0].template.version == "1.2.3"
 
 
-def test_add_client_destination():
-    metadata.reset()
-
+def add_sample_client_destination():
     metadata.add_client_destination(
         source="source",
         api_name="api",
@@ -62,6 +64,12 @@ def test_add_client_destination():
         generator="gen",
         config="config",
     )
+
+
+def test_add_client_destination():
+    metadata.reset()
+
+    add_sample_client_destination()
 
     current = metadata.get()
 
@@ -91,3 +99,92 @@ def test_write(tmpdir):
     data = json.loads(raw)
     assert data
     assert data["updateTime"] is not None
+
+
+class SourceTree:
+    """Creates a sample nested source file structure with known timestamps."""
+
+    def __init__(self):
+        self.tmpdir = tmpdir()
+        # Create some files in nested directories:
+        # src/a
+        # src/code/b
+        # src/code/c
+        self.srcdir = self.tmpdir / "src"
+        os.mkdir(self.srcdir)
+        self.codedir = self.srcdir / "code"
+        os.mkdir(self.codedir)
+        with open(self.srcdir / "a", "wt") as file:
+            file.write("a")
+        # File systems timestamps have resolutions of about 1 second, so some
+        # sleeping is necessary.
+        time.sleep(1)
+        self.after_a_before_b = time.time()
+        time.sleep(1)
+        self.b_path = os.path.join(self.codedir, "b")
+        with open(self.b_path, "wt") as file:
+            file.write("b")
+        time.sleep(1)
+        self.after_b_before_c = time.time()
+        time.sleep(1)
+        self.c_path = os.path.join(self.codedir, "c")
+        with open(self.c_path, "wt") as file:
+            file.write("c")
+
+
+@pytest.fixture()
+def source_tree_fixture():
+    return SourceTree()
+
+
+def test_new_files_found(source_tree_fixture):
+    metadata.reset()
+
+    # Confirm add_new_files found the new files and ignored the old one.
+    metadata.add_new_files(
+        source_tree_fixture.after_a_before_b, source_tree_fixture.srcdir
+    )
+    assert 2 == len(metadata.get().new_files)
+    new_file_paths = [new_file.path for new_file in metadata.get().new_files]
+    assert os.path.relpath(source_tree_fixture.b_path) in new_file_paths
+    assert os.path.relpath(source_tree_fixture.c_path) in new_file_paths
+
+
+def test_old_file_removed(source_tree_fixture):
+    # Capture the list of files as old metadata.
+    metadata.add_new_files(
+        source_tree_fixture.after_a_before_b, source_tree_fixture.srcdir
+    )
+
+    # Prepare fresh metadata, with c as a new file and b as an obsolete file.
+    old_metadata = metadata.get()
+    metadata.reset()
+    metadata.add_new_files(
+        source_tree_fixture.after_b_before_c, source_tree_fixture.srcdir
+    )
+    assert 1 == len(metadata.get().new_files)
+    assert (
+        os.path.relpath(source_tree_fixture.c_path) == metadata.get().new_files[0].path
+    )
+    # Confirm remove_obsolete_files deletes b but not c.
+    metadata.remove_obsolete_files(old_metadata)
+    assert not os.path.exists(source_tree_fixture.b_path)
+    assert os.path.exists(source_tree_fixture.c_path)
+
+    # Confirm attempting to delete b a second time doesn't throw an exception.
+    metadata.remove_obsolete_files(old_metadata)
+
+
+def test_read_metadata(tmpdir):
+    metadata.reset()
+    add_sample_client_destination()
+    metadata.write(tmpdir / "synth.metadata")
+    read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
+    assert metadata.get() == read_metadata
+
+
+def test_read_nonexistent_metadata(tmpdir):
+    # The file doesn't exist.
+    read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
+    metadata.reset()
+    assert metadata.get() == read_metadata
