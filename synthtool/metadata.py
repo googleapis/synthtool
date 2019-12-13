@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import atexit
 import datetime
-import os
+import functools
 
 import google.protobuf.json_format
 
@@ -54,34 +55,6 @@ def add_client_destination(**kwargs) -> None:
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
 
-def add_new_files(newer_than: float, path: str = None) -> None:
-    """Searchs a directory for files new files and adds them to metadata.
-
-    Parameters:
-    newer_than: any file modified after this timestamp (from time.time())
-        will be added to the metadata
-    path: path of the directory to explore. defaults to current working
-        directory.
-    """
-    for (root, dirs, files) in os.walk(path or os.getcwd()):
-        for filename in files:
-            filepath = os.path.join(root, filename)
-            mtime = os.path.getmtime(filepath)
-            if mtime >= newer_than:
-                new_file = _metadata.new_files.add()
-                new_file.path = os.path.relpath(filepath)
-
-
-def read_or_empty(path: str = "synth.metadata"):
-    """Reads a metadata json file.  Returns empty if that file is not found."""
-    try:
-        with open(path, "rt") as file:
-            text = file.read()
-        return google.protobuf.json_format.Parse(text, metadata_pb2.Metadata())
-    except FileNotFoundError:
-        return metadata_pb2.Metadata()
-
-
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
     _metadata.update_time.FromDatetime(datetime.datetime.utcnow())
@@ -93,21 +66,5 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def remove_obsolete_files(old_metadata):
-    """Remove obsolete files from the file system.
-
-    Call add_new_files() before this function or it will remove all generated
-    files.
-
-    Parameters:
-    old_metadata:  old metadata loaded from a call to read_or_empty().
-    """
-    old_files = set([new_file.path for new_file in old_metadata.new_files])
-    new_files = set([new_file.path for new_file in _metadata.new_files])
-    obsolete_files = old_files - new_files
-    for file_path in obsolete_files:
-        try:
-            log.info(f"Removing obsolete file {file_path}...")
-            os.unlink(file_path)
-        except FileNotFoundError:
-            pass  # Already deleted.  That's OK.
+def register_exit_hook(**kwargs) -> None:
+    atexit.register(functools.partial(write, **kwargs))

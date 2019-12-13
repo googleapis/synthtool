@@ -106,5 +106,3 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# IDE artifacts
-.vscode/
