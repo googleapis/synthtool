@@ -175,6 +175,17 @@ def test_old_file_removed(source_tree_fixture):
     metadata.remove_obsolete_files(old_metadata)
 
 
+def test_add_new_files_with_bad_file(tmpdir):
+    metadata.reset()
+    start_time = time.time()
+    time.sleep(1)  # File systems have resolution of about 1 second.
+    os.symlink(tmpdir / "does-not-exist", tmpdir / "badlink")
+    # Confirm this doesn't throw an exception.
+    metadata.add_new_files(start_time, tmpdir)
+    # And a bad link does not exist and shouldn't be recorded as a new file.
+    assert 0 == len(metadata.get().new_files)
+
+
 def test_read_metadata(tmpdir):
     metadata.reset()
     add_sample_client_destination()

@@ -66,7 +66,11 @@ def add_new_files(newer_than: float, path: str = None) -> None:
     for (root, dirs, files) in os.walk(path or os.getcwd()):
         for filename in files:
             filepath = os.path.join(root, filename)
-            mtime = os.path.getmtime(filepath)
+            try:
+                mtime = os.path.getmtime(filepath)
+            except FileNotFoundError:
+                log.warning(f"FileNotFoundError while getting modified time for {filepath}.")
+                continue
             if mtime >= newer_than:
                 new_file = _metadata.new_files.add()
                 new_file.path = os.path.relpath(filepath)
