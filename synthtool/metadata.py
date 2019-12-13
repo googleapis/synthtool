@@ -69,7 +69,9 @@ def add_new_files(newer_than: float, path: str = None) -> None:
             try:
                 mtime = os.path.getmtime(filepath)
             except FileNotFoundError:
-                log.warning(f"FileNotFoundError while getting modified time for {filepath}.")
+                log.warning(
+                    f"FileNotFoundError while getting modified time for {filepath}."
+                )
                 continue
             if mtime >= newer_than:
                 new_file = _metadata.new_files.add()
