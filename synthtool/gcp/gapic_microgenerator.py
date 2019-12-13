@@ -137,10 +137,9 @@ class GAPICMicrogenerator:
 
         # try to figure out user ID and stay compatible.
         # If there is no `os.getuid()`, fallback to `getpass.getuser()`
-        getuid = getattr(os, "getuid", None)
-        if getuid:
-            user = str(getuid())
-        else:
+        try:
+            user = str(os.getuid())
+        except AttributeError:
             user = getpass.getuser()
 
         docker_run_args = [
