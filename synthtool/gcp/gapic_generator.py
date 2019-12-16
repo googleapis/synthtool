@@ -13,18 +13,25 @@
 # limitations under the License.
 
 import os
+import requests
+import shutil
+import subprocess
+import yaml
+
 from pathlib import Path
 from typing import Optional
 
 from synthtool import _tracked_paths
 from synthtool import log
 from synthtool import metadata
+from synthtool import shell
 from synthtool.gcp import artman
 from synthtool.sources import git
 
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
 GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
 LOCAL_GOOGLEAPIS: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
+LOCAL_GENERATOR: Optional[str] = os.environ.get("SYNTHTOOL_GENERATOR")
 
 
 class GAPICGenerator:
@@ -65,6 +72,7 @@ class GAPICGenerator:
         artman_output_name=None,
         private=False,
         include_protos=False,
+        include_samples=False,
         generator_args=None,
     ):
         # map the language to the artman argument and subdir of genfiles
@@ -93,6 +101,10 @@ class GAPICGenerator:
                 "is unavailable."
             )
 
+        generator_dir = LOCAL_GENERATOR
+        if generator_dir is not None:
+            log.debug(f"Using local generator at {generator_dir}")
+
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
         if config_path is None:
@@ -111,11 +123,18 @@ class GAPICGenerator:
 
         log.debug(f"Running generator for {config_path}.")
 
+        if include_samples:
+            if generator_args is None:
+                generator_args = []
+            # Add feature flag for generating code samples with code generator.
+            generator_args.append("--dev_samples")
+
         output_root = self._artman.run(
             f"googleapis/artman:{artman.ARTMAN_VERSION}",
             googleapis,
             config_path,
             gapic_language_arg,
+            generator_dir=generator_dir,
             generator_args=generator_args,
         )
 
@@ -134,8 +153,6 @@ class GAPICGenerator:
 
         # Get the *.protos files and put them in a protos dir in the output
         if include_protos:
-            import shutil
-
             source_dir = googleapis / config_path.parent / version
             proto_files = source_dir.glob("**/*.proto")
             # By default, put the protos at the root in a folder named 'protos'.
@@ -151,6 +168,28 @@ class GAPICGenerator:
                 log.debug(f"Copy: {i} to {proto_output_path / i.name}")
                 shutil.copyfile(i, proto_output_path / i.name)
             log.success(f"Placed proto files into {proto_output_path}.")
+
+        if include_samples:
+            samples_root_dir = None
+            samples_resource_dir = None
+            if language == "java":
+                samples_root_dir = (
+                    genfiles
+                    / f"gapic-google-cloud-{service}-{version}/samples/src/main/java/com/google/cloud/examples/{service}"
+                )
+                samples_resource_dir = (
+                    genfiles
+                    / f"gapic-google-cloud-{service}-{version}/samples/resources"
+                )
+            googleapis_service_dir = googleapis / config_path.parent
+            self._include_samples(
+                language=language,
+                version=version,
+                genfiles=genfiles,
+                googleapis_service_dir=googleapis_service_dir,
+                samples_root_dir=samples_root_dir,
+                samples_resources_dir=samples_resource_dir,
+            )
 
         metadata.add_client_destination(
             source="googleapis" if not private else "googleapis-private",
@@ -193,3 +232,130 @@ class GAPICGenerator:
             self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
 
         return self._googleapis_private
+
+    def _include_samples(
+        self,
+        language: str,
+        version: str,
+        genfiles: Path,
+        googleapis_service_dir: Path,
+        samples_root_dir: Path = None,
+        samples_resources_dir: Path = None,
+    ):
+        """Include code samples and supporting resources in generated output.
+
+        Resulting directory structure in generated output:
+            samples/
+            ├── resources
+            │   ├── example_text_file.txt
+            │   └── example_data.csv
+            └── v1/
+                ├── sample_one.py
+                ├── sample_two.py
+                └── test/
+                    ├── samples.manifest.yaml
+                    ├── sample_one.test.yaml
+                    └── sample_two.test.yaml
+
+        Samples are included in the genfiles output of the generator.
+
+        Sample tests are defined in googleapis:
+            {service}/{version}/samples/test/*.test.yaml
+
+        Sample resources are declared in {service}/sample_resources.yaml
+        which includes a list of files with public gs:// URIs for download.
+
+        Sample resources are files needed to run code samples or system tests.
+        Synth keeps resources in sync by always pulling down the latest version.
+        It is recommended to store resources in the `cloud-samples-data` bucket.
+
+        Sample manifest is a generated file which defines invocation commands
+        for each code sample (used by sample-tester to invoke samples).
+        """
+
+        if samples_root_dir is None:
+            samples_root_dir = genfiles / "samples"
+
+        if samples_resources_dir is None:
+            samples_resources_dir = samples_root_dir / "resources"
+
+        samples_version_dir = samples_root_dir / version
+
+        # Some languages capitalize their `V` prefix for version numbers
+        if not samples_version_dir.is_dir():
+            samples_version_dir = samples_root_dir / version.capitalize()
+
+        # Do not proceed if genfiles does not include samples/{version} dir.
+        if not samples_version_dir.is_dir():
+            return None
+
+        samples_test_dir = samples_version_dir / "test"
+        samples_manifest_yaml = samples_test_dir / "samples.manifest.yaml"
+
+        googleapis_samples_dir = googleapis_service_dir / version / "samples"
+        googleapis_resources_yaml = googleapis_service_dir / "sample_resources.yaml"
+
+        # Copy sample tests from googleapis {service}/{version}/samples/*.test.yaml
+        # into generated output as samples/{version}/test/*.test.yaml
+        test_files = googleapis_samples_dir.glob("**/*.test.yaml")
+        os.makedirs(samples_test_dir, exist_ok=True)
+        for i in test_files:
+            log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
+            shutil.copyfile(i, samples_test_dir / i.name)
+
+        # Download sample resources from sample_resources.yaml storage URIs.
+        #
+        #  sample_resources:
+        #  - uri: gs://bucket/the/file/path.csv
+        #    description: Description of this resource
+        #
+        # Code follows happy path. An error is desirable if YAML is invalid.
+        if googleapis_resources_yaml.is_file():
+            with open(googleapis_resources_yaml, "r") as f:
+                resources_data = yaml.load(f, Loader=yaml.SafeLoader)
+            resource_list = resources_data.get("sample_resources")
+            for resource in resource_list:
+                uri = resource.get("uri")
+                if uri.startswith("gs://"):
+                    uri = uri.replace("gs://", "https://storage.googleapis.com/")
+                response = requests.get(uri, allow_redirects=True)
+                download_path = samples_resources_dir / os.path.basename(uri)
+                os.makedirs(samples_resources_dir, exist_ok=True)
+                log.debug(f"Download {uri} to {download_path}")
+                with open(download_path, "wb") as output:  # type: ignore
+                    output.write(response.content)
+
+        # Generate manifest file at samples/{version}/test/samples.manifest.yaml
+        # Includes a reference to every sample (via its "region tag" identifier)
+        # along with structured instructions on how to invoke that code sample.
+        relative_manifest_path = str(
+            samples_manifest_yaml.relative_to(samples_root_dir)
+        )
+
+        LANGUAGE_EXECUTABLES = {
+            "nodejs": "node",
+            "php": "php",
+            "python": "python3",
+            "ruby": "bundle exec ruby",
+        }
+        if language not in LANGUAGE_EXECUTABLES:
+            log.info("skipping manifest gen")
+            return None
+
+        manifest_arguments = [
+            "gen-manifest",
+            f"--env={language}",
+            f"--bin={LANGUAGE_EXECUTABLES[language]}",
+            f"--output={relative_manifest_path}",
+            "--chdir={@manifest_dir}/../..",
+        ]
+
+        for code_sample in samples_version_dir.glob("*"):
+            sample_path = str(code_sample.relative_to(samples_root_dir))
+            if os.path.isfile(code_sample):
+                manifest_arguments.append(sample_path)
+        try:
+            log.debug(f"Writing samples manifest {manifest_arguments}")
+            shell.run(manifest_arguments, cwd=samples_root_dir)
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            log.warning("gen-manifest failed (sample-tester may not be installed)")

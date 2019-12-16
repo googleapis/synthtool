@@ -49,6 +49,19 @@ def merge_gemspec(src: str, dest: str, path: Path):
     return src
 
 
+def update_gemspec(src: PathOrStr):
+    """Updates the required ruby version and google-style dependency.
+
+    Args:
+        src: Source gemspec
+    """
+    regex = 'required_ruby_version[\\s=]*"([~><=\\s\\d\\.]*)"'
+    synthtool.replace([src], regex, 'required_ruby_version = ">= 2.4"')
+    synthtool.replace([src], "rubocop", "google-style")
+    regex = '"google-style"[,\\s]*"[~><=\\s\\d\\.]*"'
+    synthtool.replace([src], regex, '"google-style", "~> 1.24.0"')
+
+
 def delete_method(sources: ListOfPathsOrStrs, method_name: str):
     """Deletes a Ruby method, including the leading comment if any.
 

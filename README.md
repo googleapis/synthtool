@@ -1,14 +1,23 @@
 # SynthTool (for client libraries)
-This tool helps to generate and layout cloud client libraries. 
+This tool helps to generate and layout cloud client libraries. Synthtool runs the [GAPIC (Generated API Client) Generator][GAPIC] via [Google API Artifact Manager (artman)][artman].
+
+[GAPIC]: https://github.com/googleapis/gapic-generator
+[artman]: https://github.com/googleapis/artman
 
 ## Installation
+
 This tool requires Python 3.6. Either install it from [python.org][python_downloads] or use
 [pyenv][] to get 3.6.
 
 [python_downloads]: https://www.python.org/downloads/
 [pyenv]: https://github.com/pyenv/pyenv
 
+If you are using GAPIC generator `synthtool.gcp.GAPICGenerator` or DiscoGAPIC generator `synthtool.gcp.DiscoGAPICGenerator`, install [Docker][].
+
+[Docker]: https://docs.docker.com/v17.09/engine/installation/#desktop
+
 ### Install latest
+
 ```
 python3 -m pip install --user --upgrade git+https://github.com/googleapis/synthtool.git
 ```
@@ -245,6 +254,21 @@ Specify the path to`googleapis` in the environment variable `SYNTHTOOL_GOOGLEAPI
 
 ```
 export SYNTHTOOL_GOOGLEAPIS=path/to/local/googleapis
+```
+
+### Local GAPIC Generator
+SynthTool supports generation from a local copy of [gapic-generator](https://github.com/googleapis/gapic-generator).
+Specify the path to`gapic-generator` in the environment variable `SYNTHTOOL_GENERATOR`.
+
+```
+export SYNTHTOOL_GENERATOR=path/to/local/gapic-generator
+```
+
+Don't forget to compile `gapic-generator` before running SynthTool.
+
+```
+cd path/to/local/gapic-generator
+./gradlew fatJar
 ```
 
 ### Include .proto files

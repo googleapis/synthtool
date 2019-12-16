@@ -22,6 +22,7 @@ import pkg_resources
 
 import synthtool.log
 import synthtool.metadata
+import time
 
 
 try:
@@ -58,12 +59,23 @@ def extra_args() -> List[str]:
 @click.command()
 @click.version_option(message="%(version)s", version=VERSION)
 @click.argument("synthfile", default="synth.py")
-@click.option("--metadata", default="synth.metadata")
+@click.option(
+    "--metadata",
+    default="synth.metadata",
+    help="Path to metadata file that will be read and overwritten.",
+)
 @click.argument("extra_args", nargs=-1)
 def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
-    _extra_args.extend(extra_args)
+    """Synthesizes source code according to the instructions in synthfile arg.
 
-    synthtool.metadata.register_exit_hook(outfile=metadata)
+    Optional environment variables:
+      SYNTHTOOL_ARTMAN_VERSION:  The version of artman to use.
+      SYNTHTOOL_GOOGLEAPIS:      Path to local clone of https://github.com/googleapis/googleapis
+      SYNTHTOOL_GENERATOR:       Path to local gapic-generator directory to use for generation.
+                By default, the latest version of gapic-generator will be used.
+      AUTOSYNTH_USE_SSH:         Access github repos via ssh instead of https.
+    """
+    _extra_args.extend(extra_args)
 
     synth_file = os.path.abspath(synthfile)
 
@@ -76,7 +88,16 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
         if spec.loader is None:
             raise ImportError("Could not import synth.py")
 
-        spec.loader.exec_module(synth_module)  # type: ignore
+        start_time = time.time() - 1  # -1 fudge factor to make sure we don't
+        # miss files that were quickly created.
+        old_metadata = synthtool.metadata.read_or_empty(metadata)
+
+        try:
+            spec.loader.exec_module(synth_module)  # type: ignore
+        finally:
+            synthtool.metadata.add_new_files(start_time)
+            synthtool.metadata.remove_obsolete_files(old_metadata)
+            synthtool.metadata.write(metadata)
 
     else:
         synthtool.log.exception(f"{synth_file} not found.")

@@ -56,6 +56,12 @@ class CommonTemplates:
     def py_library(self, **kwargs) -> Path:
         return self._generic_library("python_library", **kwargs)
 
+    def java_library(self, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+        return self._generic_library("java_library", **kwargs)
+
     def node_library(self, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
         #  .repo-metadata.json, or excluding README.md, we can remove this.
@@ -107,7 +113,7 @@ class CommonTemplates:
             files = os.listdir(samples_dir)
             files.sort()
             for file in files:
-                if re.match(r"[\w.]+\.js$", file):
+                if re.match(r"[\w.\-]+\.js$", file):
                     if file == "quickstart.js":
                         metadata["quickstart"] = self._read_quickstart(samples_dir)
                     # only add quickstart file to samples list if code sample is found.
