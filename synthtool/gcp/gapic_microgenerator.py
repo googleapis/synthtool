@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import getpass
 from pathlib import Path
 from typing import List, Mapping, Optional, Union
 import os
@@ -133,6 +134,14 @@ class GAPICMicrogenerator:
         # The time has come, the walrus said, to talk of actually running
         # the code generator.
         sep = os.path.sep
+
+        # try to figure out user ID and stay compatible.
+        # If there is no `os.getuid()`, fallback to `getpass.getuser()`
+        try:
+            user = str(os.getuid())
+        except AttributeError:
+            user = getpass.getuser()
+
         docker_run_args = [
             "docker",
             "run",
@@ -142,7 +151,7 @@ class GAPICMicrogenerator:
             f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
             "--rm",
             "--user",
-            str(os.getuid()),
+            user,
         ]
 
         # Process extra proto files, e.g. google/cloud/common_resources.proto,
