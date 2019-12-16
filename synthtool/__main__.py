@@ -58,9 +58,22 @@ def extra_args() -> List[str]:
 @click.command()
 @click.version_option(message="%(version)s", version=VERSION)
 @click.argument("synthfile", default="synth.py")
-@click.option("--metadata", default="synth.metadata")
+@click.option(
+    "--metadata",
+    default="synth.metadata",
+    help="Path to metadata file that will be read and overwritten.",
+)
 @click.argument("extra_args", nargs=-1)
 def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
+    """Synthesizes source code according to the instructions in synthfile arg.
+
+    Optional environment variables:
+      SYNTHTOOL_ARTMAN_VERSION:  The version of artman to use.
+      SYNTHTOOL_GOOGLEAPIS:      Path to local clone of https://github.com/googleapis/googleapis
+      SYNTHTOOL_GENERATOR:       Path to local gapic-generator directory to use for generation.
+                By default, the latest version of gapic-generator will be used.
+      AUTOSYNTH_USE_SSH:         Access github repos via ssh instead of https.
+    """
     _extra_args.extend(extra_args)
 
     synthtool.metadata.register_exit_hook(outfile=metadata)
