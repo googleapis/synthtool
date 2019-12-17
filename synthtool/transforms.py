@@ -228,8 +228,7 @@ def replace(
     if not any_replaced:
         if required:
             raise ReplacementNotFoundError(
-                f"No replacements made in {sources} "
-                f"for required pattern {before}."
+                f"No replacements made in {sources} " f"for required pattern {before}."
             )
         log.warning(
             f"No replacements made in {sources} for pattern {before}, maybe "
@@ -239,6 +238,7 @@ def replace(
 
 class Error(Exception):
     pass
+
 
 class ReplacementNotFoundError(Error):
     pass

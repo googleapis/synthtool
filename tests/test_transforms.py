@@ -28,12 +28,12 @@ from synthtool import _tracked_paths
 @pytest.fixture()
 def expand_path_fixtures(tmpdir):
     files = {
-        "a.txt" : "alpha text",
-        "b.py" : "beta python",
-        "c.md" : "see markdown",
-        "dira/e.txt" : "epsilon text",
-        "dira/f.py" : "eff python",
-        "dirb/suba/g.py" : "gamma python",
+        "a.txt": "alpha text",
+        "b.py": "beta python",
+        "c.md": "see markdown",
+        "dira/e.txt": "epsilon text",
+        "dira/f.py": "eff python",
+        "dirb/suba/g.py": "gamma python",
     }
 
     for file_name, content in files.items():
