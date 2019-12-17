@@ -196,7 +196,7 @@ def replace(
     sources: ListOfPathsOrStrs, before: str, after: str, flags: int = re.MULTILINE
 ):
     """Replaces occurrences of before with after in all the given sources.
-    
+
     Returns:
       The number of times the text was found and replaced across all files.
     """
