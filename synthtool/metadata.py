@@ -22,7 +22,7 @@ from synthtool.protos import metadata_pb2
 
 
 _metadata = metadata_pb2.Metadata()
-
+_track_obsolete_files = True
 
 def reset() -> None:
     """Clear all metadata so far."""
@@ -117,3 +117,14 @@ def remove_obsolete_files(old_metadata):
             os.unlink(file_path)
         except FileNotFoundError:
             pass  # Already deleted.  That's OK.
+
+
+def set_track_obsolete_files(track_obsolete_files=True):
+    """Instructs synthtool to track and remove obsolete files."""
+    global _track_obsolete_files
+    _track_obsolete_files = track_obsolete_files
+
+
+def should_track_obsolete_files():
+    global _track_obsolete_files
+    return _track_obsolete_files

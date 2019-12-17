@@ -206,3 +206,16 @@ def test_read_nonexistent_metadata(tmpdir):
     read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
     metadata.reset()
     assert metadata.get() == read_metadata
+
+
+def test_track_obsolete_files_defaults_to_true():
+    assert metadata.should_track_obsolete_files()
+
+
+def test_set_track_obsolete_files():
+    metadata.set_track_obsolete_files(False)
+    assert not metadata.should_track_obsolete_files()
+    metadata.set_track_obsolete_files(True)
+    assert metadata.should_track_obsolete_files()
+
+
