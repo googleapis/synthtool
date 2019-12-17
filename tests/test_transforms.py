@@ -168,18 +168,21 @@ def test__move_to_dest_subdir(expand_path_fixtures):
 
 
 def test_simple_replace(expand_path_fixtures):
-    transforms.replace(["a.txt", "b.py"], "b..a", "GA")
+    count_replaced = transforms.replace(["a.txt", "b.py"], "b..a", "GA")
+    assert 1 == count_replaced
     assert "alpha text" == open("a.txt", "rt").read()
     assert "GA python" == open("b.py", "rt").read()
 
 
 def test_multi_replace(expand_path_fixtures):
-    transforms.replace(["a.txt", "b.py"], r"(\w+)a", r"\1z")
+    count_replaced = transforms.replace(["a.txt", "b.py"], r"(\w+)a", r"\1z")
+    assert 2 == count_replaced
     assert "alphz text" == open("a.txt", "rt").read()
     assert "betz python" == open("b.py", "rt").read()
 
 
 def test_replace_not_found(expand_path_fixtures):
-    transforms.replace(["a.txt", "b.py"], r"z", r"q")
+    count_replaced = transforms.replace(["a.txt", "b.py"], r"z", r"q")
+    assert 0 == count_replaced
     assert "alpha text" == open("a.txt", "rt").read()
     assert "beta python" == open("b.py", "rt").read()
