@@ -168,27 +168,23 @@ def test__move_to_dest_subdir(expand_path_fixtures):
 
 
 def test_simple_replace(expand_path_fixtures):
-    tmpdir = str(expand_path_fixtures)
     transforms.replace(["a.txt", "b.py"], "b..a", "GA")
     assert "alpha text" == open("a.txt", "rt").read()
     assert "GA python" == open("b.py", "rt").read()
 
 
 def test_multi_replace(expand_path_fixtures):
-    tmpdir = str(expand_path_fixtures)
     transforms.replace(["a.txt", "b.py"], r"(\w+)a", r"\1z")
     assert "alphz text" == open("a.txt", "rt").read()
     assert "betz python" == open("b.py", "rt").read()
 
 
 def test_replace_not_found(expand_path_fixtures):
-    tmpdir = str(expand_path_fixtures)
     transforms.replace(["a.txt", "b.py"], r"z", r"q")
     assert "alpha text" == open("a.txt", "rt").read()
     assert "beta python" == open("b.py", "rt").read()
 
 
 def test_required_replace_not_found_throws_error(expand_path_fixtures):
-    tmpdir = str(expand_path_fixtures)
     with pytest.raises(transforms.ReplacementNotFoundError):
         transforms.replace(["a.txt", "b.py"], r"z", r"q", required=True)

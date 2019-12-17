@@ -203,7 +203,7 @@ def replace(
     required=False,
 ):
     """Replaces occurrences of before with after in all the given sources.
-    
+
     Args:
       sources: list of paths or strs
       before: regular expression to match
