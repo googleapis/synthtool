@@ -202,7 +202,16 @@ def replace(
     flags: int = re.MULTILINE,
     required=False,
 ):
-    """Replaces occurrences of before with after in all the given sources."""
+    """Replaces occurrences of before with after in all the given sources.
+    
+    Args:
+      sources: list of paths or strs
+      before: regular expression to match
+      after: replacement. See re.subn() docs for more details.
+      flags: see re.subn() docs for more details.
+      required: throw a ReplacementNotFoundError if before is not found in any
+        file.
+    """
     expr = re.compile(before, flags=flags or 0)
     paths = _filter_files(_expand_paths(sources, "."))
 
@@ -218,11 +227,18 @@ def replace(
 
     if not any_replaced:
         if required:
-            log.error(
-                f"No replacements made in {sources} for required pattern {before}."
+            raise ReplacementNotFoundError(
+                f"No replacements made in {sources} "
+                f"for required pattern {before}."
             )
-        else:
-            log.warning(
-                f"No replacements made in {sources} for pattern {before}, maybe "
-                "replacement is not longer needed?"
-            )
+        log.warning(
+            f"No replacements made in {sources} for pattern {before}, maybe "
+            "replacement is not longer needed?"
+        )
+
+
+class Error(Exception):
+    pass
+
+class ReplacementNotFoundError(Error):
+    pass
