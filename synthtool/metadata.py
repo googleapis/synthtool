@@ -127,5 +127,4 @@ def set_track_obsolete_files(track_obsolete_files=True):
 
 
 def should_track_obsolete_files():
-    global _track_obsolete_files
     return _track_obsolete_files
