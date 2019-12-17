@@ -217,5 +217,3 @@ def test_set_track_obsolete_files():
     assert not metadata.should_track_obsolete_files()
     metadata.set_track_obsolete_files(True)
     assert metadata.should_track_obsolete_files()
-
-
