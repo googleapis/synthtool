@@ -27,18 +27,18 @@ from synthtool import _tracked_paths
 
 @pytest.fixture()
 def expand_path_fixtures(tmpdir):
-    files = [
-        "a.txt",
-        "b.py",
-        "c.md",
-        normpath("dira/e.txt"),
-        normpath("dira/f.py"),
-        normpath("dirb/suba/g.py"),
-    ]
+    files = {
+        "a.txt" : "alpha text",
+        "b.py" : "beta python",
+        "c.md" : "see markdown",
+        "dira/e.txt" : "epsilon text",
+        "dira/f.py" : "eff python",
+        "dirb/suba/g.py" : "gamma python",
+    }
 
-    for file in files:
-        path = tmpdir.join(file)
-        path.write_text("content", encoding="utf-8", ensure=True)
+    for file_name, content in files.items():
+        path = tmpdir.join(normpath(file_name))
+        path.write_text(content, encoding="utf-8", ensure=True)
 
     cwd = os.getcwd()
     os.chdir(str(tmpdir))
