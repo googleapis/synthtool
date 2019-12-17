@@ -15,6 +15,7 @@
 import json
 import os
 import pytest
+import sys
 import time
 
 from synthtool import metadata
@@ -173,6 +174,23 @@ def test_old_file_removed(source_tree_fixture):
 
     # Confirm attempting to delete b a second time doesn't throw an exception.
     metadata.remove_obsolete_files(old_metadata)
+
+
+def test_add_new_files_with_bad_file(tmpdir):
+    metadata.reset()
+    start_time = time.time()
+    time.sleep(1)  # File systems have resolution of about 1 second.
+    try:
+        os.symlink(tmpdir / "does-not-exist", tmpdir / "badlink")
+    except OSError:
+        # On Windows, creating a symlink requires Admin priveleges, which
+        # should never be granted to test runners.
+        assert "win32" == sys.platform
+        return
+    # Confirm this doesn't throw an exception.
+    metadata.add_new_files(start_time, tmpdir)
+    # And a bad link does not exist and shouldn't be recorded as a new file.
+    assert 0 == len(metadata.get().new_files)
 
 
 def test_read_metadata(tmpdir):
