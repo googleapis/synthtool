@@ -27,18 +27,18 @@ from synthtool import _tracked_paths
 
 @pytest.fixture()
 def expand_path_fixtures(tmpdir):
-    files = [
-        "a.txt",
-        "b.py",
-        "c.md",
-        normpath("dira/e.txt"),
-        normpath("dira/f.py"),
-        normpath("dirb/suba/g.py"),
-    ]
+    files = {
+        "a.txt": "alpha text",
+        "b.py": "beta python",
+        "c.md": "see markdown",
+        "dira/e.txt": "epsilon text",
+        "dira/f.py": "eff python",
+        "dirb/suba/g.py": "gamma python",
+    }
 
-    for file in files:
-        path = tmpdir.join(file)
-        path.write_text("content", encoding="utf-8", ensure=True)
+    for file_name, content in files.items():
+        path = tmpdir.join(normpath(file_name))
+        path.write_text(content, encoding="utf-8", ensure=True)
 
     cwd = os.getcwd()
     os.chdir(str(tmpdir))
@@ -165,3 +165,21 @@ def test__move_to_dest_subdir(expand_path_fixtures):
 
     # Assert destination does not contain dira/f.py (excluded)
     assert files == [normpath("dest/dira"), normpath("dest/dira/e.txt")]
+
+
+def test_simple_replace(expand_path_fixtures):
+    transforms.replace(["a.txt", "b.py"], "b..a", "GA")
+    assert "alpha text" == open("a.txt", "rt").read()
+    assert "GA python" == open("b.py", "rt").read()
+
+
+def test_multi_replace(expand_path_fixtures):
+    transforms.replace(["a.txt", "b.py"], r"(\w+)a", r"\1z")
+    assert "alphz text" == open("a.txt", "rt").read()
+    assert "betz python" == open("b.py", "rt").read()
+
+
+def test_replace_not_found(expand_path_fixtures):
+    transforms.replace(["a.txt", "b.py"], r"z", r"q")
+    assert "alpha text" == open("a.txt", "rt").read()
+    assert "beta python" == open("b.py", "rt").read()
