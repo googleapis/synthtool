@@ -95,8 +95,9 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
         try:
             spec.loader.exec_module(synth_module)  # type: ignore
         finally:
-            synthtool.metadata.add_new_files(start_time)
-            synthtool.metadata.remove_obsolete_files(old_metadata)
+            if synthtool.metadata.should_track_obsolete_files():
+                synthtool.metadata.add_new_files(start_time)
+                synthtool.metadata.remove_obsolete_files(old_metadata)
             synthtool.metadata.write(metadata)
 
     else:
