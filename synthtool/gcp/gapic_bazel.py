@@ -1,4 +1,4 @@
-# Copyright 2018 Google LLC
+# Copyright 2019 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,11 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import getpass
 from pathlib import Path
-from typing import List, Mapping, Optional, Union
+from typing import Optional, Union
 import os
-import platform
 import tempfile
 
 from synthtool import _tracked_paths
@@ -30,39 +28,35 @@ GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-pri
 LOCAL_GOOGLEAPIS: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
 
 
-class GAPICMicrogenerator:
-    """A synthtool component that can produce libraries using microgenerators.
-
-    A microgenerator is any code generator that follows the code
-    generation specification defined at https://aip.dev/client-libraries
+class GAPICBazel:
+    """A synthtool component that can produce libraries using bazel build.
     """
 
     def __init__(self):
-        # Docker on mac by default cannot use the default temp file location
-        # instead use the more standard *nix /tmp location.
-        if platform.system() == "Darwin":
-            tempfile.tempdir = "/tmp"
         self._ensure_dependencies_installed()
         self._googleapis = None
         self._googleapis_private = None
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
-        """
-        Generates the Python Library files using artman/GAPIC
-        returns a `Path` object
-        library: path to library. 'google/cloud/speech'
-        version: version of lib. 'v1'
-        """
         return self._generate_code(service, version, "python", **kwargs)
 
     def go_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, "go", **kwargs)
 
-    def kotlin_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "kotlin", **kwargs)
+    def node_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "nodejs", **kwargs)
 
-    def typescript_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "typescript", **kwargs)
+    def csharp_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "csharp", **kwargs)
+
+    def php_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "php", **kwargs)
+
+    def java_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "java", **kwargs)
+
+    def ruby_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "ruby", **kwargs)
 
     def _generate_code(
         self,
@@ -72,10 +66,8 @@ class GAPICMicrogenerator:
         *,
         private: bool = False,
         proto_path: Union[str, Path] = None,
-        extra_proto_files: List[str] = [],
         output_dir: Union[str, Path] = None,
-        generator_version: str = "latest",
-        generator_args: Mapping[str, str] = None,
+        bazel_target: str = None,
     ):
         # Determine which googleapis repo to use
         if not private:
@@ -91,20 +83,6 @@ class GAPICMicrogenerator:
                 "is unavailable."
             )
 
-        # Pull the code generator for the requested language.
-        # If a code generator version was specified, honor that.
-        log.debug(
-            f"Pulling Docker image: gapic-generator-{language}:{generator_version}"
-        )
-        shell.run(
-            [
-                "docker",
-                "pull",
-                f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}",
-            ],
-            hide_output=False,
-        )
-
         # Determine where the protos we are generating actually live.
         # We can sometimes (but not always) determine this from the service
         # and version; in other cases, the user must provide it outright.
@@ -115,6 +93,33 @@ class GAPICMicrogenerator:
         else:
             proto_path = Path("google/cloud") / service / version
 
+        # Determine bazel target based on per-language patterns
+        # Java:    google-cloud-{{assembly_name}}-{{version}}-java
+        # Go:      gapi-cloud-{{assembly_name}}-{{version}}-go
+        # Python:  {{assembly_name}}-{{version}}-py
+        # PHP:     google-cloud-{{assembly_name}}-{{version}}-php
+        # Node.js: {{assembly_name}}-{{version}}-nodejs
+        # Ruby:    google-cloud-{{assembly_name}}-{{version}}-ruby
+        # C#:      google-cloud-{{assembly_name}}-{{version}}-csharp
+        if bazel_target is None:
+            parts = list(proto_path.parts)
+            while len(parts) > 0 and parts[0] != "google":
+                parts.pop(0)
+            if len(parts) == 0:
+                raise RuntimeError(
+                    f"Cannot determine bazel_target from proto_path {proto_path}."
+                    "Please set bazel_target explicitly."
+                )
+            if language == "python":
+                suffix = f"{service}-{version}-py"
+            elif language == "nodejs":
+                suffix = f"{service}-{version}-nodejs"
+            elif language == "go":
+                suffix = f"gapi-{'-'.join(parts[1:])}-go"
+            else:
+                suffix = f"{'-'.join(parts)}-{language}"
+            bazel_target = f"//{os.path.sep.join(parts)}:{suffix}"
+
         # Sanity check: Do we have protos where we think we should?
         if not (googleapis / proto_path).exists():
             raise FileNotFoundError(
@@ -124,6 +129,10 @@ class GAPICMicrogenerator:
             raise FileNotFoundError(
                 f"Directory {(googleapis / proto_path)} exists, but no protos found."
             )
+        if not (googleapis / proto_path / "BUILD.bazel"):
+            raise FileNotFoundError(
+                f"File {(googleapis / proto_path / 'BUILD.bazel')} does not exist."
+            )
 
         # Ensure the desired output directory exists.
         # If none was provided, create a temporary directory.
@@ -131,64 +140,33 @@ class GAPICMicrogenerator:
             output_dir = tempfile.mkdtemp()
         output_dir = Path(output_dir).resolve()
 
-        # The time has come, the walrus said, to talk of actually running
-        # the code generator.
-        sep = os.path.sep
+        # Let's build some stuff now.
+        cwd = os.getcwd()
+        os.chdir(str(googleapis))
 
-        # try to figure out user ID and stay compatible.
-        # If there is no `os.getuid()`, fallback to `getpass.getuser()`
-        getuid = getattr(os, "getuid", None)
-        if getuid:
-            user = str(getuid())
-        else:
-            user = getpass.getuser()
-
-        docker_run_args = [
-            "docker",
-            "run",
-            "--mount",
-            f"type=bind,source={googleapis / proto_path}{sep},destination={Path('/in') / proto_path}{sep},readonly",
-            "--mount",
-            f"type=bind,source={output_dir}{sep},destination={Path('/out')}{sep}",
-            "--rm",
-            "--user",
-            user,
-        ]
-
-        # Process extra proto files, e.g. google/cloud/common_resources.proto,
-        # if they are required by this API.
-        # First, bind mount all the extra proto files into the container.
-        for proto in extra_proto_files:
-            source_proto = googleapis / Path(proto)
-            if not source_proto.exists():
-                raise FileNotFoundError(
-                    f"Unable to find extra proto file: {source_proto}."
-                )
-            docker_run_args.extend(
-                [
-                    "--mount",
-                    f"type=bind,source={source_proto},destination={Path('/extra') / proto},readonly",
-                ]
-            )
-
-        docker_run_args.append(
-            f"gcr.io/gapic-images/gapic-generator-{language}:{generator_version}"
-        )
-
-        # Populate any additional CLI arguments provided for Docker.
-        if generator_args:
-            for key, value in generator_args.items():
-                docker_run_args.append(f"--{key}")
-                docker_run_args.append(value)
-
-        # Now, add the mounted extra proto files to the generator command line.
-        if len(extra_proto_files) > 0:
-            docker_run_args.extend(["-I", "/extra"])
-            for proto in extra_proto_files:
-                docker_run_args.append(proto)
+        bazel_run_args = ["bazel", "build", bazel_target]
 
         log.debug(f"Generating code for: {proto_path}.")
-        shell.run(docker_run_args)
+        shell.run(bazel_run_args)
+
+        # We've got tar file!
+        # its location: bazel-bin/google/cloud/language/v1/language-v1-nodejs.tar.gz
+        # bazel_target:         //google/cloud/language/v1:language-v1-nodejs
+        tar_file = (
+            f"bazel-bin{os.path.sep}{bazel_target[2:].replace(':', os.path.sep)}.tar.gz"
+        )
+
+        tar_run_args = [
+            "tar",
+            "-C",
+            str(output_dir),
+            "--strip-components=1",
+            "-xzf",
+            tar_file,
+        ]
+        shell.run(tar_run_args)
+
+        os.chdir(cwd)
 
         # Sanity check: Does the output location have code in it?
         # If not, complain.
@@ -206,7 +184,7 @@ class GAPICMicrogenerator:
             api_name=service,
             api_version=version,
             language=language,
-            generator=f"gapic-generator-{language}",
+            generator="bazel",
         )
 
         _tracked_paths.add(output_dir)
@@ -245,7 +223,7 @@ class GAPICMicrogenerator:
     def _ensure_dependencies_installed(self):
         log.debug("Ensuring dependencies.")
 
-        dependencies = ["docker", "git"]
+        dependencies = ["bazel", "zip", "unzip", "tar"]
         failed_dependencies = []
         for dependency in dependencies:
             return_code = shell.run(["which", dependency], check=False).returncode
