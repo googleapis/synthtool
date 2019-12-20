@@ -185,35 +185,37 @@ def _replace_in_file(path, expr, replacement):
 
         # Don't bother writing the file if we didn't change
         # anything.
-        if not count:
-            return False
-
-        fh.seek(0)
-        fh.write(content)
-        fh.truncate()
-
-    return True
+        if count:
+            fh.seek(0)
+            fh.write(content)
+            fh.truncate()
+        return count
 
 
 def replace(
     sources: ListOfPathsOrStrs, before: str, after: str, flags: int = re.MULTILINE
-):
-    """Replaces occurrences of before with after in all the given sources."""
+) -> int:
+    """Replaces occurrences of before with after in all the given sources.
+
+    Returns:
+      The number of times the text was found and replaced across all files.
+    """
     expr = re.compile(before, flags=flags or 0)
     paths = _filter_files(_expand_paths(sources, "."))
 
     if not paths:
         log.warning(f"No files were found in sources {sources} for replace()")
 
-    any_replaced = False
+    count_replaced = 0
     for path in paths:
         replaced = _replace_in_file(path, expr, after)
-        any_replaced = any_replaced or replaced
+        count_replaced += replaced
         if replaced:
             log.info(f"Replaced {before!r} in {path}.")
 
-    if not any_replaced:
+    if not count_replaced:
         log.warning(
             f"No replacements made in {sources} for pattern {before}, maybe "
             "replacement is not longer needed?"
         )
+    return count_replaced
