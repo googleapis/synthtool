@@ -27,6 +27,12 @@ Before running the samples, make sure you've followed the steps outlined in
 
 {% endif -%}
 
+`cd samples`
+
+`npm install`
+
+`cd ..`
+
 ## Samples
 {% if metadata['samples']|length %}
 {% for sample in metadata['samples'] %}
@@ -46,7 +52,7 @@ View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/m
 __Usage:__
 
 
-{% if 'usage' in sample %}`{{ sample.usage }}`{% else %}`node {{ sample.file }}`{% endif %}
+{% if 'usage' in sample %}`{{ sample.usage }}`{% else %}`node samples/{{ sample.file }}`{% endif %}
 
 {% if not loop.last %}
 -----
