@@ -194,7 +194,7 @@ def _replace_in_file(path, expr, replacement):
 
 def replace(
     sources: ListOfPathsOrStrs, before: str, after: str, flags: int = re.MULTILINE
-):
+) -> int:
     """Replaces occurrences of before with after in all the given sources.
 
     Returns:
