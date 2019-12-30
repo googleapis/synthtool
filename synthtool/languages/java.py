@@ -108,6 +108,51 @@ def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
         f"{GOOD_LICENSE}package {package_name};",
     )
 
+def _common_generation(
+    service: str,
+    version: str,
+    library: Path,
+    package_pattern: str,
+    suffix: str = ''
+    ):
+
+    package_name = package_pattern.format(service=service, version=version)
+    fix_proto_headers(library / f"proto-google-cloud-{service}-{version}{suffix}")
+    fix_grpc_headers(library / f"grpc-google-cloud-{service}-{version}{suffix}", package_name)
+
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
+        f"google-cloud-{service}/src",
+    )
+    s.copy(
+        [library / f"grpc-google-cloud-{service}-{version}{suffix}/src"],
+        f"grpc-google-cloud-{service}-{version}/src",
+    )
+    s.copy(
+        [library / f"proto-google-cloud-{service}-{version}{suffix}/src"],
+        f"proto-google-cloud-{service}-{version}/src",
+    )
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
+        "samples/src",
+        excludes=["**/*.manifest.yaml"],
+    )
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/resources"],
+        "samples/resources",
+    )
+    s.copy(
+        [
+            library
+            / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src/**/*.manifest.yaml"
+        ],
+        f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
+    )
+
+    format_code(f"google-cloud-{service}/src")
+    format_code(f"grpc-google-cloud-{service}-{version}/src")
+    format_code(f"proto-google-cloud-{service}-{version}/src")
+    format_code("samples/src")
 
 def gapic_library(
     service: str,
@@ -128,42 +173,38 @@ def gapic_library(
         include_samples=True,
         **kwargs,
     )
-    package_name = package_pattern.format(service=service, version=version)
-    fix_proto_headers(library / f"proto-google-cloud-{service}-{version}")
-    fix_grpc_headers(library / f"grpc-google-cloud-{service}-{version}", package_name)
 
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}/src"],
-        f"google-cloud-{service}/src",
-    )
-    s.copy(
-        [library / f"grpc-google-cloud-{service}-{version}/src"],
-        f"grpc-google-cloud-{service}-{version}/src",
-    )
-    s.copy(
-        [library / f"proto-google-cloud-{service}-{version}/src"],
-        f"proto-google-cloud-{service}-{version}/src",
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}/samples/src"],
-        "samples/src",
-        excludes=["**/*.manifest.yaml"],
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}/samples/resources"],
-        "samples/resources",
-    )
-    s.copy(
-        [
-            library
-            / f"gapic-google-cloud-{service}-{version}/samples/src/**/*.manifest.yaml"
-        ],
-        f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
+    _common_generation(
+        service=service,
+        version=version,
+        library=library,
+        package_pattern=package_pattern
     )
 
-    format_code(f"google-cloud-{service}/src")
-    format_code(f"grpc-google-cloud-{service}-{version}/src")
-    format_code(f"proto-google-cloud-{service}-{version}/src")
-    format_code("samples/src")
+    return library
+
+def bazel_library(
+    service: str,
+    version: str,
+    package_pattern: str = "com.google.cloud.{service}.{version}",
+    gapic: gcp.GAPICBazel = None,
+    **kwargs,
+) -> Path:
+    if gapic is None:
+        gapic = gcp.GAPICBazel()
+
+    library = gapic.java_library(
+        service=service,
+        version=version,
+        **kwargs,
+    )
+
+    _common_generation(
+        service=service,
+        version=version,
+        library=library / f"google-cloud-{service}-{version}-java",
+        package_pattern=package_pattern,
+        suffix='-java',
+    )
 
     return library
