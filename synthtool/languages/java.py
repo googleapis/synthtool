@@ -108,17 +108,16 @@ def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
         f"{GOOD_LICENSE}package {package_name};",
     )
 
+
 def _common_generation(
-    service: str,
-    version: str,
-    library: Path,
-    package_pattern: str,
-    suffix: str = ''
-    ):
+    service: str, version: str, library: Path, package_pattern: str, suffix: str = ""
+):
 
     package_name = package_pattern.format(service=service, version=version)
     fix_proto_headers(library / f"proto-google-cloud-{service}-{version}{suffix}")
-    fix_grpc_headers(library / f"grpc-google-cloud-{service}-{version}{suffix}", package_name)
+    fix_grpc_headers(
+        library / f"grpc-google-cloud-{service}-{version}{suffix}", package_name
+    )
 
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
@@ -154,6 +153,7 @@ def _common_generation(
     format_code(f"proto-google-cloud-{service}-{version}/src")
     format_code("samples/src")
 
+
 def gapic_library(
     service: str,
     version: str,
@@ -178,10 +178,11 @@ def gapic_library(
         service=service,
         version=version,
         library=library,
-        package_pattern=package_pattern
+        package_pattern=package_pattern,
     )
 
     return library
+
 
 def bazel_library(
     service: str,
@@ -193,18 +194,14 @@ def bazel_library(
     if gapic is None:
         gapic = gcp.GAPICBazel()
 
-    library = gapic.java_library(
-        service=service,
-        version=version,
-        **kwargs,
-    )
+    library = gapic.java_library(service=service, version=version, **kwargs)
 
     _common_generation(
         service=service,
         version=version,
         library=library / f"google-cloud-{service}-{version}-java",
         package_pattern=package_pattern,
-        suffix='-java',
+        suffix="-java",
     )
 
     return library
