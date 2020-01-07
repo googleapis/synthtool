@@ -205,7 +205,7 @@ def test_add_new_files_with_bad_file(source_tree_fixture):
         assert "win32" == sys.platform
         return
     # Confirm this doesn't throw an exception.
-    metadata.add_new_files(start_time, tmpdir)
+    metadata.add_new_files(start_time)
     # And a bad link does not exist and shouldn't be recorded as a new file.
     assert 0 == len(metadata.get().new_files)
 
