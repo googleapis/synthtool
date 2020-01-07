@@ -64,9 +64,14 @@ def add_new_files(newer_than: float, path: str = None) -> None:
     path: path of the directory to explore. defaults to current working
         directory.
     """
+    git_output = os.popen(f"git ls-files '{path}'").readlines()
+    files_tracked_by_git = set(
+        [os.path.abspath(line.trim()) for line in git_output])
     for (root, dirs, files) in os.walk(path or os.getcwd()):
         for filename in files:
             filepath = os.path.join(root, filename)
+            if os.path.abspath(filepath) not in files_tracked_by_git:
+                continue  # Only interested in files tracked by git.
             try:
                 mtime = os.path.getmtime(filepath)
             except FileNotFoundError:
