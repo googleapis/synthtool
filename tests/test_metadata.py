@@ -208,11 +208,18 @@ def test_read_nonexistent_metadata(tmpdir):
     assert metadata.get() == read_metadata
 
 
-def test_track_obsolete_files_defaults_to_true():
+@pytest.fixture(scope="function")
+def preserve_track_obsolete_file_flag():
+    should_track_obselete_files = metadata.should_track_obsolete_files()
+    yield should_track_obselete_files
+    metadata.set_track_obsolete_files(should_track_obselete_files)
+
+
+def test_track_obsolete_files_defaults_to_true(preserve_track_obsolete_file_flag):
     assert metadata.should_track_obsolete_files()
 
 
-def test_set_track_obsolete_files():
+def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
     metadata.set_track_obsolete_files(False)
     assert not metadata.should_track_obsolete_files()
     metadata.set_track_obsolete_files(True)
