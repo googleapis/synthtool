@@ -14,7 +14,10 @@
 
 import json
 import os
+import pathlib
 import pytest
+import shutil
+import subprocess
 import sys
 import time
 
@@ -105,13 +108,13 @@ def test_write(tmpdir):
 class SourceTree:
     """Creates a sample nested source file structure with known timestamps."""
 
-    def __init__(self):
-        self.tmpdir = tmpdir()
+    def __init__(self, tmpdir):
+        self.tmpdir = tmpdir
         # Create some files in nested directories:
         # src/a
         # src/code/b
         # src/code/c
-        self.srcdir = self.tmpdir / "src"
+        self.srcdir = pathlib.Path("src")
         os.mkdir(self.srcdir)
         self.codedir = self.srcdir / "code"
         os.mkdir(self.codedir)
@@ -132,40 +135,55 @@ class SourceTree:
         with open(self.c_path, "wt") as file:
             file.write("c")
 
+        # Check files a and b into git.
+        self.git_add("src/a", "src/code/b")
+
+    def git_add(self, *files):
+        cwd = os.getcwd()
+        try:
+            os.chdir(self.tmpdir)
+            git = shutil.which("git")
+            subprocess.run([git, "init"])
+            subprocess.run([git, "add"] + list(files))
+        finally:
+            os.chdir(cwd)
+
 
 @pytest.fixture()
 def source_tree_fixture():
-    return SourceTree()
+    tmp_dir = tmpdir()
+    cwd = os.getcwd()
+    os.chdir(tmp_dir)
+    yield SourceTree(tmp_dir)
+    os.chdir(cwd)
 
 
 def test_new_files_found(source_tree_fixture):
     metadata.reset()
 
     # Confirm add_new_files found the new files and ignored the old one.
-    metadata.add_new_files(
-        source_tree_fixture.after_a_before_b, source_tree_fixture.srcdir
-    )
-    assert 2 == len(metadata.get().new_files)
-    new_file_paths = [new_file.path for new_file in metadata.get().new_files]
-    assert os.path.relpath(source_tree_fixture.b_path) in new_file_paths
-    assert os.path.relpath(source_tree_fixture.c_path) in new_file_paths
+    metadata.add_new_files(source_tree_fixture.after_a_before_b)
+    assert 1 == len(metadata.get().new_files)
+    new_file_paths = [
+        os.path.normpath(new_file.path) for new_file in metadata.get().new_files
+    ]
+    assert source_tree_fixture.b_path in new_file_paths
+    # Should not track c because it's not checked into git.
+    assert source_tree_fixture.c_path not in new_file_paths
 
 
 def test_old_file_removed(source_tree_fixture):
     # Capture the list of files as old metadata.
-    metadata.add_new_files(
-        source_tree_fixture.after_a_before_b, source_tree_fixture.srcdir
-    )
+    source_tree_fixture.git_add("src/code/c")
+    metadata.add_new_files(source_tree_fixture.after_a_before_b)
 
     # Prepare fresh metadata, with c as a new file and b as an obsolete file.
     old_metadata = metadata.get()
     metadata.reset()
-    metadata.add_new_files(
-        source_tree_fixture.after_b_before_c, source_tree_fixture.srcdir
-    )
+    metadata.add_new_files(source_tree_fixture.after_b_before_c)
     assert 1 == len(metadata.get().new_files)
-    assert (
-        os.path.relpath(source_tree_fixture.c_path) == metadata.get().new_files[0].path
+    assert source_tree_fixture.c_path == os.path.normpath(
+        metadata.get().new_files[0].path
     )
     # Confirm remove_obsolete_files deletes b but not c.
     metadata.remove_obsolete_files(old_metadata)
@@ -176,12 +194,16 @@ def test_old_file_removed(source_tree_fixture):
     metadata.remove_obsolete_files(old_metadata)
 
 
-def test_add_new_files_with_bad_file(tmpdir):
+def test_add_new_files_with_bad_file(source_tree_fixture):
     metadata.reset()
+    tmpdir = source_tree_fixture.tmpdir
+    dne = "does-not-exist"
+    source_tree_fixture.git_add(dne)
     start_time = time.time()
     time.sleep(1)  # File systems have resolution of about 1 second.
+
     try:
-        os.symlink(tmpdir / "does-not-exist", tmpdir / "badlink")
+        os.symlink(tmpdir / dne, tmpdir / "badlink")
     except OSError:
         # On Windows, creating a symlink requires Admin priveleges, which
         # should never be granted to test runners.

@@ -14,6 +14,7 @@
 
 import datetime
 import os
+from typing import List
 
 import google.protobuf.json_format
 
@@ -55,33 +56,43 @@ def add_client_destination(**kwargs) -> None:
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
 
-def add_new_files(newer_than: float, path: str = None) -> None:
-    """Searchs a directory for files new files and adds them to metadata.
+def add_new_files(newer_than: float) -> None:
+    """Searchs a directory for new files and adds them to metadata.
 
+    Only considers files tracked by git.
     Parameters:
     newer_than: any file modified after this timestamp (from time.time())
         will be added to the metadata
-    path: path of the directory to explore. defaults to current working
-        directory.
     """
-    git_output = os.popen(f"git ls-files '{path}'").readlines()
-    files_tracked_by_git = set(
-        [os.path.abspath(line.trim()) for line in git_output])
-    for (root, dirs, files) in os.walk(path or os.getcwd()):
-        for filename in files:
-            filepath = os.path.join(root, filename)
-            if os.path.abspath(filepath) not in files_tracked_by_git:
-                continue  # Only interested in files tracked by git.
-            try:
-                mtime = os.path.getmtime(filepath)
-            except FileNotFoundError:
-                log.warning(
-                    f"FileNotFoundError while getting modified time for {filepath}."
-                )
-                continue
-            if mtime >= newer_than:
-                new_file = _metadata.new_files.add()
-                new_file.path = os.path.relpath(filepath)
+    for filepath in get_new_files_tracked_by_git(newer_than):
+        new_file = _metadata.new_files.add()
+        new_file.path = filepath
+
+
+def get_new_files_tracked_by_git(newer_than: float) -> List[str]:
+    """Searchs current working directory for new files.
+
+    Only considers files tracked by git.
+    Parameters:
+    newer_than: any file modified after this timestamp (from time.time())
+        will be added to the metadata
+    Returns:
+        list of new files
+    """
+    new_files = []
+    git_output = os.popen("git ls-files").readlines()
+    files_tracked_by_git = [line.strip() for line in git_output]
+    for filepath in files_tracked_by_git:
+        try:
+            mtime = os.path.getmtime(filepath)
+        except FileNotFoundError:
+            log.warning(
+                f"FileNotFoundError while getting modified time for {filepath}."
+            )
+            continue
+        if mtime >= newer_than:
+            new_files.append(filepath)
+    return new_files
 
 
 def read_or_empty(path: str = "synth.metadata"):
