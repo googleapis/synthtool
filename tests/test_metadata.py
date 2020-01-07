@@ -110,6 +110,7 @@ class SourceTree:
 
     def __init__(self, tmpdir):
         self.tmpdir = tmpdir
+        self.git = shutil.which("git")
         # Create some files in nested directories:
         # src/a
         # src/code/b
@@ -136,17 +137,11 @@ class SourceTree:
             file.write("c")
 
         # Check files a and b into git.
+        subprocess.run([self.git, "init"])
         self.git_add("src/a", "src/code/b")
 
     def git_add(self, *files):
-        cwd = os.getcwd()
-        try:
-            os.chdir(self.tmpdir)
-            git = shutil.which("git")
-            subprocess.run([git, "init"])
-            subprocess.run([git, "add"] + list(files))
-        finally:
-            os.chdir(cwd)
+        subprocess.run([self.git, "add"] + list(files))
 
 
 @pytest.fixture()
