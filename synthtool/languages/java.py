@@ -112,6 +112,20 @@ def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
 def _common_generation(
     service: str, version: str, library: Path, package_pattern: str, suffix: str = ""
 ):
+    """Helper function to execution the common generation cleanup actions.
+
+    Fixes headers for protobuf classes and generated gRPC stub services. Copies
+    code and samples to their final destinations by convention. Runs the code
+    formatter on the generated code.
+
+    Args:
+        service (str): Name of the service.
+        version (str): Service API version.
+        library (Path): Path to the temp directory with the generated library.
+        package_pattern (str): Package name template for fixing file headers.
+        suffix (str, optional): Suffix that the generated library folder. The
+            artman output differs from bazel's output directory. Defaults to "".
+    """
 
     package_name = package_pattern.format(service=service, version=version)
     fix_proto_headers(library / f"proto-google-cloud-{service}-{version}{suffix}")
@@ -162,6 +176,25 @@ def gapic_library(
     gapic: gcp.GAPICGenerator = None,
     **kwargs,
 ) -> Path:
+    """Generate a Java library using the gapic-generator via artman via Docker.
+
+    Generates code into a temp directory, fixes missing header fields, and
+    copies into the expected locations.
+
+    Args:
+        service (str): Name of the service.
+        version (str): Service API version.
+        config_pattern (str, optional): Path template to artman config YAML
+            file. Defaults to "/google/cloud/{service}/artman_{service}_{version}.yaml"
+        package_pattern (str, optional): Package name template for fixing file
+            headers. Defaults to "com.google.cloud.{service}.{version}".
+        gapic (GAPICGenerator, optional): Generator instance.
+        **kwargs: Additional options for gapic.java_library()
+
+    Returns:
+        The path to the temp directory containing the generated client.
+    """
+
     if gapic is None:
         gapic = gcp.GAPICGenerator()
 
@@ -191,6 +224,22 @@ def bazel_library(
     gapic: gcp.GAPICBazel = None,
     **kwargs,
 ) -> Path:
+    """Generate a Java library using the gapic-generator via bazel.
+
+    Generates code into a temp directory, fixes missing header fields, and
+    copies into the expected locations.
+
+    Args:
+        service (str): Name of the service.
+        version (str): Service API version.
+        package_pattern (str, optional): Package name template for fixing file
+            headers. Defaults to "com.google.cloud.{service}.{version}".
+        gapic (GAPICBazel, optional): Generator instance.
+        **kwargs: Additional options for gapic.java_library()
+
+    Returns:
+        The path to the temp directory containing the generated client.
+    """
     if gapic is None:
         gapic = gcp.GAPICBazel()
 
