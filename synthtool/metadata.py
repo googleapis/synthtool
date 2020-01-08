@@ -17,6 +17,7 @@ import os
 import pathlib
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 from typing import List, Iterable
@@ -64,7 +65,12 @@ def add_client_destination(**kwargs) -> None:
 def _add_new_files(files: Iterable[str]) -> None:
     for filepath in files:
         new_file = _metadata.new_files.add()
-        new_file.path = filepath
+        new_file.path = _git_slashes(filepath)
+
+
+def _git_slashes(path: str):
+    # git speaks only forward slashes
+    return path.replace("\\", "/") if sys.platform == "win32" else path
 
 
 def _get_new_files(newer_than: float) -> List[str]:
@@ -141,10 +147,10 @@ def git_ignore(file_paths: Iterable[str]):
         if ".git" not in pathlib.Path(file_path).parts
     ]
     # Write the files to a temporary text file.
-    with tempfile.TemporaryFile("w+t") as f:
+    with tempfile.TemporaryFile("w+b") as f:
         for file_path in nongit_file_paths:
-            f.write(file_path)
-            f.write("\n")
+            f.write(_git_slashes(file_path).encode("utf-8"))
+            f.write("\n".encode("utf-8"))
         # Invoke git.
         f.seek(0)
         git = shutil.which("git")
