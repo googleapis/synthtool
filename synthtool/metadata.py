@@ -14,13 +14,17 @@
 
 import datetime
 import os
+import pathlib
+import shutil
+import subprocess
+import tempfile
+import time
 from typing import List, Iterable
 
 import google.protobuf.json_format
 
 from synthtool import log
 from synthtool.protos import metadata_pb2
-import time
 
 
 _metadata = metadata_pb2.Metadata()
@@ -63,13 +67,27 @@ def _add_new_files(files: Iterable[str]) -> None:
         new_file.path = filepath
 
 
-def _get_files_tracked_by_git() -> List[str]:
-    """Searchs current working directory files tracked by git."""
-    new_files = []
-    git_output = os.popen("git ls-files").readlines()
-    files_tracked_by_git = [line.strip() for line in git_output]
-    return files_tracked_by_git
+def _get_new_files(newer_than: float) -> List[str]:
+    """Searchs current directory for new files and returns them in a list.
 
+    Parameters:
+        newer_than: any file modified after this timestamp (from time.time())
+            will be added to the metadata
+    """
+    new_files = []
+    for (root, dirs, files) in os.walk(os.getcwd()):
+        for filename in files:
+            filepath = os.path.join(root, filename)
+            try:
+                mtime = os.path.getmtime(filepath)
+            except FileNotFoundError:
+                log.warning(
+                    f"FileNotFoundError while getting modified time for {filepath}."
+                )
+                continue
+            if mtime >= newer_than:
+                new_files.append(os.path.relpath(filepath))
+    return new_files
 
 def _file_is_newer_than(filepath, newer_than: float):
     try:
@@ -102,25 +120,49 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def _remove_obsolete_files(old_metadata, files_tracked_by_git: Iterable[str]):
+def _remove_obsolete_files(old_metadata):
     """Remove obsolete files from the file system.
 
     Call add_new_files() before this function or it will remove all generated
     files.
 
     Parameters:
-    old_metadata:  old metadata loaded from a call to read_or_empty().
+        old_metadata:  old metadata loaded from a call to read_or_empty().
     """
     old_files = set([new_file.path for new_file in old_metadata.new_files])
     new_files = set([new_file.path for new_file in _metadata.new_files])
-    git_files = set(files_tracked_by_git)
-    obsolete_files = git_files & old_files - new_files
-    for file_path in obsolete_files:
+    obsolete_files = old_files - new_files
+    for file_path in git_ignore(obsolete_files):
         try:
             log.info(f"Removing obsolete file {file_path}...")
             os.unlink(file_path)
         except FileNotFoundError:
             pass  # Already deleted.  That's OK.
+
+
+def git_ignore(file_paths: Iterable[str]):
+    """Returns a new list of the same files, with ignored files removed."""
+    # Surprisingly, git check-ignore doesn't ignore .git directories, take those
+    # files out manually.
+    nongit_file_paths = [file_path for file_path in file_paths 
+        if ".git" not in pathlib.Path(file_path).parts]
+    # Write the files to a temporary text file.
+    with tempfile.TemporaryFile("w+t") as f:
+        for file_path in nongit_file_paths:
+            f.write(file_path)
+            f.write("\n")
+        # Invoke git.
+        f.seek(0)
+        git = shutil.which("git")
+        completed_process = subprocess.run(
+            [git, "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE)
+    # Digest git output.
+    stdout = completed_process.stdout
+    output_text = stdout.decode("utf-8") if stdout else ""
+    ignored_file_paths = [os.path.normpath(path.strip()) for path in output_text.split("\n")]
+    # Filter the ignored paths from the file_paths.
+    return [path for path in nongit_file_paths 
+        if os.path.normpath(path) not in ignored_file_paths]
 
 
 def set_track_obsolete_files(track_obsolete_files=True):
@@ -144,10 +186,9 @@ class MetadataTrackerAndWriter:
 
     def __exit__(self, type, value, traceback):
         if should_track_obsolete_files():
-            files_tracked_by_git = _get_files_tracked_by_git()
-            new_files = [filepath for filepath in files_tracked_by_git
-                if _file_is_newer_than(filepath, self.start_time)]
-            _add_new_files(new_files)
-            _remove_obsolete_files(self.old_metadata, files_tracked_by_git)
+            new_files = _get_new_files(self.start_time)
+            tracked_new_files = git_ignore(new_files)
+            _add_new_files(tracked_new_files)
+            _remove_obsolete_files(self.old_metadata)
         write(self.metadata_file_path)
  

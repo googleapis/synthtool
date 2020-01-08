@@ -106,7 +106,7 @@ def test_write(tmpdir):
 
 
 class SourceTree:
-    """Creates a sample nested source file structure with known timestamps."""
+    """Utility for quickly creating files in a sample source tree."""
 
     def __init__(self, tmpdir):
         metadata.reset()
@@ -139,8 +139,6 @@ def test_new_files_found(source_tree, preserve_track_obsolete_file_flag):
     time.sleep(2)
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         source_tree.write("code/b")
-        source_tree.write("code/c")
-        source_tree.git_add("a", "code/b")
 
     # Confirm add_new_files found the new files and ignored the old one.
     assert 1 == len(metadata.get().new_files)
@@ -148,7 +146,23 @@ def test_new_files_found(source_tree, preserve_track_obsolete_file_flag):
         new_file.path for new_file in metadata.get().new_files
     ]
     assert "code/b" in new_file_paths
-    # Should not track c because it's not checked into git.
+
+
+def test_gitignored_files_ignored(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+        source_tree.write(".gitignore", "code/c\n")
+
+    # Confirm add_new_files found the new files and ignored one.
+    assert 2 == len(metadata.get().new_files)
+    new_file_paths = [
+        new_file.path for new_file in metadata.get().new_files
+    ]
+    assert "code/b" in new_file_paths
+    assert ".gitignore" in new_file_paths
+    # Should not track c because it's ignored.
     assert "code/c" not in new_file_paths
 
 
@@ -158,7 +172,6 @@ def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         source_tree.write("code/b")
         source_tree.write("code/c")
-        source_tree.git_add("code/b", "code/c")
 
     metadata.reset()
     time.sleep(1)
@@ -173,14 +186,13 @@ def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
     assert os.path.exists("code/c")
 
 
-def test_old_file_not_tracked_by_git_not_removed(
+def test_old_file_ignored_by_git_not_removed(
     source_tree, preserve_track_obsolete_file_flag
     ):
     metadata.set_track_obsolete_files(True)
 
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         source_tree.write(".bin")
-        source_tree.git_add(".bin")
 
     metadata.reset()
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
