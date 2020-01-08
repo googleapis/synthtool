@@ -142,9 +142,7 @@ def test_new_files_found(source_tree, preserve_track_obsolete_file_flag):
 
     # Confirm add_new_files found the new files and ignored the old one.
     assert 1 == len(metadata.get().new_files)
-    new_file_paths = [
-        new_file.path for new_file in metadata.get().new_files
-    ]
+    new_file_paths = [new_file.path for new_file in metadata.get().new_files]
     assert "code/b" in new_file_paths
 
 
@@ -157,9 +155,7 @@ def test_gitignored_files_ignored(source_tree, preserve_track_obsolete_file_flag
 
     # Confirm add_new_files found the new files and ignored one.
     assert 2 == len(metadata.get().new_files)
-    new_file_paths = [
-        new_file.path for new_file in metadata.get().new_files
-    ]
+    new_file_paths = [new_file.path for new_file in metadata.get().new_files]
     assert "code/b" in new_file_paths
     assert ".gitignore" in new_file_paths
     # Should not track c because it's ignored.
@@ -188,7 +184,7 @@ def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
 
 def test_old_file_ignored_by_git_not_removed(
     source_tree, preserve_track_obsolete_file_flag
-    ):
+):
     metadata.set_track_obsolete_files(True)
 
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
@@ -209,7 +205,6 @@ def test_add_new_files_with_bad_file(source_tree, preserve_track_obsolete_file_f
     tmpdir = source_tree.tmpdir
     dne = "does-not-exist"
     source_tree.git_add(dne)
-    start_time = time.time()
     time.sleep(1)  # File systems have resolution of about 1 second.
 
     try:

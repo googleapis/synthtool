@@ -89,13 +89,12 @@ def _get_new_files(newer_than: float) -> List[str]:
                 new_files.append(os.path.relpath(filepath))
     return new_files
 
+
 def _file_is_newer_than(filepath, newer_than: float):
     try:
         mtime = os.path.getmtime(filepath)
     except FileNotFoundError:
-        log.warning(
-            f"FileNotFoundError while getting modified time for {filepath}."
-        )
+        log.warning(f"FileNotFoundError while getting modified time for {filepath}.")
     return mtime >= newer_than
 
 
@@ -144,8 +143,11 @@ def git_ignore(file_paths: Iterable[str]):
     """Returns a new list of the same files, with ignored files removed."""
     # Surprisingly, git check-ignore doesn't ignore .git directories, take those
     # files out manually.
-    nongit_file_paths = [file_path for file_path in file_paths 
-        if ".git" not in pathlib.Path(file_path).parts]
+    nongit_file_paths = [
+        file_path
+        for file_path in file_paths
+        if ".git" not in pathlib.Path(file_path).parts
+    ]
     # Write the files to a temporary text file.
     with tempfile.TemporaryFile("w+t") as f:
         for file_path in nongit_file_paths:
@@ -154,15 +156,22 @@ def git_ignore(file_paths: Iterable[str]):
         # Invoke git.
         f.seek(0)
         git = shutil.which("git")
+        if not git:
+            raise FileNotFoundError("Could not find git in PATH.")
         completed_process = subprocess.run(
-            [git, "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE)
+            [git, "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE
+        )
     # Digest git output.
-    stdout = completed_process.stdout
-    output_text = stdout.decode("utf-8") if stdout else ""
-    ignored_file_paths = [os.path.normpath(path.strip()) for path in output_text.split("\n")]
+    output_text = completed_process.stdout.decode("utf-8")
+    ignored_file_paths = [
+        os.path.normpath(path.strip()) for path in output_text.split("\n")
+    ]
     # Filter the ignored paths from the file_paths.
-    return [path for path in nongit_file_paths 
-        if os.path.normpath(path) not in ignored_file_paths]
+    return [
+        path
+        for path in nongit_file_paths
+        if os.path.normpath(path) not in ignored_file_paths
+    ]
 
 
 def set_track_obsolete_files(track_obsolete_files=True):
@@ -177,6 +186,7 @@ def should_track_obsolete_files():
 
 class MetadataTrackerAndWriter:
     """Writes metadata file upon exiting scope.  Tracks obsolete files."""
+
     def __init__(self, metadata_file_path: str):
         self.metadata_file_path = metadata_file_path
 
@@ -191,4 +201,3 @@ class MetadataTrackerAndWriter:
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
         write(self.metadata_file_path)
- 

@@ -22,7 +22,6 @@ import pkg_resources
 
 import synthtool.log
 import synthtool.metadata
-import time
 
 
 try:
