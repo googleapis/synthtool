@@ -90,14 +90,6 @@ def _get_new_files(newer_than: float) -> List[str]:
     return new_files
 
 
-def _file_is_newer_than(filepath, newer_than: float):
-    try:
-        mtime = os.path.getmtime(filepath)
-    except FileNotFoundError:
-        log.warning(f"FileNotFoundError while getting modified time for {filepath}.")
-    return mtime >= newer_than
-
-
 def _read_or_empty(path: str = "synth.metadata"):
     """Reads a metadata json file.  Returns empty if that file is not found."""
     try:
