@@ -109,6 +109,65 @@ def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
     )
 
 
+def _common_generation(
+    service: str, version: str, library: Path, package_pattern: str, suffix: str = ""
+):
+    """Helper function to execution the common generation cleanup actions.
+
+    Fixes headers for protobuf classes and generated gRPC stub services. Copies
+    code and samples to their final destinations by convention. Runs the code
+    formatter on the generated code.
+
+    Args:
+        service (str): Name of the service.
+        version (str): Service API version.
+        library (Path): Path to the temp directory with the generated library.
+        package_pattern (str): Package name template for fixing file headers.
+        suffix (str, optional): Suffix that the generated library folder. The
+            artman output differs from bazel's output directory. Defaults to "".
+    """
+
+    package_name = package_pattern.format(service=service, version=version)
+    fix_proto_headers(library / f"proto-google-cloud-{service}-{version}{suffix}")
+    fix_grpc_headers(
+        library / f"grpc-google-cloud-{service}-{version}{suffix}", package_name
+    )
+
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
+        f"google-cloud-{service}/src",
+    )
+    s.copy(
+        [library / f"grpc-google-cloud-{service}-{version}{suffix}/src"],
+        f"grpc-google-cloud-{service}-{version}/src",
+    )
+    s.copy(
+        [library / f"proto-google-cloud-{service}-{version}{suffix}/src"],
+        f"proto-google-cloud-{service}-{version}/src",
+    )
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
+        "samples/src",
+        excludes=["**/*.manifest.yaml"],
+    )
+    s.copy(
+        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/resources"],
+        "samples/resources",
+    )
+    s.copy(
+        [
+            library
+            / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src/**/*.manifest.yaml"
+        ],
+        f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
+    )
+
+    format_code(f"google-cloud-{service}/src")
+    format_code(f"grpc-google-cloud-{service}-{version}/src")
+    format_code(f"proto-google-cloud-{service}-{version}/src")
+    format_code("samples/src")
+
+
 def gapic_library(
     service: str,
     version: str,
@@ -117,6 +176,25 @@ def gapic_library(
     gapic: gcp.GAPICGenerator = None,
     **kwargs,
 ) -> Path:
+    """Generate a Java library using the gapic-generator via artman via Docker.
+
+    Generates code into a temp directory, fixes missing header fields, and
+    copies into the expected locations.
+
+    Args:
+        service (str): Name of the service.
+        version (str): Service API version.
+        config_pattern (str, optional): Path template to artman config YAML
+            file. Defaults to "/google/cloud/{service}/artman_{service}_{version}.yaml"
+        package_pattern (str, optional): Package name template for fixing file
+            headers. Defaults to "com.google.cloud.{service}.{version}".
+        gapic (GAPICGenerator, optional): Generator instance.
+        **kwargs: Additional options for gapic.java_library()
+
+    Returns:
+        The path to the temp directory containing the generated client.
+    """
+
     if gapic is None:
         gapic = gcp.GAPICGenerator()
 
@@ -128,42 +206,51 @@ def gapic_library(
         include_samples=True,
         **kwargs,
     )
-    package_name = package_pattern.format(service=service, version=version)
-    fix_proto_headers(library / f"proto-google-cloud-{service}-{version}")
-    fix_grpc_headers(library / f"grpc-google-cloud-{service}-{version}", package_name)
 
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}/src"],
-        f"google-cloud-{service}/src",
-    )
-    s.copy(
-        [library / f"grpc-google-cloud-{service}-{version}/src"],
-        f"grpc-google-cloud-{service}-{version}/src",
-    )
-    s.copy(
-        [library / f"proto-google-cloud-{service}-{version}/src"],
-        f"proto-google-cloud-{service}-{version}/src",
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}/samples/src"],
-        "samples/src",
-        excludes=["**/*.manifest.yaml"],
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}/samples/resources"],
-        "samples/resources",
-    )
-    s.copy(
-        [
-            library
-            / f"gapic-google-cloud-{service}-{version}/samples/src/**/*.manifest.yaml"
-        ],
-        f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
+    _common_generation(
+        service=service,
+        version=version,
+        library=library,
+        package_pattern=package_pattern,
     )
 
-    format_code(f"google-cloud-{service}/src")
-    format_code(f"grpc-google-cloud-{service}-{version}/src")
-    format_code(f"proto-google-cloud-{service}-{version}/src")
-    format_code("samples/src")
+    return library
+
+
+def bazel_library(
+    service: str,
+    version: str,
+    package_pattern: str = "com.google.cloud.{service}.{version}",
+    gapic: gcp.GAPICBazel = None,
+    **kwargs,
+) -> Path:
+    """Generate a Java library using the gapic-generator via bazel.
+
+    Generates code into a temp directory, fixes missing header fields, and
+    copies into the expected locations.
+
+    Args:
+        service (str): Name of the service.
+        version (str): Service API version.
+        package_pattern (str, optional): Package name template for fixing file
+            headers. Defaults to "com.google.cloud.{service}.{version}".
+        gapic (GAPICBazel, optional): Generator instance.
+        **kwargs: Additional options for gapic.java_library()
+
+    Returns:
+        The path to the temp directory containing the generated client.
+    """
+    if gapic is None:
+        gapic = gcp.GAPICBazel()
+
+    library = gapic.java_library(service=service, version=version, **kwargs)
+
+    _common_generation(
+        service=service,
+        version=version,
+        library=library / f"google-cloud-{service}-{version}-java",
+        package_pattern=package_pattern,
+        suffix="-java",
+    )
 
     return library
