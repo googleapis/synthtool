@@ -155,9 +155,9 @@ def git_ignore(file_paths: Iterable[str]):
         )
     # Digest git output.
     output_text = completed_process.stdout.decode("utf-8")
-    ignored_file_paths = [
+    ignored_file_paths = set([
         os.path.normpath(path.strip()) for path in output_text.split("\n")
-    ]
+    ])
     # Filter the ignored paths from the file_paths.
     return [
         path
