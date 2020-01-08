@@ -109,43 +109,23 @@ class SourceTree:
     """Creates a sample nested source file structure with known timestamps."""
 
     def __init__(self, tmpdir):
+        metadata.reset()
         self.tmpdir = tmpdir
         self.git = shutil.which("git")
-        # Create some files in nested directories:
-        # src/a
-        # src/code/b
-        # src/code/c
-        self.srcdir = pathlib.Path("src")
-        os.mkdir(self.srcdir)
-        self.codedir = self.srcdir / "code"
-        os.mkdir(self.codedir)
-        with open(self.srcdir / "a", "wt") as file:
-            file.write("a")
-        # File systems timestamps have resolutions of about 1 second, so some
-        # sleeping is necessary.
-        time.sleep(1)
-        self.after_a_before_b = time.time()
-        time.sleep(1)
-        self.b_path = os.path.join(self.codedir, "b")
-        with open(self.b_path, "wt") as file:
-            file.write("b")
-        time.sleep(1)
-        self.after_b_before_c = time.time()
-        time.sleep(1)
-        self.c_path = os.path.join(self.codedir, "c")
-        with open(self.c_path, "wt") as file:
-            file.write("c")
-
-        # Check files a and b into git.
         subprocess.run([self.git, "init"])
-        self.git_add("src/a", "src/code/b")
+
+    def write(self, path: str, content: str = None):
+        parent = pathlib.Path(path).parent
+        os.makedirs(parent, exist_ok=True)
+        with open(path, "wt") as file:
+            file.write(content or path)
 
     def git_add(self, *files):
         subprocess.run([self.git, "add"] + list(files))
 
 
 @pytest.fixture()
-def source_tree_fixture():
+def source_tree():
     tmp_dir = tmpdir()
     cwd = os.getcwd()
     os.chdir(tmp_dir)
@@ -153,47 +133,70 @@ def source_tree_fixture():
     os.chdir(cwd)
 
 
-def test_new_files_found(source_tree_fixture):
-    metadata.reset()
+def test_new_files_found(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+    source_tree.write("a")
+    time.sleep(2)
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+        source_tree.git_add("a", "code/b")
 
     # Confirm add_new_files found the new files and ignored the old one.
-    metadata.add_new_files(source_tree_fixture.after_a_before_b)
     assert 1 == len(metadata.get().new_files)
     new_file_paths = [
-        os.path.normpath(new_file.path) for new_file in metadata.get().new_files
+        new_file.path for new_file in metadata.get().new_files
     ]
-    assert source_tree_fixture.b_path in new_file_paths
+    assert "code/b" in new_file_paths
     # Should not track c because it's not checked into git.
-    assert source_tree_fixture.c_path not in new_file_paths
+    assert "code/c" not in new_file_paths
 
 
-def test_old_file_removed(source_tree_fixture):
-    # Capture the list of files as old metadata.
-    source_tree_fixture.git_add("src/code/c")
-    metadata.add_new_files(source_tree_fixture.after_a_before_b)
+def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
 
-    # Prepare fresh metadata, with c as a new file and b as an obsolete file.
-    old_metadata = metadata.get()
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+        source_tree.git_add("code/b", "code/c")
+
     metadata.reset()
-    metadata.add_new_files(source_tree_fixture.after_b_before_c)
+    time.sleep(1)
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/c")
+
     assert 1 == len(metadata.get().new_files)
-    assert source_tree_fixture.c_path == os.path.normpath(
-        metadata.get().new_files[0].path
-    )
+    assert "code/c" == metadata.get().new_files[0].path
+
     # Confirm remove_obsolete_files deletes b but not c.
-    metadata.remove_obsolete_files(old_metadata)
-    assert not os.path.exists(source_tree_fixture.b_path)
-    assert os.path.exists(source_tree_fixture.c_path)
-
-    # Confirm attempting to delete b a second time doesn't throw an exception.
-    metadata.remove_obsolete_files(old_metadata)
+    assert not os.path.exists("code/b")
+    assert os.path.exists("code/c")
 
 
-def test_add_new_files_with_bad_file(source_tree_fixture):
+def test_old_file_not_tracked_by_git_not_removed(
+    source_tree, preserve_track_obsolete_file_flag
+    ):
+    metadata.set_track_obsolete_files(True)
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write(".bin")
+        source_tree.git_add(".bin")
+
     metadata.reset()
-    tmpdir = source_tree_fixture.tmpdir
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write(".gitignore", ".bin")
+
+    # Confirm remove_obsolete_files didn't remove the .bin file.
+    assert os.path.exists(".bin")
+
+
+def test_add_new_files_with_bad_file(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+
+    metadata.reset()
+    tmpdir = source_tree.tmpdir
     dne = "does-not-exist"
-    source_tree_fixture.git_add(dne)
+    source_tree.git_add(dne)
     start_time = time.time()
     time.sleep(1)  # File systems have resolution of about 1 second.
 
@@ -205,7 +208,8 @@ def test_add_new_files_with_bad_file(source_tree_fixture):
         assert "win32" == sys.platform
         return
     # Confirm this doesn't throw an exception.
-    metadata.add_new_files(start_time)
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        pass
     # And a bad link does not exist and shouldn't be recorded as a new file.
     assert 0 == len(metadata.get().new_files)
 
@@ -214,13 +218,13 @@ def test_read_metadata(tmpdir):
     metadata.reset()
     add_sample_client_destination()
     metadata.write(tmpdir / "synth.metadata")
-    read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
+    read_metadata = metadata._read_or_empty(tmpdir / "synth.metadata")
     assert metadata.get() == read_metadata
 
 
 def test_read_nonexistent_metadata(tmpdir):
     # The file doesn't exist.
-    read_metadata = metadata.read_or_empty(tmpdir / "synth.metadata")
+    read_metadata = metadata._read_or_empty(tmpdir / "synth.metadata")
     metadata.reset()
     assert metadata.get() == read_metadata
 

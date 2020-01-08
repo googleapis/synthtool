@@ -14,12 +14,13 @@
 
 import datetime
 import os
-from typing import List
+from typing import List, Iterable
 
 import google.protobuf.json_format
 
 from synthtool import log
 from synthtool.protos import metadata_pb2
+import time
 
 
 _metadata = metadata_pb2.Metadata()
@@ -56,46 +57,31 @@ def add_client_destination(**kwargs) -> None:
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
 
-def add_new_files(newer_than: float) -> None:
-    """Searchs a directory for new files and adds them to metadata.
-
-    Only considers files tracked by git.
-    Parameters:
-    newer_than: any file modified after this timestamp (from time.time())
-        will be added to the metadata
-    """
-    for filepath in get_new_files_tracked_by_git(newer_than):
+def _add_new_files(files: Iterable[str]) -> None:
+    for filepath in files:
         new_file = _metadata.new_files.add()
         new_file.path = filepath
 
 
-def get_new_files_tracked_by_git(newer_than: float) -> List[str]:
-    """Searchs current working directory for new files.
-
-    Only considers files tracked by git.
-    Parameters:
-    newer_than: any file modified after this timestamp (from time.time())
-        will be added to the metadata
-    Returns:
-        list of new files
-    """
+def _get_files_tracked_by_git() -> List[str]:
+    """Searchs current working directory files tracked by git."""
     new_files = []
     git_output = os.popen("git ls-files").readlines()
     files_tracked_by_git = [line.strip() for line in git_output]
-    for filepath in files_tracked_by_git:
-        try:
-            mtime = os.path.getmtime(filepath)
-        except FileNotFoundError:
-            log.warning(
-                f"FileNotFoundError while getting modified time for {filepath}."
-            )
-            continue
-        if mtime >= newer_than:
-            new_files.append(filepath)
-    return new_files
+    return files_tracked_by_git
 
 
-def read_or_empty(path: str = "synth.metadata"):
+def _file_is_newer_than(filepath, newer_than: float):
+    try:
+        mtime = os.path.getmtime(filepath)
+    except FileNotFoundError:
+        log.warning(
+            f"FileNotFoundError while getting modified time for {filepath}."
+        )
+    return mtime >= newer_than
+
+
+def _read_or_empty(path: str = "synth.metadata"):
     """Reads a metadata json file.  Returns empty if that file is not found."""
     try:
         with open(path, "rt") as file:
@@ -116,7 +102,7 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def remove_obsolete_files(old_metadata):
+def _remove_obsolete_files(old_metadata, files_tracked_by_git: Iterable[str]):
     """Remove obsolete files from the file system.
 
     Call add_new_files() before this function or it will remove all generated
@@ -127,7 +113,8 @@ def remove_obsolete_files(old_metadata):
     """
     old_files = set([new_file.path for new_file in old_metadata.new_files])
     new_files = set([new_file.path for new_file in _metadata.new_files])
-    obsolete_files = old_files - new_files
+    git_files = set(files_tracked_by_git)
+    obsolete_files = git_files & old_files - new_files
     for file_path in obsolete_files:
         try:
             log.info(f"Removing obsolete file {file_path}...")
@@ -144,3 +131,23 @@ def set_track_obsolete_files(track_obsolete_files=True):
 
 def should_track_obsolete_files():
     return _track_obsolete_files
+
+
+class MetadataTrackerAndWriter:
+    """Writes metadata file upon exiting scope.  Tracks obsolete files."""
+    def __init__(self, metadata_file_path: str):
+        self.metadata_file_path = metadata_file_path
+
+    def __enter__(self):
+        self.start_time = time.time() - 1
+        self.old_metadata = _read_or_empty(self.metadata_file_path)
+
+    def __exit__(self, type, value, traceback):
+        if should_track_obsolete_files():
+            files_tracked_by_git = _get_files_tracked_by_git()
+            new_files = [filepath for filepath in files_tracked_by_git
+                if _file_is_newer_than(filepath, self.start_time)]
+            _add_new_files(new_files)
+            _remove_obsolete_files(self.old_metadata, files_tracked_by_git)
+        write(self.metadata_file_path)
+ 
