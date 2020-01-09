@@ -14,6 +14,13 @@
 
 import datetime
 import os
+import pathlib
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+from typing import List, Iterable
 
 import google.protobuf.json_format
 
@@ -55,16 +62,26 @@ def add_client_destination(**kwargs) -> None:
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
 
-def add_new_files(newer_than: float, path: str = None) -> None:
-    """Searchs a directory for files new files and adds them to metadata.
+def _add_new_files(files: Iterable[str]) -> None:
+    for filepath in files:
+        new_file = _metadata.new_files.add()
+        new_file.path = _git_slashes(filepath)
+
+
+def _git_slashes(path: str):
+    # git speaks only forward slashes
+    return path.replace("\\", "/") if sys.platform == "win32" else path
+
+
+def _get_new_files(newer_than: float) -> List[str]:
+    """Searchs current directory for new files and returns them in a list.
 
     Parameters:
-    newer_than: any file modified after this timestamp (from time.time())
-        will be added to the metadata
-    path: path of the directory to explore. defaults to current working
-        directory.
+        newer_than: any file modified after this timestamp (from time.time())
+            will be added to the metadata
     """
-    for (root, dirs, files) in os.walk(path or os.getcwd()):
+    new_files = []
+    for (root, dirs, files) in os.walk(os.getcwd()):
         for filename in files:
             filepath = os.path.join(root, filename)
             try:
@@ -75,11 +92,11 @@ def add_new_files(newer_than: float, path: str = None) -> None:
                 )
                 continue
             if mtime >= newer_than:
-                new_file = _metadata.new_files.add()
-                new_file.path = os.path.relpath(filepath)
+                new_files.append(os.path.relpath(filepath))
+    return new_files
 
 
-def read_or_empty(path: str = "synth.metadata"):
+def _read_or_empty(path: str = "synth.metadata"):
     """Reads a metadata json file.  Returns empty if that file is not found."""
     try:
         with open(path, "rt") as file:
@@ -100,24 +117,59 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def remove_obsolete_files(old_metadata):
+def _remove_obsolete_files(old_metadata):
     """Remove obsolete files from the file system.
 
     Call add_new_files() before this function or it will remove all generated
     files.
 
     Parameters:
-    old_metadata:  old metadata loaded from a call to read_or_empty().
+        old_metadata:  old metadata loaded from a call to read_or_empty().
     """
     old_files = set([new_file.path for new_file in old_metadata.new_files])
     new_files = set([new_file.path for new_file in _metadata.new_files])
     obsolete_files = old_files - new_files
-    for file_path in obsolete_files:
+    for file_path in git_ignore(obsolete_files):
         try:
             log.info(f"Removing obsolete file {file_path}...")
             os.unlink(file_path)
         except FileNotFoundError:
             pass  # Already deleted.  That's OK.
+
+
+def git_ignore(file_paths: Iterable[str]):
+    """Returns a new list of the same files, with ignored files removed."""
+    # Surprisingly, git check-ignore doesn't ignore .git directories, take those
+    # files out manually.
+    nongit_file_paths = [
+        file_path
+        for file_path in file_paths
+        if ".git" not in pathlib.Path(file_path).parts
+    ]
+    # Write the files to a temporary text file.
+    with tempfile.TemporaryFile("w+b") as f:
+        for file_path in nongit_file_paths:
+            f.write(_git_slashes(file_path).encode("utf-8"))
+            f.write("\n".encode("utf-8"))
+        # Invoke git.
+        f.seek(0)
+        git = shutil.which("git")
+        if not git:
+            raise FileNotFoundError("Could not find git in PATH.")
+        completed_process = subprocess.run(
+            [git, "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE
+        )
+    # Digest git output.
+    output_text = completed_process.stdout.decode("utf-8")
+    ignored_file_paths = set(
+        [os.path.normpath(path.strip()) for path in output_text.split("\n")]
+    )
+    # Filter the ignored paths from the file_paths.
+    return [
+        path
+        for path in nongit_file_paths
+        if os.path.normpath(path) not in ignored_file_paths
+    ]
 
 
 def set_track_obsolete_files(track_obsolete_files=True):
@@ -128,3 +180,22 @@ def set_track_obsolete_files(track_obsolete_files=True):
 
 def should_track_obsolete_files():
     return _track_obsolete_files
+
+
+class MetadataTrackerAndWriter:
+    """Writes metadata file upon exiting scope.  Tracks obsolete files."""
+
+    def __init__(self, metadata_file_path: str):
+        self.metadata_file_path = metadata_file_path
+
+    def __enter__(self):
+        self.start_time = time.time() - 1
+        self.old_metadata = _read_or_empty(self.metadata_file_path)
+
+    def __exit__(self, type, value, traceback):
+        if should_track_obsolete_files():
+            new_files = _get_new_files(self.start_time)
+            tracked_new_files = git_ignore(new_files)
+            _add_new_files(tracked_new_files)
+            _remove_obsolete_files(self.old_metadata)
+        write(self.metadata_file_path)

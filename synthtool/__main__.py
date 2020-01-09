@@ -22,7 +22,6 @@ import pkg_resources
 
 import synthtool.log
 import synthtool.metadata
-import time
 
 
 try:
@@ -88,17 +87,8 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
         if spec.loader is None:
             raise ImportError("Could not import synth.py")
 
-        start_time = time.time() - 1  # -1 fudge factor to make sure we don't
-        # miss files that were quickly created.
-        old_metadata = synthtool.metadata.read_or_empty(metadata)
-
-        try:
+        with synthtool.metadata.MetadataTrackerAndWriter(metadata):
             spec.loader.exec_module(synth_module)  # type: ignore
-        finally:
-            if synthtool.metadata.should_track_obsolete_files():
-                synthtool.metadata.add_new_files(start_time)
-                synthtool.metadata.remove_obsolete_files(old_metadata)
-            synthtool.metadata.write(metadata)
 
     else:
         synthtool.log.exception(f"{synth_file} not found.")
