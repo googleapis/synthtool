@@ -117,5 +117,5 @@ class DiscoGAPICGenerator:
     def _clone_discovery_artifact_manager(self):
         log.debug("Cloning discovery-artifact-manager.")
         self.discovery_artifact_manager = git.clone(
-            DISCOVERY_ARTIFACT_MANAGER_URL, depth=1
+            DISCOVERY_ARTIFACT_MANAGER_URL
         )
