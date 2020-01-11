@@ -123,6 +123,9 @@ class SourceTree:
     def git_add(self, *files):
         subprocess.run([self.git, "add"] + list(files))
 
+    def git_commit(self, message):
+        subprocess.run([self.git, "commit", "-m", message])
+
 
 @pytest.fixture()
 def source_tree():
@@ -272,3 +275,26 @@ def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
     assert not metadata.should_track_obsolete_files()
     metadata.set_track_obsolete_files(True)
     assert metadata.should_track_obsolete_files()
+
+
+def test_getsource_map(source_tree):
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.git_add("code/b")
+        source_tree.git_commit("code/b")
+
+        hash = subprocess.run([source_tree.git, "log", "-1", "--pretty=format:%H"], 
+            stdout=subprocess.PIPE, text=True).stdout.strip()
+        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
+
+    metadata.reset()
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/c")
+        source_tree.git_add("code/c")
+        source_tree.git_commit("code/c")
+
+        hash = subprocess.run([source_tree.git, "log", "-1", "--pretty=format:%H"], 
+            stdout=subprocess.PIPE, text=True).stdout.strip()
+        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
+
+

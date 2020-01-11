@@ -20,7 +20,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from typing import List, Iterable
+from typing import List, Iterable, Dict
 
 import google.protobuf.json_format
 
@@ -198,4 +198,15 @@ class MetadataTrackerAndWriter:
             tracked_new_files = git_ignore(new_files)
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
+        _get_source_map(get())
         write(self.metadata_file_path)
+
+
+def _get_source_map(metadata: metadata_pb2.Metadata) -> Dict[str, metadata_pb2.GitSource]:
+    source_map = {}
+    for source in metadata.sources:
+        if source.HasField("git"):
+            git_source = source.git
+            source_map[git_source.name] = git_source
+    return source_map
+
