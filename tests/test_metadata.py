@@ -288,7 +288,7 @@ def test_append_git_log_to_metadata(source_tree):
         hash = subprocess.run(
             [source_tree.git, "log", "-1", "--pretty=format:%H"],
             stdout=subprocess.PIPE,
-            text=True,
+            universal_newlines=True,
         ).stdout.strip()
         metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
 
@@ -306,7 +306,7 @@ def test_append_git_log_to_metadata(source_tree):
         hash = subprocess.run(
             [source_tree.git, "log", "-1", "--pretty=format:%H"],
             stdout=subprocess.PIPE,
-            text=True,
+            universal_newlines=True,
         ).stdout.strip()
         metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
 

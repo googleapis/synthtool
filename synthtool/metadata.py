@@ -232,7 +232,7 @@ def _append_git_logs(old_metadata, new_metadata):
                 f"{old_source.sha}..HEAD",
             ],
             stdout=subprocess.PIPE,
-            text=True,
+            universal_newlines=True,
         ).stdout
         git_source.log = output
 
