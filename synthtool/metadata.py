@@ -201,8 +201,24 @@ class MetadataTrackerAndWriter:
             tracked_new_files = git_ignore(new_files)
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
-        _get_source_map(get())
+        _append_git_logs(self.old_metadata, get())
         write(self.metadata_file_path)
+
+
+def _append_git_logs(old_metadata: metadata_pb2.Metadata,
+    new_metadata: metadata_pb2.Metadata):
+    old_map = _get_source_map(old_metadata)
+    new_map = _get_source_map(new_metadata)
+    git = shutil.which("git")
+    for name, git_source in new_map.items():
+        # Get the git history since the last run:
+        old_source = old_map.get(name, metadata_pb2.GitSource())
+        if not old_source.sha or not old_source.local_path:
+            continue
+        output = subprocess.run([git, "-C", old_source.local_path, 
+            "log", "--pretty=format:%H %s", f"{old_source.sha}..HEAD"],
+            stdout=subprocess.PIPE, text=True).stdout
+        git_source.log = output
 
 
 def _get_source_map(metadata: metadata_pb2.Metadata) -> Dict[str, metadata_pb2.GitSource]:
