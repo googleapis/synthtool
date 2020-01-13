@@ -255,6 +255,11 @@ def _get_git_source_map(metadata) -> Dict[str, object]:
 
 
 def _clear_local_paths(metadata):
+    """Clear the local_path from the git sources.
+
+    There's no reason to preserve it, and it may leak some info we don't
+    want to leak in the path.
+    """
     for source in metadata.sources:
         if source.HasField("git"):
             git_source = source.git
