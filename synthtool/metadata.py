@@ -202,7 +202,7 @@ class MetadataTrackerAndWriter:
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
         _append_git_logs(self.old_metadata, get())
-        # _clear_local_paths(get())
+        _clear_local_paths(get())
         write(self.metadata_file_path)
 
 
@@ -258,4 +258,4 @@ def _clear_local_paths(metadata):
     for source in metadata.sources:
         if source.HasField("git"):
             git_source = source.git
-            git_source.local_path = None
+            git_source.ClearField("local_path")
