@@ -318,3 +318,5 @@ def test_append_git_log_to_metadata(source_tree):
         mdata.sources[0].git.log,
         re.MULTILINE,
     )
+    # Make sure the local path field is not recorded.
+    assert mdata.sources[0].git.local_path is None
