@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import datetime
+import locale
 import os
 import pathlib
 import shutil
@@ -146,11 +147,13 @@ def git_ignore(file_paths: Iterable[str]):
         for file_path in file_paths
         if ".git" not in pathlib.Path(file_path).parts
     ]
+
+    encoding = locale.getpreferredencoding(False)
     # Write the files to a temporary text file.
     with tempfile.TemporaryFile("w+b") as f:
         for file_path in nongit_file_paths:
-            f.write(_git_slashes(file_path).encode("utf-8"))
-            f.write("\n".encode("utf-8"))
+            f.write(_git_slashes(file_path).encode(encoding))
+            f.write("\n".encode(encoding))
         # Invoke git.
         f.seek(0)
         git = shutil.which("git")
@@ -160,7 +163,7 @@ def git_ignore(file_paths: Iterable[str]):
             [git, "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE
         )
     # Digest git output.
-    output_text = completed_process.stdout.decode("utf-8")
+    output_text = completed_process.stdout.decode(encoding)
     ignored_file_paths = set(
         [os.path.normpath(path.strip()) for path in output_text.split("\n")]
     )
