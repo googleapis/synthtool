@@ -16,6 +16,7 @@ import json
 import os
 import pathlib
 import pytest
+import re
 import shutil
 import subprocess
 import sys
@@ -277,24 +278,43 @@ def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
     assert metadata.should_track_obsolete_files()
 
 
-def test_getsource_map(source_tree):
+def test_append_git_log_to_metadata(source_tree):
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write("code/b")
-        source_tree.git_add("code/b")
-        source_tree.git_commit("code/b")
+        # Create one commit that will be recorded in the metadata.
+        source_tree.write("a")
+        source_tree.git_add("a")
+        source_tree.git_commit("a")
 
-        hash = subprocess.run([source_tree.git, "log", "-1", "--pretty=format:%H"], 
-            stdout=subprocess.PIPE, text=True).stdout.strip()
+        hash = subprocess.run(
+            [source_tree.git, "log", "-1", "--pretty=format:%H"],
+            stdout=subprocess.PIPE,
+            text=True,
+        ).stdout.strip()
         metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
 
     metadata.reset()
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        # Create two more commits that should appear in metadata git log.
+        source_tree.write("code/b")
+        source_tree.git_add("code/b")
+        source_tree.git_commit("code/b")
+
         source_tree.write("code/c")
         source_tree.git_add("code/c")
         source_tree.git_commit("code/c")
 
-        hash = subprocess.run([source_tree.git, "log", "-1", "--pretty=format:%H"], 
-            stdout=subprocess.PIPE, text=True).stdout.strip()
+        hash = subprocess.run(
+            [source_tree.git, "log", "-1", "--pretty=format:%H"],
+            stdout=subprocess.PIPE,
+            text=True,
+        ).stdout.strip()
         metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
 
-
+    # Read the metadata that we just wrote.
+    mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+    # Match 2 log lines.
+    assert re.match(
+        r"[0-9A-Fa-f]+\s+code/c\n[0-9A-Fa-f]+\s+code/b\n",
+        mdata.sources[0].git.log,
+        re.MULTILINE,
+    )

@@ -205,8 +205,9 @@ class MetadataTrackerAndWriter:
         write(self.metadata_file_path)
 
 
-def _append_git_logs(old_metadata: metadata_pb2.Metadata,
-    new_metadata: metadata_pb2.Metadata):
+def _append_git_logs(
+    old_metadata: metadata_pb2.Metadata, new_metadata: metadata_pb2.Metadata
+):
     old_map = _get_source_map(old_metadata)
     new_map = _get_source_map(new_metadata)
     git = shutil.which("git")
@@ -215,17 +216,28 @@ def _append_git_logs(old_metadata: metadata_pb2.Metadata,
         old_source = old_map.get(name, metadata_pb2.GitSource())
         if not old_source.sha or not old_source.local_path:
             continue
-        output = subprocess.run([git, "-C", old_source.local_path, 
-            "log", "--pretty=format:%H %s", f"{old_source.sha}..HEAD"],
-            stdout=subprocess.PIPE, text=True).stdout
+        output = subprocess.run(
+            [
+                git,
+                "-C",
+                old_source.local_path,
+                "log",
+                "--pretty=oneline",
+                "--no-decorate",
+                f"{old_source.sha}..HEAD",
+            ],
+            stdout=subprocess.PIPE,
+            text=True,
+        ).stdout
         git_source.log = output
 
 
-def _get_source_map(metadata: metadata_pb2.Metadata) -> Dict[str, metadata_pb2.GitSource]:
+def _get_source_map(
+    metadata: metadata_pb2.Metadata,
+) -> Dict[str, metadata_pb2.GitSource]:
     source_map = {}
     for source in metadata.sources:
         if source.HasField("git"):
             git_source = source.git
             source_map[git_source.name] = git_source
     return source_map
-
