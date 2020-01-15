@@ -32,7 +32,7 @@ def lint(session):
 
 @nox.session(python='3.6')
 def test(session):
-    session.install('pytest', 'pytest-cov')
+    session.install('pytest', 'pytest-cov', 'requests_mock')
     session.run('pip', 'install', '-e', '.')
     session.run('pytest', '--cov-report', 'term-missing', '--cov', 'synthtool', 'tests', *session.posargs)
 

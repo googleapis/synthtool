@@ -14,6 +14,7 @@
 
 import glob
 import os
+import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
@@ -21,6 +22,7 @@ from synthtool import cache
 from synthtool import log
 from synthtool import shell
 from pathlib import Path
+from typing import Optional
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
@@ -107,6 +109,46 @@ def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
         f"package {package_name};",
         f"{GOOD_LICENSE}package {package_name};",
     )
+
+
+def latest_maven_version(group_id: str, artifact_id: str) -> Optional[str]:
+    """Helper function to find the latest released version of a Maven artifact.
+
+    Fetches metadata from Maven Central and parses out the latest released
+    version.
+
+    Args:
+        group_id (str): The groupId of the Maven artifact
+        artifact_id (str): The artifactId of the Maven artifact
+
+    Returns:
+        The latest version of the artifact as a string or None
+    """
+    group_path = "/".join(group_id.split("."))
+    url = (
+        f"https://repo1.maven.org/maven2/{group_path}/{artifact_id}/maven-metadata.xml"
+    )
+    response = requests.get(url)
+    response.raise_for_status()
+    return version_from_maven_metadata(response.text)
+
+
+def version_from_maven_metadata(metadata: str) -> Optional[str]:
+    """Helper function to parse the latest released version from the Maven
+    metadata XML file.
+
+    Args:
+        metadata (str): The XML contents of the Maven metadata file
+
+    Returns:
+        The latest version of the artifact as a string or None
+    """
+    root = ET.fromstring(metadata)
+    latest = root.find("./versioning/latest")
+    if latest is not None:
+        return latest.text
+
+    return None
 
 
 def _common_generation(
