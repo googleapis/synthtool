@@ -130,7 +130,7 @@ def latest_maven_version(group_id: str, artifact_id: str) -> Optional[str]:
     )
     response = requests.get(url)
     response.raise_for_status()
-    return version_from_maven_metadata(response.content.decode("utf-8"))
+    return version_from_maven_metadata(response.content.decode(response.encoding))
 
 
 def version_from_maven_metadata(metadata: str) -> Optional[str]:
