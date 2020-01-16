@@ -314,7 +314,7 @@ def test_append_git_log_to_metadata(source_tree):
     mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
     # Match 2 log lines.
     assert re.match(
-        r"[0-9A-Fa-f]+\s+code/c\n[0-9A-Fa-f]+\s+code/b\n",
+        r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
         mdata.sources[0].git.log,
         re.MULTILINE,
     )

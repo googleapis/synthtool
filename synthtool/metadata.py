@@ -227,7 +227,7 @@ def _append_git_logs(old_metadata, new_metadata):
                 "-C",
                 git_source.local_path,
                 "log",
-                "--pretty=oneline",
+                "--pretty=%H%n%B",
                 "--no-decorate",
                 f"{old_source.sha}..HEAD",
             ],
