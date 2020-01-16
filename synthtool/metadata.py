@@ -30,7 +30,7 @@ from synthtool.protos import metadata_pb2
 
 
 _metadata = metadata_pb2.Metadata()
-_track_obsolete_files = False
+_track_obsolete_files = True
 
 
 def reset() -> None:
