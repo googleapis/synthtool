@@ -141,9 +141,8 @@ def test_new_files_found(source_tree, preserve_track_obsolete_file_flag):
         source_tree.write("code/b")
 
     # Confirm add_new_files found the new files and ignored the old one.
-    assert 1 == len(metadata.get().new_files)
     new_file_paths = [new_file.path for new_file in metadata.get().new_files]
-    assert "code/b" in new_file_paths
+    assert ["code/b"] == new_file_paths
 
 
 def test_gitignored_files_ignored(source_tree, preserve_track_obsolete_file_flag):
@@ -154,12 +153,8 @@ def test_gitignored_files_ignored(source_tree, preserve_track_obsolete_file_flag
         source_tree.write(".gitignore", "code/c\n")
 
     # Confirm add_new_files found the new files and ignored one.
-    assert 2 == len(metadata.get().new_files)
     new_file_paths = [new_file.path for new_file in metadata.get().new_files]
-    assert "code/b" in new_file_paths
-    assert ".gitignore" in new_file_paths
-    # Should not track c because it's ignored.
-    assert "code/c" not in new_file_paths
+    assert [".gitignore", "code/b"] == new_file_paths
 
 
 def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
