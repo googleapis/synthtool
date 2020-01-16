@@ -296,3 +296,17 @@ def bazel_library(
     )
 
     return library
+
+
+def common_templates(**kwargs):
+    if "metadata" not in kwargs:
+        kwargs["metadata"] = {}
+
+    kwargs["metadata"]["latest_version"] = latest_maven_version(
+        group_id="com.google.cloud", artifact_id="google-cloud-asset",
+    )
+    kwargs["metadata"]["latest_bom_version"] = latest_maven_version(
+        group_id="com.google.cloud", artifact_id="libraries-bom",
+    )
+    templates = gcp.CommonTemplates().java_library(**kwargs)
+    s.copy(templates)

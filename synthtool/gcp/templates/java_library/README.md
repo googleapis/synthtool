@@ -1,3 +1,6 @@
+{% set group_id = metadata['repo']['distribution_name'].split(':')|first -%}
+{% set artifact_id = metadata['repo']['distribution_name'].split(':')|last -%}
+{% set repo_short = metadata['repo']['repo'].split('/')|last -%}
 # Google Cloud Java Client for {{metadata['repo']['name_pretty']}}
 
 Java idiomatic client for [{{metadata['repo']['name_pretty']}}][api-reference].
@@ -7,28 +10,42 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][api-reference].
 
 - [Product Documentation][product-docs]
 - [Client Library Documentation][javadocs]
-
+{% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
-
+{% endif %}
 ## Quickstart
 
-[//]: # ({x-version-update-start:{{metadata['repo']['name']}}:released})
 If you are using Maven, add this to your pom.xml file
 ```xml
-<dependency>
-  <groupId>com.google.cloud</groupId>
-  <artifactId>google-cloud-{{metadata['repo']['name']}}</artifactId>
-  <version>0.102.0-beta</version>
-</dependency>
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>libraries-bom</artifactId>
+      <version>{{ metadata['latest_bom_version'] }}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>{{ group_id }}</groupId>
+    <artifactId>{{ artifact_id }}</artifactId>
+  </dependency>
+</dependencies>
 ```
+
 If you are using Gradle, add this to your dependencies
+[//]: # ({x-version-update-start:{{ artifact_id }}:released})
 ```Groovy
-compile 'com.google.cloud:google-cloud-{{metadata['repo']['name']}}:0.102.0-beta'
+compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
 If you are using SBT, add this to your dependencies
 ```Scala
-libraryDependencies += "com.google.cloud" % "google-cloud-{{metadata['repo']['name']}}" % "0.102.0-beta"
+libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['latest_version'] }}"
 ```
 [//]: # ({x-version-update-end})
 
@@ -38,7 +55,7 @@ See the [Authentication][authentication] section in the base directory's README.
 
 ## About {{metadata['repo']['name_pretty']}}
 
-[{{metadata['repo']['name_pretty']}}][api-reference] is a suite of Machine Learning products.
+{{ metadata['repo']['api_description'] }}
 
 See the [{{metadata['repo']['name_pretty']}} client library docs][javadocs] to learn how to
 use this {{metadata['repo']['name_pretty']}} Client Library.
@@ -48,23 +65,31 @@ use this {{metadata['repo']['name_pretty']}} Client Library.
 ### Prerequisites
 
 You will need a [Google Developers Console][developer-console] project with the
-{{metadata['repo']['name_pretty']}} API enabled. [Follow these instructions][create-project] to get your
+{{metadata['repo']['name_pretty']}} [API enabled][enable-api]. [Follow these instructions][create-project] to get your
 project set up. You will also need to set up the local development environment by
 [installing the Google Cloud SDK][cloud-sdk] and running the following commands in command line:
 `gcloud auth login` and `gcloud config set project [YOUR PROJECT ID]`.
 
 ### Installation and setup
 
-You'll need to obtain the `google-cloud-{{metadata['repo']['name']}}` library.  See the [Quickstart](#quickstart) section
-to add `google-cloud-{{metadata['repo']['name']}}` as a dependency in your code.
+You'll need to obtain the `{{ artifact_id }}` library.  See the [Quickstart](#quickstart) section
+to add `{{ artifact_id }}` as a dependency in your code.
 
 ## Troubleshooting
 
 To get help, follow the instructions in the [shared Troubleshooting document][troubleshooting].
 
+{% if metadata['repo']['transport'] -%}
 ## Transport
 
+{% if metadata['repo']['transport'] == 'grpc' -%}
 {{metadata['repo']['name_pretty']}} uses gRPC for the transport layer.
+{% elif metadata['repo']['transport'] == 'http' -%}
+{{metadata['repo']['name_pretty']}} uses HTTP/JSON for the transport layer.
+{% elif metadata['repo']['transport'] == 'both' -%}
+{{metadata['repo']['name_pretty']}} uses both gRPC and HTTP/JSON for the transport layer.
+{% endif %}
+{% endif -%}
 
 ## Java Versions
 
@@ -104,21 +129,22 @@ Java 11 | [![Kokoro CI][kokoro-badge-image-5]][kokoro-badge-link-5]
 [api-reference]: {{metadata['repo']['api_reference']}}
 [product-docs]: {{metadata['repo']['product_documentation']}}
 [javadocs]: {{metadata['repo']['client_documentation']}}
-[kokoro-badge-image-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java7.svg
-[kokoro-badge-link-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java7.html
-[kokoro-badge-image-2]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8.svg
-[kokoro-badge-link-2]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8.html
-[kokoro-badge-image-3]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-osx.svg
-[kokoro-badge-link-3]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-osx.html
-[kokoro-badge-image-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-win.svg
-[kokoro-badge-link-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java8-win.html
-[kokoro-badge-image-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java11.svg
-[kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{metadata['repo']['repo_short']}}/java11.html
+[kokoro-badge-image-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java7.svg
+[kokoro-badge-link-1]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java7.html
+[kokoro-badge-image-2]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java8.svg
+[kokoro-badge-link-2]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java8.html
+[kokoro-badge-image-3]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java8-osx.svg
+[kokoro-badge-link-3]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java8-osx.html
+[kokoro-badge-image-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java8-win.svg
+[kokoro-badge-link-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java8-win.html
+[kokoro-badge-image-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java11.svg
+[kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java11.html
 [stability-image]: https://img.shields.io/badge/stability-{% if metadata['repo']['release_level'] == 'ga' %}ga-green{% elif metadata['repo']['release_level'] == 'beta' %}beta-yellow{% elif metadata['repo']['release_level'] == 'alpha' %}alpha-orange{% else %}unknown-red{% endif %}
 [maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-{{metadata['repo']['name']}}.svg
 [maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-{{metadata['repo']['name']}}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
 [developer-console]: https://console.developers.google.com/
+[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-sdk]: https://cloud.google.com/sdk/
 [troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/master/troubleshooting/readme.md#troubleshooting
