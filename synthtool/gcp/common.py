@@ -54,7 +54,17 @@ class CommonTemplates:
         return result
 
     def py_library(self, **kwargs) -> Path:
-        return self._generic_library("python_library", **kwargs)
+        # Temporary workaround to allow for two sets of python templates
+        # `python_library` is for libraries in google-cloud-python
+        # TODO: Remove once google-cloud-python has no libraries in it
+        templates = "python_library_split"
+        if os.path.exists('.repo-metadata.json'):
+            with open(".repo-metadata.json") as f:
+                metadata = json.load(f)
+            if metadata["repo"] == "googleapis/google-cloud-python":
+                templates = "python_library"
+
+        return self._generic_library(templates, **kwargs)
 
     def java_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
