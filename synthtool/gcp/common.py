@@ -17,7 +17,7 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from synthtool.languages import node
 from synthtool.sources import templates
@@ -93,10 +93,10 @@ class CommonTemplates:
         self._load_samples(metadata)
         self._load_partials(metadata)
 
-        metadata["repo"] = {}
-        if os.path.exists("./.repo-metadata.json"):
-            with open("./.repo-metadata.json") as f:
-                metadata["repo"] = json.load(f)
+        if "repo" not in metadata:
+            repo_metadata = load_repo_metadata()
+            if repo_metadata:
+                metadata["repo"] = repo_metadata
 
     def _load_samples(self, metadata: Dict):
         """
@@ -203,3 +203,9 @@ def decamelize(value: str):
         "([A-Z]+)([A-Z])([a-z0-9])", r"\1 \2\3", str_decamelize
     )  # ACLBatman -> ACL Batman.
     return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.
+
+
+def load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optional[Dict]:
+    if os.path.exists(metadata_file):
+        with open(metadata_file) as f:
+            return json.load(f)

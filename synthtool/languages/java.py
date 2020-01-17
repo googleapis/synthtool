@@ -18,11 +18,12 @@ import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
+from synthtool.gcp import common
 from synthtool import cache
 from synthtool import log
 from synthtool import shell
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, List
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
@@ -298,15 +299,20 @@ def bazel_library(
     return library
 
 
-def common_templates(**kwargs):
-    if "metadata" not in kwargs:
-        kwargs["metadata"] = {}
+def common_templates(metadata: Dict = {}, excludes: List[str] = [], **kwargs):
+    repo_metadata = common.load_repo_metadata()
+    if repo_metadata:
+        metadata["repo"] = repo_metadata
+        group_id, artifact_id = repo_metadata["distribution_name"].split(":")
 
-    kwargs["metadata"]["latest_version"] = latest_maven_version(
-        group_id="com.google.cloud", artifact_id="google-cloud-asset",
-    )
-    kwargs["metadata"]["latest_bom_version"] = latest_maven_version(
+        metadata["latest_version"] = latest_maven_version(
+            group_id=group_id, artifact_id=artifact_id
+        )
+
+    metadata["latest_bom_version"] = latest_maven_version(
         group_id="com.google.cloud", artifact_id="libraries-bom",
     )
+
+    kwargs["metadata"] = metadata
     templates = gcp.CommonTemplates().java_library(**kwargs)
-    s.copy(templates)
+    s.copy(templates, excludes=excludes)

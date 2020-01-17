@@ -1,9 +1,9 @@
 {% set group_id = metadata['repo']['distribution_name'].split(':')|first -%}
 {% set artifact_id = metadata['repo']['distribution_name'].split(':')|last -%}
 {% set repo_short = metadata['repo']['repo'].split('/')|last -%}
-# Google Cloud Java Client for {{metadata['repo']['name_pretty']}}
+# Google {{ metadata['repo']['name_pretty'] }} Client for Java
 
-Java idiomatic client for [{{metadata['repo']['name_pretty']}}][api-reference].
+Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 
 [![Maven][maven-version-image]][maven-version-link]
 ![Stability][stability-image]
@@ -16,7 +16,7 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][api-reference].
 {% endif %}
 ## Quickstart
 
-If you are using Maven, add this to your pom.xml file
+If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 ```xml
 <dependencyManagement>
   <dependencies>
@@ -38,8 +38,19 @@ If you are using Maven, add this to your pom.xml file
 </dependencies>
 ```
 
-If you are using Gradle, add this to your dependencies
 [//]: # ({x-version-update-start:{{ artifact_id }}:released})
+
+If you are using Maven without BOM, add this to your dependencies:
+
+```xml
+<dependency>
+  <groupId>{{ group_id }}</groupId>
+  <artifactId>{{ artifact_id }}</artifactId>
+  <version>{{ metadata['latest_version'] }}</version>
+</dependency>
+```
+
+If you are using Gradle, add this to your dependencies
 ```Groovy
 compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
@@ -53,20 +64,13 @@ libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['la
 
 See the [Authentication][authentication] section in the base directory's README.
 
-## About {{metadata['repo']['name_pretty']}}
-
-{{ metadata['repo']['api_description'] }}
-
-See the [{{metadata['repo']['name_pretty']}} client library docs][javadocs] to learn how to
-use this {{metadata['repo']['name_pretty']}} Client Library.
-
 ## Getting Started
 
 ### Prerequisites
 
-You will need a [Google Developers Console][developer-console] project with the
-{{metadata['repo']['name_pretty']}} [API enabled][enable-api]. [Follow these instructions][create-project] to get your
-project set up. You will also need to set up the local development environment by
+You will need a [Google Cloud Platform Console][developer-console] project with the {{metadata['repo']['name_pretty']}} [API enabled][enable-api].
+{% if metadata['repo']['requires_billing'] %}You will need to [enable billing][enable-billing] to use Google {{metadata['repo']['name_pretty']}}{% endif %}
+[Follow these instructions][create-project] to get your project set up. You will also need to set up the local development environment by
 [installing the Google Cloud SDK][cloud-sdk] and running the following commands in command line:
 `gcloud auth login` and `gcloud config set project [YOUR PROJECT ID]`.
 
@@ -74,6 +78,21 @@ project set up. You will also need to set up the local development environment b
 
 You'll need to obtain the `{{ artifact_id }}` library.  See the [Quickstart](#quickstart) section
 to add `{{ artifact_id }}` as a dependency in your code.
+
+## About {{metadata['repo']['name_pretty']}}
+
+{% if 'partials' in metadata and metadata['partials']['about'] -%}
+{{ metadata['partials']['about'] }}
+{% else %}
+[{{ metadata['repo']['name_pretty'] }}][product-docs] {{ metadata['repo']['api_description'] }}
+
+See the [{{metadata['repo']['name_pretty']}} client library docs][javadocs] to learn how to
+use this {{metadata['repo']['name_pretty']}} Client Library.
+{% endif %}
+
+{% if 'partials' in metadata and metadata['partials']['custom_content'] -%}
+{{ metadata['partials']['custom_content'] }}
+{% endif %}
 
 ## Troubleshooting
 
@@ -99,19 +118,24 @@ Java 7 or above is required for using this client.
 
 This library follows [Semantic Versioning](http://semver.org/).
 
+{% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
 and the public API should not be considered stable.
+{% endif %}
 
 ## Contributing
 
+{% if 'partials' in metadata and metadata['partials']['contributing'] -%}
+{{ metadata['partials']['contributing'] }}
+{% else %}
 Contributions to this library are always welcome and highly encouraged.
 
-See [CONTRIBUTING.md][contributing] documentation for more information on how to get started.
+See [CONTRIBUTING][contributing] for more information how to get started.
 
 Please note that this project is released with a Contributor Code of Conduct. By participating in
 this project you agree to abide by its terms. See [Code of Conduct][code-of-conduct] for more
 information.
-
+{% endif %}
 ## License
 
 Apache 2.0 - See [LICENSE][license] for more information.
@@ -140,14 +164,16 @@ Java 11 | [![Kokoro CI][kokoro-badge-image-5]][kokoro-badge-link-5]
 [kokoro-badge-image-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java11.svg
 [kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java11.html
 [stability-image]: https://img.shields.io/badge/stability-{% if metadata['repo']['release_level'] == 'ga' %}ga-green{% elif metadata['repo']['release_level'] == 'beta' %}beta-yellow{% elif metadata['repo']['release_level'] == 'alpha' %}alpha-orange{% else %}unknown-red{% endif %}
-[maven-version-image]: https://img.shields.io/maven-central/v/com.google.cloud/google-cloud-{{metadata['repo']['name']}}.svg
-[maven-version-link]: https://search.maven.org/search?q=g:com.google.cloud%20AND%20a:google-cloud-{{metadata['repo']['name']}}&core=gav
+[maven-version-image]: https://img.shields.io/maven-central/v/{{ group_id }}/{{ artifact_id }}.svg
+[maven-version-link]: https://search.maven.org/search?q=g:{{ group_id }}%20AND%20a:{{ artifact_id }}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
 [developer-console]: https://console.developers.google.com/
-[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-sdk]: https://cloud.google.com/sdk/
 [troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/master/troubleshooting/readme.md#troubleshooting
 [contributing]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CONTRIBUTING.md
 [code-of-conduct]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CODE_OF_CONDUCT.md#contributor-code-of-conduct
 [license]: https://github.com/{{metadata['repo']['repo']}}/blob/master/LICENSE
+{% if metadata['repo']['requires_billing'] %}[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing{% endif %}
+{% if metadata['repo']['api_id'] %}[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
+[libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
