@@ -41,11 +41,18 @@ accept your pull requests.
 
 1.  [Prepare your environment for Node.js setup][setup].
 
-1.  Install dependencies:
+1.  From the root directory, install dependencies by following the instructions
+    in [samples/README.md][dependencies]:
 
+        # Install unit and system test dependencies.
         npm install
 
-1.  Run the tests:
+        # Install sample integration test dependencies.
+        cd samples/
+        npm link ../
+        npm install
+
+1.  From the root directory, run the tests:
 
         # Run unit tests.
         npm test
@@ -63,3 +70,4 @@ accept your pull requests.
         npm run fix
 
 [setup]: https://cloud.google.com/nodejs/docs/setup
+[dependencies]: samples/README.md#install-dependencies
