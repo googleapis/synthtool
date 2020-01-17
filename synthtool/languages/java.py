@@ -299,7 +299,18 @@ def bazel_library(
     return library
 
 
-def common_templates(metadata: Dict = {}, excludes: List[str] = [], **kwargs):
+def common_templates(metadata: Dict = {}, excludes: List[str] = [], **kwargs) -< None:
+    """Generate common templates for a Java Library
+
+    Fetches information about the repository from the .repo-metadata.json file,
+    information about the latest artifact versions and copies the files into
+    their expected location.
+
+    Args:
+        metadata (Dict, optional): Additional template metadata
+        excludes (List[str], optional): List of template paths to ignore
+        **kwargs: Additional options for CommonTemplates.java_library()
+    """
     repo_metadata = common.load_repo_metadata()
     if repo_metadata:
         metadata["repo"] = repo_metadata
@@ -315,4 +326,4 @@ def common_templates(metadata: Dict = {}, excludes: List[str] = [], **kwargs):
 
     kwargs["metadata"] = metadata
     templates = gcp.CommonTemplates().java_library(**kwargs)
-    s.copy(templates, excludes=excludes)
+    s.copy([templates], excludes=excludes)

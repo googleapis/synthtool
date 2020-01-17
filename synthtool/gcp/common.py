@@ -209,3 +209,4 @@ def load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optional
     if os.path.exists(metadata_file):
         with open(metadata_file) as f:
             return json.load(f)
+    return None
