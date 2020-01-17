@@ -64,7 +64,7 @@ def add_client_destination(**kwargs) -> None:
 
 
 def _add_new_files(files: Iterable[str]) -> None:
-    for filepath in files:
+    for filepath in sorted(files):
         new_file = _metadata.new_files.add()
         new_file.path = _git_slashes(filepath)
 
