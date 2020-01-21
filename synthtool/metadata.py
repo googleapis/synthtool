@@ -31,6 +31,7 @@ from synthtool.protos import metadata_pb2
 
 _metadata = metadata_pb2.Metadata()
 _track_obsolete_files = True
+_should_combine_commit_logs = True
 
 
 def reset() -> None:
@@ -185,6 +186,15 @@ def should_track_obsolete_files():
     return _track_obsolete_files
 
 
+def set_combine_commit_logs(combine_commit_logs=True):
+    global _should_combine_commit_logs
+    _should_combine_commit_logs = combine_commit_logs
+
+
+def should_combine_commit_logs():
+    return _should_combine_commit_logs
+
+
 class MetadataTrackerAndWriter:
     """Writes metadata file upon exiting scope.  Tracks obsolete files."""
 
@@ -203,7 +213,8 @@ class MetadataTrackerAndWriter:
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
         _append_git_logs(self.old_metadata, get())
-        _combine_git_logs()
+        if should_combine_commit_logs():
+            _combine_commit_logs()
         _clear_local_paths()
         write(self.metadata_file_path)
 
@@ -211,7 +222,7 @@ class MetadataTrackerAndWriter:
 def _get_commit_log_since(path, sha):
     git = shutil.which("git")
     output = subprocess.run(
-        [git, "-C", path, "log", "--pretty=%H%n%B", "--no-decorate", f"{sha}..HEAD",],
+        [git, "-C", path, "log", "--pretty=%H%n%B", "--no-decorate", f"{sha}..HEAD"],
         stdout=subprocess.PIPE,
         universal_newlines=True,
     ).stdout
@@ -227,7 +238,6 @@ def _append_git_logs(old_metadata, new_metadata):
     """
     old_map = _get_git_source_map(old_metadata)
     new_map = _get_git_source_map(new_metadata)
-    git = shutil.which("git")
     for name, git_source in new_map.items():
         # Get the git history since the last run:
         old_source = old_map.get(name, metadata_pb2.GitSource())
@@ -267,7 +277,7 @@ def _clear_local_paths():
 
 def _add_self_git_source():
     """Adds current working directory as a git source.
-    
+
     Returns:
         The number of git sources added to metadata.
     """

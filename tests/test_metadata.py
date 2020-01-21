@@ -273,7 +273,12 @@ def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
     assert metadata.should_track_obsolete_files()
 
 
-def test_append_git_log_to_metadata(source_tree):
+def _build_history(source_tree):
+    """Build a history of commits and metadata.
+
+    Returns:
+        an instance of metadata_pb2.Metadata.
+    """
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         # Create one commit that will be recorded in the metadata.
         source_tree.write("a")
@@ -306,7 +311,12 @@ def test_append_git_log_to_metadata(source_tree):
         metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
 
     # Read the metadata that we just wrote.
-    mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+    return metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+
+
+def test_append_git_log_to_metadata(source_tree):
+    mdata = _build_history(source_tree)
+
     # Match 2 log lines.
     assert re.match(
         r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
@@ -315,3 +325,21 @@ def test_append_git_log_to_metadata(source_tree):
     )
     # Make sure the local path field is not recorded.
     assert not mdata.sources[0].git.local_path is None
+
+
+def test_combine_commit_log(source_tree):
+    mdata = _build_history(source_tree)
+
+    # Match 2 log lines.
+    assert re.match(
+        r"Changes in .:\n\nChanges in tmp:\n[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
+        mdata.combined_commit_log,
+        re.MULTILINE,
+    )
+
+
+def test_should_not_combine_commit_log(source_tree):
+    metadata.set_combine_commit_logs(False)
+    mdata = _build_history(source_tree)
+
+    assert not mdata.combined_commit_log
