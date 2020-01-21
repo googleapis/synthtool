@@ -304,4 +304,3 @@ def _combine_commit_logs():
             text.append(f"Changes in {name}:")
             text.append(git_source.log)
     _metadata.combined_commit_log = "\n".join(text)
-
