@@ -187,6 +187,7 @@ def should_track_obsolete_files():
 
 
 def set_combine_commit_logs(combine_commit_logs=True):
+    """Instructs synthtool to populate combined_commit_log in the metadata."""
     global _should_combine_commit_logs
     _should_combine_commit_logs = combine_commit_logs
 
@@ -220,6 +221,11 @@ class MetadataTrackerAndWriter:
 
 
 def _get_commit_log_since(path, sha):
+    """Invokes git to get the commit log in the given path since the given sha.
+
+    Returns:
+        string, the git log.
+    """
     git = shutil.which("git")
     output = subprocess.run(
         [git, "-C", path, "log", "--pretty=%H%n%B", "--no-decorate", f"{sha}..HEAD"],
