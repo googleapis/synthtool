@@ -167,7 +167,7 @@ class GAPICMicrogenerator:
             docker_run_args.extend(
                 [
                     "--mount",
-                    f"type=bind,source={source_proto},destination={Path('/extra') / proto},readonly",
+                    f"type=bind,source={source_proto},destination={Path('/in') / proto},readonly",
                 ]
             )
 
@@ -180,12 +180,6 @@ class GAPICMicrogenerator:
             for key, value in generator_args.items():
                 docker_run_args.append(f"--{key}")
                 docker_run_args.append(value)
-
-        # Now, add the mounted extra proto files to the generator command line.
-        if len(extra_proto_files) > 0:
-            docker_run_args.extend(["-I", "/extra"])
-            for proto in extra_proto_files:
-                docker_run_args.append(proto)
 
         log.debug(f"Generating code for: {proto_path}.")
         shell.run(docker_run_args)
