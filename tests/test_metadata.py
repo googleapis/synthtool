@@ -332,7 +332,7 @@ def test_combine_commit_log(source_tree):
 
     # Match 2 log lines.
     assert re.match(
-        r"Changes in .:\n\nChanges in tmp:\n[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
+        r"Changes in tmp:\n[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
         mdata.combined_commit_log,
         re.MULTILINE,
     )
