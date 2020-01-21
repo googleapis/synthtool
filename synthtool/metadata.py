@@ -294,5 +294,14 @@ def _add_self_git_source():
 
 def _combine_commit_logs():
     """
+    Combine the commit logs of all the git sources into one commit log.
     """
-    pass
+    text = []
+    for source in _metadata.sources:
+        if source.git:
+            git_source = source.git
+            name = git_source.remote or git_source.name
+            text.append(f"Changes in {name}:")
+            text.append(git_source.log)
+    _metadata.combined_commit_log = "\n".join(text)
+
