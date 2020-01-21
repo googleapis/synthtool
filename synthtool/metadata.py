@@ -21,7 +21,7 @@ import subprocess
 import sys
 import tempfile
 import time
-from typing import List, Iterable
+from typing import List, Iterable, Dict
 
 import google.protobuf.json_format
 
@@ -64,7 +64,7 @@ def add_client_destination(**kwargs) -> None:
 
 
 def _add_new_files(files: Iterable[str]) -> None:
-    for filepath in files:
+    for filepath in sorted(files):
         new_file = _metadata.new_files.add()
         new_file.path = _git_slashes(filepath)
 
@@ -201,4 +201,66 @@ class MetadataTrackerAndWriter:
             tracked_new_files = git_ignore(new_files)
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
+        _append_git_logs(self.old_metadata, get())
+        _clear_local_paths(get())
         write(self.metadata_file_path)
+
+
+def _append_git_logs(old_metadata, new_metadata):
+    """Adds git logs to git sources in new_metadata.
+
+    Parameters:
+        old_metadata: instance of metadata_pb2.Metadata
+        old_metadata: instance of metadata_pb2.Metadata
+    """
+    old_map = _get_git_source_map(old_metadata)
+    new_map = _get_git_source_map(new_metadata)
+    git = shutil.which("git")
+    for name, git_source in new_map.items():
+        # Get the git history since the last run:
+        old_source = old_map.get(name, metadata_pb2.GitSource())
+        if not old_source.sha or not git_source.local_path:
+            continue
+        output = subprocess.run(
+            [
+                git,
+                "-C",
+                git_source.local_path,
+                "log",
+                "--pretty=%H%n%B",
+                "--no-decorate",
+                f"{old_source.sha}..HEAD",
+            ],
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+        ).stdout
+        git_source.log = output
+
+
+def _get_git_source_map(metadata) -> Dict[str, object]:
+    """Gets the git sources from the metadata.
+
+    Parameters:
+        metadata: an instance of metadata_pb2.Metadata.
+
+    Returns:
+        A dict mapping git source name to metadata_pb2.GitSource instance.
+    """
+    source_map = {}
+    for source in metadata.sources:
+        if source.HasField("git"):
+            git_source = source.git
+            source_map[git_source.name] = git_source
+    return source_map
+
+
+def _clear_local_paths(metadata):
+    """Clear the local_path from the git sources.
+
+    There's no reason to preserve it, and it may leak some info we don't
+    want to leak in the path.
+    """
+    for source in metadata.sources:
+        if source.HasField("git"):
+            git_source = source.git
+            git_source.ClearField("local_path")
