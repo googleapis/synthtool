@@ -16,6 +16,7 @@ import json
 import os
 import pathlib
 import pytest
+import re
 import shutil
 import subprocess
 import sys
@@ -122,6 +123,9 @@ class SourceTree:
 
     def git_add(self, *files):
         subprocess.run([self.git, "add"] + list(files))
+
+    def git_commit(self, message):
+        subprocess.run([self.git, "commit", "-m", message])
 
 
 @pytest.fixture()
@@ -267,3 +271,47 @@ def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
     assert not metadata.should_track_obsolete_files()
     metadata.set_track_obsolete_files(True)
     assert metadata.should_track_obsolete_files()
+
+
+def test_append_git_log_to_metadata(source_tree):
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        # Create one commit that will be recorded in the metadata.
+        source_tree.write("a")
+        source_tree.git_add("a")
+        source_tree.git_commit("a")
+
+        hash = subprocess.run(
+            [source_tree.git, "log", "-1", "--pretty=format:%H"],
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+        ).stdout.strip()
+        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
+
+    metadata.reset()
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        # Create two more commits that should appear in metadata git log.
+        source_tree.write("code/b")
+        source_tree.git_add("code/b")
+        source_tree.git_commit("code/b")
+
+        source_tree.write("code/c")
+        source_tree.git_add("code/c")
+        source_tree.git_commit("code/c")
+
+        hash = subprocess.run(
+            [source_tree.git, "log", "-1", "--pretty=format:%H"],
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+        ).stdout.strip()
+        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
+
+    # Read the metadata that we just wrote.
+    mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+    # Match 2 log lines.
+    assert re.match(
+        r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
+        mdata.sources[0].git.log,
+        re.MULTILINE,
+    )
+    # Make sure the local path field is not recorded.
+    assert not mdata.sources[0].git.local_path is None
