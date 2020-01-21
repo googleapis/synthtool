@@ -64,6 +64,9 @@ class GAPICMicrogenerator:
     def typescript_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, "typescript", **kwargs)
 
+    def ruby_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "ruby", **kwargs)
+
     def _generate_code(
         self,
         service: str,
@@ -222,7 +225,7 @@ class GAPICMicrogenerator:
 
         else:
             log.debug("Cloning googleapis.")
-            self._googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
+            self._googleapis = git.clone(GOOGLEAPIS_URL)
 
         return self._googleapis
 
@@ -238,7 +241,7 @@ class GAPICMicrogenerator:
 
         else:
             log.debug("Cloning googleapis-private.")
-            self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
+            self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
 
         return self._googleapis_private
 
