@@ -64,6 +64,9 @@ class GAPICMicrogenerator:
     def typescript_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, "typescript", **kwargs)
 
+    def ruby_library(self, service: str, version: str, **kwargs) -> Path:
+        return self._generate_code(service, version, "ruby", **kwargs)
+
     def _generate_code(
         self,
         service: str,
