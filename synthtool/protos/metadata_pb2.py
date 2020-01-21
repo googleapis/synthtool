@@ -24,7 +24,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     syntax="proto3",
     serialized_options=None,
     serialized_pb=_b(
-        '\n\x0emetadata.proto\x12\x14yoshi.synth.metadata\x1a\x1fgoogle/protobuf/timestamp.proto"\xd5\x01\n\x08Metadata\x12/\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\x07sources\x18\x02 \x03(\x0b\x32\x1c.yoshi.synth.metadata.Source\x12\x37\n\x0c\x64\x65stinations\x18\x03 \x03(\x0b\x32!.yoshi.synth.metadata.Destination\x12\x30\n\tnew_files\x18\x04 \x03(\x0b\x32\x1d.yoshi.synth.metadata.NewFile"\xb8\x01\n\x06Source\x12.\n\x03git\x18\x01 \x01(\x0b\x32\x1f.yoshi.synth.metadata.GitSourceH\x00\x12:\n\tgenerator\x18\x02 \x01(\x0b\x32%.yoshi.synth.metadata.GeneratorSourceH\x00\x12\x38\n\x08template\x18\x03 \x01(\x0b\x32$.yoshi.synth.metadata.TemplateSourceH\x00\x42\x08\n\x06source"L\n\tGitSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06remote\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\t\x12\x14\n\x0cinternal_ref\x18\x04 \x01(\t"F\n\x0fGeneratorSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x14\n\x0c\x64ocker_image\x18\x03 \x01(\t"?\n\x0eTemplateSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06origin\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t"\x94\x01\n\x0b\x44\x65stination\x12\x39\n\x06\x63lient\x18\x01 \x01(\x0b\x32\'.yoshi.synth.metadata.ClientDestinationH\x00\x12;\n\x07\x66ileset\x18\x02 \x01(\x0b\x32(.yoshi.synth.metadata.FileSetDestinationH\x00\x42\r\n\x0b\x44\x65stination"\x17\n\x07NewFile\x12\x0c\n\x04path\x18\x01 \x01(\t"\x7f\n\x11\x43lientDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\x10\n\x08\x61pi_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61pi_version\x18\x03 \x01(\t\x12\x10\n\x08language\x18\x04 \x01(\t\x12\x11\n\tgenerator\x18\x05 \x01(\t\x12\x0e\n\x06\x63onfig\x18\x06 \x01(\t"3\n\x12\x46ileSetDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\r\n\x05\x66iles\x18\x02 \x03(\tb\x06proto3'
+        '\n\x0emetadata.proto\x12\x14yoshi.synth.metadata\x1a\x1fgoogle/protobuf/timestamp.proto"\xd5\x01\n\x08Metadata\x12/\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.Timestamp\x12-\n\x07sources\x18\x02 \x03(\x0b\x32\x1c.yoshi.synth.metadata.Source\x12\x37\n\x0c\x64\x65stinations\x18\x03 \x03(\x0b\x32!.yoshi.synth.metadata.Destination\x12\x30\n\tnew_files\x18\x04 \x03(\x0b\x32\x1d.yoshi.synth.metadata.NewFile"\xb8\x01\n\x06Source\x12.\n\x03git\x18\x01 \x01(\x0b\x32\x1f.yoshi.synth.metadata.GitSourceH\x00\x12:\n\tgenerator\x18\x02 \x01(\x0b\x32%.yoshi.synth.metadata.GeneratorSourceH\x00\x12\x38\n\x08template\x18\x03 \x01(\x0b\x32$.yoshi.synth.metadata.TemplateSourceH\x00\x42\x08\n\x06source"m\n\tGitSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06remote\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\t\x12\x14\n\x0cinternal_ref\x18\x04 \x01(\t\x12\x12\n\nlocal_path\x18\x05 \x01(\t\x12\x0b\n\x03log\x18\x06 \x01(\t"F\n\x0fGeneratorSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x14\n\x0c\x64ocker_image\x18\x03 \x01(\t"?\n\x0eTemplateSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06origin\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t"\x94\x01\n\x0b\x44\x65stination\x12\x39\n\x06\x63lient\x18\x01 \x01(\x0b\x32\'.yoshi.synth.metadata.ClientDestinationH\x00\x12;\n\x07\x66ileset\x18\x02 \x01(\x0b\x32(.yoshi.synth.metadata.FileSetDestinationH\x00\x42\r\n\x0b\x44\x65stination"\x17\n\x07NewFile\x12\x0c\n\x04path\x18\x01 \x01(\t"\x7f\n\x11\x43lientDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\x10\n\x08\x61pi_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61pi_version\x18\x03 \x01(\t\x12\x10\n\x08language\x18\x04 \x01(\t\x12\x11\n\tgenerator\x18\x05 \x01(\t\x12\x0e\n\x06\x63onfig\x18\x06 \x01(\t"3\n\x12\x46ileSetDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\r\n\x05\x66iles\x18\x02 \x03(\tb\x06proto3'
     ),
     dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,],
 )
@@ -285,6 +285,42 @@ _GITSOURCE = _descriptor.Descriptor(
             serialized_options=None,
             file=DESCRIPTOR,
         ),
+        _descriptor.FieldDescriptor(
+            name="local_path",
+            full_name="yoshi.synth.metadata.GitSource.local_path",
+            index=4,
+            number=5,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=_b("").decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
+        _descriptor.FieldDescriptor(
+            name="log",
+            full_name="yoshi.synth.metadata.GitSource.log",
+            index=5,
+            number=6,
+            type=9,
+            cpp_type=9,
+            label=1,
+            has_default_value=False,
+            default_value=_b("").decode("utf-8"),
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+        ),
     ],
     extensions=[],
     nested_types=[],
@@ -295,7 +331,7 @@ _GITSOURCE = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[],
     serialized_start=476,
-    serialized_end=552,
+    serialized_end=585,
 )
 
 
@@ -369,8 +405,8 @@ _GENERATORSOURCE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=554,
-    serialized_end=624,
+    serialized_start=587,
+    serialized_end=657,
 )
 
 
@@ -444,8 +480,8 @@ _TEMPLATESOURCE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=626,
-    serialized_end=689,
+    serialized_start=659,
+    serialized_end=722,
 )
 
 
@@ -509,8 +545,8 @@ _DESTINATION = _descriptor.Descriptor(
             fields=[],
         ),
     ],
-    serialized_start=692,
-    serialized_end=840,
+    serialized_start=725,
+    serialized_end=873,
 )
 
 
@@ -548,8 +584,8 @@ _NEWFILE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=842,
-    serialized_end=865,
+    serialized_start=875,
+    serialized_end=898,
 )
 
 
@@ -677,8 +713,8 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=867,
-    serialized_end=994,
+    serialized_start=900,
+    serialized_end=1027,
 )
 
 
@@ -734,8 +770,8 @@ _FILESETDESTINATION = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=996,
-    serialized_end=1047,
+    serialized_start=1029,
+    serialized_end=1080,
 )
 
 _METADATA.fields_by_name[

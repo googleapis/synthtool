@@ -46,6 +46,12 @@ message GitSource {
     // If this Git is a mirror of an internal repository, such as google3 or
     // Git-on-Borg, you can include an internal ref to it here.
     string internal_ref = 4;
+
+    // When the git repo has been cloned locally, record its path.
+    string local_path = 5;
+
+    // Changes since the last generation.
+    string log = 6;
 }
 
 message GeneratorSource {
