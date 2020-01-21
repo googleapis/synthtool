@@ -310,7 +310,7 @@ def test_append_git_log_to_metadata(source_tree):
     # Match 2 log lines.
     assert re.match(
         r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
-        mdata.sources[0].git.log,
+        mdata.sources[1].git.log,
         re.MULTILINE,
     )
     # Make sure the local path field is not recorded.

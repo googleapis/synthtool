@@ -194,6 +194,7 @@ class MetadataTrackerAndWriter:
     def __enter__(self):
         self.start_time = time.time() - 1
         self.old_metadata = _read_or_empty(self.metadata_file_path)
+        _add_self_git_source()
 
     def __exit__(self, type, value, traceback):
         if should_track_obsolete_files():
@@ -202,8 +203,19 @@ class MetadataTrackerAndWriter:
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
         _append_git_logs(self.old_metadata, get())
-        _clear_local_paths(get())
+        _combine_git_logs()
+        _clear_local_paths()
         write(self.metadata_file_path)
+
+
+def _get_commit_log_since(path, sha):
+    git = shutil.which("git")
+    output = subprocess.run(
+        [git, "-C", path, "log", "--pretty=%H%n%B", "--no-decorate", f"{sha}..HEAD",],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    ).stdout
+    return output
 
 
 def _append_git_logs(old_metadata, new_metadata):
@@ -221,20 +233,7 @@ def _append_git_logs(old_metadata, new_metadata):
         old_source = old_map.get(name, metadata_pb2.GitSource())
         if not old_source.sha or not git_source.local_path:
             continue
-        output = subprocess.run(
-            [
-                git,
-                "-C",
-                git_source.local_path,
-                "log",
-                "--pretty=%H%n%B",
-                "--no-decorate",
-                f"{old_source.sha}..HEAD",
-            ],
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-        ).stdout
-        git_source.log = output
+        git_source.log = _get_commit_log_since(git_source.local_path, old_source.sha)
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:
@@ -248,19 +247,52 @@ def _get_git_source_map(metadata) -> Dict[str, object]:
     """
     source_map = {}
     for source in metadata.sources:
-        if source.HasField("git"):
+        if source.git:
             git_source = source.git
             source_map[git_source.name] = git_source
     return source_map
 
 
-def _clear_local_paths(metadata):
+def _clear_local_paths():
     """Clear the local_path from the git sources.
 
     There's no reason to preserve it, and it may leak some info we don't
     want to leak in the path.
     """
-    for source in metadata.sources:
-        if source.HasField("git"):
+    for source in _metadata.sources:
+        if source.git:
             git_source = source.git
             git_source.ClearField("local_path")
+
+
+def _add_self_git_source():
+    """Adds current working directory as a git source.
+    
+    Returns:
+        The number of git sources added to metadata.
+    """
+    git = shutil.which("git")
+    cwd = os.getcwd()
+    completed_process = subprocess.run([git, "status"])
+    if completed_process.returncode:
+        log.warning("%s is not directory in a git repo.", cwd)
+        return 0
+    completed_process = subprocess.run(
+        [git, "remote", "get-url", "origin"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    url = completed_process.stdout.strip()
+    completed_process = subprocess.run(
+        [git, "log", "--no-decorate", "-1", "--pretty=format:%H"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    sha = completed_process.stdout.strip()
+    add_git_source(name=".", remote=url, sha=sha, local_path=cwd)
+
+
+def _combine_commit_logs():
+    """
+    """
+    pass

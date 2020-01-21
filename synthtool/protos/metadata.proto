@@ -28,6 +28,9 @@ message Metadata {
     // Includes existing files that were freshly overwritten with the identical
     // content.
     repeated NewFile new_files = 4;
+    // All the commit logs of all the repos combined into one string.
+    // So that autosynth.py can easily extract with minimal logic.
+    string combined_commit_log = 5;
 }
 
 message Source {
