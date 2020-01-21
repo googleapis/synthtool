@@ -49,7 +49,6 @@ def clone(
     dest: pathlib.Path = None,
     committish: str = "master",
     force: bool = False,
-    depth: int = None,
 ) -> pathlib.Path:
     if dest is None:
         dest = cache.get_cache_dir()
@@ -60,9 +59,7 @@ def clone(
         shutil.rmtree(dest)
 
     if not dest.exists():
-        cmd = ["git", "clone", url, dest]
-        if depth is not None:
-            cmd.extend(["--depth", str(depth)])
+        cmd = ["git", "clone", "--single-branch", url, dest]
         shell.run(cmd)
     else:
         shell.run(["git", "pull"], cwd=str(dest))
@@ -81,6 +78,7 @@ def clone(
         remote=url,
         sha=sha,
         internal_ref=commit_metadata.get("PiperOrigin-RevId"),
+        local_path=str(dest),
     )
 
     return dest
