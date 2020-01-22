@@ -89,8 +89,11 @@ def global_merge(src: str, dest: str, path: Path):
     """
     if path.name == 'CHANGELOG.md':
         return dest
+
     if path.name == 'version.rb':
         regex = re.compile(r'^\s+VERSION = "[\d\.]+"', flags=re.MULTILINE)
+
         if regex.search(dest):
             return dest
+
     return src
