@@ -263,7 +263,7 @@ def _get_git_source_map(metadata) -> Dict[str, object]:
     """
     source_map = {}
     for source in metadata.sources:
-        if source.git:
+        if source.HasField("git"):
             git_source = source.git
             source_map[git_source.name] = git_source
     return source_map
@@ -276,7 +276,7 @@ def _clear_local_paths():
     want to leak in the path.
     """
     for source in _metadata.sources:
-        if source.git:
+        if source.HasField("git"):
             git_source = source.git
             git_source.ClearField("local_path")
 
@@ -314,7 +314,7 @@ def _combine_commit_logs():
     """
     text = []
     for source in _metadata.sources:
-        if source.git and source.git.log:
+        if source.HasField("git") and source.git.log:
             git_source = source.git
             name = git_source.name
             text.append(f"Changes in {name}:")
