@@ -87,10 +87,10 @@ def global_merge(src: str, dest: str, path: Path):
     Returns:
         The merged gemspec content.
     """
-    if path.name == 'CHANGELOG.md':
+    if path.name == "CHANGELOG.md":
         return dest
 
-    if path.name == 'version.rb':
+    if path.name == "version.rb":
         regex = re.compile(r'^\s+VERSION = "[\d\.]+"', flags=re.MULTILINE)
 
         if regex.search(dest):
