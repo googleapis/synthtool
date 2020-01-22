@@ -71,3 +71,26 @@ def delete_method(sources: ListOfPathsOrStrs, method_name: str):
     """
     regex = f"\\n\\n(\\s+#[^\\n]*\\n)*\\n*(\\s+)def\\s+{method_name}[^\\n]+\\n+(\\2\\s\\s[^\\n]+\\n+)*\\2end\\n"
     synthtool.replace(sources, regex, "\n")
+
+
+def global_merge(src: str, dest: str, path: Path):
+    """Merge function for the Ruby microgenerator.
+
+    Preserves destination changelog and version.rb files, but allows new
+    source content through in all other cases.
+
+    Args:
+        src: Source gemspec content from gapic
+        dest: Destination gemspec content
+        path: Destination gemspec path
+
+    Returns:
+        The merged gemspec content.
+    """
+    if path.name == 'CHANGELOG.md':
+        return dest
+    if path.name == 'version.rb':
+        regex = re.compile(r'^\s+VERSION = "[\d\.]+"', flags=re.MULTILINE)
+        if regex.search(dest):
+            return dest
+    return src
