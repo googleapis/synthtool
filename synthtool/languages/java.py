@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import date
 import glob
 import os
 import xml.etree.ElementTree as ET
@@ -27,7 +26,7 @@ from typing import Optional
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
-GOOD_LICENSE = f"""
+GOOD_LICENSE = """
 /*
  * Copyright 2020 Google LLC
  *
