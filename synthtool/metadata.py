@@ -207,8 +207,8 @@ class MetadataTrackerAndWriter:
         self.old_metadata = _read_or_empty(self.metadata_file_path)
         _add_self_git_source()
 
-    def __exit__(self, type, value, traceback):
-        if should_track_obsolete_files():
+    def __exit__(self, exception_type, exception_value, traceback):
+        if should_track_obsolete_files() and not exception_value:
             new_files = _get_new_files(self.start_time)
             tracked_new_files = git_ignore(new_files)
             _add_new_files(tracked_new_files)
