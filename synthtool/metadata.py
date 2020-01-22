@@ -316,7 +316,7 @@ def _combine_commit_logs():
     for source in _metadata.sources:
         if source.git and source.git.log:
             git_source = source.git
-            name = git_source.remote or git_source.name
+            name = git_source.name
             text.append(f"Changes in {name}:")
             text.append(git_source.log)
     _metadata.combined_commit_log = "\n".join(text)
