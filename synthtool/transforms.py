@@ -89,6 +89,8 @@ def _merge_file(
             dest_file.seek(0)
             dest_file.write(final_text)
             dest_file.truncate()
+        else:
+            dest_path.touch()
 
 
 def _copy_dir_to_existing_dir(
