@@ -17,7 +17,7 @@ import stat
 import sys
 from pathlib import Path
 
-from synthtool import gcp
+from synthtool.gcp import common
 from synthtool.sources import templates
 
 
@@ -72,7 +72,7 @@ def test_load_samples():
     cwd = os.getcwd()
     os.chdir(FIXTURES)
 
-    common_templates = gcp.CommonTemplates()
+    common_templates = common.CommonTemplates()
     metadata = {}
     common_templates._load_samples(metadata)
     # should have loaded samples.
@@ -118,7 +118,7 @@ def test_readme_partials():
     cwd = os.getcwd()
     os.chdir(FIXTURES)
 
-    common_templates = gcp.CommonTemplates()
+    common_templates = common.CommonTemplates()
     metadata = {}
     common_templates._load_partials(metadata)
     # should have populated introduction from partial.
