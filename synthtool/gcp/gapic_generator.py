@@ -213,7 +213,7 @@ class GAPICGenerator:
 
         else:
             log.debug("Cloning googleapis.")
-            self._googleapis = git.clone(GOOGLEAPIS_URL, depth=1)
+            self._googleapis = git.clone(GOOGLEAPIS_URL)
 
         return self._googleapis
 
@@ -229,7 +229,7 @@ class GAPICGenerator:
 
         else:
             log.debug("Cloning googleapis-private.")
-            self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL, depth=1)
+            self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
 
         return self._googleapis_private
 
