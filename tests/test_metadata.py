@@ -273,7 +273,12 @@ def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
     assert metadata.should_track_obsolete_files()
 
 
-def test_append_git_log_to_metadata(source_tree):
+def _build_history(source_tree):
+    """Build a history of commits and metadata.
+
+    Returns:
+        an instance of metadata_pb2.Metadata.
+    """
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         # Create one commit that will be recorded in the metadata.
         source_tree.write("a")
@@ -285,7 +290,7 @@ def test_append_git_log_to_metadata(source_tree):
             stdout=subprocess.PIPE,
             universal_newlines=True,
         ).stdout.strip()
-        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
+        metadata.add_git_source(name="tmp", sha=hash)
 
     metadata.reset()
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
@@ -303,15 +308,19 @@ def test_append_git_log_to_metadata(source_tree):
             stdout=subprocess.PIPE,
             universal_newlines=True,
         ).stdout.strip()
-        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
+        metadata.add_git_source(name="tmp", sha=hash)
 
     # Read the metadata that we just wrote.
+    return metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+
+
+def test_synthtool_and_cwd_git_sources_in_metadata(source_tree):
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        pass
     mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
-    # Match 2 log lines.
-    assert re.match(
-        r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
-        mdata.sources[0].git.log,
-        re.MULTILINE,
-    )
-    # Make sure the local path field is not recorded.
-    assert not mdata.sources[0].git.local_path is None
+    cwd_source = mdata.sources[0].git
+    assert cwd_source.name == "."
+    synthtool_source = mdata.sources[1].git
+    assert synthtool_source.name == "synthtool"
+    assert re.match("[A-Za-z0-9]+", synthtool_source.sha)
+    assert synthtool_source.remote.index("synthtool")

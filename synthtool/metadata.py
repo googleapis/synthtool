@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import datetime
+import inspect
 import locale
 import os
 import pathlib
@@ -25,6 +26,7 @@ from typing import List, Iterable, Dict
 
 import google.protobuf.json_format
 
+import synthtool
 from synthtool import log
 from synthtool.protos import metadata_pb2
 
@@ -156,11 +158,8 @@ def git_ignore(file_paths: Iterable[str]):
             f.write("\n".encode(encoding))
         # Invoke git.
         f.seek(0)
-        git = shutil.which("git")
-        if not git:
-            raise FileNotFoundError("Could not find git in PATH.")
         completed_process = subprocess.run(
-            [git, "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE
+            ["git", "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE
         )
     # Digest git output.
     output_text = completed_process.stdout.decode(encoding)
@@ -194,47 +193,30 @@ class MetadataTrackerAndWriter:
     def __enter__(self):
         self.start_time = time.time() - 1
         self.old_metadata = _read_or_empty(self.metadata_file_path)
+        _add_self_git_source()
+        _add_synthtool_git_source()
 
-    def __exit__(self, type, value, traceback):
-        if should_track_obsolete_files():
+    def __exit__(self, exception_type, exception_value, traceback):
+        if should_track_obsolete_files() and not exception_value:
             new_files = _get_new_files(self.start_time)
             tracked_new_files = git_ignore(new_files)
             _add_new_files(tracked_new_files)
             _remove_obsolete_files(self.old_metadata)
-        _append_git_logs(self.old_metadata, get())
-        _clear_local_paths(get())
         write(self.metadata_file_path)
 
 
-def _append_git_logs(old_metadata, new_metadata):
-    """Adds git logs to git sources in new_metadata.
+def _get_commit_log_since(path, sha):
+    """Invokes git to get the commit log in the given path since the given sha.
 
-    Parameters:
-        old_metadata: instance of metadata_pb2.Metadata
-        old_metadata: instance of metadata_pb2.Metadata
+    Returns:
+        string, the git log.
     """
-    old_map = _get_git_source_map(old_metadata)
-    new_map = _get_git_source_map(new_metadata)
-    git = shutil.which("git")
-    for name, git_source in new_map.items():
-        # Get the git history since the last run:
-        old_source = old_map.get(name, metadata_pb2.GitSource())
-        if not old_source.sha or not git_source.local_path:
-            continue
-        output = subprocess.run(
-            [
-                git,
-                "-C",
-                git_source.local_path,
-                "log",
-                "--pretty=%H%n%B",
-                "--no-decorate",
-                f"{old_source.sha}..HEAD",
-            ],
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-        ).stdout
-        git_source.log = output
+    output = subprocess.run(
+        ["git", "-C", path, "log", "--pretty=%H%n%B", "--no-decorate", f"{sha}..HEAD"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    ).stdout
+    return output
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:
@@ -254,13 +236,50 @@ def _get_git_source_map(metadata) -> Dict[str, object]:
     return source_map
 
 
-def _clear_local_paths(metadata):
-    """Clear the local_path from the git sources.
+def _add_self_git_source():
+    """Adds current working directory as a git source.
 
-    There's no reason to preserve it, and it may leak some info we don't
-    want to leak in the path.
+    Returns:
+        The number of git sources added to metadata.
     """
-    for source in metadata.sources:
-        if source.HasField("git"):
-            git_source = source.git
-            git_source.ClearField("local_path")
+    # Use the repository's root directory name as the name.
+    return _add_git_source_from_directory(".", os.getcwd())
+
+
+def _add_git_source_from_directory(name: str, dir_path: str):
+    """Adds the git repo containing the directory as a git source.
+
+    Returns:
+        The number of git sources added to metadata.
+    """
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "status"], universal_newlines=True
+    )
+    if completed_process.returncode:
+        log.warning("%s is not directory in a git repo.", dir_path)
+        return 0
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "remote", "get-url", "origin"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    url = completed_process.stdout.strip()
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "log", "--no-decorate", "-1", "--pretty=format:%H"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    sha = completed_process.stdout.strip()
+    add_git_source(name=name, remote=url, sha=sha)
+    return 1
+
+
+def _add_synthtool_git_source():
+    """Adds synthtool's repo as a git source.
+
+    Returns:
+        The number of git sources added to metadata.
+    """
+    source_path = inspect.getfile(synthtool)
+    source_dir = pathlib.Path(source_path).parent
+    return _add_git_source_from_directory("synthtool", str(source_dir))
