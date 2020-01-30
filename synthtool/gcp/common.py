@@ -112,7 +112,7 @@ class CommonTemplates:
         # metadata, so we don't need to do it again or overwrite it. Also, only
         # set the "repo" key if data is available.
         if "repo" not in metadata:
-            repo_metadata = load_repo_metadata()
+            repo_metadata = _load_repo_metadata()
             if repo_metadata:
                 metadata["repo"] = repo_metadata
 
@@ -223,7 +223,7 @@ def decamelize(value: str):
     return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.
 
 
-def load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optional[Dict]:
+def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optional[Dict]:
     if os.path.exists(metadata_file):
         with open(metadata_file) as f:
             return json.load(f)

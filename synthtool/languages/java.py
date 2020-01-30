@@ -332,7 +332,7 @@ def common_templates(metadata: Dict = {}, excludes: List[str] = [], **kwargs) ->
         excludes (List[str], optional): List of template paths to ignore
         **kwargs: Additional options for CommonTemplates.java_library()
     """
-    repo_metadata = common.load_repo_metadata()
+    repo_metadata = common._load_repo_metadata()
     if repo_metadata:
         metadata["repo"] = repo_metadata
         group_id, artifact_id = repo_metadata["distribution_name"].split(":")
