@@ -263,7 +263,7 @@ def preserve_track_obsolete_file_flag():
 
 
 def test_track_obsolete_files_defaults_to_true(preserve_track_obsolete_file_flag):
-    assert metadata.should_track_obsolete_files()
+    assert not metadata.should_track_obsolete_files()
 
 
 def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
