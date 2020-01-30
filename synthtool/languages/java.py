@@ -131,7 +131,9 @@ def latest_maven_version(group_id: str, artifact_id: str) -> Optional[str]:
         f"https://repo1.maven.org/maven2/{group_path}/{artifact_id}/maven-metadata.xml"
     )
     response = requests.get(url)
-    response.raise_for_status()
+    if response.status_code >= 400:
+        return "0.0.0"
+
     return version_from_maven_metadata(response.text)
 
 
