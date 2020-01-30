@@ -23,7 +23,7 @@ from synthtool import cache
 from synthtool import log
 from synthtool import shell
 from pathlib import Path
-from typing import Optional, Dict, List
+from typing import Any, Optional, Dict, List
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
@@ -331,7 +331,7 @@ def common_templates(excludes: List[str] = [], **kwargs) -> None:
         excludes (List[str], optional): List of template paths to ignore
         **kwargs: Additional options for CommonTemplates.java_library()
     """
-    metadata = {}
+    metadata = {}  # type: Dict[str, Any]
     repo_metadata = common._load_repo_metadata()
     if repo_metadata:
         metadata["repo"] = repo_metadata
