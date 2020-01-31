@@ -224,6 +224,29 @@ def decamelize(value: str):
 
 
 def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optional[Dict]:
+    """Parse a metadata JSON file into a Dict.
+
+    Currently, the defined fields are:
+    * `name` - The service's API name
+    * `name_pretty` - The service's API title. This will be used for generating titles on READMEs
+    * `product_documentation` - The product documentation on cloud.google.com
+    * `client_documentation` - The client library reference documentation
+    * `issue_tracker` - The public issue tracker for the product
+    * `release_level` - The release level of the client library. One of: alpha, beta, ga, deprecated
+    * `language` - The repo language. One of dotnet, go, java, nodejs, php, python, ruby
+    * `repo` - The GitHub repo in the format {owner}/{repo}
+    * `distribution_name` - The language-idiomatic package/distribution name
+    * `api_id` - The API ID associated with the service. Fully qualified identifier use to
+      enable a service in the cloud platform (e.g. monitoring.googleapis.com)
+    * `requires_billing` - Whether or not the API requires billing to be configured on the
+      customer's acocunt
+
+    Args:
+        metadata_file (str, optional): Path to the metadata json file
+
+    Returns:
+        A dictionary of metadata. This may not necessarily include all the defined fields above.
+    """
     if os.path.exists(metadata_file):
         with open(metadata_file) as f:
             return json.load(f)
