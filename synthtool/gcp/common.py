@@ -17,7 +17,7 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from synthtool.languages import node
 from synthtool.sources import templates
@@ -107,10 +107,14 @@ class CommonTemplates:
         self._load_samples(metadata)
         self._load_partials(metadata)
 
-        metadata["repo"] = {}
-        if os.path.exists("./.repo-metadata.json"):
-            with open("./.repo-metadata.json") as f:
-                metadata["repo"] = json.load(f)
+        # Loads repo metadata information from the default location if it
+        # hasn't already been set. Some callers may have already loaded repo
+        # metadata, so we don't need to do it again or overwrite it. Also, only
+        # set the "repo" key if data is available.
+        if "repo" not in metadata:
+            repo_metadata = _load_repo_metadata()
+            if repo_metadata:
+                metadata["repo"] = repo_metadata
 
     def _load_samples(self, metadata: Dict):
         """
@@ -217,3 +221,33 @@ def decamelize(value: str):
         "([A-Z]+)([A-Z])([a-z0-9])", r"\1 \2\3", str_decamelize
     )  # ACLBatman -> ACL Batman.
     return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.
+
+
+def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optional[Dict]:
+    """Parse a metadata JSON file into a Dict.
+
+    Currently, the defined fields are:
+    * `name` - The service's API name
+    * `name_pretty` - The service's API title. This will be used for generating titles on READMEs
+    * `product_documentation` - The product documentation on cloud.google.com
+    * `client_documentation` - The client library reference documentation
+    * `issue_tracker` - The public issue tracker for the product
+    * `release_level` - The release level of the client library. One of: alpha, beta, ga, deprecated
+    * `language` - The repo language. One of dotnet, go, java, nodejs, php, python, ruby
+    * `repo` - The GitHub repo in the format {owner}/{repo}
+    * `distribution_name` - The language-idiomatic package/distribution name
+    * `api_id` - The API ID associated with the service. Fully qualified identifier use to
+      enable a service in the cloud platform (e.g. monitoring.googleapis.com)
+    * `requires_billing` - Whether or not the API requires billing to be configured on the
+      customer's acocunt
+
+    Args:
+        metadata_file (str, optional): Path to the metadata json file
+
+    Returns:
+        A dictionary of metadata. This may not necessarily include all the defined fields above.
+    """
+    if os.path.exists(metadata_file):
+        with open(metadata_file) as f:
+            return json.load(f)
+    return None

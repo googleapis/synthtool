@@ -18,11 +18,12 @@ import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
+from synthtool.gcp import common
 from synthtool import cache
 from synthtool import log
 from synthtool import shell
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, Dict, List
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
@@ -130,7 +131,9 @@ def latest_maven_version(group_id: str, artifact_id: str) -> Optional[str]:
         f"https://repo1.maven.org/maven2/{group_path}/{artifact_id}/maven-metadata.xml"
     )
     response = requests.get(url)
-    response.raise_for_status()
+    if response.status_code >= 400:
+        return "0.0.0"
+
     return version_from_maven_metadata(response.text)
 
 
@@ -315,3 +318,33 @@ def bazel_library(
     )
 
     return library
+
+
+def common_templates(excludes: List[str] = [], **kwargs) -> None:
+    """Generate common templates for a Java Library
+
+    Fetches information about the repository from the .repo-metadata.json file,
+    information about the latest artifact versions and copies the files into
+    their expected location.
+
+    Args:
+        excludes (List[str], optional): List of template paths to ignore
+        **kwargs: Additional options for CommonTemplates.java_library()
+    """
+    metadata = {}  # type: Dict[str, Any]
+    repo_metadata = common._load_repo_metadata()
+    if repo_metadata:
+        metadata["repo"] = repo_metadata
+        group_id, artifact_id = repo_metadata["distribution_name"].split(":")
+
+        metadata["latest_version"] = latest_maven_version(
+            group_id=group_id, artifact_id=artifact_id
+        )
+
+    metadata["latest_bom_version"] = latest_maven_version(
+        group_id="com.google.cloud", artifact_id="libraries-bom",
+    )
+
+    kwargs["metadata"] = metadata
+    templates = gcp.CommonTemplates().java_library(**kwargs)
+    s.copy([templates], excludes=excludes)
