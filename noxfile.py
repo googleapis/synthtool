@@ -14,6 +14,11 @@
 
 import nox
 
+@nox.session(python='3.6')
+def generate_protos(session):
+    session.install("grpcio-tools")
+    session.run(
+        "python", "-m", "grpc_tools.protoc", "-Isynthtool/protos", "--python_out=synthtool/protos", "synthtool/protos/metadata.proto")
 
 @nox.session(python='3.6')
 def blacken(session):
@@ -35,10 +40,3 @@ def test(session):
     session.install('pytest', 'pytest-cov', 'requests_mock')
     session.run('pip', 'install', '-e', '.')
     session.run('pytest', '--cov-report', 'term-missing', '--cov', 'synthtool', 'tests', *session.posargs)
-
-
-@nox.session(python='3.6')
-def generate_protos(session):
-    session.install("grpcio-tools")
-    session.run(
-        "python", "-m", "grpc_tools.protoc", "-Isynthtool/protos", "--python_out=synthtool/protos", "synthtool/protos/metadata.proto")
