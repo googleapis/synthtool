@@ -17,7 +17,7 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 from synthtool.languages import node
 from synthtool.sources import templates
@@ -110,11 +110,9 @@ class CommonTemplates:
         # Loads repo metadata information from the default location if it
         # hasn't already been set. Some callers may have already loaded repo
         # metadata, so we don't need to do it again or overwrite it. Also, only
-        # set the "repo" key if data is available.
+        # set the "repo" key.
         if "repo" not in metadata:
-            repo_metadata = _load_repo_metadata()
-            if repo_metadata:
-                metadata["repo"] = repo_metadata
+            metadata["repo"] = _load_repo_metadata()
 
     def _load_samples(self, metadata: Dict):
         """
@@ -223,7 +221,7 @@ def decamelize(value: str):
     return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.
 
 
-def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optional[Dict]:
+def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
     """Parse a metadata JSON file into a Dict.
 
     Currently, the defined fields are:
@@ -250,4 +248,4 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optiona
     if os.path.exists(metadata_file):
         with open(metadata_file) as f:
             return json.load(f)
-    return None
+    return {}
