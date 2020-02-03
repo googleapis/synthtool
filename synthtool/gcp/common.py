@@ -17,7 +17,7 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict, Optional
+from typing import List, Dict
 
 from synthtool.languages import node
 from synthtool.sources import templates
