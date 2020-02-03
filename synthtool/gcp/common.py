@@ -112,9 +112,7 @@ class CommonTemplates:
         # metadata, so we don't need to do it again or overwrite it. Also, only
         # set the "repo" key if data is available.
         if "repo" not in metadata:
-            repo_metadata = _load_repo_metadata()
-            if repo_metadata:
-                metadata["repo"] = repo_metadata
+            metadata["repo"] = _load_repo_metadata()
 
     def _load_samples(self, metadata: Dict):
         """
@@ -250,4 +248,4 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Optiona
     if os.path.exists(metadata_file):
         with open(metadata_file) as f:
             return json.load(f)
-    return None
+    return {}
