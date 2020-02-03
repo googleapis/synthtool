@@ -80,6 +80,7 @@ def default(session):
         "py.test",
         "--quiet",
         "--cov=google.cloud{% if metadata['repo']['name'] %}.{{ metadata['repo']['name'] }}{% endif %}",
+        "--cov=google.cloud",
         "--cov=tests.unit",
         "--cov-append",
         "--cov-config=.coveragerc",
