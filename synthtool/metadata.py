@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import datetime
+import deprecation
 import locale
 import os
 import pathlib
@@ -20,7 +21,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
 from typing import List, Iterable, Dict
 
 import google.protobuf.json_format
@@ -30,7 +30,6 @@ from synthtool.protos import metadata_pb2
 
 
 _metadata = metadata_pb2.Metadata()
-_track_obsolete_files = False
 
 
 def reset() -> None:
@@ -118,26 +117,7 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def _remove_obsolete_files(old_metadata):
-    """Remove obsolete files from the file system.
-
-    Call add_new_files() before this function or it will remove all generated
-    files.
-
-    Parameters:
-        old_metadata:  old metadata loaded from a call to read_or_empty().
-    """
-    old_files = set([new_file.path for new_file in old_metadata.new_files])
-    new_files = set([new_file.path for new_file in _metadata.new_files])
-    obsolete_files = old_files - new_files
-    for file_path in git_ignore(obsolete_files):
-        try:
-            log.info(f"Removing obsolete file {file_path}...")
-            os.unlink(file_path)
-        except FileNotFoundError:
-            pass  # Already deleted.  That's OK.
-
-
+@deprecation.deprecated(deprecated_in="2020.02.04")
 def git_ignore(file_paths: Iterable[str]):
     """Returns a new list of the same files, with ignored files removed."""
     # Surprisingly, git check-ignore doesn't ignore .git directories, take those
@@ -175,32 +155,26 @@ def git_ignore(file_paths: Iterable[str]):
     ]
 
 
-def set_track_obsolete_files(track_obsolete_files=True):
-    """Instructs synthtool to track and remove obsolete files."""
-    global _track_obsolete_files
-    _track_obsolete_files = track_obsolete_files
+@deprecation.deprecated(deprecated_in="2020.02.04")
+def set_track_obsolete_files(ignored=True):
+    pass
 
 
+@deprecation.deprecated(deprecated_in="2020.02.04")
 def should_track_obsolete_files():
-    return _track_obsolete_files
+    return False
 
 
 class MetadataTrackerAndWriter:
-    """Writes metadata file upon exiting scope.  Tracks obsolete files."""
+    """Writes metadata file upon exiting scope."""
 
     def __init__(self, metadata_file_path: str):
         self.metadata_file_path = metadata_file_path
 
     def __enter__(self):
-        self.start_time = time.time() - 1
         self.old_metadata = _read_or_empty(self.metadata_file_path)
 
     def __exit__(self, type, value, traceback):
-        if should_track_obsolete_files():
-            new_files = _get_new_files(self.start_time)
-            tracked_new_files = git_ignore(new_files)
-            _add_new_files(tracked_new_files)
-            _remove_obsolete_files(self.old_metadata)
         _append_git_logs(self.old_metadata, get())
         _clear_local_paths(get())
         write(self.metadata_file_path)

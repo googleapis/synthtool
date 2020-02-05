@@ -16,11 +16,12 @@ import setuptools
 
 name = 'gcp-synthtool'
 description = ''
-version = '2019.10.17'
+version = '2020.02.04'
 release_status = 'Development Status :: 3 - Alpha'
 dependencies = [
     "click",
     "colorlog",
+    "deprecation",
     "jinja2",
     "packaging",
     "PyYAML",
