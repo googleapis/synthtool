@@ -18,11 +18,12 @@ import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
+from synthtool.gcp import common
 from synthtool import cache
 from synthtool import log
 from synthtool import shell
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional, Dict, List
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
@@ -130,7 +131,9 @@ def latest_maven_version(group_id: str, artifact_id: str) -> Optional[str]:
         f"https://repo1.maven.org/maven2/{group_path}/{artifact_id}/maven-metadata.xml"
     )
     response = requests.get(url)
-    response.raise_for_status()
+    if response.status_code >= 400:
+        return "0.0.0"
+
     return version_from_maven_metadata(response.text)
 
 
@@ -153,7 +156,12 @@ def version_from_maven_metadata(metadata: str) -> Optional[str]:
 
 
 def _common_generation(
-    service: str, version: str, library: Path, package_pattern: str, suffix: str = ""
+    service: str,
+    version: str,
+    library: Path,
+    package_pattern: str,
+    suffix: str = "",
+    destination_name: str = None,
 ):
     """Helper function to execution the common generation cleanup actions.
 
@@ -168,7 +176,12 @@ def _common_generation(
         package_pattern (str): Package name template for fixing file headers.
         suffix (str, optional): Suffix that the generated library folder. The
             artman output differs from bazel's output directory. Defaults to "".
+        destination_name (str, optional): Override the service name for the
+            destination of the output code. Defaults to the service name.
     """
+
+    if destination_name is None:
+        destination_name = service
 
     package_name = package_pattern.format(service=service, version=version)
     fix_proto_headers(library / f"proto-google-cloud-{service}-{version}{suffix}")
@@ -178,15 +191,15 @@ def _common_generation(
 
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
-        f"google-cloud-{service}/src",
+        f"google-cloud-{destination_name}/src",
     )
     s.copy(
         [library / f"grpc-google-cloud-{service}-{version}{suffix}/src"],
-        f"grpc-google-cloud-{service}-{version}/src",
+        f"grpc-google-cloud-{destination_name}-{version}/src",
     )
     s.copy(
         [library / f"proto-google-cloud-{service}-{version}{suffix}/src"],
-        f"proto-google-cloud-{service}-{version}/src",
+        f"proto-google-cloud-{destination_name}-{version}/src",
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
@@ -205,9 +218,9 @@ def _common_generation(
         f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
     )
 
-    format_code(f"google-cloud-{service}/src")
-    format_code(f"grpc-google-cloud-{service}-{version}/src")
-    format_code(f"proto-google-cloud-{service}-{version}/src")
+    format_code(f"google-cloud-{destination_name}/src")
+    format_code(f"grpc-google-cloud-{destination_name}-{version}/src")
+    format_code(f"proto-google-cloud-{destination_name}-{version}/src")
     format_code("samples/src")
 
 
@@ -217,6 +230,7 @@ def gapic_library(
     config_pattern: str = "/google/cloud/{service}/artman_{service}_{version}.yaml",
     package_pattern: str = "com.google.cloud.{service}.{version}",
     gapic: gcp.GAPICGenerator = None,
+    destination_name: str = None,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via artman via Docker.
@@ -232,6 +246,8 @@ def gapic_library(
         package_pattern (str, optional): Package name template for fixing file
             headers. Defaults to "com.google.cloud.{service}.{version}".
         gapic (GAPICGenerator, optional): Generator instance.
+        destination_name (str, optional): Override the service name for the
+            destination of the output code. Defaults to the service name.
         **kwargs: Additional options for gapic.java_library()
 
     Returns:
@@ -255,6 +271,7 @@ def gapic_library(
         version=version,
         library=library,
         package_pattern=package_pattern,
+        destination_name=destination_name,
     )
 
     return library
@@ -265,6 +282,7 @@ def bazel_library(
     version: str,
     package_pattern: str = "com.google.cloud.{service}.{version}",
     gapic: gcp.GAPICBazel = None,
+    destination_name: str = None,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via bazel.
@@ -278,6 +296,8 @@ def bazel_library(
         package_pattern (str, optional): Package name template for fixing file
             headers. Defaults to "com.google.cloud.{service}.{version}".
         gapic (GAPICBazel, optional): Generator instance.
+        destination_name (str, optional): Override the service name for the
+            destination of the output code. Defaults to the service name.
         **kwargs: Additional options for gapic.java_library()
 
     Returns:
@@ -294,6 +314,37 @@ def bazel_library(
         library=library / f"google-cloud-{service}-{version}-java",
         package_pattern=package_pattern,
         suffix="-java",
+        destination_name=destination_name,
     )
 
     return library
+
+
+def common_templates(excludes: List[str] = [], **kwargs) -> None:
+    """Generate common templates for a Java Library
+
+    Fetches information about the repository from the .repo-metadata.json file,
+    information about the latest artifact versions and copies the files into
+    their expected location.
+
+    Args:
+        excludes (List[str], optional): List of template paths to ignore
+        **kwargs: Additional options for CommonTemplates.java_library()
+    """
+    metadata = {}  # type: Dict[str, Any]
+    repo_metadata = common._load_repo_metadata()
+    if repo_metadata:
+        metadata["repo"] = repo_metadata
+        group_id, artifact_id = repo_metadata["distribution_name"].split(":")
+
+        metadata["latest_version"] = latest_maven_version(
+            group_id=group_id, artifact_id=artifact_id
+        )
+
+    metadata["latest_bom_version"] = latest_maven_version(
+        group_id="com.google.cloud", artifact_id="libraries-bom",
+    )
+
+    kwargs["metadata"] = metadata
+    templates = gcp.CommonTemplates().java_library(**kwargs)
+    s.copy([templates], excludes=excludes)
