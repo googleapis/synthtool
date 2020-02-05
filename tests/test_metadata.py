@@ -19,8 +19,6 @@ import pytest
 import re
 import shutil
 import subprocess
-import sys
-import time
 
 from synthtool import metadata
 from synthtool.tmp import tmpdir
