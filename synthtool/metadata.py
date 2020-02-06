@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import datetime
+import deprecation
 import inspect
 import locale
 import os
@@ -21,7 +22,6 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
 from typing import List, Iterable, Dict
 
 import google.protobuf.json_format
@@ -32,7 +32,6 @@ from synthtool.protos import metadata_pb2
 
 
 _metadata = metadata_pb2.Metadata()
-_track_obsolete_files = False
 
 
 def reset() -> None:
@@ -120,26 +119,7 @@ def write(outfile: str = "synth.metadata") -> None:
     log.debug(f"Wrote metadata to {outfile}.")
 
 
-def _remove_obsolete_files(old_metadata):
-    """Remove obsolete files from the file system.
-
-    Call add_new_files() before this function or it will remove all generated
-    files.
-
-    Parameters:
-        old_metadata:  old metadata loaded from a call to read_or_empty().
-    """
-    old_files = set([new_file.path for new_file in old_metadata.new_files])
-    new_files = set([new_file.path for new_file in _metadata.new_files])
-    obsolete_files = old_files - new_files
-    for file_path in git_ignore(obsolete_files):
-        try:
-            log.info(f"Removing obsolete file {file_path}...")
-            os.unlink(file_path)
-        except FileNotFoundError:
-            pass  # Already deleted.  That's OK.
-
-
+@deprecation.deprecated(deprecated_in="2020.02.04")
 def git_ignore(file_paths: Iterable[str]):
     """Returns a new list of the same files, with ignored files removed."""
     # Surprisingly, git check-ignore doesn't ignore .git directories, take those
@@ -174,49 +154,62 @@ def git_ignore(file_paths: Iterable[str]):
     ]
 
 
-def set_track_obsolete_files(track_obsolete_files=True):
-    """Instructs synthtool to track and remove obsolete files."""
-    global _track_obsolete_files
-    _track_obsolete_files = track_obsolete_files
+@deprecation.deprecated(deprecated_in="2020.02.04")
+def set_track_obsolete_files(ignored=True):
+    pass
 
 
+@deprecation.deprecated(deprecated_in="2020.02.04")
 def should_track_obsolete_files():
-    return _track_obsolete_files
+    return False
 
 
 class MetadataTrackerAndWriter:
-    """Writes metadata file upon exiting scope.  Tracks obsolete files."""
+    """Writes metadata file upon exiting scope."""
 
     def __init__(self, metadata_file_path: str):
         self.metadata_file_path = metadata_file_path
 
     def __enter__(self):
-        self.start_time = time.time() - 1
         self.old_metadata = _read_or_empty(self.metadata_file_path)
         _add_self_git_source()
         _add_synthtool_git_source()
 
-    def __exit__(self, exception_type, exception_value, traceback):
-        if should_track_obsolete_files() and not exception_value:
-            new_files = _get_new_files(self.start_time)
-            tracked_new_files = git_ignore(new_files)
-            _add_new_files(tracked_new_files)
-            _remove_obsolete_files(self.old_metadata)
+    def __exit__(self, type, value, traceback):
+        _append_git_logs(self.old_metadata, get())
+        _clear_local_paths(get())
         write(self.metadata_file_path)
 
 
-def _get_commit_log_since(path, sha):
-    """Invokes git to get the commit log in the given path since the given sha.
+def _append_git_logs(old_metadata, new_metadata):
+    """Adds git logs to git sources in new_metadata.
 
-    Returns:
-        string, the git log.
+    Parameters:
+        old_metadata: instance of metadata_pb2.Metadata
+        old_metadata: instance of metadata_pb2.Metadata
     """
-    output = subprocess.run(
-        ["git", "-C", path, "log", "--pretty=%H%n%B", "--no-decorate", f"{sha}..HEAD"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-    ).stdout
-    return output
+    old_map = _get_git_source_map(old_metadata)
+    new_map = _get_git_source_map(new_metadata)
+    git = shutil.which("git")
+    for name, git_source in new_map.items():
+        # Get the git history since the last run:
+        old_source = old_map.get(name, metadata_pb2.GitSource())
+        if not old_source.sha or not git_source.local_path:
+            continue
+        output = subprocess.run(
+            [
+                git,
+                "-C",
+                git_source.local_path,
+                "log",
+                "--pretty=%H%n%B",
+                "--no-decorate",
+                f"{old_source.sha}..HEAD",
+            ],
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+        ).stdout
+        git_source.log = output
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:
@@ -235,6 +228,18 @@ def _get_git_source_map(metadata) -> Dict[str, object]:
             source_map[git_source.name] = git_source
     return source_map
 
+
+def _clear_local_paths(metadata):
+    """Clear the local_path from the git sources.
+
+    There's no reason to preserve it, and it may leak some info we don't
+    want to leak in the path.
+    """
+    for source in metadata.sources:
+        if source.HasField("git"):
+            git_source = source.git
+            git_source.ClearField("local_path")
+            
 
 def _add_self_git_source():
     """Adds current working directory as a git source.

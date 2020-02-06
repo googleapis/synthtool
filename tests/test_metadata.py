@@ -19,8 +19,6 @@ import pytest
 import re
 import shutil
 import subprocess
-import sys
-import time
 
 from synthtool import metadata
 from synthtool.tmp import tmpdir
@@ -137,109 +135,6 @@ def source_tree():
     os.chdir(cwd)
 
 
-def test_new_files_found(source_tree, preserve_track_obsolete_file_flag):
-    metadata.set_track_obsolete_files(True)
-    source_tree.write("a")
-    time.sleep(2)
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write("code/b")
-
-    # Confirm add_new_files found the new files and ignored the old one.
-    new_file_paths = [new_file.path for new_file in metadata.get().new_files]
-    assert ["code/b"] == new_file_paths
-
-
-def test_gitignored_files_ignored(source_tree, preserve_track_obsolete_file_flag):
-    metadata.set_track_obsolete_files(True)
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write("code/b")
-        source_tree.write("code/c")
-        source_tree.write(".gitignore", "code/c\n")
-
-    # Confirm add_new_files found the new files and ignored one.
-    new_file_paths = [new_file.path for new_file in metadata.get().new_files]
-    assert [".gitignore", "code/b"] == new_file_paths
-
-
-def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
-    metadata.set_track_obsolete_files(True)
-
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write("code/b")
-        source_tree.write("code/c")
-
-    metadata.reset()
-    time.sleep(1)
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write("code/c")
-
-    assert 1 == len(metadata.get().new_files)
-    assert "code/c" == metadata.get().new_files[0].path
-
-    # Confirm remove_obsolete_files deletes b but not c.
-    assert not os.path.exists("code/b")
-    assert os.path.exists("code/c")
-
-
-def test_nothing_happens_when_disabled(source_tree, preserve_track_obsolete_file_flag):
-    metadata.set_track_obsolete_files(True)
-
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write("code/b")
-        source_tree.write("code/c")
-
-    metadata.reset()
-    time.sleep(1)
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write("code/c")
-        metadata.set_track_obsolete_files(False)
-
-    assert 0 == len(metadata.get().new_files)
-
-    # Confirm no files were deleted.
-    assert os.path.exists("code/b")
-    assert os.path.exists("code/c")
-
-
-def test_old_file_ignored_by_git_not_removed(
-    source_tree, preserve_track_obsolete_file_flag
-):
-    metadata.set_track_obsolete_files(True)
-
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write(".bin")
-
-    metadata.reset()
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        source_tree.write(".gitignore", ".bin")
-
-    # Confirm remove_obsolete_files didn't remove the .bin file.
-    assert os.path.exists(".bin")
-
-
-def test_add_new_files_with_bad_file(source_tree, preserve_track_obsolete_file_flag):
-    metadata.set_track_obsolete_files(True)
-
-    metadata.reset()
-    tmpdir = source_tree.tmpdir
-    dne = "does-not-exist"
-    source_tree.git_add(dne)
-    time.sleep(1)  # File systems have resolution of about 1 second.
-
-    try:
-        os.symlink(tmpdir / dne, tmpdir / "badlink")
-    except OSError:
-        # On Windows, creating a symlink requires Admin priveleges, which
-        # should never be granted to test runners.
-        assert "win32" == sys.platform
-        return
-    # Confirm this doesn't throw an exception.
-    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
-        pass
-    # And a bad link does not exist and shouldn't be recorded as a new file.
-    assert 0 == len(metadata.get().new_files)
-
-
 def test_read_metadata(tmpdir):
     metadata.reset()
     add_sample_client_destination()
@@ -266,19 +161,7 @@ def test_track_obsolete_files_defaults_to_false(preserve_track_obsolete_file_fla
     assert not metadata.should_track_obsolete_files()
 
 
-def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
-    metadata.set_track_obsolete_files(False)
-    assert not metadata.should_track_obsolete_files()
-    metadata.set_track_obsolete_files(True)
-    assert metadata.should_track_obsolete_files()
-
-
-def _build_history(source_tree):
-    """Build a history of commits and metadata.
-
-    Returns:
-        an instance of metadata_pb2.Metadata.
-    """
+def test_append_git_log_to_metadata(source_tree):
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         # Create one commit that will be recorded in the metadata.
         source_tree.write("a")
@@ -290,7 +173,7 @@ def _build_history(source_tree):
             stdout=subprocess.PIPE,
             universal_newlines=True,
         ).stdout.strip()
-        metadata.add_git_source(name="tmp", sha=hash)
+        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
 
     metadata.reset()
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
@@ -308,10 +191,19 @@ def _build_history(source_tree):
             stdout=subprocess.PIPE,
             universal_newlines=True,
         ).stdout.strip()
-        metadata.add_git_source(name="tmp", sha=hash)
+        metadata.add_git_source(name="tmp", local_path=os.getcwd(), sha=hash)
 
     # Read the metadata that we just wrote.
-    return metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+    mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+    # Match 2 log lines.
+    assert re.match(
+        r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
+        mdata.sources[0].git.log,
+        re.MULTILINE,
+    )
+    # Make sure the local path field is not recorded.
+    assert not mdata.sources[0].git.local_path is None
+
 
 
 def test_synthtool_and_cwd_git_sources_in_metadata(source_tree):
@@ -324,3 +216,21 @@ def test_synthtool_and_cwd_git_sources_in_metadata(source_tree):
     assert synthtool_source.name == "synthtool"
     assert re.match("[A-Za-z0-9]+", synthtool_source.sha)
     assert synthtool_source.remote.index("synthtool")
+
+
+def test_reading_metadata_with_deprecated_fields_doesnt_crash(tmpdir):
+    metadata_path = tmpdir / "synth.metadata"
+    metadata_path.write_text(
+        """
+{
+  "updateTime": "2020-01-28T12:42:19.618670Z",
+  "newFiles": [
+    {
+      "path": ".eslintignore"
+    }
+  ]
+}
+""",
+        "utf-8",
+    )
+    metadata._read_or_empty()
