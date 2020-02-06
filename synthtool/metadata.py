@@ -138,8 +138,11 @@ def git_ignore(file_paths: Iterable[str]):
             f.write("\n".encode(encoding))
         # Invoke git.
         f.seek(0)
+        git = shutil.which("git")
+        if not git:
+            raise FileNotFoundError("Could not find git in PATH.")
         completed_process = subprocess.run(
-            ["git", "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE
+            [git, "check-ignore", "--stdin"], stdin=f, stdout=subprocess.PIPE
         )
     # Digest git output.
     output_text = completed_process.stdout.decode(encoding)
