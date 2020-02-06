@@ -239,7 +239,7 @@ def _clear_local_paths(metadata):
         if source.HasField("git"):
             git_source = source.git
             git_source.ClearField("local_path")
-            
+
 
 def _add_self_git_source():
     """Adds current working directory as a git source.

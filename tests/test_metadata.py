@@ -205,7 +205,6 @@ def test_append_git_log_to_metadata(source_tree):
     assert not mdata.sources[0].git.local_path is None
 
 
-
 def test_synthtool_and_cwd_git_sources_in_metadata(source_tree):
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         pass
