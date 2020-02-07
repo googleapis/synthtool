@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import importlib.util
 import os
 import sys
-import importlib.util
 from typing import List, Sequence
 
 import click
 import pkg_resources
-
 import synthtool.log
 import synthtool.metadata
-
+from synthtool.sources import git
 
 try:
     VERSION = pkg_resources.get_distribution("gcp-synthtool").version
@@ -65,7 +64,7 @@ def extra_args() -> List[str]:
 )
 @click.argument("extra_args", nargs=-1)
 def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
-    """Synthesizes source code according to the instructions in synthfile arg.
+    f"""Synthesizes source code according to the instructions in synthfile arg.
 
     Optional environment variables:
       SYNTHTOOL_ARTMAN_VERSION:  The version of artman to use.
@@ -73,6 +72,10 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
       SYNTHTOOL_GENERATOR:       Path to local gapic-generator directory to use for generation.
                 By default, the latest version of gapic-generator will be used.
       AUTOSYNTH_USE_SSH:         Access github repos via ssh instead of https.
+      {git.PRECLONE_MAP_ENVIRONMENT_VARIABLE}:  Path to a json file.
+
+
+    {git.PRECLONE_MAP_HELP}
     """
     _extra_args.extend(extra_args)
 

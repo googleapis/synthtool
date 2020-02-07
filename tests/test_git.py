@@ -12,10 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+import importlib
+import os
+import unittest
 from unittest import mock
 
 import pytest
-
+from synthtool import metadata, tmp
 from synthtool.sources import git
 
 
@@ -67,3 +71,52 @@ Two: 1234
     metadata = git.extract_commit_message_metadata(message)
 
     assert metadata == {"One": "Hello!", "Two": "1234"}
+
+
+class TestClone(unittest.TestCase):
+    def setUp(self):
+        # Preserve the original environment variables.
+        self.env = copy.copy(os.environ)
+        return super().setUp()
+
+    def tearDown(self):
+        os.environ = self.env
+        return super().tearDown()
+
+    def testClone(self):
+        local_directory = git.clone("https://github.com/googleapis/nodejs-vision.git")
+        self.assertEqual("nodejs-vision", local_directory.name)
+        self.assertEqual("nodejs-vision", metadata.get().sources[0].git.name)
+
+        # When the repo already exists, it should pull instead.
+        same_local_directory = git.clone(
+            "https://github.com/googleapis/nodejs-vision.git", local_directory.parent
+        )
+        self.assertEqual(local_directory, same_local_directory)
+
+    def testPrecloneMap(self):
+        # Pre clone the repo into a temporary directory.
+        tmpdir = tmp.tmpdir()
+        local_directory = git.clone(
+            "https://github.com/googleapis/nodejs-vision.git", tmpdir
+        )
+        # Write out a preclone map.
+        preclones = tmpdir / "preclones.json"
+        preclones.write_text(
+            f"""
+            {{
+                "https://github.com/googleapis/nodejs-vision.git": "{local_directory}"
+            }}
+        """
+        )
+        # Reload the module so it reexamines the environment variable.
+        importlib.reload(git)
+        metadata.reset()
+        # Confirm calling clone with the preclone map returns the precloned local directory.
+        os.environ[git.PRECLONE_MAP_ENVIRONMENT_VARIABLE] = str(preclones)
+        same_local_directory = git.clone(
+            "https://github.com/googleapis/nodejs-vision.git"
+        )
+        self.assertEqual(local_directory, same_local_directory)
+        # Make sure it was recorded in the metadata.
+        self.assertEqual("nodejs-vision", metadata.get().sources[0].git.name)

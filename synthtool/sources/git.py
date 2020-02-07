@@ -12,12 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import functools
+import json
 import os
 import pathlib
 import re
 import shutil
 import subprocess
-from typing import Dict, Tuple
+from typing import Dict, Tuple, Optional
 
 from synthtool import _tracked_paths
 from synthtool import cache
@@ -29,6 +31,8 @@ REPO_REGEX = (
 )
 
 USE_SSH = os.environ.get("AUTOSYNTH_USE_SSH", False)
+
+PRECLONE_MAP_ENVIRONMENT_VARIABLE = "SYNTHTOOL_PRECLONE_MAP"
 
 
 def make_repo_clone_url(repo: str) -> str:
@@ -45,26 +49,30 @@ def make_repo_clone_url(repo: str) -> str:
 
 
 def clone(
-    url: str,
-    dest: pathlib.Path = None,
-    committish: str = "master",
-    force: bool = False,
+    url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
 ) -> pathlib.Path:
-    if dest is None:
-        dest = cache.get_cache_dir()
+    preclone = get_preclone(url)
 
-    dest = dest / pathlib.Path(url).stem
-
-    if force and dest.exists():
-        shutil.rmtree(dest)
-
-    if not dest.exists():
-        cmd = ["git", "clone", "--single-branch", url, dest]
-        shell.run(cmd)
+    if preclone:
+        dest = pathlib.Path(preclone)
     else:
-        shell.run(["git", "pull"], cwd=str(dest))
+        if dest is None:
+            dest = cache.get_cache_dir()
 
-    shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
+        dest = dest / pathlib.Path(url).stem
+
+        if force and dest.exists():
+            shutil.rmtree(dest)
+
+        if not dest.exists():
+            cmd = ["git", "clone", "--single-branch", url, dest]
+            shell.run(cmd)
+        else:
+            shell.run(["git", "pull"], cwd=str(dest))
+        committish = committish or "master"
+
+    if committish:
+        shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
 
     # track all git repositories
     _tracked_paths.add(dest)
@@ -141,3 +149,29 @@ def extract_commit_message_metadata(message: str) -> Dict[str, str]:
         metadata[key] = value.strip()
 
     return metadata
+
+
+PRECLONE_MAP_HELP = """
+A preclone map file contains a list of git repos that have already been cloned.
+Its contents are json and look like this:
+{
+  "http://github.com/googleapis/nodejs-vision.git": "/tmp/nodejs-vison",
+  "http://github.com/googleapis/googleapis": "/tmp/googleapis"
+}
+"""
+
+
+@functools.lru_cache(maxsize=None)
+def _get_preclone_map() -> Dict:
+    """Loads the preclone map from the file specified in an environment variable."""
+    preclone_map_path = os.environ.get(PRECLONE_MAP_ENVIRONMENT_VARIABLE)
+    if not preclone_map_path:
+        return {}
+    with open(preclone_map_path, "r") as json_file:
+        return json.load(json_file)
+
+
+def get_preclone(url: str) -> Optional[str]:
+    """Finds a pre-cloned git repo in the preclone map."""
+    preclone_map = _get_preclone_map()
+    return preclone_map.get(url)
