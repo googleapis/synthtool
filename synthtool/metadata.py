@@ -277,8 +277,8 @@ def _add_git_source_from_directory(name: str, dir_path: str):
         stdout=subprocess.PIPE,
         universal_newlines=True,
     )
-    sha = completed_process.stdout.strip()
-    add_git_source(name=name, remote=url, sha=sha)
+    latest_sha = completed_process.stdout.strip()
+    add_git_source(name=name, remote=url, sha=latest_sha)
     return 1
 
 
