@@ -53,16 +53,19 @@ def _sample_metadata(file: str) -> Dict[str, str]:
 
 
 def all_samples(sample_globs: List[str]) -> List[Dict[str, str]]:
-    """
-    walks samples directory and builds up samples data-structure:
+    """Walks samples directory and builds up samples data-structure
 
-    {
-        "title": "Requester Pays",
-        "file": "requesterPays.js"
-    }
+    Args:
+        sample_globs: (List[str]): List of path globs to search for samples
+
+    Returns:
+        A list of sample metadata in the format:
+        {
+            "title": "Requester Pays",
+            "file": "samples/requesterPays.js"
+        }
+        The file path is the relative path from the repository root.
     """
-    # return [_samples_metadata(file) for file in glob.glob(sample_glob) for sample_globs]
-    # samples = []
     files = []
     for sample_glob in sample_globs:
         for file in glob.glob(sample_glob, recursive=True):
