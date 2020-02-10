@@ -21,7 +21,7 @@ from synthtool.gcp import common
 from synthtool.sources import templates
 
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "fixtures" / "node_templates"
 NODE_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/node_library"
 RUBY_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/ruby_library"
 

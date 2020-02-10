@@ -16,7 +16,7 @@ import os
 from pathlib import Path
 from synthtool.gcp import samples
 
-FIXTURES = Path(__file__).parent / "fixtures"
+FIXTURES = Path(__file__).parent / "fixtures" / "node_templates"
 
 
 def test_load_samples():
