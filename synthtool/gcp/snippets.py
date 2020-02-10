@@ -16,7 +16,7 @@ import glob
 import re
 from typing import Dict, List
 
-SNIPPET_REGEX = r"\[START ([a-z0-9_]+)\](.*)\n[\s(\/\/)#(<!--)]+\[END \1\]"
+SNIPPET_REGEX = r"\[START ([a-z0-9_]+)\][\s(-->)]\n(.*)\n[\s(\/\/)#(<!--)]+\[END \1\]"
 
 
 def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
