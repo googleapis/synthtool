@@ -16,13 +16,16 @@ import glob
 import re
 from typing import Dict, List
 
-SNIPPET_REGEX = r"\[START ([a-z0-9_]+)\][\s(-->)]\n(.*)\n[\s(\/\/)#(<!--)]+\[END \1\]"
-
+SNIPPET_REGEX = r"\[START ([a-z0-9_]+)\][\s(-->)]*\n(.*)\n[\s(\/\/)#(<!--)]+\[END \1\]"
+OPEN_SNIPPET_REGEX = r"\[START ([a-z0-9_]+))\]"
+CLOSE_SNIPPET_REGEX = r"\[END ([a-z0-9_]+))\]"
 
 def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
     snippets = {}
+    open_snippets = []
     with open(sample_file) as f:
         contents = f.read()
+
         for match in re.findall(SNIPPET_REGEX, contents, re.DOTALL):
             snippets[match[0]] = match[1]
 

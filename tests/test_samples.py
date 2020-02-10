@@ -16,24 +16,20 @@ import os
 from pathlib import Path
 from synthtool.gcp import samples
 
-FIXTURES = Path(__file__).parent / "fixtures" / "node_templates"
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
-def test_load_samples():
+def test_load_node_samples():
     cwd = os.getcwd()
-    os.chdir(FIXTURES)
+    os.chdir(FIXTURES / "node_templates")
 
     all_samples = samples.all_samples(["samples/*.js"])
-    print(all_samples)
 
     # should have loaded samples.
     assert all_samples[3]["title"] == "Requester Pays"
     assert all_samples[3]["file"] == "samples/requesterPays.js"
     assert len(all_samples) == 4
-    # should have loaded the special quickstart sample (ignoring header).
-    # TODO(ensure the node templates work)
-    # assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
-    # assert "limitations under the License" not in metadata["quickstart"]
+
     # should have included additional meta-information provided.
     assert all_samples[0]["title"] == "Metadata Example 1"
     assert all_samples[0]["usage"] == "node hello-world.js"
