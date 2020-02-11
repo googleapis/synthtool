@@ -72,10 +72,10 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
       SYNTHTOOL_GENERATOR:       Path to local gapic-generator directory to use for generation.
                 By default, the latest version of gapic-generator will be used.
       AUTOSYNTH_USE_SSH:         Access github repos via ssh instead of https.
-      {git.PRECLONE_MAP_ENVIRONMENT_VARIABLE}:  Path to a json file.
+      {git.PRECONFIG_ENVIRONMENT_VARIABLE}:  Path to a json file.
 
 
-    {git.PRECLONE_MAP_HELP}
+    {git.PRECONFIG_HELP}
     """
     _extra_args.extend(extra_args)
 

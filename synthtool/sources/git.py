@@ -13,18 +13,16 @@
 # limitations under the License.
 
 import functools
-import json
 import os
 import pathlib
 import re
 import shutil
 import subprocess
-from typing import Dict, Tuple, Optional
+from typing import Dict, Optional, Tuple
 
-from synthtool import _tracked_paths
-from synthtool import cache
-from synthtool import metadata
-from synthtool import shell
+import google.protobuf
+from synthtool import _tracked_paths, cache, metadata, shell
+from synthtool.protos.preconfig_pb2 import Preconfig
 
 REPO_REGEX = (
     r"(((https:\/\/)|(git@))github.com(:|\/))?(?P<owner>[^\/]+)\/(?P<name>[^\/]+)"
@@ -32,7 +30,12 @@ REPO_REGEX = (
 
 USE_SSH = os.environ.get("AUTOSYNTH_USE_SSH", False)
 
-PRECLONE_MAP_ENVIRONMENT_VARIABLE = "SYNTHTOOL_PRECLONE_MAP"
+PRECONFIG_ENVIRONMENT_VARIABLE = "SYNTHTOOL_PRECONFIG_FILE"
+
+PRECONFIG_HELP = """
+A json file containing a description of prefetch sources that this synth.py may
+us.  See preconfig.proto for detail about the format.
+"""
 
 
 def make_repo_clone_url(repo: str) -> str:
@@ -151,27 +154,21 @@ def extract_commit_message_metadata(message: str) -> Dict[str, str]:
     return metadata
 
 
-PRECLONE_MAP_HELP = """
-A preclone map file contains a list of git repos that have already been cloned.
-Its contents are json and look like this:
-{
-  "http://github.com/googleapis/nodejs-vision.git": "/tmp/nodejs-vison",
-  "http://github.com/googleapis/googleapis": "/tmp/googleapis"
-}
-"""
-
-
 @functools.lru_cache(maxsize=None)
-def _get_preclone_map() -> Dict:
-    """Loads the preclone map from the file specified in an environment variable."""
-    preclone_map_path = os.environ.get(PRECLONE_MAP_ENVIRONMENT_VARIABLE)
-    if not preclone_map_path:
-        return {}
-    with open(preclone_map_path, "r") as json_file:
-        return json.load(json_file)
+def _load_preconfig():
+    """Loads the preconfig file specified in an environment variable.
+
+    Returns:
+      An instance of Preconfig
+    """
+    preconfig_file_path = os.environ.get(PRECONFIG_ENVIRONMENT_VARIABLE)
+    if not preconfig_file_path:
+        return Preconfig()
+    with open(preconfig_file_path, "rt") as json_file:
+        return google.protobuf.json_format.Parse(json_file.read(), Preconfig())
 
 
 def get_preclone(url: str) -> Optional[str]:
     """Finds a pre-cloned git repo in the preclone map."""
-    preclone_map = _get_preclone_map()
-    return preclone_map.get(url)
+    preconfig = _load_preconfig()
+    return preconfig.precloned_repos.get(url)

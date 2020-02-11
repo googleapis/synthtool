@@ -18,8 +18,10 @@ import os
 import unittest
 from unittest import mock
 
+import google.protobuf
 import pytest
 from synthtool import metadata, tmp
+from synthtool.protos.preconfig_pb2 import Preconfig
 from synthtool.sources import git
 
 
@@ -101,19 +103,17 @@ class TestClone(unittest.TestCase):
             "https://github.com/googleapis/nodejs-vision.git", tmpdir
         )
         # Write out a preclone map.
-        preclones = tmpdir / "preclones.json"
-        preclones.write_text(
-            f"""
-            {{
-                "https://github.com/googleapis/nodejs-vision.git": "{local_directory}"
-            }}
-        """
-        )
+        preconfig_path = tmpdir / "preconfig.json"
+        preconfig = Preconfig()
+        preconfig.precloned_repos[
+            "https://github.com/googleapis/nodejs-vision.git"
+        ] = str(local_directory)
+        preconfig_path.write_text(google.protobuf.json_format.MessageToJson(preconfig))
         # Reload the module so it reexamines the environment variable.
         importlib.reload(git)
         metadata.reset()
         # Confirm calling clone with the preclone map returns the precloned local directory.
-        os.environ[git.PRECLONE_MAP_ENVIRONMENT_VARIABLE] = str(preclones)
+        os.environ[git.PRECONFIG_ENVIRONMENT_VARIABLE] = str(preconfig_path)
         same_local_directory = git.clone(
             "https://github.com/googleapis/nodejs-vision.git"
         )
