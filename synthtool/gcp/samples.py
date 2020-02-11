@@ -20,8 +20,7 @@ from typing import List, Dict
 
 
 def _read_sample_metadata_comment(sample_file: str) -> Dict:
-    """
-    Additional meta-information can be provided through embedded comments:
+    """Additional meta-information can be provided through embedded comments:
 
     // sample-metadata:
     //   title: ACL (Access Control)

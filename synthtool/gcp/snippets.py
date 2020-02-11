@@ -16,28 +16,53 @@ import glob
 import re
 from typing import Dict, List
 
-SNIPPET_REGEX = r"\[START ([a-z0-9_]+)\][\s(-->)]*\n(.*)\n[\s(\/\/)#(<!--)]+\[END \1\]"
-OPEN_SNIPPET_REGEX = r"\[START ([a-z0-9_]+))\]"
-CLOSE_SNIPPET_REGEX = r"\[END ([a-z0-9_]+))\]"
+OPEN_SNIPPET_REGEX = r".*\[START ([a-z0-9_]+)\].*$"
+CLOSE_SNIPPET_REGEX = r".*\[END ([a-z0-9_]+)\].*$"
+
 
 def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
-    snippets = {}
-    open_snippets = []
+    """Reads in a sample file and parse out all contained snippets.
+
+    Args:
+        sample_file (str): Sample file to parse.
+
+    Returns:
+        Dictionary of snippet name to snippet code.
+    """
+    snippet_lines = {}  # type: Dict[str, List[str]]
+    open_snippets = set()
     with open(sample_file) as f:
-        contents = f.read()
+        # Iterate over each line:
+        # - If the line matches an opening snippet tag, add that snippet tag to
+        #   the set of open tags.
+        # - If the line matches a closing snippet tag, remove that snippet tag
+        #   from the set of open tags.
+        # - Otherwise, add the line to each of the open snippets
+        #
+        # This allows us to handle parsing nested or interleaved snippets.
+        for line in f:
+            open_match = re.match(pattern=OPEN_SNIPPET_REGEX, string=line)
+            close_match = re.match(pattern=CLOSE_SNIPPET_REGEX, string=line)
+            if open_match:
+                open_snippets.add(open_match[1])
+                snippet_lines[open_match[1]] = []
+            elif close_match:
+                open_snippets.discard(close_match[1])
+            else:
+                for snippet in open_snippets:
+                    snippet_lines[snippet].append(line)
 
-        for match in re.findall(SNIPPET_REGEX, contents, re.DOTALL):
-            snippets[match[0]] = match[1]
-
-    return snippets
+    return {snippet: "".join(lines) for snippet, lines in snippet_lines.items()}
 
 
 def all_snippets(snippet_globs: List[str]) -> Dict[str, str]:
-    """Walks the samples directory and returns a dictionary of snippet name -> code:
+    """Walks the samples directory and parses snippets from each file.
 
-    {
-        "snippet_name": "sample code goes here"
-    }
+    Args:
+        snippet_globs (List[str]): List of path globs to expand.
+
+    Returns:
+        Dictionary of snippet name to snippet code.
     """
     snippets = {}
     for snippet_glob in snippet_globs:
