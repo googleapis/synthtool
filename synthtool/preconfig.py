@@ -12,7 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import functools
+import os
+
 import google.protobuf.json_format
+
+from synthtool.protos.preconfig_pb2 import Preconfig
 
 PRECONFIG_ENVIRONMENT_VARIABLE = "SYNTHTOOL_PRECONFIG_FILE"
 
@@ -20,6 +25,7 @@ PRECONFIG_HELP = """
 A json file containing a description of prefetch sources that this synth.py may
 us.  See preconfig.proto for detail about the format.
 """
+
 
 @functools.lru_cache(maxsize=None)
 def load():

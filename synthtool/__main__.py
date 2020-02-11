@@ -21,7 +21,7 @@ import click
 import pkg_resources
 import synthtool.log
 import synthtool.metadata
-from synthtool.sources import preconfig
+from synthtool import preconfig
 
 try:
     VERSION = pkg_resources.get_distribution("gcp-synthtool").version

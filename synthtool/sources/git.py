@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import functools
 import os
 import pathlib
 import re
@@ -20,11 +19,8 @@ import shutil
 import subprocess
 from typing import Dict, Optional, Tuple
 
-import google.protobuf
-
 import synthtool
 from synthtool import _tracked_paths, cache, metadata, shell
-from synthtool.protos.preconfig_pb2 import Preconfig
 
 REPO_REGEX = (
     r"(((https:\/\/)|(git@))github.com(:|\/))?(?P<owner>[^\/]+)\/(?P<name>[^\/]+)"
@@ -50,19 +46,19 @@ def clone(
     url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
 ) -> pathlib.Path:
     """Clones a remote git repo.
-    
+
     Will not actually clone the repo if it's already local via two ways:
       1. It's in the cache (the default destitination).
       2. It was supplied via the preconfig file.
 
     Arguments:
         url {str} -- Url pointing to remote git repo.
-    
+
     Keyword Arguments:
         dest {pathlib.Path} -- Local folder where repo should be cloned. (default: {None})
         committish {str} -- The commit hash to check out. (default: {None})
         force {bool} -- Wipe out and reclone if it already exists it the cache. (default: {False})
-    
+
     Returns:
         pathlib.Path -- Local directory where the repo was cloned.
     """
