@@ -21,6 +21,8 @@ import subprocess
 from typing import Dict, Optional, Tuple
 
 import google.protobuf
+
+import synthtool
 from synthtool import _tracked_paths, cache, metadata, shell
 from synthtool.protos.preconfig_pb2 import Preconfig
 
@@ -29,13 +31,6 @@ REPO_REGEX = (
 )
 
 USE_SSH = os.environ.get("AUTOSYNTH_USE_SSH", False)
-
-PRECONFIG_ENVIRONMENT_VARIABLE = "SYNTHTOOL_PRECONFIG_FILE"
-
-PRECONFIG_HELP = """
-A json file containing a description of prefetch sources that this synth.py may
-us.  See preconfig.proto for detail about the format.
-"""
 
 
 def make_repo_clone_url(repo: str) -> str:
@@ -54,6 +49,23 @@ def make_repo_clone_url(repo: str) -> str:
 def clone(
     url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
 ) -> pathlib.Path:
+    """Clones a remote git repo.
+    
+    Will not actually clone the repo if it's already local via two ways:
+      1. It's in the cache (the default destitination).
+      2. It was supplied via the preconfig file.
+
+    Arguments:
+        url {str} -- Url pointing to remote git repo.
+    
+    Keyword Arguments:
+        dest {pathlib.Path} -- Local folder where repo should be cloned. (default: {None})
+        committish {str} -- The commit hash to check out. (default: {None})
+        force {bool} -- Wipe out and reclone if it already exists it the cache. (default: {False})
+    
+    Returns:
+        pathlib.Path -- Local directory where the repo was cloned.
+    """
     preclone = get_preclone(url)
 
     if preclone:
@@ -154,21 +166,7 @@ def extract_commit_message_metadata(message: str) -> Dict[str, str]:
     return metadata
 
 
-@functools.lru_cache(maxsize=None)
-def _load_preconfig():
-    """Loads the preconfig file specified in an environment variable.
-
-    Returns:
-      An instance of Preconfig
-    """
-    preconfig_file_path = os.environ.get(PRECONFIG_ENVIRONMENT_VARIABLE)
-    if not preconfig_file_path:
-        return Preconfig()
-    with open(preconfig_file_path, "rt") as json_file:
-        return google.protobuf.json_format.Parse(json_file.read(), Preconfig())
-
-
 def get_preclone(url: str) -> Optional[str]:
     """Finds a pre-cloned git repo in the preclone map."""
-    preconfig = _load_preconfig()
+    preconfig = synthtool.preconfig.load()
     return preconfig.precloned_repos.get(url)
