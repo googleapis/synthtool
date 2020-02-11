@@ -115,7 +115,9 @@ class TestClone(unittest.TestCase):
         importlib.reload(synthtool.preconfig)
         metadata.reset()
         # Confirm calling clone with the preclone map returns the precloned local directory.
-        os.environ[synthtool.preconfig.PRECONFIG_ENVIRONMENT_VARIABLE] = str(preconfig_path)
+        os.environ[synthtool.preconfig.PRECONFIG_ENVIRONMENT_VARIABLE] = str(
+            preconfig_path
+        )
         same_local_directory = git.clone(
             "https://github.com/googleapis/nodejs-vision.git"
         )
