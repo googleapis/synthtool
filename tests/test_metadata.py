@@ -206,6 +206,7 @@ def test_append_git_log_to_metadata(source_tree):
 
 
 def test_synthtool_and_cwd_git_sources_in_metadata(source_tree):
+    # Instantiate a MetadataTrackerAndWriter to write the metadata.
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         pass
     mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
