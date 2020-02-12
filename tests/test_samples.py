@@ -21,7 +21,7 @@ FIXTURES = Path(__file__).parent / "fixtures"
 
 def test_load_node_samples():
     cwd = os.getcwd()
-    os.chdir(FIXTURES / "node_templates")
+    os.chdir(FIXTURES / "node_templates" / "standard")
 
     all_samples = samples.all_samples(["samples/*.js"])
 

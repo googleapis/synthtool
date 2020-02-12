@@ -21,7 +21,6 @@ from typing import List, Dict
 
 from synthtool.languages import node
 from synthtool.sources import templates
-from synthtool.gcp import samples, snippets
 from synthtool import __main__
 from synthtool import _tracked_paths
 from synthtool import metadata
@@ -83,22 +82,7 @@ class CommonTemplates:
             if "samples/README.md" not in self.excludes:
                 self.excludes.append("samples/README.md")
 
-        kwargs["metadata"] = node.read_metadata()
-        all_samples = samples.all_samples(["samples/*.js"])
-
-        # quickstart.js sample is special - only include it in the samples list if there is
-        # a quickstart snippet present in the file
-        quickstart_snippets = list(
-            snippets.all_snippets_from_file("samples/quickstart.js").values()
-        )
-        kwargs["metadata"]["quickstart"] = (
-            quickstart_snippets[0] if quickstart_snippets else ""
-        )
-        kwargs["metadata"]["samples"] = filter(
-            lambda sample: sample["file"] != "quickstart.js"
-            or kwargs["metadata"]["quickstart"],
-            all_samples,
-        )
+        kwargs["metadata"] = node._template_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
         return self._generic_library("node_library", **kwargs)
 

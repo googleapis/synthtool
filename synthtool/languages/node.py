@@ -14,6 +14,7 @@
 
 import json
 from synthtool.sources import git
+from synthtool.gcp import samples, snippets
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -40,6 +41,29 @@ def read_metadata():
         data["lib_install_cmd"] = f'npm install {data["name"]}'
 
         return data
+
+
+def _template_metadata():
+    metadata = {}
+    try:
+        metadata = read_metadata()
+    except FileNotFoundError:
+        pass
+
+    all_samples = samples.all_samples(["samples/*.js"])
+
+    # quickstart.js sample is special - only include it in the samples list if there is
+    # a quickstart snippet present in the file
+    quickstart_snippets = list(
+        snippets.all_snippets_from_file("samples/quickstart.js").values()
+    )
+    metadata["quickstart"] = quickstart_snippets[0] if quickstart_snippets else ""
+    metadata["samples"] = filter(
+        lambda sample: sample["file"] != "samples/quickstart.js"
+        or metadata["quickstart"],
+        all_samples,
+    )
+    return metadata
 
 
 def get_publish_token(package_name: str):
