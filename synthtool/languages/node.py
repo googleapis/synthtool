@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+from typing import Any, Dict
 from synthtool.sources import git
 from synthtool.gcp import samples, snippets
 
@@ -43,7 +44,15 @@ def read_metadata():
         return data
 
 
-def _template_metadata():
+def _template_metadata() -> Dict[str, Any]:
+    """Load node specific template metadata.
+
+    Returns:
+        Dictionary of metadata. Includes the entire parsed contents of the package.json file if
+        present. Other expected fields:
+        * quickstart (str): Contents of the quickstart snippet if available, otherwise, ""
+        * samples (List[Dict[str, str]]): List of available samples. See synthtool.gcp.samples.all_samples()
+    """
     metadata = {}
     try:
         metadata = read_metadata()
