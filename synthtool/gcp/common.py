@@ -28,8 +28,6 @@ from synthtool import metadata
 
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
-_RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart\w*]"
-_RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart\w*]"
 
 
 class CommonTemplates:
