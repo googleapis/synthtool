@@ -1,0 +1,72 @@
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import glob
+import re
+from typing import Dict, List
+
+OPEN_SNIPPET_REGEX = r".*\[START ([a-z0-9_]+)\].*$"
+CLOSE_SNIPPET_REGEX = r".*\[END ([a-z0-9_]+)\].*$"
+
+
+def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
+    """Reads in a sample file and parse out all contained snippets.
+
+    Args:
+        sample_file (str): Sample file to parse.
+
+    Returns:
+        Dictionary of snippet name to snippet code.
+    """
+    snippet_lines = {}  # type: Dict[str, List[str]]
+    open_snippets = set()
+    with open(sample_file) as f:
+        # Iterate over each line:
+        # - If the line matches an opening snippet tag, add that snippet tag to
+        #   the set of open tags.
+        # - If the line matches a closing snippet tag, remove that snippet tag
+        #   from the set of open tags.
+        # - Otherwise, add the line to each of the open snippets
+        #
+        # This allows us to handle parsing nested or interleaved snippets.
+        for line in f:
+            open_match = re.match(pattern=OPEN_SNIPPET_REGEX, string=line)
+            close_match = re.match(pattern=CLOSE_SNIPPET_REGEX, string=line)
+            if open_match:
+                open_snippets.add(open_match[1])
+                snippet_lines[open_match[1]] = []
+            elif close_match:
+                open_snippets.discard(close_match[1])
+            else:
+                for snippet in open_snippets:
+                    snippet_lines[snippet].append(line)
+
+    return {snippet: "".join(lines) for snippet, lines in snippet_lines.items()}
+
+
+def all_snippets(snippet_globs: List[str]) -> Dict[str, str]:
+    """Walks the samples directory and parses snippets from each file.
+
+    Args:
+        snippet_globs (List[str]): List of path globs to expand.
+
+    Returns:
+        Dictionary of snippet name to snippet code.
+    """
+    snippets = {}
+    for snippet_glob in snippet_globs:
+        for file in glob.glob(snippet_glob, recursive=True):
+            for snippet, code in all_snippets_from_file(file).items():
+                snippets[snippet] = code
+    return snippets
