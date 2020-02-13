@@ -12,10 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+import importlib
+import os
+import unittest
 from unittest import mock
 
+import google.protobuf
 import pytest
 
+import synthtool.preconfig
+from synthtool import metadata, tmp
+from synthtool.protos.preconfig_pb2 import Preconfig
 from synthtool.sources import git
 
 
@@ -67,3 +75,52 @@ Two: 1234
     metadata = git.extract_commit_message_metadata(message)
 
     assert metadata == {"One": "Hello!", "Two": "1234"}
+
+
+class TestClone(unittest.TestCase):
+    def setUp(self):
+        # Preserve the original environment variables.
+        self.env = copy.copy(os.environ)
+        return super().setUp()
+
+    def tearDown(self):
+        os.environ = self.env
+        return super().tearDown()
+
+    def testClone(self):
+        local_directory = git.clone("https://github.com/googleapis/nodejs-vision.git")
+        self.assertEqual("nodejs-vision", local_directory.name)
+        self.assertEqual("nodejs-vision", metadata.get().sources[0].git.name)
+
+        # When the repo already exists, it should pull instead.
+        same_local_directory = git.clone(
+            "https://github.com/googleapis/nodejs-vision.git", local_directory.parent
+        )
+        self.assertEqual(local_directory, same_local_directory)
+
+    def testPrecloneMap(self):
+        # Pre clone the repo into a temporary directory.
+        tmpdir = tmp.tmpdir()
+        local_directory = git.clone(
+            "https://github.com/googleapis/nodejs-vision.git", tmpdir
+        )
+        # Write out a preclone map.
+        preconfig_path = tmpdir / "preconfig.json"
+        preconfig = Preconfig()
+        preconfig.precloned_repos[
+            "https://github.com/googleapis/nodejs-vision.git"
+        ] = str(local_directory)
+        preconfig_path.write_text(google.protobuf.json_format.MessageToJson(preconfig))
+        # Reload the module so it reexamines the environment variable.
+        importlib.reload(synthtool.preconfig)
+        metadata.reset()
+        # Confirm calling clone with the preclone map returns the precloned local directory.
+        os.environ[synthtool.preconfig.PRECONFIG_ENVIRONMENT_VARIABLE] = str(
+            preconfig_path
+        )
+        same_local_directory = git.clone(
+            "https://github.com/googleapis/nodejs-vision.git"
+        )
+        self.assertEqual(local_directory, same_local_directory)
+        # Make sure it was recorded in the metadata.
+        self.assertEqual("nodejs-vision", metadata.get().sources[0].git.name)
