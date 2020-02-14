@@ -294,11 +294,28 @@ def _add_synthtool_git_source():
     return _add_git_source_from_directory("synthtool", str(source_dir))
 
 
-def _source_key(source: type(metadata_pb2.Source)):
-    """Key function used to sort Sources."""
+def _source_key(source):
+    """Creates a key to use to sort a list of sources.
+
+    Arguments:
+        source {metadata_pb2.Source} -- the Source for which to formulate a sort key
+
+    Returns:
+        tuple -- A key to use to sort a list of sources.
+    """
     if source.HasField("git"):
         return ("git", source.git.name, source.git.remote, source.git.sha)
     if source.HasField("generator"):
-        return ("generator", source.generator.name, source.generator.version, source.generator.docker_image)
+        return (
+            "generator",
+            source.generator.name,
+            source.generator.version,
+            source.generator.docker_image,
+        )
     if source.HasField("template"):
-        return ("template", source.template.name, source.template.origin, source.template.version)
+        return (
+            "template",
+            source.template.name,
+            source.template.origin,
+            source.template.version,
+        )
