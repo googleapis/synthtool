@@ -45,9 +45,9 @@ Before running the samples, make sure you've followed the steps outlined in
 
 {%- endif %}
 
-View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/samples/{{ sample.file }}).
+View the [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/{{ sample.file }}).
 
-[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo']  }}&page=editor&open_in_editor=samples/{{ sample.file }},samples/README.md)
+[![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo']  }}&page=editor&open_in_editor={{ sample.file }},samples/README.md)
 
 __Usage:__
 
