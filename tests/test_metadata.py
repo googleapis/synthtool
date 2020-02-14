@@ -236,9 +236,9 @@ def test_reading_metadata_with_deprecated_fields_doesnt_crash(tmpdir):
     metadata._read_or_empty()
 
 
-def test_git_sources_are_sorted(tmpdir: pathlib.Path):
-    metadata_path = tmpdir / "synth.metadata"
-    with metadata.MetadataTrackerAndWriter(tmpdir / "synth.metadata"):
+def test_git_sources_are_sorted(source_tree: SourceTree):
+    metadata_path = source_tree.tmpdir / "synth.metadata"
+    with metadata.MetadataTrackerAndWriter(metadata_path):
         metadata.add_generator_source(name="a-generator", version="1", docker_image="x")
         metadata.add_generator_source(name="b-generator", version="2", docker_image="y")
         metadata.add_template_source(name="a-template", origin="andromeda", version="3")
@@ -248,7 +248,7 @@ def test_git_sources_are_sorted(tmpdir: pathlib.Path):
     m1 = metadata._read_or_empty(metadata_path)
     # Add the same sources in reverse order.
     metadata.reset()
-    with metadata.MetadataTrackerAndWriter(tmpdir / "synth.metadata"):
+    with metadata.MetadataTrackerAndWriter(metadata_path):
         metadata.add_git_source(name="b-git", sha="1b")
         metadata.add_git_source(name="a-git", sha="1a")
         metadata.add_template_source(name="b-template", origin="milky way", version="4")
