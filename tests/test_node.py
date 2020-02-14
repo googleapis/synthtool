@@ -29,6 +29,8 @@ def test_quickstart_metadata_with_snippet():
     assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
     assert "limitations under the License" not in metadata["quickstart"]
 
+    assert isinstance(metadata["samples"], list)
+
     # should have a link to the quickstart in the samples
     sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))
     assert "samples/quickstart.js" in sample_names
@@ -44,6 +46,8 @@ def test_quickstart_metadata_without_snippet():
 
     # should not have populated the quickstart for the README
     assert not metadata["quickstart"]
+
+    assert isinstance(metadata["samples"], list)
 
     # should not have a link to the quickstart in the samples
     sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))

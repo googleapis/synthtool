@@ -67,10 +67,12 @@ def _template_metadata() -> Dict[str, Any]:
         snippets.all_snippets_from_file("samples/quickstart.js").values()
     )
     metadata["quickstart"] = quickstart_snippets[0] if quickstart_snippets else ""
-    metadata["samples"] = filter(
-        lambda sample: sample["file"] != "samples/quickstart.js"
-        or metadata["quickstart"],
-        all_samples,
+    metadata["samples"] = list(
+        filter(
+            lambda sample: sample["file"] != "samples/quickstart.js"
+            or metadata["quickstart"],
+            all_samples,
+        )
     )
     return metadata
 
