@@ -17,12 +17,10 @@ import pathlib
 import re
 import shutil
 import subprocess
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
-from synthtool import _tracked_paths
-from synthtool import cache
-from synthtool import metadata
-from synthtool import shell
+import synthtool
+from synthtool import _tracked_paths, cache, metadata, shell
 
 REPO_REGEX = (
     r"(((https:\/\/)|(git@))github.com(:|\/))?(?P<owner>[^\/]+)\/(?P<name>[^\/]+)"
@@ -45,26 +43,47 @@ def make_repo_clone_url(repo: str) -> str:
 
 
 def clone(
-    url: str,
-    dest: pathlib.Path = None,
-    committish: str = "master",
-    force: bool = False,
+    url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
 ) -> pathlib.Path:
-    if dest is None:
-        dest = cache.get_cache_dir()
+    """Clones a remote git repo.
 
-    dest = dest / pathlib.Path(url).stem
+    Will not actually clone the repo if it's already local via two ways:
+      1. It's in the cache (the default destitination).
+      2. It was supplied via the preconfig file.
 
-    if force and dest.exists():
-        shutil.rmtree(dest)
+    Arguments:
+        url {str} -- Url pointing to remote git repo.
 
-    if not dest.exists():
-        cmd = ["git", "clone", "--single-branch", url, dest]
-        shell.run(cmd)
+    Keyword Arguments:
+        dest {pathlib.Path} -- Local folder where repo should be cloned. (default: {None})
+        committish {str} -- The commit hash to check out. (default: {None})
+        force {bool} -- Wipe out and reclone if it already exists it the cache. (default: {False})
+
+    Returns:
+        pathlib.Path -- Local directory where the repo was cloned.
+    """
+    preclone = get_preclone(url)
+
+    if preclone:
+        dest = pathlib.Path(preclone)
     else:
-        shell.run(["git", "pull"], cwd=str(dest))
+        if dest is None:
+            dest = cache.get_cache_dir()
 
-    shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
+        dest = dest / pathlib.Path(url).stem
+
+        if force and dest.exists():
+            shutil.rmtree(dest)
+
+        if not dest.exists():
+            cmd = ["git", "clone", "--single-branch", url, dest]
+            shell.run(cmd)
+        else:
+            shell.run(["git", "pull"], cwd=str(dest))
+        committish = committish or "master"
+
+    if committish:
+        shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
 
     # track all git repositories
     _tracked_paths.add(dest)
@@ -141,3 +160,9 @@ def extract_commit_message_metadata(message: str) -> Dict[str, str]:
         metadata[key] = value.strip()
 
     return metadata
+
+
+def get_preclone(url: str) -> Optional[str]:
+    """Finds a pre-cloned git repo in the preclone map."""
+    preconfig = synthtool.preconfig.load()
+    return preconfig.precloned_repos.get(url)
