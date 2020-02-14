@@ -59,7 +59,7 @@ def test_quickstart_metadata_without_snippet():
 def test_no_samples():
     cwd = os.getcwd()
     # use a non-nodejs template directory
-    os.chdir(FIXTURES / "java_templates")
+    os.chdir(FIXTURES)
 
     metadata = node._template_metadata()
 
