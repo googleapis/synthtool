@@ -16,12 +16,12 @@ import os
 from pathlib import Path
 from synthtool.languages import node
 
-FIXTURES = Path(__file__).parent / "fixtures" / "node_templates"
+FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_quickstart_metadata_with_snippet():
     cwd = os.getcwd()
-    os.chdir(FIXTURES / "standard")
+    os.chdir(FIXTURES / "node_templates" / "standard")
 
     metadata = node._template_metadata()
 
@@ -40,7 +40,7 @@ def test_quickstart_metadata_with_snippet():
 
 def test_quickstart_metadata_without_snippet():
     cwd = os.getcwd()
-    os.chdir(FIXTURES / "no_quickstart_snippet")
+    os.chdir(FIXTURES / "node_templates" / "no_quickstart_snippet")
 
     metadata = node._template_metadata()
 
@@ -52,5 +52,21 @@ def test_quickstart_metadata_without_snippet():
     # should not have a link to the quickstart in the samples
     sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))
     assert "samples/quickstart.js" not in sample_names
+
+    os.chdir(cwd)
+
+
+def test_no_samples():
+    cwd = os.getcwd()
+    # use a non-nodejs template directory
+    os.chdir(FIXTURES / "java_templates")
+
+    metadata = node._template_metadata()
+
+    # should not have populated the quickstart for the README
+    assert not metadata["quickstart"]
+
+    assert isinstance(metadata["samples"], list)
+    assert len(metadata["samples"]) == 0
 
     os.chdir(cwd)
