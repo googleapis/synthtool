@@ -44,6 +44,7 @@ def make_repo_clone_url(repo: str) -> str:
 
 def clone(
     url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
+    destination_name: str = None
 ) -> pathlib.Path:
     """Clones a remote git repo.
 
@@ -67,10 +68,13 @@ def clone(
     if preclone:
         dest = pathlib.Path(preclone)
     else:
+        if destination_name is None:
+            destination_name = pathlib.Path(url).stem
+
         if dest is None:
             dest = cache.get_cache_dir()
 
-        dest = dest / pathlib.Path(url).stem
+        dest = dest / destination_name
 
         if force and dest.exists():
             shutil.rmtree(dest)
@@ -93,7 +97,7 @@ def clone(
     commit_metadata = extract_commit_message_metadata(message)
 
     metadata.add_git_source(
-        name=dest.name,
+        name=destination_name,
         remote=url,
         sha=sha,
         internal_ref=commit_metadata.get("PiperOrigin-RevId"),

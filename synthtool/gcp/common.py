@@ -17,23 +17,30 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 from synthtool.languages import node
-from synthtool.sources import templates
-from synthtool import __main__
-from synthtool import _tracked_paths
-from synthtool import metadata
+from synthtool.sources import git, templates
+from synthtool import __main__, _tracked_paths, log, metadata
 
 
-_TEMPLATES_DIR = Path(__file__).parent / "templates"
 _RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart\w*]"
 _RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart\w*]"
+_TEMPLATES_URL: str = git.make_repo_clone_url("googleapis/synthtool")
+_LOCAL_TEMPLATES: Optional[str] = os.environ.get("SYNTHTOOL_TEMPLATES")
 
 
 class CommonTemplates:
     def __init__(self):
-        self._templates = templates.Templates(_TEMPLATES_DIR)
+        templates_repo = _LOCAL_TEMPLATES
+        if templates_repo is not None:
+            log.debug(f"Using local templates at {templates_repo}")
+        else:
+            log.debug("Cloning templates.")
+            templates_repo = git.clone(_TEMPLATES_URL, destination_name="templates")
+        self._templates_dir = templates_repo / "synthtool" / "gcp" / "templates"
+
+        self._templates = templates.Templates(self._templates_dir)
         self.excludes = []  # type: List[str]
 
     def _generic_library(self, directory: str, **kwargs) -> Path:
@@ -45,12 +52,9 @@ class CommonTemplates:
             if not kwargs["metadata"]["samples"]:
                 self.excludes.append("samples/README.md")
 
-        t = templates.TemplateGroup(_TEMPLATES_DIR / directory, self.excludes)
+        t = templates.TemplateGroup(self._templates_dir / directory, self.excludes)
         result = t.render(**kwargs)
         _tracked_paths.add(result)
-        metadata.add_template_source(
-            name=directory, origin="synthtool.gcp", version=__main__.VERSION
-        )
         return result
 
     def py_library(self, **kwargs) -> Path:
