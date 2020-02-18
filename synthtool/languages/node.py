@@ -44,7 +44,7 @@ def read_metadata():
         return data
 
 
-def _template_metadata() -> Dict[str, Any]:
+def template_metadata() -> Dict[str, Any]:
     """Load node specific template metadata.
 
     Returns:

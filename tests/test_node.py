@@ -23,7 +23,7 @@ def test_quickstart_metadata_with_snippet():
     cwd = os.getcwd()
     os.chdir(FIXTURES / "node_templates" / "standard")
 
-    metadata = node._template_metadata()
+    metadata = node.template_metadata()
 
     # should have loaded the special quickstart sample (ignoring header).
     assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
@@ -42,7 +42,7 @@ def test_quickstart_metadata_without_snippet():
     cwd = os.getcwd()
     os.chdir(FIXTURES / "node_templates" / "no_quickstart_snippet")
 
-    metadata = node._template_metadata()
+    metadata = node.template_metadata()
 
     # should not have populated the quickstart for the README
     assert not metadata["quickstart"]
@@ -61,7 +61,7 @@ def test_no_samples():
     # use a non-nodejs template directory
     os.chdir(FIXTURES)
 
-    metadata = node._template_metadata()
+    metadata = node.template_metadata()
 
     # should not have populated the quickstart for the README
     assert not metadata["quickstart"]

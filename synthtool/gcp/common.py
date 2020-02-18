@@ -82,7 +82,7 @@ class CommonTemplates:
             if "samples/README.md" not in self.excludes:
                 self.excludes.append("samples/README.md")
 
-        kwargs["metadata"] = node._template_metadata()
+        kwargs["metadata"] = node.template_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
         return self._generic_library("node_library", **kwargs)
 
