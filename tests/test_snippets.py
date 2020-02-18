@@ -107,3 +107,13 @@ var line3 = 3;
     )
 
     os.chdir(cwd)
+
+
+def test_non_existent_file():
+    cwd = os.getcwd()
+    os.chdir(FIXTURES)
+
+    all_snippets = snippets.all_snippets_from_file("snippets/non-existent-file.foo")
+    assert len(all_snippets) == 0
+
+    os.chdir(cwd)
