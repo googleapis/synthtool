@@ -40,7 +40,7 @@ class CommonTemplates:
             self._load_generic_metadata(kwargs["metadata"])
             # if no samples were found, don't attempt to render a
             # samples/README.md.
-            if "samples" not in kwargs["metadata"]:
+            if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
                 self.excludes.append("samples/README.md")
 
         t = templates.TemplateGroup(_TEMPLATES_DIR / directory, self.excludes)
