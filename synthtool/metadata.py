@@ -181,6 +181,7 @@ class MetadataTrackerAndWriter:
     def __exit__(self, type, value, traceback):
         _append_git_logs(self.old_metadata, get())
         _clear_local_paths(get())
+        _metadata.sources.sort(key=_source_key)
         write(self.metadata_file_path)
 
 
@@ -291,3 +292,30 @@ def _add_synthtool_git_source():
     source_path = inspect.getfile(synthtool)
     source_dir = pathlib.Path(source_path).parent
     return _add_git_source_from_directory("synthtool", str(source_dir))
+
+
+def _source_key(source):
+    """Creates a key to use to sort a list of sources.
+
+    Arguments:
+        source {metadata_pb2.Source} -- the Source for which to formulate a sort key
+
+    Returns:
+        tuple -- A key to use to sort a list of sources.
+    """
+    if source.HasField("git"):
+        return ("git", source.git.name, source.git.remote, source.git.sha)
+    if source.HasField("generator"):
+        return (
+            "generator",
+            source.generator.name,
+            source.generator.version,
+            source.generator.docker_image,
+        )
+    if source.HasField("template"):
+        return (
+            "template",
+            source.template.name,
+            source.template.origin,
+            source.template.version,
+        )
