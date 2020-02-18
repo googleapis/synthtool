@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import glob
+import os
 import re
 from typing import Dict, List
 
@@ -29,6 +30,9 @@ def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
     Returns:
         Dictionary of snippet name to snippet code.
     """
+    if not os.path.exists(sample_file):
+        return {}
+
     snippet_lines = {}  # type: Dict[str, List[str]]
     open_snippets = set()
     with open(sample_file) as f:

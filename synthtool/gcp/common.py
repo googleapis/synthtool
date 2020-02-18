@@ -27,8 +27,6 @@ from synthtool import metadata
 
 
 _TEMPLATES_DIR = Path(__file__).parent / "templates"
-_RE_SAMPLE_COMMENT_START = r"\[START \w+_quickstart\w*]"
-_RE_SAMPLE_COMMENT_END = r"\[END \w+_quickstart\w*]"
 
 
 class CommonTemplates:
@@ -84,7 +82,7 @@ class CommonTemplates:
             if "samples/README.md" not in self.excludes:
                 self.excludes.append("samples/README.md")
 
-        kwargs["metadata"] = node.read_metadata()
+        kwargs["metadata"] = node.template_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
         return self._generic_library("node_library", **kwargs)
 
@@ -104,7 +102,6 @@ class CommonTemplates:
         """
         loads additional meta information from .repo-metadata.json.
         """
-        self._load_samples(metadata)
         self._load_partials(metadata)
 
         # Loads repo metadata information from the default location if it
@@ -113,79 +110,6 @@ class CommonTemplates:
         # set the "repo" key.
         if "repo" not in metadata:
             metadata["repo"] = _load_repo_metadata()
-
-    def _load_samples(self, metadata: Dict):
-        """
-        walks samples directory and builds up samples data-structure:
-
-        {
-            "name": "Requester Pays",
-            "file": "requesterPays.js"
-        }
-        """
-        metadata["samples"] = []
-        samples_dir = Path(os.getcwd()) / "samples"
-        if os.path.exists(samples_dir):
-            files = os.listdir(samples_dir)
-            files.sort()
-            for file in files:
-                if re.match(r"[\w.\-]+\.js$", file):
-                    if file == "quickstart.js":
-                        metadata["quickstart"] = self._read_quickstart(samples_dir)
-                    # only add quickstart file to samples list if code sample is found.
-                    if file == "quickstart.js" and not metadata.get("quickstart", None):
-                        continue
-                    sample_metadata = {"title": decamelize(file[:-3]), "file": file}
-                    sample_metadata.update(
-                        self._read_sample_metadata_comment(samples_dir, file)
-                    )
-                    metadata["samples"].append(sample_metadata)
-
-    def _read_sample_metadata_comment(self, samples_dir: Path, file: str) -> Dict:
-        """
-        Additional meta-information can be provided through embedded comments:
-
-        // sample-metadata:
-        //   title: ACL (Access Control)
-        //   description: Demonstrates setting access control rules.
-        //   usage: node iam.js --help
-        """
-        sample_metadata = {}  # type: Dict[str, str]
-        with open(samples_dir / file) as f:
-            contents = f.read()
-            match = re.search(
-                r"(?P<metadata>// *sample-metadata:([^\n]+|\n//)+)", contents, re.DOTALL
-            )
-            if match:
-                # the metadata yaml is stored in a comments, remove the
-                # prefix so that we can parse the yaml contained.
-                sample_metadata_string = re.sub(
-                    r"((#|//) ?)", "", match.group("metadata")
-                )
-                sample_metadata = yaml.load(
-                    sample_metadata_string, Loader=yaml.SafeLoader
-                )["sample-metadata"]
-        return sample_metadata
-
-    def _read_quickstart(self, samples_dir: Path) -> str:
-        """
-        quickstart is a special case, it should be read from disk and displayed
-        in README.md rather than pushed into samples array.
-        """
-        reading = False
-        quickstart = ""
-
-        with open(samples_dir / "quickstart.js") as f:
-            while True:
-                line = f.readline()
-                if not line or re.search(_RE_SAMPLE_COMMENT_END, line):
-                    break
-                if reading:
-                    quickstart += line
-                if re.search(_RE_SAMPLE_COMMENT_START, line):
-                    reading = True
-
-        return quickstart
 
     def _load_partials(self, metadata: Dict):
         """

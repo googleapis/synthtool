@@ -77,7 +77,7 @@ has instructions for running the samples.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/samples/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor=samples/{{ sample.file }},samples/README.md) |
+{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }},samples/README.md) |
 {% endfor %}
 {% endif %}
 {% if metadata['repo']['client_documentation'] %}
