@@ -67,14 +67,21 @@ integration)
     RETURN_CODE=$?
     ;;
 samples)
-    mvn -B \
-      -Penable-samples \
-      -DtrimStackTrace=false \
-      -Dclirr.skip=true \
-      -Denforcer.skip=true \
-      -fae \
-      verify
-    RETURN_CODE=$?
+    if [[ -f samples/pom.xml ]]
+    then
+        pushd samples
+        mvn -B \
+          -Penable-samples \
+          -DtrimStackTrace=false \
+          -Dclirr.skip=true \
+          -Denforcer.skip=true \
+          -fae \
+          verify
+        RETURN_CODE=$?
+        popd
+    else
+        echo "no sample pom.xml found - skipping sample tests"
+    fi
     ;;
 clirr)
     mvn -B -Denforcer.skip=true clirr:check

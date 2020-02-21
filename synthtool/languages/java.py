@@ -18,7 +18,7 @@ import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
-from synthtool.gcp import common
+from synthtool.gcp import common, samples, snippets
 from synthtool import cache
 from synthtool import log
 from synthtool import shell
@@ -203,12 +203,12 @@ def _common_generation(
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
-        "samples/src",
+        "samples/generated/src",
         excludes=["**/*.manifest.yaml"],
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/resources"],
-        "samples/resources",
+        "samples/generated/resources",
     )
     s.copy(
         [
@@ -343,6 +343,11 @@ def common_templates(excludes: List[str] = [], **kwargs) -> None:
 
     metadata["latest_bom_version"] = latest_maven_version(
         group_id="com.google.cloud", artifact_id="libraries-bom",
+    )
+
+    metadata["samples"] = samples.all_samples(["samples/**/src/main/java/**/*.java"])
+    metadata["snippets"] = snippets.all_snippets(
+        ["samples/**/src/main/java/**/*.java", "samples/**/pom.xml"]
     )
 
     kwargs["metadata"] = metadata

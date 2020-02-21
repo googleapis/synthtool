@@ -18,6 +18,9 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 ```xml
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
+{{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
+{% else -%}
 <dependencyManagement>
   <dependencies>
     <dependency>
@@ -29,13 +32,13 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
     </dependency>
   </dependencies>
 </dependencyManagement>
-
 <dependencies>
   <dependency>
     <groupId>{{ group_id }}</groupId>
     <artifactId>{{ artifact_id }}</artifactId>
   </dependency>
 </dependencies>
+{% endif -%}
 ```
 
 [//]: # ({x-version-update-start:{{ artifact_id }}:released})
@@ -43,11 +46,15 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 If you are using Maven without BOM, add this to your dependencies:
 
 ```xml
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
+{{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
+{% else -%}
 <dependency>
   <groupId>{{ group_id }}</groupId>
   <artifactId>{{ artifact_id }}</artifactId>
   <version>{{ metadata['latest_version'] }}</version>
 </dependency>
+{% endif -%}
 ```
 
 If you are using Gradle, add this to your dependencies
@@ -92,6 +99,18 @@ use this {{metadata['repo']['name_pretty']}} Client Library.
 
 {% if 'partials' in metadata and metadata['partials']['custom_content'] -%}
 {{ metadata['partials']['custom_content'] }}
+{% endif %}
+
+{% if metadata['samples']|length %}
+## Samples
+
+Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory. The samples' `README.md`
+has instructions for running the samples.
+
+| Sample                      | Source Code                       | Try it |
+| --------------------------- | --------------------------------- | ------ |
+{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }}) |
+{% endfor %}
 {% endif %}
 
 ## Troubleshooting
@@ -176,3 +195,4 @@ Java 11 | [![Kokoro CI][kokoro-badge-image-5]][kokoro-badge-link-5]
 {% if metadata['repo']['requires_billing'] %}[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing{% endif %}
 {% if metadata['repo']['api_id'] %}[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
+[shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
