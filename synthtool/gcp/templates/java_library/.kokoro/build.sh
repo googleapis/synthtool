@@ -40,7 +40,6 @@ fi
 case ${JOB_TYPE} in
 test)
     mvn test -B -Dclirr.skip=true -Denforcer.skip=true
-    bash ${KOKORO_GFILE_DIR}/codecov.sh
     bash .kokoro/coerce_logs.sh
     ;;
 lint)
@@ -77,3 +76,8 @@ clirr)
 *)
     ;;
 esac
+
+if [ "${REPORT_COVERAGE}" == "true" ]
+then
+  bash ${KOKORO_GFILE_DIR}/codecov.sh
+fi
