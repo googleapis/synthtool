@@ -56,17 +56,7 @@ class CommonTemplates:
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
 
-        templates = "python_split_library"
-        # Temporarily allow two sets of python templates
-        # Use `python_library` if the library is in google-cloud-python
-        # TODO: Remove once google-cloud-python has no libraries in it
-        if os.path.exists("./.repo-metadata.json"):
-            with open("./.repo-metadata.json") as f:
-                metadata = json.load(f)
-            if metadata["repo"] == "googleapis/google-cloud-python":
-                templates = "python_library"
-
-        return self._generic_library(templates, **kwargs)
+        return self._generic_library("python_library", **kwargs)
 
     def java_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
