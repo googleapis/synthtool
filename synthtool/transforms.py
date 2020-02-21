@@ -218,6 +218,6 @@ def replace(
     if not count_replaced:
         log.warning(
             f"No replacements made in {sources} for pattern {before}, maybe "
-            "replacement is not longer needed?"
+            "replacement is no longer needed?"
         )
     return count_replaced
