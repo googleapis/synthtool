@@ -32,7 +32,7 @@ module.exports = {
     excludePattern: '(^|\\/|\\\\)[._]',
     include: [
       '{{ source_location or 'src' }}',
-      proto
+      'proto'
     ],
     includePattern: '\\.js$'
   },
