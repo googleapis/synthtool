@@ -203,12 +203,12 @@ def _common_generation(
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
-        "samples/src",
+        "samples/generated/src",
         excludes=["**/*.manifest.yaml"],
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/resources"],
-        "samples/resources",
+        "samples/generated/resources",
     )
     s.copy(
         [
