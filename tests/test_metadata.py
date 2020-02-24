@@ -198,21 +198,19 @@ def test_append_git_log_to_metadata(source_tree):
     # Match 2 log lines.
     assert re.match(
         r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
-        mdata.sources[2].git.log,
+        mdata.sources[1].git.log,
         re.MULTILINE,
     )
     # Make sure the local path field is not recorded.
     assert not mdata.sources[0].git.local_path is None
 
 
-def test_synthtool_and_cwd_git_sources_in_metadata(source_tree):
+def test_synthtool_git_source_in_metadata(source_tree):
     # Instantiate a MetadataTrackerAndWriter to write the metadata.
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         pass
     mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
-    cwd_source = mdata.sources[0].git
-    assert cwd_source.name == "."
-    synthtool_source = mdata.sources[1].git
+    synthtool_source = mdata.sources[0].git
     assert synthtool_source.name == "synthtool"
     assert re.match("[A-Za-z0-9]+", synthtool_source.sha)
     assert synthtool_source.remote.index("synthtool")
