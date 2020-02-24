@@ -175,7 +175,6 @@ class MetadataTrackerAndWriter:
 
     def __enter__(self):
         self.old_metadata = _read_or_empty(self.metadata_file_path)
-        _add_self_git_source()
         _add_synthtool_git_source()
 
     def __exit__(self, type, value, traceback):
@@ -243,16 +242,6 @@ def _clear_local_paths(metadata):
         if source.HasField("git"):
             git_source = source.git
             git_source.ClearField("local_path")
-
-
-def _add_self_git_source():
-    """Adds current working directory as a git source.
-
-    Returns:
-        The number of git sources added to metadata.
-    """
-    # Use the repository's root directory name as the name.
-    return _add_git_source_from_directory(".", os.getcwd())
 
 
 def _add_git_source_from_directory(name: str, dir_path: str):
