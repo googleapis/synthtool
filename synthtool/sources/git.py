@@ -20,7 +20,7 @@ import subprocess
 from typing import Dict, Optional, Tuple
 
 import synthtool
-from synthtool import _tracked_paths, cache, metadata, shell
+from synthtool import _tracked_paths, cache, log, metadata, shell
 
 REPO_REGEX = (
     r"(((https:\/\/)|(git@))github.com(:|\/))?(?P<owner>[^\/]+)\/(?P<name>[^\/]+)"
@@ -65,6 +65,7 @@ def clone(
     preclone = get_preclone(url)
 
     if preclone:
+        log.debug(f"Using precloned repo {preclone}")
         dest = pathlib.Path(preclone)
     else:
         if dest is None:
