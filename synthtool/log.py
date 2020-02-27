@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import logging
+import sys
 
 try:
     from colorlog import ColoredFormatter
@@ -73,9 +74,9 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
     root_logger.setLevel(logging.DEBUG)
     handler = logging.StreamHandler()
 
-    if color is True:
+    if color is True and sys.stdout.isatty():
         formatter = ColoredFormatter(
-            "%(purple)s%(name)s > %(log_color)s%(message)s",
+            "%(asctime)s %(purple)s%(name)s > %(log_color)s%(message)s",
             reset=True,
             log_colors={
                 "DEBUG": "cyan",
@@ -86,8 +87,10 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
                 "SUCCESS": "green",
             },
         )
+    else:
+        formatter = logging.Formatter("%(asctime)s %(name)s > %(message)s")
 
-        handler.setFormatter(formatter)
+    handler.setFormatter(formatter)
 
     root_logger.addHandler(handler)
 
