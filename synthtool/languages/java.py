@@ -192,14 +192,17 @@ def _common_generation(
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
         f"google-cloud-{destination_name}/src",
+        required=True,
     )
     s.copy(
         [library / f"grpc-google-cloud-{service}-{version}{suffix}/src"],
         f"grpc-google-cloud-{destination_name}-{version}/src",
+        required=True,
     )
     s.copy(
         [library / f"proto-google-cloud-{service}-{version}{suffix}/src"],
         f"proto-google-cloud-{destination_name}-{version}/src",
+        required=True,
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
