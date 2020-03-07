@@ -186,3 +186,11 @@ def test_replace_not_found(expand_path_fixtures):
     assert 0 == count_replaced
     assert "alpha text" == open("a.txt", "rt").read()
     assert "beta python" == open("b.py", "rt").read()
+
+
+def test_required_move_not_found():
+    try:
+        transforms.move(["non-existent"], required=True)
+        assert False, "should have thrown error"
+    except transforms.MissingSourceError:
+        assert True

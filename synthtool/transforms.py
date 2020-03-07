@@ -26,6 +26,10 @@ PathOrStr = Union[str, Path]
 ListOfPathsOrStrs = Iterable[Union[str, Path]]
 
 
+class MissingSourceError(Exception):
+    pass
+
+
 def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[Path]:
     """Given a list of globs/paths, expands them into a flat sequence,
     expanding globs as necessary."""
@@ -139,11 +143,21 @@ def move(
     destination: PathOrStr = None,
     excludes: ListOfPathsOrStrs = None,
     merge: Callable[[str, str, Path], str] = None,
+    required: bool = False,
 ) -> bool:
     """
     copy file(s) at source to current directory, preserving file mode.
 
-    Returns: True if any files were copied, False otherwise.
+    Args:
+        sources (ListOfPathsOrStrs): Glob pattern(s) to copy
+        destination (PathOrStr): Destination folder for copied files
+        excludes (ListOfPathsOrStrs): Glob pattern(s) of files to skip
+        merge (Callable[[str, str, Path], str]): Callback function for merging files
+            if there is an existing file.
+        required (bool): If required and no source files are copied, throws a MissingSourceError
+
+    Returns:
+        True if any files were copied, False otherwise.
     """
     copied = False
 
@@ -172,10 +186,16 @@ def move(
             copied = True
 
     if not copied:
-        log.warning(
-            f"No files in sources {sources} were copied. Does the source "
-            f"contain files?"
-        )
+        if required:
+            raise MissingSourceError(
+                f"No files in sources {sources} were copied. Does the source "
+                f"contain files?"
+            )
+        else:
+            log.warning(
+                f"No files in sources {sources} were copied. Does the source "
+                f"contain files?"
+            )
 
     return copied
 
