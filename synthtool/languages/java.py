@@ -107,9 +107,7 @@ def fix_proto_headers(proto_root: Path) -> None:
 
 def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
     s.replace(
-        [grpc_root / "src/**/*.java"],
-        f"package {package_name};",
-        f"{GOOD_LICENSE}package {package_name};",
+        [grpc_root / "src/**/*.java"], "package (.*);", f"{GOOD_LICENSE}package \\1;",
     )
 
 
