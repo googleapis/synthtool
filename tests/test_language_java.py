@@ -80,8 +80,9 @@ def test_working_common_templates():
         cwd = os.getcwd()
         os.chdir(workdir)
 
-        # generate the common templates
-        java.common_templates()
-        assert os.path.isfile("README.md")
-
-        os.chdir(cwd)
+        try:
+            # generate the common templates
+            java.common_templates()
+            assert os.path.isfile("README.md")
+        finally:
+            os.chdir(cwd)
