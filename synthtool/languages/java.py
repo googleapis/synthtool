@@ -225,6 +225,10 @@ def _common_generation(
     format_code("samples/src")
 
 
+# cached gapic generator (artman)
+_gapic_generator: gcp.GAPICGenerator = None
+
+
 def gapic_library(
     service: str,
     version: str,
@@ -256,7 +260,10 @@ def gapic_library(
     """
 
     if gapic is None:
-        gapic = gcp.GAPICGenerator()
+        # default to cached gapic generator
+        if _gapic_generator is None:
+            _gapic_generator = gcp.GAPICGenerator()
+        gapic = _gapic_generator
 
     library = gapic.java_library(
         service=service,
@@ -276,6 +283,10 @@ def gapic_library(
     )
 
     return library
+
+
+# cached bazel generator
+_bazel_generator: gcp.GAPICBazel = None
 
 
 def bazel_library(
@@ -305,7 +316,10 @@ def bazel_library(
         The path to the temp directory containing the generated client.
     """
     if gapic is None:
-        gapic = gcp.GAPICBazel()
+        # default to the cached bazel generator
+        if _bazel_generator is None:
+            _bazel_generator = gcp.GAPICBazel()
+        gapic = _bazel_generator
 
     library = gapic.java_library(service=service, version=version, **kwargs)
 
