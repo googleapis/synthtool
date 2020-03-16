@@ -12,8 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import shutil
+import tempfile
+from pathlib import Path
 from synthtool.languages import java
 import requests_mock
+
+FIXTURES = Path(__file__).parent / "fixtures"
 
 SAMPLE_METADATA = """
 <metadata>
@@ -64,3 +70,19 @@ def test_latest_maven_version():
         assert "3.3.0" == java.latest_maven_version(
             group_id="com.google.cloud", artifact_id="libraries-bom"
         )
+
+
+def test_working_common_templates():
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(
+            FIXTURES / "java_templates" / "standard", Path(tempdir) / "standard"
+        )
+        cwd = os.getcwd()
+        os.chdir(workdir)
+
+        try:
+            # generate the common templates
+            java.common_templates()
+            assert os.path.isfile("README.md")
+        finally:
+            os.chdir(cwd)
