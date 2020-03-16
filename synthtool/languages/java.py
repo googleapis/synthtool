@@ -321,6 +321,19 @@ def bazel_library(
     return library
 
 
+def _merge_common_templates(
+    source_text: str, destination_text: str, file_path: Path
+) -> str:
+    log.debug(f"merge: {file_path}")
+    # keep any existing pom.xml
+    if file_path.match("pom.xml"):
+        log.info(f"existing pom file found ({file_path}) - keeping the existing")
+        return destination_text
+
+    # by default return the newly generated content
+    return source_text
+
+
 def common_templates(excludes: List[str] = [], **kwargs) -> None:
     """Generate common templates for a Java Library
 
@@ -353,4 +366,4 @@ def common_templates(excludes: List[str] = [], **kwargs) -> None:
 
     kwargs["metadata"] = metadata
     templates = gcp.CommonTemplates().java_library(**kwargs)
-    s.copy([templates], excludes=excludes)
+    s.copy([templates], excludes=excludes, merge=_merge_common_templates)
