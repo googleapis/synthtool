@@ -57,7 +57,7 @@ After `synthtool` runs successfully:
  - Investigate the changes it made
  - Run the library tests
  - Commit and push the changes to a branch and open a Pull Request
- 
+
 Find examples below in different programming languages (Cloud Tasks API used as an example).
 
 ### Python
@@ -171,7 +171,7 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 SynthTool supports template files using [Jinja](http://jinja.pocoo.org/).
 
 Templates are found in subdirectories of [`synthtool/gcp/templates/`](synthtool/gcp/templates/)
-for each language,  
+for each language,
  - e.g. the template directories for [Python][python_templates],
 [Node.js][node_templates], [PHP][php_tasks_synth_py], or [Ruby][ruby_templates].
 
@@ -203,7 +203,7 @@ Template files can access any values provided, e.g.
     ```py
     {% if show_version %}
     The version is {{ version }}
-    
+
     {% if previous versions is defined %}
     Previous versions:
       {% for ver in previous_versions %}
@@ -217,14 +217,14 @@ You can learn more about Jinga templating in the
 [Template Designer Documentation](http://jinja.pocoo.org/docs/templates/).
 
 ### googleapis-private
-SynthTool supports generation from googleapis/googleapis-private. 
+SynthTool supports generation from googleapis/googleapis-private.
 
 ```py
 gapic = gcp.GAPICGenerator()
 
 library = gapic.node_library('speech', 'v1', private=True)
 ```
-2FA is required to clone a private repo. 
+2FA is required to clone a private repo.
 
 * **Using SSH:** Before running Synthtool, set the environment variable `AUTOSYNTH_USE_SSH` to `true`.
 
@@ -250,7 +250,7 @@ export SYNTHTOOL_ARTMAN_VERSION=0.16.2
 
 ### Local Googleapis
 SynthTool supports generation from a local copy of googleapis.
-Specify the path to`googleapis` in the environment variable `SYNTHTOOL_GOOGLEAPIS`.
+Specify the path to `googleapis` in the environment variable `SYNTHTOOL_GOOGLEAPIS`.
 
 ```
 export SYNTHTOOL_GOOGLEAPIS=path/to/local/googleapis
@@ -258,7 +258,7 @@ export SYNTHTOOL_GOOGLEAPIS=path/to/local/googleapis
 
 ### Local GAPIC Generator
 SynthTool supports generation from a local copy of [gapic-generator](https://github.com/googleapis/gapic-generator).
-Specify the path to`gapic-generator` in the environment variable `SYNTHTOOL_GENERATOR`.
+Specify the path to `gapic-generator` in the environment variable `SYNTHTOOL_GENERATOR`.
 
 ```
 export SYNTHTOOL_GENERATOR=path/to/local/gapic-generator
@@ -269,6 +269,14 @@ Don't forget to compile `gapic-generator` before running SynthTool.
 ```
 cd path/to/local/gapic-generator
 ./gradlew fatJar
+```
+
+### Local Template Files
+SynthTool supports specifying a local directory of templates. Specify the patht to the root
+template directory (not a SynthTool clone) in the environment variable `SYNTHTOOL_TEMPLATES`.
+
+```
+export SYNTHTOOL_TEMPLATES=path/to/local/templates
 ```
 
 ### Include .proto files
