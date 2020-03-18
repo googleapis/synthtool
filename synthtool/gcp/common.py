@@ -52,7 +52,7 @@ class CommonTemplates:
                 self.excludes.append("samples/README.md")
 
         t = templates.TemplateGroup(
-            os.path.join(self._template_root, directory), self.excludes
+            Path(self._template_root) / directory, self.excludes
         )
         result = t.render(**kwargs)
         _tracked_paths.add(result)
