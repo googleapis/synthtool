@@ -22,6 +22,17 @@ CLOSE_SNIPPET_REGEX = r".*\[END ([a-z0-9_]+)\].*$"
 
 
 def _trim_leading_whitespace(lines: List[str]) -> List[str]:
+    """Trims leading, plain spaces from the snippet content. Finds the minimum
+    number of leading spaces, ignoring empty lines, and removes that number of
+    spaces from each line.
+
+    Args:
+        lines (List[str]): Lines of content. These lines are newline terminated.
+
+    Returns:
+        List of trimmed lines.
+    """
+
     def number_of_leading_spaces(input: str) -> int:
         return len(input) - len(input.lstrip(" "))
 
