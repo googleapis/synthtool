@@ -33,7 +33,7 @@
       <artifactId>{{ artifact_id }}</artifactId>
       <version>{{ metadata['latest_version'] }}</version>
     </dependency>
-    <!-- [END {{metadata['repo']['name']}}_install_with_bom] -->
+    <!-- [END {{metadata['repo']['name']}}_install_without_bom] -->
 
     <dependency>
       <groupId>junit</groupId>
