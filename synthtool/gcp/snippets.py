@@ -21,6 +21,24 @@ OPEN_SNIPPET_REGEX = r".*\[START ([a-z0-9_]+)\].*$"
 CLOSE_SNIPPET_REGEX = r".*\[END ([a-z0-9_]+)\].*$"
 
 
+def _trim_leading_whitespace(lines: List[str]) -> List[str]:
+    def number_of_leading_spaces(input: str) -> int:
+        return len(input) - len(input.lstrip(" "))
+
+    def is_empty_line(input: str) -> bool:
+        if re.match(r"^\s*$", input):
+            return True
+        return False
+
+    leading_spaces = [
+        number_of_leading_spaces(line) for line in lines if not is_empty_line(line)
+    ]
+    max_leading_spaces = min(leading_spaces)
+    return [
+        "\n" if is_empty_line(line) else line[max_leading_spaces:] for line in lines
+    ]
+
+
 def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
     """Reads in a sample file and parse out all contained snippets.
 
@@ -56,7 +74,10 @@ def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
                 for snippet in open_snippets:
                     snippet_lines[snippet].append(line)
 
-    return {snippet: "".join(lines) for snippet, lines in snippet_lines.items()}
+    return {
+        snippet: "".join(_trim_leading_whitespace(lines))
+        for snippet, lines in snippet_lines.items()
+    }
 
 
 def all_snippets(snippet_globs: List[str]) -> Dict[str, str]:
