@@ -51,7 +51,9 @@ class CommonTemplates:
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
                 self.excludes.append("samples/README.md")
 
-        t = templates.TemplateGroup(self._template_root / directory, self.excludes)
+        t = templates.TemplateGroup(
+            Path(self._template_root) / directory, self.excludes
+        )
         result = t.render(**kwargs)
         _tracked_paths.add(result)
 
