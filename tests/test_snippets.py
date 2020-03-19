@@ -37,24 +37,24 @@ public class MonitoringQuickstartSample {
     )
     assert (
         all_snippets["monitoring_install_with_bom"]
-        == """  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.google.cloud</groupId>
-        <artifactId>libraries-bom</artifactId>
-        <version>3.5.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
+        == """<dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-monitoring</artifactId>
+      <artifactId>libraries-bom</artifactId>
+      <version>3.5.0</version>
+      <type>pom</type>
+      <scope>import</scope>
     </dependency>
   </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>google-cloud-monitoring</artifactId>
+  </dependency>
+</dependencies>
 """
     )
 
