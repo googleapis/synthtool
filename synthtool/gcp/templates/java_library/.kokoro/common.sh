@@ -22,7 +22,7 @@ function retry_with_backoff {
     command=$@
 
     echo "${command}"
-    "${command}"
+    ${command}
     exit_code=$?
 
     if [[ $exit_code == 0 ]]
