@@ -241,7 +241,6 @@ class GAPICBazel:
 
         return self._discovery_artifact_manager
 
-
     def _ensure_dependencies_installed(self):
         log.debug("Ensuring dependencies.")
 
