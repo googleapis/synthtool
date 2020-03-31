@@ -22,11 +22,6 @@ If you are using GAPIC generator `synthtool.gcp.GAPICGenerator` or DiscoGAPIC ge
 python3 -m pip install --user --upgrade git+https://github.com/googleapis/synthtool.git
 ```
 
-### Install stable
-```
-python3 -m pip install --user --upgrade gcp-synthtool
-```
-
 ## Basic usage
 To start the process of generation, clone the destination repository.
 ```
