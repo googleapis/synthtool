@@ -75,21 +75,19 @@ class GAPICBazel:
         bazel_target: str = None,
     ):
         # Determine which googleapis repo to use
-        source_repo = None
-        source_repo_name = None
         if discogapic:
-            source_repo = self._clone_discovery_artifact_manager()
-            source_repo_name = "discovery-artifact-manager"
+            api_definitions_repo = self._clone_discovery_artifact_manager()
+            api_definitions_repo_name = "discovery-artifact-manager"
         elif private:
-            source_repo = self._clone_googleapis_private()
-            source_repo_name = "googleapis_private"
+            api_definitions_repo = self._clone_googleapis_private()
+            api_definitions_repo_name = "googleapis_private"
         else:
-            source_repo = self._clone_googleapis()
-            source_repo_name = "googleapis"
+            api_definitions_repo = self._clone_googleapis()
+            api_definitions_repo_name = "googleapis"
 
         # Sanity check: We should have a googleapis repo; if we do not,
         # something went wrong, and we should abort.
-        if not source_repo:
+        if not api_definitions_repo:
             raise RuntimeError(
                 f"Unable to generate {service}, the sources repository repository"
                 "is unavailable."
@@ -133,17 +131,17 @@ class GAPICBazel:
             bazel_target = f"//{os.path.sep.join(parts)}:{suffix}"
 
             # Sanity check: Do we have protos where we think we should?
-            if not (source_repo / proto_path).exists():
+            if not (api_definitions_repo / proto_path).exists():
                 raise FileNotFoundError(
-                    f"Unable to find directory for protos: {(source_repo / proto_path)}."
+                    f"Unable to find directory for protos: {(api_definitions_repo / proto_path)}."
                 )
-            if not tuple((source_repo / proto_path).glob("*.proto")):
+            if not tuple((api_definitions_repo / proto_path).glob("*.proto")):
                 raise FileNotFoundError(
-                    f"Directory {(source_repo / proto_path)} exists, but no protos found."
+                    f"Directory {(api_definitions_repo / proto_path)} exists, but no protos found."
                 )
-            if not (source_repo / proto_path / "BUILD.bazel"):
+            if not (api_definitions_repo / proto_path / "BUILD.bazel"):
                 raise FileNotFoundError(
-                    f"File {(source_repo / proto_path / 'BUILD.bazel')} does not exist."
+                    f"File {(api_definitions_repo / proto_path / 'BUILD.bazel')} does not exist."
                 )
 
         # Ensure the desired output directory exists.
@@ -154,7 +152,7 @@ class GAPICBazel:
 
         # Let's build some stuff now.
         cwd = os.getcwd()
-        os.chdir(str(source_repo))
+        os.chdir(str(api_definitions_repo))
 
         bazel_run_args = ["bazel", "build", bazel_target]
 
@@ -192,7 +190,7 @@ class GAPICBazel:
 
         # Record this in the synthtool metadata.
         metadata.add_client_destination(
-            source=source_repo_name,
+            source=api_definitions_repo_name,
             api_name=service,
             api_version=version,
             language=language,
