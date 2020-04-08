@@ -29,6 +29,9 @@ DISCOVERY_ARTIFACT_MANAGER_URL: str = git.make_repo_clone_url(
     "googleapis/discovery-artifact-manager"
 )
 LOCAL_GOOGLEAPIS: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
+LOCAL_DISCOVERY_ARTIFACT_MANAGER: Optional[str] = os.environ.get(
+    "SYNTHTOOL_DISCOVERY_ARTIFACT_MANAGER"
+)
 
 
 class GAPICBazel:
@@ -234,8 +237,16 @@ class GAPICBazel:
         if self._discovery_artifact_manager:
             return self._discovery_artifact_manager
 
-        log.debug("Cloning discovery-artifact-manager.")
-        self._discovery_artifact_manager = git.clone(DISCOVERY_ARTIFACT_MANAGER_URL)
+        if LOCAL_DISCOVERY_ARTIFACT_MANAGER:
+            self._discovery_artifact_manager = Path(
+                LOCAL_DISCOVERY_ARTIFACT_MANAGER
+            ).expanduser()
+            log.debug(
+                f"Using local discovery_artifact_manager at {self._discovery_artifact_manager} for googleapis-private"
+            )
+        else:
+            log.debug("Cloning discovery-artifact-manager.")
+            self._discovery_artifact_manager = git.clone(DISCOVERY_ARTIFACT_MANAGER_URL)
 
         return self._discovery_artifact_manager
 
