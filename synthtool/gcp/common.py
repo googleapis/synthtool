@@ -63,6 +63,16 @@ class CommonTemplates:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
+        # rename variable to accomodate existing synth.py files
+        if "system_test_dependencies" in kwargs:
+            kwargs["system_test_local_dependencies"] = kwargs[
+                "system_test_dependencies"
+            ]
+            log.warning(
+                "Template argument 'system_test_dependencies' is deprecated."
+                "Use 'system_test_local_dependencies' or 'system_test_external_dependencies'"
+                "instead."
+            )
 
         return self._generic_library("python_library", **kwargs)
 
