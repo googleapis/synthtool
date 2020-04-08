@@ -173,6 +173,7 @@ class MetadataTrackerAndWriter:
 
     def __enter__(self):
         self.old_metadata = _read_or_empty(self.metadata_file_path)
+        _add_self_git_source()
 
     def __exit__(self, type, value, traceback):
         _append_git_logs(self.old_metadata, get())
@@ -239,6 +240,44 @@ def _clear_local_paths(metadata):
         if source.HasField("git"):
             git_source = source.git
             git_source.ClearField("local_path")
+
+
+def _add_self_git_source():
+    """Adds current working directory as a git source.
+
+    Returns:
+        The number of git sources added to metadata.
+    """
+    # Use the repository's root directory name as the name.
+    return _add_git_source_from_directory(".", os.getcwd())
+
+
+def _add_git_source_from_directory(name: str, dir_path: str) -> int:
+    """Adds the git repo containing the directory as a git source.
+
+    Returns:
+        The number of git sources added to metadata.
+    """
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "status"], universal_newlines=True
+    )
+    if completed_process.returncode:
+        log.warning("%s is not directory in a git repo.", dir_path)
+        return 0
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "remote", "get-url", "origin"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    url = completed_process.stdout.strip()
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "log", "--no-decorate", "-1", "--pretty=format:%H"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    latest_sha = completed_process.stdout.strip()
+    add_git_source(name=name, remote=url, sha=latest_sha)
+    return 1
 
 
 def _source_key(source):
