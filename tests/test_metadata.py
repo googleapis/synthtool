@@ -107,7 +107,7 @@ def test_write(tmpdir):
 class SourceTree:
     """Utility for quickly creating files in a sample source tree."""
 
-    def __init__(self, tmpdir):
+    def __init__(self, tmpdir: pathlib.Path):
         metadata.reset()
         self.tmpdir = tmpdir
         self.git = shutil.which("git")
@@ -253,3 +253,19 @@ def test_git_sources_are_sorted(source_tree: SourceTree):
         metadata.add_generator_source(name="a-generator", version="1", docker_image="x")
     m2 = metadata._read_or_empty(metadata_path)
     assert m1.sources == m2.sources
+
+
+def test_disable_writing_metadata(source_tree: SourceTree):
+    metadata_path: pathlib.Path = source_tree.tmpdir / "synth.metadata"
+    try:
+        with metadata.MetadataTrackerAndWriter(metadata_path):
+            metadata.add_generator_source(
+                name="a-generator", version="1", docker_image="x"
+            )
+            metadata.add_generator_source(
+                name="b-generator", version="2", docker_image="y"
+            )
+            metadata.enable_write_metadata(False)
+        assert not metadata_path.exists()
+    finally:
+        metadata.enable_write_metadata(True)
