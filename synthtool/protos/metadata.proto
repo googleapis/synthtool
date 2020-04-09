@@ -20,7 +20,7 @@ import "google/protobuf/timestamp.proto";
 
 
 message Metadata {
-    google.protobuf.Timestamp update_time = 1;
+    google.protobuf.Timestamp update_time = 1 [deprecated=true];
 
     repeated Source sources = 2;
     repeated Destination destinations = 3;
