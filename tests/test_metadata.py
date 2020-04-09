@@ -101,7 +101,7 @@ def test_write(tmpdir):
     assert "sha" in raw
     data = json.loads(raw)
     assert data
-    assert data["updateTime"] is not None
+    assert "updateTime" not in data
 
 
 class SourceTree:

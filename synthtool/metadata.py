@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
 import deprecation
 import locale
 import os
@@ -108,7 +107,6 @@ def _read_or_empty(path: str = "synth.metadata"):
 
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
-    _metadata.update_time.FromDatetime(datetime.datetime.utcnow())
     jsonified = google.protobuf.json_format.MessageToJson(_metadata)
 
     with open(outfile, "w") as fh:
