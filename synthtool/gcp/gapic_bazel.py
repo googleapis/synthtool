@@ -191,7 +191,9 @@ class GAPICBazel:
             proto_output_path = output_dir / "protos"
             if language == "python":
                 # place protos alongsize the *_pb2.py files
-                proto_output_path = output_dir / f"google/cloud/{service}_{version}/proto"
+                proto_output_path = (
+                    output_dir / f"google/cloud/{service}_{version}/proto"
+                )
             os.makedirs(proto_output_path, exist_ok=True)
 
             for i in proto_files:
