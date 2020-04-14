@@ -116,7 +116,6 @@ class GAPICBazel:
             if protos.is_absolute():
                 protos = protos.relative_to("/")
 
-
         # Determine bazel target based on per-language patterns
         # Java:    google-cloud-{{assembly_name}}-{{version}}-java
         # Go:      gapi-cloud-{{assembly_name}}-{{version}}-go
