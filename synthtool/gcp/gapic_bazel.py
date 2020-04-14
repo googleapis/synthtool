@@ -97,7 +97,7 @@ class GAPICBazel:
                 "is unavailable."
             )
 
-        # Caluculate proto_path
+        # Calculate proto_path if necessary.
         if not bazel_target or include_protos:
             # If bazel_target is not specified explicitly, we will need
             # proto_path to calculate it. If include_protos is True,
@@ -108,7 +108,7 @@ class GAPICBazel:
                     # in the format "//proto_path:target_name
                     proto_path = bazel_target.split(":")[0][2:]
                 else:
-                    # If bazel target is not specified, assume the protos are
+                    # If bazel_target is not specified, assume the protos are
                     # simply under google/cloud, where the most of the protos
                     # usually are.
                     proto_path = f"google/cloud/{service}/{version}"
