@@ -16,6 +16,7 @@ import json
 from typing import Any, Dict
 from synthtool.sources import git
 from synthtool.gcp import samples, snippets
+from synthtool import shell
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -91,3 +92,12 @@ def get_publish_token(package_name: str):
         The name of the key to fetch the publish token.
     """
     return package_name.strip("@").replace("/", "-") + "-npm-token"
+
+
+def postprocess_gapic_library():
+    """
+    Runs common post-processing for Node GAPIC library.
+    """
+    shell.run(["npm", "install"], hide_output=False)
+    shell.run(["npm", "run", "fix"], hide_output=False)
+    shell.run(["npx", "compileProtos", "src"], hide_output=False)
