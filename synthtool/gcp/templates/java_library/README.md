@@ -135,13 +135,15 @@ Java 7 or above is required for using this client.
 
 ## Versioning
 
+{% if 'partials' in metadata and metadata['partials']['versioning'] -%}
+{{ metadata['partials']['versioning'] }}
+{% else %}
 This library follows [Semantic Versioning](http://semver.org/).
 
 {% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
 and the public API should not be considered stable.
-{% endif %}
-
+{% endif %}{% endif %}
 ## Contributing
 
 {% if 'partials' in metadata and metadata['partials']['contributing'] -%}
