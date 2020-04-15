@@ -177,7 +177,8 @@ class MetadataTrackerAndWriter:
         _append_git_logs(self.old_metadata, get())
         _clear_local_paths(get())
         _metadata.sources.sort(key=_source_key)
-        write(self.metadata_file_path)
+        if _enable_write_metadata:
+            write(self.metadata_file_path)
 
 
 def _append_git_logs(old_metadata, new_metadata):
@@ -303,3 +304,12 @@ def _source_key(source):
             source.template.origin,
             source.template.version,
         )
+
+
+_enable_write_metadata = True
+
+
+def enable_write_metadata(enable: bool = True) -> None:
+    """Control whether synthtool writes synth.metadata file."""
+    global _enable_write_metadata
+    _enable_write_metadata = enable
