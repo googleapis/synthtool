@@ -16,10 +16,8 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 {% endif %}
 ## Quickstart
 
-
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
-
 ```xml
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
 ```
@@ -27,8 +25,7 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 If you are using Maven without BOM, add this to your dependencies:
 {% else %}
 If you are using Maven, add this to your pom.xml file:
-{% endif -%}
-
+{% endif %}
 ```xml
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
