@@ -174,42 +174,10 @@ class MetadataTrackerAndWriter:
         _add_self_git_source()
 
     def __exit__(self, type, value, traceback):
-        _append_git_logs(self.old_metadata, get())
         _clear_local_paths(get())
         _metadata.sources.sort(key=_source_key)
         if _enable_write_metadata:
             write(self.metadata_file_path)
-
-
-def _append_git_logs(old_metadata, new_metadata):
-    """Adds git logs to git sources in new_metadata.
-
-    Parameters:
-        old_metadata: instance of metadata_pb2.Metadata
-        old_metadata: instance of metadata_pb2.Metadata
-    """
-    old_map = _get_git_source_map(old_metadata)
-    new_map = _get_git_source_map(new_metadata)
-    git = shutil.which("git")
-    for name, git_source in new_map.items():
-        # Get the git history since the last run:
-        old_source = old_map.get(name, metadata_pb2.GitSource())
-        if not old_source.sha or not git_source.local_path:
-            continue
-        output = subprocess.run(
-            [
-                git,
-                "-C",
-                git_source.local_path,
-                "log",
-                "--pretty=%H%n%B",
-                "--no-decorate",
-                f"{old_source.sha}..HEAD",
-            ],
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-        ).stdout
-        git_source.log = output
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:
