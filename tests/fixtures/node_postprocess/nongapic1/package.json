@@ -1,0 +1,6 @@
+{
+  "_why?": "it does not depend on google-gax so it's not GAPIC",
+  "dependencies": {
+    "left-pad": "*"
+  }
+}

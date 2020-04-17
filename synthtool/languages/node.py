@@ -13,10 +13,11 @@
 # limitations under the License.
 
 import json
+from pathlib import Path
 from typing import Any, Dict
 from synthtool.sources import git
 from synthtool.gcp import samples, snippets
-from synthtool import shell
+from synthtool import log, shell
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -94,10 +95,48 @@ def get_publish_token(package_name: str):
     return package_name.strip("@").replace("/", "-") + "-npm-token"
 
 
-def postprocess_gapic_library():
+def is_gapic_library():
+    # Pre-requisite #1: google-gax must be a dependency
+    with open("package.json", "r") as package_json:
+        package_json_obj = json.load(package_json)
+    if "dependencies" not in package_json_obj:
+        log.debug("No dependencies in package.json; not a GAPIC library.")
+        return False
+    if "google-gax" not in package_json_obj["dependencies"]:
+        log.debug("Does not depend on google-gax, not a GAPIC library.")
+        return False
+    # Pre-requisite #2: there must be at least one proto list in src/
+    for path in Path("src").rglob("*_proto_list.json"):
+        log.debug(f"Found {path}, it's a GAPIC library.")
+        return True
+    log.debug("No src/**/*_proto_list.json found; not a GAPIC library.")
+    return False
+
+
+def postprocess(install=True, prelint=True, fix=True, protos=True, hide_output=False):
     """
-    Runs common post-processing for Node GAPIC library.
+    Runs common post-processing for Node library.
     """
-    shell.run(["npm", "install"], hide_output=False)
-    shell.run(["npm", "run", "fix"], hide_output=False)
-    shell.run(["npx", "compileProtos", "src"], hide_output=False)
+    log.debug("Node.js library post-processing started.")
+    if install:
+        log.debug("Installing dependencies...")
+        shell.run(["npm", "install"], hide_output=hide_output)
+    else:
+        log.debug("Skipping dependency installation.")
+    if prelint:
+        log.debug("Running prelint...")
+        shell.run(["npm", "run", "prelint"], hide_output=hide_output)
+    else:
+        log.debug("Skipping prelint.")
+    if fix:
+        log.debug("Running fix...")
+        shell.run(["npm", "run", "fix"], hide_output=hide_output)
+    else:
+        log.debug("Skipping fix.")
+    # If we have protos to compile, do it now
+    if protos and is_gapic_library():
+        log.debug("Compiling protos...")
+        shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+    else:
+        log.debug("Skipping protos compilation.")
+    log.debug("Node.js library post-processing finished.")
