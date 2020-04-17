@@ -96,7 +96,16 @@ def get_publish_token(package_name: str):
 
 
 def is_gapic_library():
-    # Pre-requisite #1: google-gax must be a dependency
+    """
+    Checks if the library is a GAPIC library that needs a special
+    post-processing of its proto files.  A library that depends on
+    `google-gax` and has at least one file matching
+    `src/**/*_proto_list.json` (an input for `compileProtos` script)
+    is considered a GAPIC library.
+
+    Returns:
+        True if a library is GAPIC and compileProtos call is needed.
+    """
     with open("package.json", "r") as package_json:
         package_json_obj = json.load(package_json)
     if "dependencies" not in package_json_obj:
@@ -105,7 +114,6 @@ def is_gapic_library():
     if "google-gax" not in package_json_obj["dependencies"]:
         log.debug("Does not depend on google-gax, not a GAPIC library.")
         return False
-    # Pre-requisite #2: there must be at least one proto list in src/
     for path in Path("src").rglob("*_proto_list.json"):
         log.debug(f"Found {path}, it's a GAPIC library.")
         return True
