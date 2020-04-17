@@ -16,33 +16,16 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 {% endif %}
 ## Quickstart
 
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 ```xml
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
-{% else -%}
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>libraries-bom</artifactId>
-      <version>{{ metadata['latest_bom_version'] }}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-<dependencies>
-  <dependency>
-    <groupId>{{ group_id }}</groupId>
-    <artifactId>{{ artifact_id }}</artifactId>
-  </dependency>
-</dependencies>
-{% endif -%}
 ```
 
 If you are using Maven without BOM, add this to your dependencies:
-
+{% else %}
+If you are using Maven, add this to your pom.xml file:
+{% endif %}
 ```xml
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
