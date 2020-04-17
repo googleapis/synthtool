@@ -16,7 +16,6 @@ import json
 import os
 import pathlib
 import pytest
-import re
 import shutil
 import subprocess
 
@@ -107,7 +106,7 @@ def test_write(tmpdir):
 class SourceTree:
     """Utility for quickly creating files in a sample source tree."""
 
-    def __init__(self, tmpdir):
+    def __init__(self, tmpdir: pathlib.Path):
         metadata.reset()
         self.tmpdir = tmpdir
         self.git = shutil.which("git")
@@ -161,7 +160,11 @@ def test_track_obsolete_files_defaults_to_false(preserve_track_obsolete_file_fla
     assert not metadata.should_track_obsolete_files()
 
 
-def test_append_git_log_to_metadata(source_tree):
+def test_used_to_append_git_log_to_metadata(source_tree):
+    """Synthtool used to append the git log for each git source.  But nothing
+    consumes the log, and there's no design for anything to consume the log.
+    Plus, it cluttered up synth.metadata.
+    """
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         # Create one commit that will be recorded in the metadata.
         source_tree.write("a")
@@ -195,12 +198,8 @@ def test_append_git_log_to_metadata(source_tree):
 
     # Read the metadata that we just wrote.
     mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
-    # Match 2 log lines.
-    assert re.match(
-        r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
-        mdata.sources[1].git.log,
-        re.MULTILINE,
-    )
+    # The log should be empty.
+    assert "" == mdata.sources[1].git.log
     # Make sure the local path field is not recorded.
     assert not mdata.sources[0].git.local_path is None
 
@@ -253,3 +252,19 @@ def test_git_sources_are_sorted(source_tree: SourceTree):
         metadata.add_generator_source(name="a-generator", version="1", docker_image="x")
     m2 = metadata._read_or_empty(metadata_path)
     assert m1.sources == m2.sources
+
+
+def test_disable_writing_metadata(source_tree: SourceTree):
+    metadata_path: pathlib.Path = source_tree.tmpdir / "synth.metadata"
+    try:
+        with metadata.MetadataTrackerAndWriter(metadata_path):
+            metadata.add_generator_source(
+                name="a-generator", version="1", docker_image="x"
+            )
+            metadata.add_generator_source(
+                name="b-generator", version="2", docker_image="y"
+            )
+            metadata.enable_write_metadata(False)
+        assert not metadata_path.exists()
+    finally:
+        metadata.enable_write_metadata(True)
