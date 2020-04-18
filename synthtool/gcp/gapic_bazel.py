@@ -77,6 +77,7 @@ class GAPICBazel:
         output_dir: Union[str, Path] = None,
         bazel_target: str = None,
         include_protos: bool = False,
+        proto_output_path: Union[str, Path] = None,
     ):
         # Determine which googleapis repo to use
         if discogapic:
@@ -198,12 +199,15 @@ class GAPICBazel:
             # By default, put the protos at the root in a folder named 'protos'.
             # Specific languages can be cased here to put them in a more language
             # appropriate place.
-            proto_output_path = output_dir / "protos"
-            if language == "python":
-                # place protos alongsize the *_pb2.py files
-                proto_output_path = (
-                    output_dir / f"google/cloud/{service}_{version}/proto"
-                )
+            if not proto_output_path:
+                proto_output_path = output_dir / "protos"
+                if language == "python":
+                    # place protos alongsize the *_pb2.py files
+                    proto_output_path = (
+                        output_dir / f"google/cloud/{service}_{version}/proto"
+                    )
+            else:
+                proto_output_path = Path(output_dir / proto_output_path)
             os.makedirs(proto_output_path, exist_ok=True)
 
             for i in proto_files:
