@@ -75,54 +75,28 @@ def test_no_samples():
 
 
 class TestPostprocess(TestCase):
-    def test_is_gapic_library_gapic(self):
-        cwd = os.getcwd()
-        os.chdir(FIXTURES / "node_postprocess" / "gapic")
-        result = node.is_gapic_library()
-        os.chdir(cwd)
-        assert result is True
-
-    def test_is_gapic_library_nongapic1(self):
-        cwd = os.getcwd()
-        os.chdir(FIXTURES / "node_postprocess" / "nongapic1")
-        result = node.is_gapic_library()
-        os.chdir(cwd)
-        assert result is False
-
-    def test_is_gapic_library_nongapic2(self):
-        cwd = os.getcwd()
-        os.chdir(FIXTURES / "node_postprocess" / "nongapic2")
-        result = node.is_gapic_library()
-        os.chdir(cwd)
-        assert result is False
-
-    def test_is_gapic_library_nongapic3(self):
-        cwd = os.getcwd()
-        os.chdir(FIXTURES / "node_postprocess" / "nongapic3")
-        result = node.is_gapic_library()
-        os.chdir(cwd)
-        assert result is False
+    @patch("synthtool.shell.run")
+    def test_install(self, shell_run_mock):
+        node.install()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm install" in " ".join(call[0][0]) for call in calls])
 
     @patch("synthtool.shell.run")
-    def test_does_not_run_compile_protos_for_nongapic(self, shell_run_mock):
-        cwd = os.getcwd()
-        os.chdir(FIXTURES / "node_postprocess" / "nongapic1")
-        node.postprocess()
-        os.chdir(cwd)
+    def test_fix(self, shell_run_mock):
+        node.fix()
         calls = shell_run_mock.call_args_list
-        assert len(calls) > 0
-        for call in calls:
-            assert "compileProtos" not in call[0][0]
+        assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
 
     @patch("synthtool.shell.run")
-    def test_runs_compile_protos_for_gapic(self, shell_run_mock):
-        cwd = os.getcwd()
-        os.chdir(FIXTURES / "node_postprocess" / "gapic")
-        node.postprocess()
-        os.chdir(cwd)
+    def test_compile_protos(self, shell_run_mock):
+        node.compile_protos()
         calls = shell_run_mock.call_args_list
-        ok = False
-        for call in calls:
-            if "compileProtos" in call[0][0]:
-                ok = True
-        assert ok
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_postprocess_gapic_library(self, shell_run_mock):
+        node.postprocess_gapic_library()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm install" in " ".join(call[0][0]) for call in calls])
+        assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])

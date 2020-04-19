@@ -1,6 +1,0 @@
-{
-  "_why?": "it depends on google-gax and has src/**/*_proto_list.json so looks like GAPIC",
-  "dependencies": {
-    "google-gax": "*"
-  }
-}
