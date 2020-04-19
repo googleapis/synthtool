@@ -125,7 +125,7 @@ def compile_protos(hide_output=False):
 
 def postprocess_gapic_library(hide_output=False):
     log.debug("Post-processing GAPIC library...")
-    install(hide_output)
-    fix(hide_output)
-    compile_protos(hide_output)
+    install(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
     log.debug("Post-processing completed")
