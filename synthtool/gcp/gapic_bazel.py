@@ -11,10 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 from pathlib import Path
 from typing import Optional, Union
 import os
+import shutil
 import tempfile
 
 from synthtool import _tracked_paths
@@ -76,6 +76,8 @@ class GAPICBazel:
         proto_path: Union[str, Path] = None,
         output_dir: Union[str, Path] = None,
         bazel_target: str = None,
+        include_protos: bool = False,
+        proto_output_path: Union[str, Path] = None,
     ):
         # Determine which googleapis repo to use
         if discogapic:
@@ -96,6 +98,25 @@ class GAPICBazel:
                 "is unavailable."
             )
 
+        # Calculate proto_path if necessary.
+        if not bazel_target or include_protos:
+            # If bazel_target is not specified explicitly, we will need
+            # proto_path to calculate it. If include_protos is True,
+            # we will need the proto_path to copy the protos.
+            if not proto_path:
+                if bazel_target:
+                    # Calculate proto_path from the full bazel target, which is
+                    # in the format "//proto_path:target_name
+                    proto_path = bazel_target.split(":")[0][2:]
+                else:
+                    # If bazel_target is not specified, assume the protos are
+                    # simply under google/cloud, where the most of the protos
+                    # usually are.
+                    proto_path = f"google/cloud/{service}/{version}"
+            protos = Path(proto_path)
+            if protos.is_absolute():
+                protos = protos.relative_to("/")
+
         # Determine bazel target based on per-language patterns
         # Java:    google-cloud-{{assembly_name}}-{{version}}-java
         # Go:      gapi-cloud-{{assembly_name}}-{{version}}-go
@@ -104,23 +125,16 @@ class GAPICBazel:
         # Node.js: {{assembly_name}}-{{version}}-nodejs
         # Ruby:    google-cloud-{{assembly_name}}-{{version}}-ruby
         # C#:      google-cloud-{{assembly_name}}-{{version}}-csharp
-        if bazel_target is None:
+        if not bazel_target:
             # Determine where the protos we are generating actually live.
             # We can sometimes (but not always) determine this from the service
             # and version; in other cases, the user must provide it outright.
-            if proto_path:
-                proto_path = Path(proto_path)
-                if proto_path.is_absolute():
-                    proto_path = proto_path.relative_to("/")
-            else:
-                proto_path = Path("google/cloud") / service / version
-
-            parts = list(proto_path.parts)
+            parts = list(protos.parts)
             while len(parts) > 0 and parts[0] != "google":
                 parts.pop(0)
             if len(parts) == 0:
                 raise RuntimeError(
-                    f"Cannot determine bazel_target from proto_path {proto_path}."
+                    f"Cannot determine bazel_target from proto_path {protos}."
                     "Please set bazel_target explicitly."
                 )
             if language == "python":
@@ -134,17 +148,17 @@ class GAPICBazel:
             bazel_target = f"//{os.path.sep.join(parts)}:{suffix}"
 
             # Sanity check: Do we have protos where we think we should?
-            if not (api_definitions_repo / proto_path).exists():
+            if not (api_definitions_repo / protos).exists():
                 raise FileNotFoundError(
-                    f"Unable to find directory for protos: {(api_definitions_repo / proto_path)}."
+                    f"Unable to find directory for protos: {(api_definitions_repo / protos)}."
                 )
-            if not tuple((api_definitions_repo / proto_path).glob("*.proto")):
+            if not tuple((api_definitions_repo / protos).glob("*.proto")):
                 raise FileNotFoundError(
-                    f"Directory {(api_definitions_repo / proto_path)} exists, but no protos found."
+                    f"Directory {(api_definitions_repo / protos)} exists, but no protos found."
                 )
-            if not (api_definitions_repo / proto_path / "BUILD.bazel"):
+            if not (api_definitions_repo / protos / "BUILD.bazel"):
                 raise FileNotFoundError(
-                    f"File {(api_definitions_repo / proto_path / 'BUILD.bazel')} does not exist."
+                    f"File {(api_definitions_repo / protos / 'BUILD.bazel')} does not exist."
                 )
 
         # Ensure the desired output directory exists.
@@ -178,6 +192,28 @@ class GAPICBazel:
             tar_file,
         ]
         shell.run(tar_run_args)
+
+        # Get the *.protos files and put them in a protos dir in the output
+        if include_protos:
+            proto_files = protos.glob("**/*.proto")
+            # By default, put the protos at the root in a folder named 'protos'.
+            # Specific languages can be cased here to put them in a more language
+            # appropriate place.
+            if not proto_output_path:
+                proto_output_path = output_dir / "protos"
+                if language == "python":
+                    # place protos alongsize the *_pb2.py files
+                    proto_output_path = (
+                        output_dir / f"google/cloud/{service}_{version}/proto"
+                    )
+            else:
+                proto_output_path = Path(output_dir / proto_output_path)
+            os.makedirs(proto_output_path, exist_ok=True)
+
+            for i in proto_files:
+                log.debug(f"Copy: {i} to {proto_output_path / i.name}")
+                shutil.copyfile(i, proto_output_path / i.name)
+            log.success(f"Placed proto files into {proto_output_path}.")
 
         os.chdir(cwd)
 
