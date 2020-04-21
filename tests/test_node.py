@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from unittest import TestCase
+from unittest.mock import patch
 import os
 from pathlib import Path
 from synthtool.languages import node
@@ -70,3 +72,31 @@ def test_no_samples():
     assert len(metadata["samples"]) == 0
 
     os.chdir(cwd)
+
+
+class TestPostprocess(TestCase):
+    @patch("synthtool.shell.run")
+    def test_install(self, shell_run_mock):
+        node.install()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm install" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_fix(self, shell_run_mock):
+        node.fix()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_compile_protos(self, shell_run_mock):
+        node.compile_protos()
+        calls = shell_run_mock.call_args_list
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_postprocess_gapic_library(self, shell_run_mock):
+        node.postprocess_gapic_library()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm install" in " ".join(call[0][0]) for call in calls])
+        assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])

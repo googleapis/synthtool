@@ -16,7 +16,7 @@ import json
 from typing import Any, Dict
 from synthtool.sources import git
 from synthtool.gcp import samples, snippets
-from synthtool import shell
+from synthtool import log, shell
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -94,10 +94,38 @@ def get_publish_token(package_name: str):
     return package_name.strip("@").replace("/", "-") + "-npm-token"
 
 
-def postprocess_gapic_library():
+def install(hide_output=False):
     """
-    Runs common post-processing for Node GAPIC library.
+    Installs all dependencies for the current Node.js library.
     """
-    shell.run(["npm", "install"], hide_output=False)
-    shell.run(["npm", "run", "fix"], hide_output=False)
-    shell.run(["npx", "compileProtos", "src"], hide_output=False)
+    log.debug("Installing dependencies...")
+    shell.run(["npm", "install"], hide_output=hide_output)
+
+
+def fix(hide_output=False):
+    """
+    Fixes the formatting in the current Node.js library.
+    Before running fix script, run prelint to install extra dependencies
+    for samples, but do not fail if it does not succeed.
+    """
+    log.debug("Running prelint...")
+    shell.run(["npm", "run", "prelint"], check=False, hide_output=hide_output)
+    log.debug("Running fix...")
+    shell.run(["npm", "run", "fix"], hide_output=hide_output)
+
+
+def compile_protos(hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax.
+    """
+    log.debug("Compiling protos...")
+    shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+
+
+def postprocess_gapic_library(hide_output=False):
+    log.debug("Post-processing GAPIC library...")
+    install(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
+    log.debug("Post-processing completed")
