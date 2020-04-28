@@ -81,7 +81,7 @@ class CommonTemplates:
             self.excludes.append("README.md")
             if "samples/README.md" not in self.excludes:
                 self.excludes.append("samples/README.md")
-        log.debug("@@@@@@@@@@@@@@@@@@@@@synthtool@@@@@@@@@@@@@@@@@@@@@@@")
+
         kwargs["metadata"] = node.template_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
         isGen = node.generate_index_ts(

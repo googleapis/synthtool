@@ -13,15 +13,13 @@
 # limitations under the License.
 
 import json
-from typing import Any, Dict, List
-from synthtool.sources import git
-from synthtool.gcp import samples, snippets
-import pathlib
-from jinja2 import Template, FileSystemLoader, Environment
+from jinja2 import FileSystemLoader, Environment
+from pathlib import Path
 import re
 from synthtool import log
-import os
-from pathlib import Path
+from synthtool.sources import git
+from synthtool.gcp import samples, snippets
+from typing import Any, Dict, List
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -99,7 +97,7 @@ def get_publish_token(package_name: str):
     return package_name.strip("@").replace("/", "-") + "-npm-token"
 
 
-def extract_clients(filePath: str) -> List[str]:
+def extract_clients(filePath: Path) -> List[str]:
     """
     parse the client name from index.ts file
 
@@ -132,7 +130,9 @@ def generate_index_ts(versions: List[str], default_version: str) -> bool:
     """
     # sanitizer the input arguments
     if len(versions) < 1:
-        err_msg = "List of version can't be empty, it must contain default version at least."
+        err_msg = (
+            "List of version can't be empty, it must contain default version at least."
+        )
         log.error(err_msg)
         raise AttributeError(err_msg)
     if default_version not in versions:
@@ -141,7 +141,7 @@ def generate_index_ts(versions: List[str], default_version: str) -> bool:
         raise AttributeError(err_msg)
 
     # compose default version's index.ts file path
-    versioned_index_ts_path = pathlib.Path("src") / default_version / "index.ts"
+    versioned_index_ts_path = Path("src") / default_version / "index.ts"
     clients = extract_clients(versioned_index_ts_path)
     if len(clients) == 0:
         err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
@@ -152,7 +152,7 @@ def generate_index_ts(versions: List[str], default_version: str) -> bool:
     templatePath = (
         Path(__file__).parent.parent / "gcp" / "templates" / "node_split_library"
     )
-    templateLoader = FileSystemLoader(searchpath=templatePath)
+    templateLoader = FileSystemLoader(searchpath=str(templatePath))
     templateEnv = Environment(loader=templateLoader, keep_trailing_newline=True)
     TEMPLATE_FILE = "index.ts.j2"
     index_template = templateEnv.get_template(TEMPLATE_FILE)

@@ -17,7 +17,6 @@ from pathlib import Path
 from synthtool.languages import node
 import pathlib
 import filecmp
-from synthtool import log
 import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -84,6 +83,7 @@ def test_extract_clients_no_file():
     with pytest.raises(FileNotFoundError) as err_msg:
         clients = node.extract_clients(index_ts_path)
         assert not clients
+        assert f"Failed to find {index_ts_path}" in err_msg
 
 
 def test_extract_single_clients():
