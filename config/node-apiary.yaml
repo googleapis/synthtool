@@ -1,0 +1,5 @@
+libraries:
+
+- name: all
+  repository: googleapis/google-api-nodejs-client
+  branch-suffix: all

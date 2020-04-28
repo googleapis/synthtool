@@ -1,0 +1,79 @@
+{
+  "updateTime": "2020-02-07T20:29:26.289603Z",
+  "sources": [
+    {
+      "generator": {
+        "name": "artman",
+        "version": "0.44.4",
+        "dockerImage": "googleapis/artman@sha256:19e945954fc960a4bdfee6cb34695898ab21a8cf0bac063ee39b91f00a1faec8"
+      }
+    },
+    {
+      "git": {
+        "name": "googleapis",
+        "remote": "https://github.com/googleapis/googleapis.git",
+        "sha": "e46f761cd6ec15a9e3d5ed4ff321a4bcba8e8585",
+        "internalRef": "293710856"
+      }
+    },
+    {
+      "template": {
+        "name": "node_library",
+        "origin": "synthtool.gcp",
+        "version": "2020.2.4"
+      }
+    }
+  ],
+  "destinations": [
+    {
+      "client": {
+        "source": "googleapis",
+        "apiName": "vision",
+        "apiVersion": "v1",
+        "language": "nodejs",
+        "generator": "gapic",
+        "config": "google/cloud/vision/artman_vision_v1.yaml"
+      }
+    },
+    {
+      "client": {
+        "source": "googleapis",
+        "apiName": "vision",
+        "apiVersion": "v1p1beta1",
+        "language": "nodejs",
+        "generator": "gapic",
+        "config": "google/cloud/vision/artman_vision_v1p1beta1.yaml"
+      }
+    },
+    {
+      "client": {
+        "source": "googleapis",
+        "apiName": "vision",
+        "apiVersion": "v1p2beta1",
+        "language": "nodejs",
+        "generator": "gapic",
+        "config": "google/cloud/vision/artman_vision_v1p2beta1.yaml"
+      }
+    },
+    {
+      "client": {
+        "source": "googleapis",
+        "apiName": "vision",
+        "apiVersion": "v1p3beta1",
+        "language": "nodejs",
+        "generator": "gapic",
+        "config": "google/cloud/vision/artman_vision_v1p3beta1.yaml"
+      }
+    },
+    {
+      "client": {
+        "source": "googleapis",
+        "apiName": "vision",
+        "apiVersion": "v1p4beta1",
+        "language": "nodejs",
+        "generator": "gapic",
+        "config": "google/cloud/vision/artman_vision_v1p4beta1.yaml"
+      }
+    }
+  ]
+}
