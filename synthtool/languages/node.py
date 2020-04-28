@@ -200,4 +200,3 @@ def postprocess_gapic_library(hide_output=False):
     fix(hide_output=hide_output)
     compile_protos(hide_output=hide_output)
     log.debug("Post-processing completed")
-

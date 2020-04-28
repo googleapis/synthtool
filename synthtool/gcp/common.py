@@ -22,7 +22,7 @@ from typing import Dict, List, Optional
 from synthtool.languages import node
 from synthtool.sources import git, templates
 from synthtool import _tracked_paths
-from synthtool import log, metadata
+from synthtool import log
 
 
 TEMPLATES_URL: str = git.make_repo_clone_url("googleapis/synthtool")

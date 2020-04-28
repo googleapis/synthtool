@@ -168,7 +168,7 @@ def test_generate_index_ts_no_clients():
 
     os.chdir(cwd)
 
-    
+
 class TestPostprocess(TestCase):
     @patch("synthtool.shell.run")
     def test_install(self, shell_run_mock):
@@ -195,4 +195,3 @@ class TestPostprocess(TestCase):
         assert any(["npm install" in " ".join(call[0][0]) for call in calls])
         assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
         assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
-
