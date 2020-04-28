@@ -15,6 +15,10 @@
 import os
 from pathlib import Path
 from synthtool.languages import node
+import pathlib
+import filecmp
+from synthtool import log
+import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -68,5 +72,96 @@ def test_no_samples():
 
     assert isinstance(metadata["samples"], list)
     assert len(metadata["samples"]) == 0
+
+    os.chdir(cwd)
+
+
+def test_extract_clients_no_file():
+    index_ts_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "no_exist_index.ts"
+    )
+
+    with pytest.raises(FileNotFoundError) as err_msg:
+        clients = node.extract_clients(index_ts_path)
+        assert not clients
+
+
+def test_extract_single_clients():
+    index_ts_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "single_index.ts"
+    )
+
+    clients = node.extract_clients(index_ts_path)
+
+    assert len(clients) == 1
+    assert clients[0] == "TextToSpeechClient"
+
+
+def test_extract_multiple_clients():
+    index_ts_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "multiple_index.ts"
+    )
+
+    clients = node.extract_clients(index_ts_path)
+
+    assert len(clients) == 2
+    assert clients[0] == "StreamingVideoIntelligenceServiceClient"
+    assert clients[1] == "VideoIntelligenceServiceClient"
+
+
+def test_generate_index_ts():
+    cwd = os.getcwd()
+    # use a non-nodejs template directory
+    os.chdir(FIXTURES / "node_templates" / "index_samples")
+    isGen = node.generate_index_ts(["v1", "v1beta1"], "v1")
+    generated_index_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
+    )
+    sample_index_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
+    )
+
+    assert isGen is True
+    assert filecmp.cmp(generated_index_path, sample_index_path)
+    os.chdir(cwd)
+
+
+def test_generate_index_ts_empty_versions():
+    cwd = os.getcwd()
+    # use a non-nodejs template directory
+    os.chdir(FIXTURES / "node_templates" / "index_samples")
+
+    with pytest.raises(AttributeError) as err:
+        _ = node.generate_index_ts([], "v1")
+        assert "can't be empty" in err.args
+
+    os.chdir(cwd)
+
+
+def test_generate_index_ts_invalid_default_version():
+    cwd = os.getcwd()
+    # use a non-nodejs template directory
+    os.chdir(FIXTURES / "node_templates" / "index_samples")
+    versions = ["v1beta1"]
+    default_version = "v1"
+
+    with pytest.raises(AttributeError) as err:
+        _ = node.generate_index_ts(versions, default_version)
+        assert f"must contain default version {default_version}" in err.args
+
+    os.chdir(cwd)
+
+
+def test_generate_index_ts_no_clients():
+    cwd = os.getcwd()
+    # use a non-nodejs template directory
+    os.chdir(FIXTURES / "node_templates" / "index_samples")
+    versions = ["v1", "v1beta1", "invalid_index"]
+    default_version = "invalid_index"
+
+    # with pytest.raises(AttributeError) as err:
+    isGen = node.generate_index_ts(versions, default_version)
+    # assert f"No client is exported in the default version's({default_version}) index.ts ." in err.args
+    assert isGen is False
 
     os.chdir(cwd)
