@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
 import deprecation
-import inspect
 import locale
 import os
 import pathlib
@@ -26,7 +24,6 @@ from typing import List, Iterable, Dict
 
 import google.protobuf.json_format
 
-import synthtool
 from synthtool import log
 from synthtool.protos import metadata_pb2
 
@@ -110,7 +107,6 @@ def _read_or_empty(path: str = "synth.metadata"):
 
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
-    _metadata.update_time.FromDatetime(datetime.datetime.utcnow())
     jsonified = google.protobuf.json_format.MessageToJson(_metadata)
 
     with open(outfile, "w") as fh:
@@ -176,44 +172,12 @@ class MetadataTrackerAndWriter:
     def __enter__(self):
         self.old_metadata = _read_or_empty(self.metadata_file_path)
         _add_self_git_source()
-        _add_synthtool_git_source()
 
     def __exit__(self, type, value, traceback):
-        _append_git_logs(self.old_metadata, get())
         _clear_local_paths(get())
         _metadata.sources.sort(key=_source_key)
-        write(self.metadata_file_path)
-
-
-def _append_git_logs(old_metadata, new_metadata):
-    """Adds git logs to git sources in new_metadata.
-
-    Parameters:
-        old_metadata: instance of metadata_pb2.Metadata
-        old_metadata: instance of metadata_pb2.Metadata
-    """
-    old_map = _get_git_source_map(old_metadata)
-    new_map = _get_git_source_map(new_metadata)
-    git = shutil.which("git")
-    for name, git_source in new_map.items():
-        # Get the git history since the last run:
-        old_source = old_map.get(name, metadata_pb2.GitSource())
-        if not old_source.sha or not git_source.local_path:
-            continue
-        output = subprocess.run(
-            [
-                git,
-                "-C",
-                git_source.local_path,
-                "log",
-                "--pretty=%H%n%B",
-                "--no-decorate",
-                f"{old_source.sha}..HEAD",
-            ],
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-        ).stdout
-        git_source.log = output
+        if _enable_write_metadata:
+            write(self.metadata_file_path)
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:
@@ -255,7 +219,7 @@ def _add_self_git_source():
     return _add_git_source_from_directory(".", os.getcwd())
 
 
-def _add_git_source_from_directory(name: str, dir_path: str):
+def _add_git_source_from_directory(name: str, dir_path: str) -> int:
     """Adds the git repo containing the directory as a git source.
 
     Returns:
@@ -283,17 +247,6 @@ def _add_git_source_from_directory(name: str, dir_path: str):
     return 1
 
 
-def _add_synthtool_git_source():
-    """Adds synthtool's repo as a git source.
-
-    Returns:
-        The number of git sources added to metadata.
-    """
-    source_path = inspect.getfile(synthtool)
-    source_dir = pathlib.Path(source_path).parent
-    return _add_git_source_from_directory("synthtool", str(source_dir))
-
-
 def _source_key(source):
     """Creates a key to use to sort a list of sources.
 
@@ -319,3 +272,12 @@ def _source_key(source):
             source.template.origin,
             source.template.version,
         )
+
+
+_enable_write_metadata = True
+
+
+def enable_write_metadata(enable: bool = True) -> None:
+    """Control whether synthtool writes synth.metadata file."""
+    global _enable_write_metadata
+    _enable_write_metadata = enable

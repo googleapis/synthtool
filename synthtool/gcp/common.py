@@ -17,21 +17,29 @@ import os
 import re
 import yaml
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List, Optional
 
 from synthtool.languages import node
-from synthtool.sources import templates
-from synthtool import __main__
+from synthtool.sources import git, templates
 from synthtool import _tracked_paths
 from synthtool import log, metadata
 
 
-_TEMPLATES_DIR = Path(__file__).parent / "templates"
+TEMPLATES_URL: str = git.make_repo_clone_url("googleapis/synthtool")
+DEFAULT_TEMPLATES_PATH = "synthtool/gcp/templates"
+LOCAL_TEMPLATES: Optional[str] = os.environ.get("SYNTHTOOL_TEMPLATES")
 
 
 class CommonTemplates:
     def __init__(self):
-        self._templates = templates.Templates(_TEMPLATES_DIR)
+        if LOCAL_TEMPLATES:
+            log.debug(f"Using local templates at {LOCAL_TEMPLATES}")
+            self._template_root = LOCAL_TEMPLATES
+        else:
+            templates_git = git.clone(TEMPLATES_URL)
+            self._template_root = templates_git / DEFAULT_TEMPLATES_PATH
+
+        self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
     def _generic_library(self, directory: str, **kwargs) -> Path:
@@ -43,30 +51,30 @@ class CommonTemplates:
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
                 self.excludes.append("samples/README.md")
 
-        t = templates.TemplateGroup(_TEMPLATES_DIR / directory, self.excludes)
+        t = templates.TemplateGroup(
+            Path(self._template_root) / directory, self.excludes
+        )
         result = t.render(**kwargs)
         _tracked_paths.add(result)
-        metadata.add_template_source(
-            name=directory, origin="synthtool.gcp", version=__main__.VERSION
-        )
+
         return result
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
+        # rename variable to accomodate existing synth.py files
+        if "system_test_dependencies" in kwargs:
+            kwargs["system_test_local_dependencies"] = kwargs[
+                "system_test_dependencies"
+            ]
+            log.warning(
+                "Template argument 'system_test_dependencies' is deprecated."
+                "Use 'system_test_local_dependencies' or 'system_test_external_dependencies'"
+                "instead."
+            )
 
-        templates = "python_split_library"
-        # Temporarily allow two sets of python templates
-        # Use `python_library` if the library is in google-cloud-python
-        # TODO: Remove once google-cloud-python has no libraries in it
-        if os.path.exists("./.repo-metadata.json"):
-            with open("./.repo-metadata.json") as f:
-                metadata = json.load(f)
-            if metadata["repo"] == "googleapis/google-cloud-python":
-                templates = "python_library"
-
-        return self._generic_library(templates, **kwargs)
+        return self._generic_library("python_library", **kwargs)
 
     def java_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json

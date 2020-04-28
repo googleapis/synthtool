@@ -18,7 +18,7 @@ import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
-from synthtool.gcp import common
+from synthtool.gcp import common, samples, snippets
 from synthtool import cache
 from synthtool import log
 from synthtool import shell
@@ -107,9 +107,7 @@ def fix_proto_headers(proto_root: Path) -> None:
 
 def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
     s.replace(
-        [grpc_root / "src/**/*.java"],
-        f"package {package_name};",
-        f"{GOOD_LICENSE}package {package_name};",
+        [grpc_root / "src/**/*.java"], "^package (.*);", f"{GOOD_LICENSE}package \\1;",
     )
 
 
@@ -192,23 +190,26 @@ def _common_generation(
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
         f"google-cloud-{destination_name}/src",
+        required=True,
     )
     s.copy(
         [library / f"grpc-google-cloud-{service}-{version}{suffix}/src"],
         f"grpc-google-cloud-{destination_name}-{version}/src",
+        required=True,
     )
     s.copy(
         [library / f"proto-google-cloud-{service}-{version}{suffix}/src"],
         f"proto-google-cloud-{destination_name}-{version}/src",
+        required=True,
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
-        "samples/src",
+        "samples/generated/src",
         excludes=["**/*.manifest.yaml"],
     )
     s.copy(
         [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/resources"],
-        "samples/resources",
+        "samples/generated/resources",
     )
     s.copy(
         [
@@ -320,6 +321,18 @@ def bazel_library(
     return library
 
 
+def _merge_common_templates(
+    source_text: str, destination_text: str, file_path: Path
+) -> str:
+    # keep any existing pom.xml
+    if file_path.match("pom.xml"):
+        log.debug(f"existing pom file found ({file_path}) - keeping the existing")
+        return destination_text
+
+    # by default return the newly generated content
+    return source_text
+
+
 def common_templates(excludes: List[str] = [], **kwargs) -> None:
     """Generate common templates for a Java Library
 
@@ -345,6 +358,11 @@ def common_templates(excludes: List[str] = [], **kwargs) -> None:
         group_id="com.google.cloud", artifact_id="libraries-bom",
     )
 
+    metadata["samples"] = samples.all_samples(["samples/**/src/main/java/**/*.java"])
+    metadata["snippets"] = snippets.all_snippets(
+        ["samples/**/src/main/java/**/*.java", "samples/**/pom.xml"]
+    )
+
     kwargs["metadata"] = metadata
     templates = gcp.CommonTemplates().java_library(**kwargs)
-    s.copy([templates], excludes=excludes)
+    s.copy([templates], excludes=excludes, merge=_merge_common_templates)

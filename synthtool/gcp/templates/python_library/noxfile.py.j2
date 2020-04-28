@@ -23,7 +23,6 @@ import shutil
 import nox
 
 
-LOCAL_DEPS = (os.path.join("..", "api_core"), os.path.join("..", "core"))
 BLACK_VERSION = "black==19.3b0"
 BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
 
@@ -37,7 +36,7 @@ def lint(session):
     Returns a failure if the linters find linting errors or sufficiently
     serious code quality issues.
     """
-    session.install("flake8", BLACK_VERSION, *LOCAL_DEPS)
+    session.install("flake8", BLACK_VERSION)
     session.run(
         "black",
         "--check",
@@ -73,8 +72,6 @@ def lint_setup_py(session):
 def default(session):
     # Install all test dependencies, then install this package in-place.
     session.install("mock", "pytest", "pytest-cov")
-    for local_dep in LOCAL_DEPS:
-        session.install("-e", local_dep)
     session.install("-e", "."){% for dependency in unit_test_dependencies %}
     session.install("-e", "{{dependency}}"){% endfor %}
 
@@ -82,6 +79,7 @@ def default(session):
     session.run(
         "py.test",
         "--quiet",
+        "--cov=google.cloud{% if metadata['repo']['name'] %}.{{ metadata['repo']['name'] }}{% endif %}",
         "--cov=google.cloud",
         "--cov=tests.unit",
         "--cov-append",
@@ -119,12 +117,13 @@ def system(session):
 
     # Install all test dependencies, then install this package into the
     # virtualenv's dist-packages.
-    session.install("mock", "pytest")
-    for local_dep in LOCAL_DEPS:
-        session.install("-e", local_dep)
-    session.install("-e", "../test_utils/"){% for dependency in system_test_dependencies %}
-    session.install("-e", "{{dependency}}"){% endfor %}
+    session.install("mock", "pytest", "google-cloud-testutils", {% for d in system_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
+    
+    {%- if system_test_local_dependencies %}
+    session.install("-e", {% for d in system_test_local_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
+    {%- endif %}
     session.install("-e", ".")
+
 
     # Run py.test against the system tests.
     if system_test_exists:
@@ -143,8 +142,6 @@ def samples(session):
         session.skip("Credentials must be set via environment variable")
 
     session.install("mock", "pytest")
-    for local_dep in LOCAL_DEPS:
-        session.install("-e", local_dep)
     if requirements_exists:
         session.install("-r", requirements_path)
     session.install("-e", ".")
@@ -169,7 +166,7 @@ def docs(session):
     """Build the docs for this library."""
 
     session.install('-e', '.')
-    session.install('sphinx', 'alabaster', 'recommonmark')
+    session.install('sphinx<3.0.0', 'alabaster', 'recommonmark')
 
     shutil.rmtree(os.path.join('docs', '_build'), ignore_errors=True)
     session.run(

@@ -12,8 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import glob
+import os
+import shutil
+import tempfile
+import xml.etree.ElementTree as ET
+from pathlib import Path
 from synthtool.languages import java
 import requests_mock
+import pytest
+
+FIXTURES = Path(__file__).parent / "fixtures"
 
 SAMPLE_METADATA = """
 <metadata>
@@ -64,3 +73,29 @@ def test_latest_maven_version():
         assert "3.3.0" == java.latest_maven_version(
             group_id="com.google.cloud", artifact_id="libraries-bom"
         )
+
+
+def test_working_common_templates():
+    def assert_valid_xml(file):
+        try:
+            ET.parse(file)
+        except ET.ParseError:
+            pytest.fail(f"unable to parse XML: {file}")
+
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(
+            FIXTURES / "java_templates" / "standard", Path(tempdir) / "standard"
+        )
+        cwd = os.getcwd()
+        os.chdir(workdir)
+
+        try:
+            # generate the common templates
+            java.common_templates()
+            assert os.path.isfile("README.md")
+
+            # ensure pom.xml files are valid XML
+            for file in glob.glob("**/pom.xml", recursive=True):
+                assert_valid_xml(file)
+        finally:
+            os.chdir(cwd)

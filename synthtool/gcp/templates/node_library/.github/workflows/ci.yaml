@@ -9,15 +9,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [8, 10, 12, 13]
+        node: [10, 12, 13]
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ '{{' }} matrix.node {{ '}}' }}
       - run: node --version
       - run: npm install
       - run: npm test
+      - name: coverage
+        uses: codecov/codecov-action@v1
+        with:
+          name: actions ${{ '{{' }} matrix.node {{ '}}' }}
+          fail_ci_if_error: true
   windows:
     runs-on: windows-latest
     steps:
@@ -27,10 +32,15 @@ jobs:
           node-version: 12
       - run: npm install
       - run: npm test
+      - name: coverage
+        uses: codecov/codecov-action@v1
+        with:
+          name: actions windows
+          fail_ci_if_error: true
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
@@ -39,19 +49,9 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
           node-version: 12
       - run: npm install
       - run: npm run docs-test
-  coverage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
-        with:
-          node-version: 12
-      - run: npm install
-      - run: npm test
-      - run: ./node_modules/.bin/c8 report --reporter=text-lcov | npx codecov@3 -t ${{ '{{' }} secrets.CODECOV_TOKEN {{ '}}' }} --pipe

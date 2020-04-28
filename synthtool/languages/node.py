@@ -16,7 +16,7 @@ import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
 import re
-from synthtool import log
+from synthtool import log, shell
 from synthtool.sources import git
 from synthtool.gcp import samples, snippets
 from typing import Any, Dict, List
@@ -163,3 +163,41 @@ def generate_index_ts(versions: List[str], default_version: str) -> bool:
     with open("src/index.ts", "w") as fh:
         fh.write(outputText)
     return True
+
+
+def install(hide_output=False):
+    """
+    Installs all dependencies for the current Node.js library.
+    """
+    log.debug("Installing dependencies...")
+    shell.run(["npm", "install"], hide_output=hide_output)
+
+
+def fix(hide_output=False):
+    """
+    Fixes the formatting in the current Node.js library.
+    Before running fix script, run prelint to install extra dependencies
+    for samples, but do not fail if it does not succeed.
+    """
+    log.debug("Running prelint...")
+    shell.run(["npm", "run", "prelint"], check=False, hide_output=hide_output)
+    log.debug("Running fix...")
+    shell.run(["npm", "run", "fix"], hide_output=hide_output)
+
+
+def compile_protos(hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax.
+    """
+    log.debug("Compiling protos...")
+    shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+
+
+def postprocess_gapic_library(hide_output=False):
+    log.debug("Post-processing GAPIC library...")
+    install(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
+    log.debug("Post-processing completed")
+

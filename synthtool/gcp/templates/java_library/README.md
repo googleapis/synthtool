@@ -16,39 +16,29 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 {% endif %}
 ## Quickstart
 
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 ```xml
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>libraries-bom</artifactId>
-      <version>{{ metadata['latest_bom_version'] }}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-
-<dependencies>
-  <dependency>
-    <groupId>{{ group_id }}</groupId>
-    <artifactId>{{ artifact_id }}</artifactId>
-  </dependency>
-</dependencies>
+{{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
 ```
 
-[//]: # ({x-version-update-start:{{ artifact_id }}:released})
-
 If you are using Maven without BOM, add this to your dependencies:
-
+{% else %}
+If you are using Maven, add this to your pom.xml file:
+{% endif %}
 ```xml
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
+{{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
+{% else -%}
 <dependency>
   <groupId>{{ group_id }}</groupId>
   <artifactId>{{ artifact_id }}</artifactId>
   <version>{{ metadata['latest_version'] }}</version>
 </dependency>
+{% endif -%}
 ```
+
+[//]: # ({x-version-update-start:{{ artifact_id }}:released})
 
 If you are using Gradle, add this to your dependencies
 ```Groovy
@@ -94,6 +84,18 @@ use this {{metadata['repo']['name_pretty']}} Client Library.
 {{ metadata['partials']['custom_content'] }}
 {% endif %}
 
+{% if metadata['samples']|length %}
+## Samples
+
+Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory. The samples' `README.md`
+has instructions for running the samples.
+
+| Sample                      | Source Code                       | Try it |
+| --------------------------- | --------------------------------- | ------ |
+{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }}) |
+{% endfor %}
+{% endif %}
+
 ## Troubleshooting
 
 To get help, follow the instructions in the [shared Troubleshooting document][troubleshooting].
@@ -116,13 +118,15 @@ Java 7 or above is required for using this client.
 
 ## Versioning
 
+{% if 'partials' in metadata and metadata['partials']['versioning'] -%}
+{{ metadata['partials']['versioning'] }}
+{% else %}
 This library follows [Semantic Versioning](http://semver.org/).
 
 {% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
 and the public API should not be considered stable.
-{% endif %}
-
+{% endif %}{% endif %}
 ## Contributing
 
 {% if 'partials' in metadata and metadata['partials']['contributing'] -%}
@@ -176,3 +180,4 @@ Java 11 | [![Kokoro CI][kokoro-badge-image-5]][kokoro-badge-link-5]
 {% if metadata['repo']['requires_billing'] %}[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing{% endif %}
 {% if metadata['repo']['api_id'] %}[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
+[shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
