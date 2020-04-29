@@ -15,7 +15,7 @@
 
 set -eo pipefail
 
-cd ${KOKORO_ARTIFACTS_DIR}/git/autosynth
+cd ${KOKORO_ARTIFACTS_DIR}/git/synthtool
 
 # Install Node 12, as the Kokoro image
 # uses an older version by default
@@ -29,4 +29,4 @@ sudo ln -s /usr/bin/nodejs /usr/local/bin/node
 node --version
 
 # Run the normal autosynth build
-${KOKORO_ARTIFACTS_DIR}/git/autosynth/.kokoro/build.sh
+${KOKORO_ARTIFACTS_DIR}/git/synthtool/.kokoro-autosynth/build.sh

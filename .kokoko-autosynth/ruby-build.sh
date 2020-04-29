@@ -15,7 +15,7 @@
 
 set -eo pipefail
 
-cd ${KOKORO_ARTIFACTS_DIR}/git/autosynth
+cd ${KOKORO_ARTIFACTS_DIR}/git/synthtool
 
 # Download yarn public key
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -59,4 +59,5 @@ gem install bundler:1.17.3 rake
 python3 -m venv env
 source env/bin/activate
 python3 -m pip install --upgrade --quiet -r requirements.txt
+export PYTHONPATH=`pwd`
 python3 -m autosynth.multi --config ${MULTISYNTH_CONFIG}
