@@ -1,0 +1,43 @@
+commit 3c25ad4bca383a3248d5f05abc87e0e33e9dbd6d
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:37:51 2020 -0700
+
+    * Wrote c-more to c.txt.
+    
+    * Wrote c to c.txt.
+    
+    * changes without context
+            autosynth cannot find the source of changes triggered by earlier changes in this
+            repository, or by version upgrades to tools such as linters.
+
+diff --git a/a.txt b/a.txt
+new file mode 100644
+index 0000000..2e65efe
+--- /dev/null
++++ b/a.txt
+@@ -0,0 +1 @@
++a
+\ No newline at end of file
+diff --git a/c.txt b/c.txt
+new file mode 100644
+index 0000000..0794b8a
+--- /dev/null
++++ b/c.txt
+@@ -0,0 +1 @@
++c-more
+\ No newline at end of file
+
+commit ec0d8367aa2e53f951625078ac87d432bbebd057
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:37:47 2020 -0700
+
+    Added Readme
+
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..df3f6c7
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1 @@
++Well done.
+\ No newline at end of file
