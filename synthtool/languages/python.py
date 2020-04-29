@@ -41,8 +41,8 @@ LICENSE = """
 # See the License for the specific language governing permissions and
 # limitations under the License."""
 
-DEFAULT_SAMPLES_VERSIONS = ["3.6", "3.7", "3.8"]
-DEFAULT_SAMPLES_IGNORED_VERSIONS = ["2.7"]
+SAMPLES_VERSIONS = ["2.7", "3.6", "3.7", "3.8"]
+IGNORED_VERSIONS = ["2.7"]
 
 def fix_pb2_headers(*, proto_root: str = "**/*_pb2.py") -> None:
     s.replace(
@@ -70,9 +70,9 @@ def _get_noxfile_metadata(noxfile: Path) -> dict:
         metadata = yaml.load(f, Loader=yaml.SafeLoader) or {}
 
     # set defaults
-    metadata["DEFAULT_VERSIONS"] = DEFAULT_SAMPLES_VERSIONS
+    metadata["DEFAULT_VERSIONS"] = SAMPLES_VERSIONS
     if "ignored_versions" not in metadata:
-        metadata["ignored_versions"] = DEFAULT_SAMPLES_IGNORED_VERSIONS
+        metadata["ignored_versions"] = IGNORED_VERSIONS
     if "install_library_from_source" not in metadata:
         metadata["install_library_from_source"] = False
 
