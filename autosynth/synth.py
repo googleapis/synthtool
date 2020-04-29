@@ -407,11 +407,10 @@ def synthesize_range(
 
 def git_branches_differ(branch_a: str, branch_b: str, metadata_path: str) -> bool:
     # Check to see if any files besides synth.metadata were added, modified, deleted.
-    proc = subprocess.run(
-        ["git", "diff", f"{branch_a}..{branch_b}", "--", f":(exclude){metadata_path}"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-    )
+    diff_cmd = ["git", "diff", f"{branch_a}..{branch_b}"]
+    if os.path.exists(metadata_path):
+        diff_cmd.extend(["--", f":(exclude){metadata_path}"])
+    proc = subprocess.run(diff_cmd, stdout=subprocess.PIPE, universal_newlines=True)
     proc.check_returncode()
     if bool(proc.stdout):
         return True
