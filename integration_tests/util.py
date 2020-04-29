@@ -89,9 +89,9 @@ def generate(repository: str, commit_hash="master", synth_path="") -> str:
                 raise
         handle, git_log_path = tempfile.mkstemp(".log")
         # Collect the full git log.
-        log_cmd = ["git", "log", f"-{commit_count or 1}", "-p", "--no-decorate", "."]
+        log_cmd = ["git", "log", f"-{commit_count or 1}", "-p", "--no-decorate"]
         if os.path.exists("synth.metadata"):
-            log_cmd.append(":(exclude)synth.metadata")
+            log_cmd.extend(["--", ".", ":(exclude)synth.metadata"])
         with os.fdopen(handle, "w") as git_log:
             subprocess.run(
                 log_cmd, stdout=git_log,
