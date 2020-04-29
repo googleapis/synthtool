@@ -39,4 +39,4 @@ def lint(session):
 def test(session):
     session.install('pytest', 'pytest-cov', 'requests_mock')
     session.run('pip', 'install', '-e', '.')
-    session.run('pytest', '--cov-report', 'term-missing', '--cov', 'synthtool', 'tests', *session.posargs)
+    session.run('pytest', '--cov-report', 'term-missing', '--cov', 'autosynth', 'synthtool', 'tests', *session.posargs)
