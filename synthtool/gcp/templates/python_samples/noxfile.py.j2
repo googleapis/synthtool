@@ -24,7 +24,12 @@ import nox
 # Edit the `noxfile.py.yml` to change tested versions
 # Current default versions are 3.6, 3.7, and 3.8.
 
-TESTED_VERSIONS = [{% for v in versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+ALL_VERSIONS = [{% for v in DEFAULT_VERSIONS %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+
+# Any default versions that should be ignored.
+IGNORED_VERSIONS = [{% for v in ignored_versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+
+TESTED_VERSIONS = sorted([v for v in ALL_VERSIONS if v not in IGNORED_VERSIONS])
 
 #
 # Style Checks
@@ -129,24 +134,3 @@ def py(session):
         _session_tests(session)
     else:
         print("SKIPPED: {} tests are disabled for this sample.".format(session.python))
-
-
-#
-# Readmegen
-#
-
-
-GENERATED_READMES = sorted([str(Path.resolve(x)) for x in Path(".").rglob("*.rst.in")])
-
-@nox.session
-@nox.parametrize("path", GENERATED_READMES)
-def readmegen(session, path):
-    """(Re-)generates the readme for a sample."""
-    session.install("jinja2", "pyyaml")
-
-    if os.path.exists(os.path.join(path, "requirements.txt")):
-        session.install("-r", os.path.join(path, "requirements.txt"))
-
-    session.run(
-        "python", "../scripts/readme-gen/readme_gen.py", path)
-    
