@@ -566,11 +566,11 @@ def test_working_repo():
 
 def assert_git_log_matches(golden_log_path: pathlib.Path):
     handle, git_log_path = tempfile.mkstemp(".log")
+    log_cmd = ["git", "log", "-p", "--no-decorate"]
+    if os.path.exists("synth.metadata"):
+        log_cmd.extend(["--", f":(exclude)synth.metadata"])
     with os.fdopen(handle, "w") as git_log:
-        subprocess.run(
-            ["git", "log", "-p", "--no-decorate", "--", f":(exclude)synth.metadata"],
-            stdout=git_log,
-        )
+        subprocess.run(log_cmd, stdout=git_log)
     util.assert_git_logs_match(git_log_path, str(golden_log_path), log_lines_match)
 
 
