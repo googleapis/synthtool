@@ -17,7 +17,9 @@ import integration_tests.util
 
 def test():
     git_log_path = integration_tests.util.generate(
-        "googleapis/google-cloud-ruby", "9fbc94c17cae022cdef367798e0325732f91189c", "google-cloud-kms/"
+        "googleapis/google-cloud-ruby",
+        "9fbc94c17cae022cdef367798e0325732f91189c",
+        "google-cloud-kms/",
     )
     integration_tests.util.assert_git_logs_match(
         git_log_path,

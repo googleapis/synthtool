@@ -12,20 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import unittest
-
 import autosynth
 import integration_tests.util
 
 
 def test():
-    with integration_tests.util.ModifiedEnvironment({
-            autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS: "TRUE"
-        }):
+    with integration_tests.util.ModifiedEnvironment(
+        {autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS: "TRUE"}
+    ):
         git_log_path = integration_tests.util.generate(
             "googleapis/google-cloud-php",
             "d5ccc000fbf4d11a66efdafacacd98ad84f18f74",
-            "Language/"
+            "Language/",
         )
         integration_tests.util.assert_git_logs_match(
             git_log_path,

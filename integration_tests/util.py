@@ -135,7 +135,7 @@ def log_lines_match(a_line: str, b_line: str) -> bool:
         re.compile(r"\s*commit [a-f0-9]+\s*"),
         re.compile(r"\s*Author:.*", re.DOTALL),
         re.compile(r"\s*Date:.*", re.DOTALL),
-        re.compile(r"\s*index [0-9a-f]+..[0-9a-f]+ [0-9]+\s*")
+        re.compile(r"\s*index [0-9a-f]+..[0-9a-f]+ [0-9]+\s*"),
     ]
     for commit_header_line in commit_header:
         if commit_header_line.fullmatch(a_line) and commit_header_line.fullmatch(
@@ -152,8 +152,11 @@ def open_log(path: str):
         return io.StringIO("")
 
 
-def assert_git_logs_match(generated_log_file_path, golden_log_file_path,
-    lines_match: typing.Callable[[str, str], bool] = log_lines_match) -> None:
+def assert_git_logs_match(
+    generated_log_file_path,
+    golden_log_file_path,
+    lines_match: typing.Callable[[str, str], bool] = log_lines_match,
+) -> None:
     """Compares the contents of two git log files.
     """
     line_count = 0
