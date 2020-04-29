@@ -1,0 +1,94 @@
+commit 54361d2aa96ee5588cb351a329a117d710a86923
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:32:01 2020 -0700
+
+    Wrote c-more to c.txt.
+
+diff --git a/c.txt b/c.txt
+index 3410062..0794b8a 100644
+--- a/c.txt
++++ b/c.txt
+@@ -1 +1 @@
+-c
+\ No newline at end of file
++c-more
+\ No newline at end of file
+
+commit aa21ac6ba918a9acd43a4b7d40e670cbbd8d6844
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:32:00 2020 -0700
+
+    Wrote c to c.txt.
+
+diff --git a/c.txt b/c.txt
+new file mode 100644
+index 0000000..3410062
+--- /dev/null
++++ b/c.txt
+@@ -0,0 +1 @@
++c
+\ No newline at end of file
+
+commit 43b5bd7e9722ac86d646611960cb35e931e27b4a
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:31:59 2020 -0700
+
+    Wrote z to a.txt.
+
+diff --git a/a.txt b/a.txt
+index 2e65efe..fa7af8b 100644
+--- a/a.txt
++++ b/a.txt
+@@ -1 +1 @@
+-a
+\ No newline at end of file
++z
+\ No newline at end of file
+
+commit bc5fdf7171096d7831509fb1499a4995dce15f8e
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:31:59 2020 -0700
+
+    Wrote b to b.txt.
+
+diff --git a/b.txt b/b.txt
+new file mode 100644
+index 0000000..63d8dbd
+--- /dev/null
++++ b/b.txt
+@@ -0,0 +1 @@
++b
+\ No newline at end of file
+
+commit 3a33e468e6525c59b6cdf9c9957bf146ca5516a4
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:31:58 2020 -0700
+
+    changes without context
+    
+            autosynth cannot find the source of changes triggered by earlier changes in this
+            repository, or by version upgrades to tools such as linters.
+
+diff --git a/a.txt b/a.txt
+new file mode 100644
+index 0000000..2e65efe
+--- /dev/null
++++ b/a.txt
+@@ -0,0 +1 @@
++a
+\ No newline at end of file
+
+commit 999712c922bea926058c9d7091f507f73768236e
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:31:57 2020 -0700
+
+    Added Readme
+
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..df3f6c7
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1 @@
++Well done.
+\ No newline at end of file
