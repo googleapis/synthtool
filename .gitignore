@@ -108,3 +108,9 @@ venv.bak/
 
 # IDE artifacts
 .vscode/
+.settings/
+.project
+
+# synthtool artifacts
+working_repo/
+sponge_log.xml

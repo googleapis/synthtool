@@ -1,0 +1,63 @@
+commit e0840aa69d02d143ba5471d46ec35262dd439990
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:32:34 2020 -0700
+
+    Wrote c-more to c.txt.
+
+diff --git a/c.txt b/c.txt
+index 3410062..0794b8a 100644
+--- a/c.txt
++++ b/c.txt
+@@ -1 +1 @@
+-c
+\ No newline at end of file
++c-more
+\ No newline at end of file
+
+commit 031bb12825e298259de6626b08de4d1f1dc90f9c
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:32:33 2020 -0700
+
+    Wrote c to c.txt.
+
+diff --git a/c.txt b/c.txt
+new file mode 100644
+index 0000000..3410062
+--- /dev/null
++++ b/c.txt
+@@ -0,0 +1 @@
++c
+\ No newline at end of file
+
+commit f917b406627d2af14ef42d7ab21223f2a35b8e79
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:32:32 2020 -0700
+
+    changes without context
+    
+            autosynth cannot find the source of changes triggered by earlier changes in this
+            repository, or by version upgrades to tools such as linters.
+
+diff --git a/a.txt b/a.txt
+new file mode 100644
+index 0000000..2e65efe
+--- /dev/null
++++ b/a.txt
+@@ -0,0 +1 @@
++a
+\ No newline at end of file
+
+commit a2e7e520a5d7a75cc14392b9546fd9ede270cd0c
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:32:28 2020 -0700
+
+    Added Readme
+
+diff --git a/README.md b/README.md
+new file mode 100644
+index 0000000..df3f6c7
+--- /dev/null
++++ b/README.md
+@@ -0,0 +1 @@
++Well done.
+\ No newline at end of file
