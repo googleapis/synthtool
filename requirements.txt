@@ -5,6 +5,8 @@ nox
 requests
 pyyaml
 jinja2
+deprecation
+protobuf
 
 # some java processing requires xml handling
 lxml
