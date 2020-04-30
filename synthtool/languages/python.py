@@ -16,7 +16,7 @@ import re
 import sys
 import yaml
 from pathlib import Path
-from typing import Optional
+from typing import Any, Dict
 
 import synthtool as s
 from synthtool import log, shell, _tracked_paths
@@ -73,7 +73,7 @@ def _get_help(filename: str) -> str:
 
 
 def _get_noxfile_metadata(sample_dir: Path) -> dict:
-    metadata = {}
+    metadata: Dict[str, Any] = {}
     with open(sample_dir / "noxfile.py.yml") as f:
         metadata = yaml.load(f, Loader=yaml.SafeLoader) or {}
 
@@ -87,10 +87,10 @@ def _get_noxfile_metadata(sample_dir: Path) -> dict:
     return metadata
 
 
-def _get_sample_readme_metadata(sample_dir: Path) -> Optional[dict]:
+def _get_sample_readme_metadata(sample_dir: Path) -> dict:
     sample_readme = sample_dir / "README.rst.in"
 
-    sample_metdata = {}
+    sample_metadata = {}
     if sample_readme.exists():
         requirements = str(Path(sample_dir / "requirements.txt").resolve())
         log.debug(
@@ -114,8 +114,8 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
     README.rst.in
 
     Args:
-        root (Union[Path, str]): The samples directory root. 
-        skip_readmes (bool): If true, do not generate readmes. 
+        root (Union[Path, str]): The samples directory root.
+        skip_readmes (bool): If true, do not generate readmes.
     """
     in_client_library = Path("samples").exists() and Path("setup.py").exists()
     if root is None:
@@ -153,7 +153,7 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
 
         noxfile_metadata = _get_noxfile_metadata(sample_project_dir)
 
-        sample_readme_metadata = {}
+        sample_readme_metadata: Dict[str, Any] = {}
         if not skip_readmes:
             sample_readme_metadata = _get_sample_readme_metadata(sample_project_dir)
             if sample_readme_metadata == {}:
