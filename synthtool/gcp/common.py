@@ -92,9 +92,13 @@ class CommonTemplates:
 
         kwargs["metadata"] = node.template_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
-        node.generate_index_ts(
-            versions=kwargs["versions"], default_version=kwargs["default_version"]
-        )
+
+        # generate root-level `src/index.ts` to export multiple versions and its default clients
+        if kwargs["versions"] and kwargs["default_version"]:
+            node.generate_index_ts(
+                versions=kwargs["versions"], default_version=kwargs["default_version"]
+            )
+
         return self._generic_library("node_library", **kwargs)
 
     def php_library(self, **kwargs) -> Path:
