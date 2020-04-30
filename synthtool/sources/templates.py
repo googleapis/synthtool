@@ -66,7 +66,7 @@ class Templates:
         self.source_path = Path(location)
         self.dir = tmp.tmpdir()
 
-    def render(self, template_name: str, subdir=".", **kwargs) -> Path:
+    def render(self, template_name: str, subdir: PathOrStr = ".", **kwargs) -> Path:
         return _render_to_path(self.env, template_name, self.dir / subdir, kwargs)
 
 
@@ -76,7 +76,7 @@ class TemplateGroup:
         self.dir = tmp.tmpdir()
         self.excludes = excludes
 
-    def render(self, subdir=".", **kwargs) -> Path:
+    def render(self, subdir: PathOrStr = ".", **kwargs) -> Path:
         for template_name in self.env.list_templates():
             if template_name not in self.excludes:
                 _render_to_path(self.env, template_name, self.dir / subdir, kwargs)
