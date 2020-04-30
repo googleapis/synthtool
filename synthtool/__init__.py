@@ -18,7 +18,6 @@ import sys
 
 from synthtool.transforms import move, replace
 from synthtool import log
-from synthtool import update_check
 
 copy = move
 
@@ -31,6 +30,3 @@ if hasattr(_main_module, "__file__") and "synthtool" not in _main_module.__file_
     log.critical(
         "You are running the synthesis script directly, this will be disabled in a future release of Synthtool. Please use python3 -m synthtool instead."
     )
-
-# check for updates, if needed.
-update_check.check_for_updates("gcp-synthtool", print=log.critical)
