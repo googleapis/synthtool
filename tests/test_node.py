@@ -112,60 +112,65 @@ def test_extract_multiple_clients():
 
 def test_generate_index_ts():
     cwd = os.getcwd()
-    # use a non-nodejs template directory
-    os.chdir(FIXTURES / "node_templates" / "index_samples")
-    node.generate_index_ts(["v1", "v1beta1"], "v1")
-    generated_index_path = pathlib.Path(
-        FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
-    )
-    sample_index_path = pathlib.Path(
-        FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
-    )
-    assert filecmp.cmp(generated_index_path, sample_index_path)
-    os.chdir(cwd)
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
+        node.generate_index_ts(["v1", "v1beta1"], "v1")
+        generated_index_path = pathlib.Path(
+            FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
+        )
+        sample_index_path = pathlib.Path(
+            FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
+        )
+        assert filecmp.cmp(generated_index_path, sample_index_path)
+    finally:
+        os.chdir(cwd)
 
 
 def test_generate_index_ts_empty_versions():
     cwd = os.getcwd()
-    # use a non-nodejs template directory
-    os.chdir(FIXTURES / "node_templates" / "index_samples")
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
 
-    with pytest.raises(AttributeError) as err:
-        node.generate_index_ts([], "v1")
-        assert "can't be empty" in err.args
-
-    os.chdir(cwd)
+        with pytest.raises(AttributeError) as err:
+            node.generate_index_ts([], "v1")
+            assert "can't be empty" in err.args
+    finally:
+        os.chdir(cwd)
 
 
 def test_generate_index_ts_invalid_default_version():
     cwd = os.getcwd()
-    # use a non-nodejs template directory
-    os.chdir(FIXTURES / "node_templates" / "index_samples")
-    versions = ["v1beta1"]
-    default_version = "v1"
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
+        versions = ["v1beta1"]
+        default_version = "v1"
 
-    with pytest.raises(AttributeError) as err:
-        node.generate_index_ts(versions, default_version)
-        assert f"must contain default version {default_version}" in err.args
-
-    os.chdir(cwd)
+        with pytest.raises(AttributeError) as err:
+            node.generate_index_ts(versions, default_version)
+            assert f"must contain default version {default_version}" in err.args
+    finally:
+        os.chdir(cwd)
 
 
 def test_generate_index_ts_no_clients():
     cwd = os.getcwd()
-    # use a non-nodejs template directory
-    os.chdir(FIXTURES / "node_templates" / "index_samples")
-    versions = ["v1", "v1beta1", "invalid_index"]
-    default_version = "invalid_index"
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
+        versions = ["v1", "v1beta1", "invalid_index"]
+        default_version = "invalid_index"
 
-    with pytest.raises(AttributeError) as err:
-        node.generate_index_ts(versions, default_version)
-        assert (
-            f"No client is exported in the default version's({default_version}) index.ts ."
-            in err.args
-        )
-
-    os.chdir(cwd)
+        with pytest.raises(AttributeError) as err:
+            node.generate_index_ts(versions, default_version)
+            assert (
+                f"No client is exported in the default version's({default_version}) index.ts ."
+                in err.args
+            )
+    finally:
+        os.chdir(cwd)
 
 
 class TestPostprocess(TestCase):
