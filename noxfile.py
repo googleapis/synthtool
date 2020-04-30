@@ -23,7 +23,7 @@ def generate_protos(session):
 @nox.session(python='3.6')
 def blacken(session):
     session.install('black')
-    session.run('black', 'synthtool', 'tests')
+    session.run('black', 'synthtool', 'tests', 'autosynth', 'integration_tests')
 
 
 @nox.session(python='3.6')
@@ -31,12 +31,12 @@ def lint(session):
     session.install('mypy', 'flake8', 'black')
     session.run('pip', 'install', '-e', '.')
     session.run('black', '--check', 'synthtool', 'tests')
-    session.run('flake8', 'synthtool', 'tests')
-    session.run('mypy', 'synthtool')
+    session.run('flake8', 'synthtool', 'tests', 'autosynth', 'integration_tests')
+    session.run('mypy', 'synthtool', 'autosynth')
 
 
 @nox.session(python='3.6')
 def test(session):
     session.install('pytest', 'pytest-cov', 'requests_mock')
     session.run('pip', 'install', '-e', '.')
-    session.run('pytest', '--cov-report', 'term-missing', '--cov', 'synthtool', 'tests', *session.posargs)
+    session.run('pytest', '--cov-report', 'term-missing', '--cov', 'autosynth', 'synthtool', 'tests', *session.posargs)
