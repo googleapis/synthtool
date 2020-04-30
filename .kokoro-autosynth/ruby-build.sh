@@ -15,7 +15,7 @@
 
 set -eo pipefail
 
-cd ${KOKORO_ARTIFACTS_DIR}/git/synthtool
+cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
 
 # Download yarn public key
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -

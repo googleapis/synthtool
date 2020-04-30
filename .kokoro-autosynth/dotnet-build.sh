@@ -15,7 +15,7 @@
 
 set -eo pipefail
 
-cd ${KOKORO_ARTIFACTS_DIR}/git/synthtool
+cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
 
 export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=true
 export DOTNET_CLI_TELEMETRY_OPTOUT=true
@@ -33,4 +33,4 @@ sudo apt-get -qq install -y dotnet-sdk-2.2=2.2.105-1
 sudo apt-get -qq install -y dotnet-sdk-3.1=3.1.102-1
 
 # Run the normal autosynth build
-${KOKORO_ARTIFACTS_DIR}/git/synthtool/.kokoro-autosynth/build.sh
+${KOKORO_ARTIFACTS_DIR}/github/synthtool/.kokoro-autosynth/build.sh
