@@ -82,10 +82,9 @@ def test_extract_clients_no_file():
         FIXTURES / "node_templates" / "index_samples" / "no_exist_index.ts"
     )
 
-    with pytest.raises(FileNotFoundError) as err_msg:
+    with pytest.raises(FileNotFoundError):
         clients = node.extract_clients(index_ts_path)
         assert not clients
-        assert f"Failed to find {index_ts_path}" in err_msg
 
 
 def test_extract_single_clients():
@@ -115,15 +114,13 @@ def test_generate_index_ts():
     cwd = os.getcwd()
     # use a non-nodejs template directory
     os.chdir(FIXTURES / "node_templates" / "index_samples")
-    isGen = node.generate_index_ts(["v1", "v1beta1"], "v1")
+    node.generate_index_ts(["v1", "v1beta1"], "v1")
     generated_index_path = pathlib.Path(
         FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
     )
     sample_index_path = pathlib.Path(
         FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
     )
-
-    assert isGen is True
     assert filecmp.cmp(generated_index_path, sample_index_path)
     os.chdir(cwd)
 
@@ -134,7 +131,7 @@ def test_generate_index_ts_empty_versions():
     os.chdir(FIXTURES / "node_templates" / "index_samples")
 
     with pytest.raises(AttributeError) as err:
-        _ = node.generate_index_ts([], "v1")
+        node.generate_index_ts([], "v1")
         assert "can't be empty" in err.args
 
     os.chdir(cwd)
@@ -148,7 +145,7 @@ def test_generate_index_ts_invalid_default_version():
     default_version = "v1"
 
     with pytest.raises(AttributeError) as err:
-        _ = node.generate_index_ts(versions, default_version)
+        node.generate_index_ts(versions, default_version)
         assert f"must contain default version {default_version}" in err.args
 
     os.chdir(cwd)
@@ -161,10 +158,12 @@ def test_generate_index_ts_no_clients():
     versions = ["v1", "v1beta1", "invalid_index"]
     default_version = "invalid_index"
 
-    # with pytest.raises(AttributeError) as err:
-    isGen = node.generate_index_ts(versions, default_version)
-    # assert f"No client is exported in the default version's({default_version}) index.ts ." in err.args
-    assert isGen is False
+    with pytest.raises(AttributeError) as err:
+        node.generate_index_ts(versions, default_version)
+        assert (
+            f"No client is exported in the default version's({default_version}) index.ts ."
+            in err.args
+        )
 
     os.chdir(cwd)
 

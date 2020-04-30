@@ -106,19 +106,12 @@ def extract_clients(filePath: Path) -> List[str]:
     Returns:
         Array of client name string extract from index.ts file.
     """
-    content = ""
-
-    try:
-        with open(filePath, "r") as fh:
-            content = fh.read()
-    except FileNotFoundError:
-        err_msg = f"Failed to find {filePath}."
-        log.error(err_msg)
-        raise FileNotFoundError(err_msg)
+    with open(filePath, "r") as fh:
+        content = fh.read()
     return re.findall(r"\{(.*Client)\}", content)
 
 
-def generate_index_ts(versions: List[str], default_version: str) -> bool:
+def generate_index_ts(versions: List[str], default_version: str) -> None:
     """
     generate src/index.ts to export the client name and versions in the client library.
 
@@ -143,26 +136,26 @@ def generate_index_ts(versions: List[str], default_version: str) -> bool:
     # compose default version's index.ts file path
     versioned_index_ts_path = Path("src") / default_version / "index.ts"
     clients = extract_clients(versioned_index_ts_path)
-    if len(clients) == 0:
+    if not clients:
         err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
         log.error(err_msg)
-        return False
+        raise AttributeError(err_msg)
 
     # compose template directory
-    templatePath = (
+    template_path = (
         Path(__file__).parent.parent / "gcp" / "templates" / "node_split_library"
     )
-    templateLoader = FileSystemLoader(searchpath=str(templatePath))
-    templateEnv = Environment(loader=templateLoader, keep_trailing_newline=True)
+    template_loader = FileSystemLoader(searchpath=str(template_path))
+    template_env = Environment(loader=template_loader, keep_trailing_newline=True)
     TEMPLATE_FILE = "index.ts.j2"
-    index_template = templateEnv.get_template(TEMPLATE_FILE)
+    index_template = template_env.get_template(TEMPLATE_FILE)
     # render index.ts content
-    outputText = index_template.render(
+    output_text = index_template.render(
         versions=versions, default_version=default_version, clients=clients
     )
     with open("src/index.ts", "w") as fh:
-        fh.write(outputText)
-    return True
+        fh.write(output_text)
+    log.info("successfully generate `src/index.ts`")
 
 
 def install(hide_output=False):
