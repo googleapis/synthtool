@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,9 +13,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-env_vars: {
-    key: "MULTISYNTH_CONFIG"
-    value: "autosynth.providers.dotnet"
-}
+set -eo pipefail
 
-build_file: "autosynth/.kokoro/dotnet-build.sh"
+cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
+
+# Install Node 12, as the Kokoro image
+# uses an older version by default
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+sudo apt-get install -y nodejs
+
+sudo rm /usr/local/bin/node
+sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+
+# Verify Node 12 is being used
+node --version
+
+# Run the normal autosynth build
+${KOKORO_ARTIFACTS_DIR}/github/synthtool/.kokoro-autosynth/build.sh
