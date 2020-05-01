@@ -13,10 +13,13 @@
 # limitations under the License.
 
 import json
-from typing import Any, Dict
+from jinja2 import FileSystemLoader, Environment
+from pathlib import Path
+import re
+from synthtool import log, shell
 from synthtool.sources import git
 from synthtool.gcp import samples, snippets
-from synthtool import log, shell
+from typing import Any, Dict, List
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -92,6 +95,67 @@ def get_publish_token(package_name: str):
         The name of the key to fetch the publish token.
     """
     return package_name.strip("@").replace("/", "-") + "-npm-token"
+
+
+def extract_clients(filePath: Path) -> List[str]:
+    """
+    parse the client name from index.ts file
+
+    Args:
+        filePath: the path of index.ts.
+    Returns:
+        Array of client name string extract from index.ts file.
+    """
+    with open(filePath, "r") as fh:
+        content = fh.read()
+    return re.findall(r"\{(.*Client)\}", content)
+
+
+def generate_index_ts(versions: List[str], default_version: str) -> None:
+    """
+    generate src/index.ts to export the client name and versions in the client library.
+
+    Args:
+      versions: the list of versions, like: ['v1', 'v1beta1', ...]
+      default_version: a stable version provided by API producer. It must exist in argument versions.
+    Return:
+      True/False: return true if successfully generate src/index.ts, vice versa.
+    """
+    # sanitizer the input arguments
+    if len(versions) < 1:
+        err_msg = (
+            "List of version can't be empty, it must contain default version at least."
+        )
+        log.error(err_msg)
+        raise AttributeError(err_msg)
+    if default_version not in versions:
+        err_msg = f"Version {versions} must contain default version {default_version}."
+        log.error(err_msg)
+        raise AttributeError(err_msg)
+
+    # compose default version's index.ts file path
+    versioned_index_ts_path = Path("src") / default_version / "index.ts"
+    clients = extract_clients(versioned_index_ts_path)
+    if not clients:
+        err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
+        log.error(err_msg)
+        raise AttributeError(err_msg)
+
+    # compose template directory
+    template_path = (
+        Path(__file__).parent.parent / "gcp" / "templates" / "node_split_library"
+    )
+    template_loader = FileSystemLoader(searchpath=str(template_path))
+    template_env = Environment(loader=template_loader, keep_trailing_newline=True)
+    TEMPLATE_FILE = "index.ts.j2"
+    index_template = template_env.get_template(TEMPLATE_FILE)
+    # render index.ts content
+    output_text = index_template.render(
+        versions=versions, default_version=default_version, clients=clients
+    )
+    with open("src/index.ts", "w") as fh:
+        fh.write(output_text)
+    log.info("successfully generate `src/index.ts`")
 
 
 def install(hide_output=False):
