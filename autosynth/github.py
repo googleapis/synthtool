@@ -16,7 +16,7 @@ import base64
 from typing import Generator, Sequence, Dict, Optional
 
 import requests
-
+import typing
 
 _GITHUB_ROOT: str = "https://api.github.com"
 
@@ -50,7 +50,7 @@ class GitHub:
 
     def create_pull_request(
         self, repository: str, branch: str, title: str, body: str = None
-    ) -> str:
+    ) -> typing.Dict[str, typing.Any]:
         url = f"{_GITHUB_ROOT}/repos/{repository}/pulls"
         response = self.session.post(
             url,
