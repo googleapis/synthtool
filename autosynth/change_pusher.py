@@ -13,15 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import os
-
+import subprocess
+import tempfile
+import typing
+import uuid
 from abc import ABC, abstractmethod
+
 from autosynth import git, github
 from autosynth.log import logger
-import subprocess
-import uuid
-import tempfile
+
+
+class AbstractPullRequest(ABC):
+    """Abstractly, manipulates an existing pull request."""
+
+    @abstractmethod
+    def add_labels(self, labels: typing.Sequence[str]) -> None:
+        """Adds labels to an existing pull request."""
+        pass
 
 
 class AbstractChangePusher(ABC):
@@ -30,13 +39,35 @@ class AbstractChangePusher(ABC):
     @abstractmethod
     def push_changes(
         self, commit_count: int, branch: str, pr_title: str, synth_log: str = ""
-    ) -> None:
-        """Creates a pull request from commits in current working directory."""
+    ) -> AbstractPullRequest:
+        """Creates a pull request from commits in current working directory.
+
+        Arguments:
+            commit_count {int} -- How many commits are in this pull request?
+            branch {str} -- The name of the local branch to push.
+            pr_title {str} -- The title for the pull request.
+
+        Keyword Arguments:
+            synth_log {str} -- The full log of the call to synth. (default: {""})
+
+        Returns:
+            A pull request.
+        """
         pass
 
     @abstractmethod
     def check_if_pr_already_exists(self, branch) -> bool:
         pass
+
+
+class PullRequest(AbstractPullRequest):
+    def __init__(self, gh: github.GitHub, pr: typing.Dict[str, typing.Any]):
+        self._gh = gh
+        self._pr = pr
+
+    def add_labels(self, labels: typing.Sequence[str]) -> None:
+        """Adds labels to an existing pull request."""
+        self._gh.update_pull_labels(self._pr, add=labels)
 
 
 class ChangePusher(AbstractChangePusher):
@@ -49,7 +80,7 @@ class ChangePusher(AbstractChangePusher):
 
     def push_changes(
         self, commit_count: int, branch: str, pr_title: str, synth_log: str = ""
-    ) -> None:
+    ) -> AbstractPullRequest:
         git.push_changes(branch)
 
         pr = self._gh.create_pull_request(
@@ -64,7 +95,8 @@ class ChangePusher(AbstractChangePusher):
             api_label = self._gh.get_api_label(self._repository, self._synth_path)
 
             if api_label:
-                self._gh.update_pull_labels(json.loads(pr), add=[api_label])
+                self._gh.update_pull_labels(pr, add=[api_label])
+        return PullRequest(self._gh, pr)
 
     def check_if_pr_already_exists(self, branch) -> bool:
         repo = self._repository
@@ -87,13 +119,12 @@ class SquashingChangePusher(AbstractChangePusher):
 
     def push_changes(
         self, commit_count: int, branch: str, pr_title: str, synth_log: str = ""
-    ) -> None:
+    ) -> AbstractPullRequest:
         if commit_count < 2:
             # Only one change, no need to squash.
-            self.inner_change_pusher.push_changes(
+            return self.inner_change_pusher.push_changes(
                 commit_count, branch, pr_title, synth_log
             )
-            return
 
         subprocess.check_call(["git", "checkout", branch])  # Probably redundant.
         with tempfile.NamedTemporaryFile() as message_file:
@@ -111,7 +142,7 @@ class SquashingChangePusher(AbstractChangePusher):
             subprocess.check_call(["git", "checkout", "-b", branch])
             subprocess.check_call(["git", "merge", "--squash", temp_branch])
             subprocess.check_call(["git", "commit", "-F", message_file.name])
-        self.inner_change_pusher.push_changes(1, branch, pr_title, synth_log)
+        return self.inner_change_pusher.push_changes(1, branch, pr_title, synth_log)
 
     def check_if_pr_already_exists(self, branch) -> bool:
         return self.inner_change_pusher.check_if_pr_already_exists(branch)

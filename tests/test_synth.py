@@ -27,7 +27,11 @@ import pytest  # type:ignore
 import autosynth.abstract_source
 import autosynth.synth
 from autosynth import git
-from autosynth.change_pusher import AbstractChangePusher, SquashingChangePusher
+from autosynth.change_pusher import (
+    AbstractChangePusher,
+    SquashingChangePusher,
+    AbstractPullRequest,
+)
 from autosynth.synthesizer import AbstractSynthesizer
 from integration_tests import util
 import json
@@ -163,11 +167,16 @@ def test_synthesize_loop_with_empty_change_history():
         assert 0 == commit_count
 
 
+class MockPullRequest(AbstractPullRequest):
+    def add_labels(self, labels: typing.Sequence[str]) -> None:
+        pass
+
+
 class MockChangePusher(AbstractChangePusher):
     def push_changes(
         self, commit_count: int, branch: str, pr_title: str = "", synth_log: str = ""
     ) -> None:
-        pass
+        return MockPullRequest()
 
     def check_if_pr_already_exists(self, branch) -> bool:
         return False
@@ -235,12 +244,14 @@ def test_synthesize_loop_with_realistic_change_history_multiple_prs(
             "test-source1",
             "[CHANGE ME] Re-generated to pick up changes from source1.",
         ),
+        call.push_changes().add_labels(["context: partial"]),
         call.check_if_pr_already_exists("test-source2"),
         call.push_changes(
             3,
             "test-source2",
             "[CHANGE ME] Re-generated to pick up changes from source2.",
         ),
+        call.push_changes().add_labels(["context: partial"]),
     ]
     assert golden_calls == calls
 
@@ -262,6 +273,7 @@ def test_synthesize_loop_with_realistic_change_history_squash_prs(
             "[CHANGE ME] Re-generated to pick up changes from source1.",
             "",
         ),
+        call.push_changes().add_labels(["context: partial"]),
         call.check_if_pr_already_exists("test-source2"),
         call.push_changes(
             1,
@@ -269,6 +281,7 @@ def test_synthesize_loop_with_realistic_change_history_squash_prs(
             "[CHANGE ME] Re-generated to pick up changes from source2.",
             "",
         ),
+        call.push_changes().add_labels(["context: partial"]),
     ]
     assert golden_calls == calls
 
@@ -426,6 +439,7 @@ def test_synthesize_loop_uses_single_commit_title_for_pr_title(
         call.check_if_pr_already_exists("test-source1"),
         call.check_if_pr_already_exists("test-source2"),
         call.push_changes(1, "test-source2", "Wrote a to a.txt."),
+        call.push_changes().add_labels(["context: full"]),
     ]
     assert golden_calls == calls
 
