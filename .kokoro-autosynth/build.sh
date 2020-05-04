@@ -32,6 +32,10 @@ cd /home/kbuilder/.pyenv/plugins/python-build/../.. && git pull && cd -
 pyenv install 3.6.9
 pyenv global 3.6.9
 
+# use python installed by pyenv and use python3.6 specific set of dependencies
+echo "build --extra_toolchains=@gapic_generator_python//:pyenv3_toolchain --define=gapic_gen_python=3.6" > $HOME/.bazelrc
+echo "test --extra_toolchains=@gapic_generator_python//:pyenv3_toolchain --define=gapic_gen_python=3.6" >> $HOME/.bazelrc
+
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
