@@ -94,7 +94,7 @@ class CommonTemplates:
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
 
         # generate root-level `src/index.ts` to export multiple versions and its default clients
-        if kwargs["versions"] and kwargs["default_version"]:
+        if "versions" in kwargs and "default_version" in kwargs:
             node.generate_index_ts(
                 versions=kwargs["versions"], default_version=kwargs["default_version"]
             )

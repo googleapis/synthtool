@@ -283,7 +283,15 @@ class SynthesizeLoopToolbox:
         pr_title = _compose_pr_title(
             self.count_commits_with_context(), self._synth_path, self.source_name
         )
-        change_pusher.push_changes(self.commit_count, self.branch, pr_title)
+        pr = change_pusher.push_changes(self.commit_count, self.branch, pr_title)
+        # Add a label to make it easy to collect statistics about commits with context.
+        if self.count_commits_with_context() == 0:
+            label = "context: none"
+        elif self.count_commits_with_context() == self.commit_count:
+            label = "context: full"
+        else:
+            label = "context: partial"
+        pr.add_labels([label])
 
 
 def _compose_pr_title(
