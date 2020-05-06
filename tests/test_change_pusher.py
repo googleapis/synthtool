@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from autosynth.change_pusher import build_pr_body
+from autosynth.change_pusher import build_pr_body, _parse_trailers
 from integration_tests import util
 
 
@@ -39,3 +39,36 @@ def test_build_pr_body_with_synth_log_and_kokoro_build_id():
             pr_body.find("https://source.cloud.google.com/results/invocations/42") == -1
         )
         assert pr_body.find(synth_log) > -1
+
+
+def test_build_pr_body_with_synth_trailers():
+    synth_log = "synth log"
+    pr_body = build_pr_body(synth_log, "a: b\nc: d")
+    assert pr_body.find("a: b") > -1
+    assert pr_body.find("c: d") > -1
+
+
+def test_parse_trailers():
+    text = """
+Source-Author: Google APIs <noreply@google.com>
+Source-Date: Mon Apr 13 12:05:23 2020 -0700
+Source-Repo: googleapis/googleapis
+Source-Sha: 4d61e1cb40184a7ad63ef37b1813f6608718674a
+Source-Link: https://github.com/googleapis/googleapis/commit/4d61e1cb40184a7ad63ef37b1813f6608718674a
+
+* Removing erroneous comment, a la https://github.com/googleapis/java-speech/pull/103
+PiperOrigin-RevId: 296332968
+
+Source-Author: Google APIs <noreply@google.com>
+Source-Date: Thu Feb 20 17:19:15 2020 -0800
+Source-Repo: googleapis/googleapis
+Source-Sha: 17567c4a1ef0a9b50faa87024d66f8acbb561089
+Source-Link: https://github.com/googleapis/googleapis/commit/17567c4a1ef0a9b50faa87024d66f8acbb561089
+
+* changes without context
+        autosynth cannot find the source of changes triggered by earlier changes in this
+        repository, or by version upgrades to tools such as linters.
+""".strip()
+    trailers = _parse_trailers(text)
+    golden_trailers = "Source-Link: https://github.com/googleapis/googleapis/commit/4d61e1cb40184a7ad63ef37b1813f6608718674a\nPiperOrigin-RevId: 296332968\nSource-Link: https://github.com/googleapis/googleapis/commit/17567c4a1ef0a9b50faa87024d66f8acbb561089"
+    assert trailers == golden_trailers
