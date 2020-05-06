@@ -152,7 +152,7 @@ class SquashingChangePusher(AbstractChangePusher):
         return self.inner_change_pusher.check_if_pr_already_exists(branch)
 
 
-def build_pr_body(synth_log: str, trailers: str):
+def build_pr_body(synth_log: str, trailers: str = ""):
     """Composes the pull request body with the synth_log.
 
     If synth_log is empty, then creates link to kokoro build log.

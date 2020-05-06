@@ -18,13 +18,13 @@ from integration_tests import util
 
 def test_build_pr_body_with_synth_log():
     synth_log = "The best pull request ever!"
-    pr_body = build_pr_body(synth_log, "")
+    pr_body = build_pr_body(synth_log)
     assert pr_body.find(synth_log) > -1
 
 
 def test_build_pr_body_with_kokoro_build_id():
     with util.ModifiedEnvironment({"KOKORO_BUILD_ID": "42"}):
-        pr_body = build_pr_body("", "")
+        pr_body = build_pr_body("")
         assert (
             pr_body.find("https://source.cloud.google.com/results/invocations/42") > -1
         )
@@ -34,7 +34,7 @@ def test_build_pr_body_with_synth_log_and_kokoro_build_id():
     with util.ModifiedEnvironment({"KOKORO_BUILD_ID": "42"}):
         # The synth log should override the kokoro build id.
         synth_log = "A great pull request."
-        pr_body = build_pr_body(synth_log, "")
+        pr_body = build_pr_body(synth_log)
         assert (
             pr_body.find("https://source.cloud.google.com/results/invocations/42") == -1
         )
