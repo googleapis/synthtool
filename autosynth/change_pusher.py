@@ -22,6 +22,7 @@ from abc import ABC, abstractmethod
 
 from autosynth import git, github
 from autosynth.log import logger
+import re
 
 
 class AbstractPullRequest(ABC):
@@ -82,12 +83,13 @@ class ChangePusher(AbstractChangePusher):
         self, commit_count: int, branch: str, pr_title: str, synth_log: str = ""
     ) -> AbstractPullRequest:
         git.push_changes(branch)
+        trailers = _collect_trailers(commit_count)
 
         pr = self._gh.create_pull_request(
             self._repository,
             branch=branch,
             title=pr_title,
-            body=build_pr_body(synth_log),
+            body=build_pr_body(synth_log, trailers),
         )
 
         # args.synth_path (and api: * labels) only exist in monorepos
@@ -129,6 +131,8 @@ class SquashingChangePusher(AbstractChangePusher):
         subprocess.check_call(["git", "checkout", branch])  # Probably redundant.
         with tempfile.NamedTemporaryFile() as message_file:
             # Collect the commit messages into a temporary file.
+            message_file.write("changes triggered by multiple versions\n\n".encode())
+            message_file.flush()
             subprocess.run(
                 ["git", "log", f"-{commit_count}", "--format=* %s%n%b"],
                 stdout=message_file,
@@ -148,7 +152,7 @@ class SquashingChangePusher(AbstractChangePusher):
         return self.inner_change_pusher.check_if_pr_already_exists(branch)
 
 
-def build_pr_body(synth_log: str):
+def build_pr_body(synth_log: str, trailers: str):
     """Composes the pull request body with the synth_log.
 
     If synth_log is empty, then creates link to kokoro build log.
@@ -171,4 +175,43 @@ https://source.cloud.google.com/results/invocations/{kokoro_build_id}/targets"""
 This PR was generated using Autosynth. :rainbow:
 
 {build_log_text}
+
+{trailers}
 """.strip()
+
+
+def _collect_trailers(commit_count: int, git_dir: typing.Optional[str] = None) -> str:
+    """Collects the trailers from recent commits in the repo.
+
+    Only collects the two trailers we're interested in.
+    Arguments:
+        commit_count {int} -- Number of commits to collect trailers from.
+
+    Keyword Arguments:
+        git_dir {typing.Optional[str]} -- directory of git repo (default: {None})
+
+    Returns:
+        str -- The trailer lines from the recent commits.
+    """
+    text = subprocess.run(
+        ["git", "log", f"-{commit_count}", "--pretty=%b"],
+        universal_newlines=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        cwd=git_dir,
+    ).stdout
+    return _parse_trailers(text)
+
+
+def _parse_trailers(text: str) -> str:
+    """Parses and returns trailers in the text.
+
+    Arguments:
+        text {str} -- commit body text with trailers
+
+    Returns:
+        str -- the trailer lines.
+    """
+    lines = text.splitlines()
+    trailer = re.compile(r"\s*(Source-Link:|PiperOrigin-RevId:).*")
+    return "\n".join([line for line in lines if trailer.match(line)])
