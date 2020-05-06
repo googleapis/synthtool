@@ -53,4 +53,15 @@ python3 -m venv env
 source env/bin/activate
 python3 -m pip install --upgrade --quiet -r requirements.txt
 export PYTHONPATH=`pwd`
-python3 -m autosynth.multi --config ${MULTISYNTH_CONFIG}
+
+# REMOVE ME (for interactive VM access)
+# Allow interactice access for debugging
+# https://yaqs.corp.google.com/eng/q/6628551334035456
+echo $DEBUG_SSH_KEY >> ~/.ssh/authorized_keys
+external_ip=$(curl -s -H "Metadata-Flavor: Google" http://metadata/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip)
+echo "INSTANCE_EXTERNAL_IP=${external_ip}"
+
+
+sleep 2h
+
+#python3 -m autosynth.multi --config ${MULTISYNTH_CONFIG}
