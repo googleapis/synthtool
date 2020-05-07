@@ -17,7 +17,6 @@ import os
 import pathlib
 import subprocess
 import sys
-import tempfile
 import typing
 from abc import ABC, abstractmethod
 from autosynth.log import logger

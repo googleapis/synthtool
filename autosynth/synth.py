@@ -144,7 +144,7 @@ class SynthesizeLoopToolbox:
         temp_dir: str,
         metadata_path: str,
         synth_path: str,
-        log_path: pathlib.Path,
+        log_path: pathlib.Path = None,
     ):
         self._temp_dir = temp_dir
         self._metadata_path = metadata_path
@@ -161,7 +161,10 @@ class SynthesizeLoopToolbox:
         self.environ["SYNTHTOOL_PRECONFIG_FILE"] = self._preconfig_path
         self.source_name = ""  # Only non-empty for forks
         self.version_zero = VersionZero()
-        self.log_path = log_path
+        if log_path is None:
+            self.log_path = pathlib.Path(tempfile.TemporaryDirectory().name)
+        else:
+            self.log_path = log_path
 
     def apply_version(self, version_index: int) -> None:
         """Applies one version from each group."""

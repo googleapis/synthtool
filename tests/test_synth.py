@@ -89,7 +89,9 @@ class MockSynthesizer(AbstractSynthesizer):
     def add_action(self, action):
         self._actions.append(action)
 
-    def synthesize(self, environ: typing.Mapping[str, str] = None) -> str:
+    def synthesize(
+        self, logfile: pathlib.Path, environ: typing.Mapping[str, str] = None
+    ) -> str:
         actions = self._actions
         self._actions = []
         for action in actions:
@@ -528,7 +530,9 @@ with open("synth.metadata", "wt") as f:
 class SimpleSynthesizer(AbstractSynthesizer):
     """Invokes synth.py and does nothing more."""
 
-    def synthesize(self, environ: typing.Mapping[str, str] = None) -> str:
+    def synthesize(
+        self, logfile: pathlib.Path, environ: typing.Mapping[str, str] = None
+    ) -> str:
         subprocess.check_call([sys.executable, "synth.py"])
         return "synth log"
 
