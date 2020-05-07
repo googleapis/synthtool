@@ -20,7 +20,7 @@ cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
 # Upgrade the NPM version
 sudo npm install -g npm
 
-# Install bazel 1.2.0
+# Install bazel 3.0.0
 mkdir -p ~/bazel
 curl -L https://github.com/bazelbuild/bazel/releases/download/3.0.0/bazel-3.0.0-linux-x86_64 -o ~/bazel/bazel
 chmod +x ~/bazel/bazel
