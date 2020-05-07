@@ -62,6 +62,7 @@ external_ip=$(curl -s -H "Metadata-Flavor: Google" http://metadata/computeMetada
 echo "INSTANCE_EXTERNAL_IP=${external_ip}"
 
 
-sleep 2h
+python3 -m autosynth.multi --config ${MULTISYNTH_CONFIG}
 
-#python3 -m autosynth.multi --config ${MULTISYNTH_CONFIG}
+# REMOVE ME
+sleep 2h
