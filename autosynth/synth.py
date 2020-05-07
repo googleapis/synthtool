@@ -144,7 +144,7 @@ class SynthesizeLoopToolbox:
         temp_dir: str,
         metadata_path: str,
         synth_path: str,
-        log_path: pathlib.Path = None,
+        log_dir_path: pathlib.Path = None,
     ):
         self._temp_dir = temp_dir
         self._metadata_path = metadata_path
@@ -161,10 +161,9 @@ class SynthesizeLoopToolbox:
         self.environ["SYNTHTOOL_PRECONFIG_FILE"] = self._preconfig_path
         self.source_name = ""  # Only non-empty for forks
         self.version_zero = VersionZero()
-        if log_path is None:
-            self.log_path = pathlib.Path(tempfile.TemporaryDirectory().name)
-        else:
-            self.log_path = log_path
+        self.log_dir_path = log_dir_path or pathlib.Path(
+            tempfile.TemporaryDirectory().name
+        )
 
     def apply_version(self, version_index: int) -> None:
         """Applies one version from each group."""
@@ -225,7 +224,7 @@ class SynthesizeLoopToolbox:
                 self._temp_dir,
                 self._metadata_path,
                 self._synth_path,
-                self.log_path / source_name,
+                self.log_dir_path / source_name,
             )
             fork.source_name = source_name
             fork.commit_count = self.commit_count
@@ -259,7 +258,7 @@ class SynthesizeLoopToolbox:
                     )
                     return self.version_zero.has_changes
 
-            synth_log_path = self.log_path / str(index) / "sponge_log.log"
+            synth_log_path = self.log_dir_path / str(index) / "sponge_log.log"
             if index + 1 == len(self.versions):
                 # The youngest version.  Let exceptions raise because the
                 # current state is broken, and there's nothing we can do.

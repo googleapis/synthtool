@@ -33,7 +33,7 @@ class AbstractSynthesizer(ABC):
 
     @abstractmethod
     def synthesize(
-        self, logfile: pathlib.Path, environ: typing.Mapping[str, str] = None
+        self, log_file_path: pathlib.Path, environ: typing.Mapping[str, str] = None
     ) -> str:
         """
         Keyword Arguments:
@@ -45,10 +45,10 @@ class AbstractSynthesizer(ABC):
         pass
 
     def synthesize_and_catch_exception(
-        self, logfile: pathlib.Path, environ: typing.Mapping[str, str] = None
+        self, log_file_path: pathlib.Path, environ: typing.Mapping[str, str] = None
     ) -> typing.Union[bool, str]:
         try:
-            return self.synthesize(logfile, environ)
+            return self.synthesize(log_file_path, environ)
         except subprocess.CalledProcessError:
             return False
 
@@ -78,7 +78,7 @@ class Synthesizer(AbstractSynthesizer):
         self.synth_py_path = synth_py_path or "synth.py"
 
     def synthesize(
-        self, logfile: pathlib.Path, environ: typing.Mapping[str, str] = None
+        self, log_file_path: pathlib.Path, environ: typing.Mapping[str, str] = None
     ) -> str:
         """
         Returns:
@@ -102,9 +102,9 @@ class Synthesizer(AbstractSynthesizer):
         logger.info(command)
 
         # Ensure the logfile directory exists
-        logfile.parent.mkdir(parents=True, exist_ok=True)
+        log_file_path.parent.mkdir(parents=True, exist_ok=True)
         # Tee the output into a provided location so we can see the return the final output
-        tee_proc = subprocess.Popen(["tee", logfile], stdin=subprocess.PIPE)
+        tee_proc = subprocess.Popen(["tee", log_file_path], stdin=subprocess.PIPE)
         # Invoke synth.py.
         synth_proc = subprocess.run(
             command + self.extra_args,
@@ -117,5 +117,5 @@ class Synthesizer(AbstractSynthesizer):
             logger.error("Synthesis failed")
             synth_proc.check_returncode()  # Raise an exception.
 
-        with open(logfile, "r") as fp:
+        with open(log_file_path, "rt") as fp:
             return fp.read()
