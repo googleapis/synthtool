@@ -13,9 +13,9 @@
 # limitations under the License.
 
 import os
-import subprocess
 import typing
 import pathlib
+from autosynth.executor import Executor, LogCapturingExecutor
 
 GLOBAL_GITIGNORE = """
 __pycache__/
@@ -24,50 +24,51 @@ __pycache__/
 """
 
 GLOBAL_GITIGNORE_FILE = os.path.expanduser("~/.autosynth-gitignore")
+DEFAULT_EXECUTOR = LogCapturingExecutor()
 
 
-def clone_repo(source_url: str, target_path: str) -> None:
+def clone_repo(
+    source_url: str, target_path: str, executor: Executor = DEFAULT_EXECUTOR
+) -> None:
     """Clones a remote repo to a local directory.
 
     Arguments:
         source_url {str} -- Url of the remote repo
         target_path {str} -- Local directory name for the clone
     """
-    subprocess.check_call(
-        ["git", "clone", "--single-branch", source_url, "--", target_path]
-    )
+    executor.run(["git", "clone", "--single-branch", source_url, "--", target_path])
 
 
-def configure_git(user: str, email: str) -> None:
+def configure_git(user: str, email: str, executor: Executor = DEFAULT_EXECUTOR) -> None:
     with open(GLOBAL_GITIGNORE_FILE, "w") as fh:
         fh.write(GLOBAL_GITIGNORE)
 
-    subprocess.check_call(
+    executor.run(
         ["git", "config", "--global", "core.excludesfile", GLOBAL_GITIGNORE_FILE]
     )
-    subprocess.check_call(["git", "config", "user.name", user])
-    subprocess.check_call(["git", "config", "user.email", email])
-    subprocess.check_call(["git", "config", "push.default", "simple"])
+    executor.run(["git", "config", "user.name", user])
+    executor.run(["git", "config", "user.email", email])
+    executor.run(["git", "config", "push.default", "simple"])
 
 
-def setup_branch(branch: str) -> None:
-    subprocess.check_call(["git", "checkout", "-b", branch])
+def setup_branch(branch: str, executor: Executor = DEFAULT_EXECUTOR) -> None:
+    executor.run(["git", "checkout", "-b", branch])
 
 
-def get_last_commit_to_file(file_path: str) -> str:
+def get_last_commit_to_file(
+    file_path: str, executor: Executor = DEFAULT_EXECUTOR
+) -> str:
     """Returns the commit hash of the most recent change to a file."""
     parent_dir = pathlib.Path(file_path).parent
-    proc = subprocess.run(
+    return executor.run(
         ["git", "log", "--pretty=format:%H", "-1", "--no-decorate", file_path],
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
         cwd=parent_dir,
-    )
-    proc.check_returncode()
-    return proc.stdout.strip()
+    ).strip()
 
 
-def get_commit_shas_since(sha: str, dir: str) -> typing.List[str]:
+def get_commit_shas_since(
+    sha: str, dir: str, executor: Executor = DEFAULT_EXECUTOR
+) -> typing.List[str]:
     """Gets the list of shas for commits committed after the given sha.
 
     Arguments:
@@ -77,29 +78,24 @@ def get_commit_shas_since(sha: str, dir: str) -> typing.List[str]:
     Returns:
         typing.List[str] -- A list of shas.  The 0th sha is sha argument (the oldest sha).
     """
-    proc = subprocess.run(
-        ["git", "log", f"{sha}..HEAD", "--pretty=%H", "--no-decorate"],
-        universal_newlines=True,
-        stdout=subprocess.PIPE,
-        cwd=dir,
-    )
-    proc.check_returncode()
-    shas = proc.stdout.split()
+    shas = executor.run(
+        ["git", "log", f"{sha}..HEAD", "--pretty=%H", "--no-decorate"], cwd=dir,
+    ).split()
     shas.append(sha)
     shas.reverse()
     return shas
 
 
-def commit_all_changes(message):
-    subprocess.check_call(["git", "add", "-A"])
-    subprocess.check_call(["git", "commit", "-m", message])
+def commit_all_changes(message, executor: Executor = DEFAULT_EXECUTOR):
+    executor.run(["git", "add", "-A"])
+    executor.run(["git", "commit", "-m", message])
 
 
-def push_changes(branch):
-    subprocess.check_call(["git", "push", "--force", "origin", branch])
+def push_changes(branch, executor: Executor = DEFAULT_EXECUTOR):
+    executor.run(["git", "push", "--force", "origin", branch])
 
 
-def get_repo_root_dir(repo_path: str) -> str:
+def get_repo_root_dir(repo_path: str, executor: Executor = DEFAULT_EXECUTOR) -> str:
     """Given a path to a file or dir in a repo, find the root directory of the repo.
 
     Arguments:
@@ -111,18 +107,14 @@ def get_repo_root_dir(repo_path: str) -> str:
     path = pathlib.Path(repo_path)
     if not path.is_dir():
         path = path.parent
-    proc = subprocess.run(
-        ["git", "rev-parse", "--show-toplevel"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-        cwd=str(path),
-    )
-    proc.check_returncode()
-    return proc.stdout.strip()
+    return executor.run(["git", "rev-parse", "--show-toplevel"], cwd=str(path)).strip()
 
 
 def patch_merge(
-    branch_name: str, patch_file_path: str, git_repo_dir: str = None
+    branch_name: str,
+    patch_file_path: str,
+    git_repo_dir: str = None,
+    executor: Executor = DEFAULT_EXECUTOR,
 ) -> None:
     """Merges a branch via `git diff | git apply`.
 
@@ -134,15 +126,18 @@ def patch_merge(
     Keyword Arguments:
         git_repo_dir {str} -- The repo directory (default: current working directory)
     """
-    with open(patch_file_path, "wb+") as patch_file:
-        subprocess.check_call(
-            ["git", "diff", "HEAD", branch_name], stdout=patch_file, cwd=git_repo_dir
-        )
+    executor.run(
+        ["git", "diff", "HEAD", branch_name],
+        log_file_path=patch_file_path,
+        cwd=git_repo_dir,
+    )
     if os.stat(patch_file_path).st_size:
-        subprocess.check_call(["git", "apply", patch_file_path], cwd=git_repo_dir)
+        executor.run(["git", "apply", patch_file_path], cwd=git_repo_dir)
 
 
-def get_commit_subject(repo_dir: str = None, sha: str = None) -> str:
+def get_commit_subject(
+    repo_dir: str = None, sha: str = None, executor: Executor = DEFAULT_EXECUTOR
+) -> str:
     """Gets the subject line of the a commit.
 
     Keyword Arguments:
@@ -152,12 +147,8 @@ def get_commit_subject(repo_dir: str = None, sha: str = None) -> str:
     Returns:
         {str} -- the subject line
     """
-    commit_message: str = subprocess.run(
+    lines = executor.run(
         ["git", "log", "-1", "--no-decorate", "--format=%B"] + ([sha] if sha else []),
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-        check=True,
         cwd=repo_dir,
-    ).stdout
-    lines = commit_message.splitlines()
+    ).splitlines()
     return lines[0].strip() if lines else ""

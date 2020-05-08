@@ -30,6 +30,7 @@ import autosynth
 import autosynth.flags
 from autosynth import git, github, git_source
 from autosynth.abstract_source import AbstractSourceVersion
+from autosynth.executor import LogCapturingExecutor, LoggingExecutor
 from autosynth.synthesizer import Synthesizer, AbstractSynthesizer
 from autosynth.change_pusher import (
     AbstractChangePusher,
@@ -372,12 +373,14 @@ def synthesize_inner_loop(
     toolbox: SynthesizeLoopToolbox, synthesizer: AbstractSynthesizer,
 ):
     # Synthesize with the most recent version of all the sources.
+    logger.info("Building most recent versions")
     if not toolbox.synthesize_version_in_new_branch(
         synthesizer, len(toolbox.versions) - 1
     ):
         return  # No differences, nothing more to do.
 
     # Synthesize with the oldest version of all the sources.
+    logger.info("Building oldest versions")
     if 1 == len(toolbox.versions) or toolbox.synthesize_version_in_new_branch(
         synthesizer, 0
     ):
@@ -538,6 +541,9 @@ def _inner_main(temp_dir: str) -> int:
     metadata = load_metadata(metadata_path)
     multiple_commits = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS]
     multiple_prs = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_PRS]
+
+    executor = LogCapturingExecutor()
+
     if (not multiple_commits and not multiple_prs) or not metadata:
         if change_pusher.check_if_pr_already_exists(branch):
             return 0
@@ -546,6 +552,7 @@ def _inner_main(temp_dir: str) -> int:
             metadata_path,
             args.extra_args,
             deprecated_execution=args.deprecated_execution,
+            executor=executor,
         ).synthesize(base_synth_log_path)
 
         if not has_changes():
@@ -572,7 +579,11 @@ def _inner_main(temp_dir: str) -> int:
 
         # Prepare to call synthesize loop.
         synthesizer = Synthesizer(
-            metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
+            metadata_path,
+            args.extra_args,
+            args.deprecated_execution,
+            "synth.py",
+            executor=executor,
         )
         x = SynthesizeLoopToolbox(
             source_versions,
@@ -582,11 +593,16 @@ def _inner_main(temp_dir: str) -> int:
             args.synth_path,
             base_synth_log_path,
         )
+
         if not multiple_commits:
             change_pusher = SquashingChangePusher(change_pusher)
 
         # Call the loop.
         commit_count = synthesize_loop(x, multiple_prs, change_pusher, synthesizer)
+
+        failures = len(executor.log_collector.failures)
+        successes = len(executor.log_collector.successes)
+        logger.info(f"{failures} failures, {successes} successes")
 
         if commit_count == 0:
             logger.info("No changes. :)")

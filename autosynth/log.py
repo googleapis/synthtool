@@ -35,3 +35,15 @@ def _configure_logger():
 
 
 logger = _configure_logger()
+
+
+class LogCollector:
+    def __init__(self):
+        self.successes = []
+        self.failures = []
+
+    def add_success(self, name: str, log: str):
+        self.successes.append((name, log))
+
+    def add_failure(self, name: str, log: str):
+        self.failures.append((name, log))
