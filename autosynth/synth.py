@@ -183,11 +183,13 @@ class SynthesizeLoopToolbox:
 
     def checkout_new_branch(self, index: int) -> None:
         """Create a new branch for the version."""
-        self.executor.execute(["git", "checkout", "-b", self.sub_branch(index)])
+        self.executor.execute(
+            ["git", "checkout", "-b", self.sub_branch(index)], check=True
+        )
 
     def checkout_sub_branch(self, index: int):
         """Check out the branch for the version."""
-        self.executor.execute(["git", "checkout", self.sub_branch(index)])
+        self.executor.execute(["git", "checkout", self.sub_branch(index)], check=True)
 
     def patch_merge_version(self, index: int, comment=None) -> bool:
         """Merges the given version into the current branch using a patch merge."""
@@ -234,7 +236,7 @@ class SynthesizeLoopToolbox:
             fork.source_name = source_name
             fork.commit_count = self.commit_count
             fork.version_zero = self.version_zero
-            self.executor.execute(["git", "branch", fork_branch])
+            self.executor.execute(["git", "branch", fork_branch], check=True)
             forks.append(fork)
         return forks
 
@@ -259,7 +261,8 @@ class SynthesizeLoopToolbox:
                 if self.version_zero.branch_name:
                     # Reuse version zero built for another source.
                     self.executor.execute(
-                        ["git", "merge", "--ff-only", self.version_zero.branch_name]
+                        ["git", "merge", "--ff-only", self.version_zero.branch_name],
+                        check=True,
                     )
                     return self.version_zero.has_changes
 
@@ -280,8 +283,8 @@ class SynthesizeLoopToolbox:
                 self.version_zero.has_changes = i_has_changes
             return i_has_changes
         finally:
-            self.executor.execute(["git", "reset", "--hard", "HEAD"])
-            self.executor.execute(["git", "checkout", self.branch])
+            self.executor.execute(["git", "reset", "--hard", "HEAD"], check=True)
+            self.executor.execute(["git", "checkout", self.branch], check=True)
 
     def count_commits_with_context(self) -> int:
         """Returns the number of commits that could be traced to a source version."""
@@ -360,7 +363,7 @@ def synthesize_loop(
             for fork in toolbox.fork():
                 if change_pusher.check_if_pr_already_exists(fork.branch):
                     continue
-                toolbox.executor.execute(["git", "checkout", fork.branch])
+                toolbox.executor.execute(["git", "checkout", fork.branch], check=True)
                 synthesize_inner_loop(fork, synthesizer)
                 commit_count += fork.commit_count
                 if fork.source_name == "self" or fork.count_commits_with_context() > 0:
@@ -436,20 +439,20 @@ def git_branches_differ(
     diff_cmd = ["git", "diff", f"{branch_a}..{branch_b}"]
     diff_cmd.extend(["--", ".", f":(exclude){metadata_path}"])
 
-    output = executor.run(diff_cmd)
+    output = executor.run(diff_cmd, check=True)
     if bool(output):
         return True
     # Check to see if synth.metadata was added.
 
     diff_text = executor.run(
-        ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path]
+        ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path], check=True
     )
     pattern = f"^--- /dev/null"
     return bool(re.search(pattern, diff_text, re.MULTILINE))
 
 
 def has_changes(executor: Executor = DEFAULT_EXECUTOR):
-    output = executor.run(["git", "status", "--porcelain"]).strip()
+    output = executor.run(["git", "status", "--porcelain"], check=True).strip()
     logger.info("Changed files:")
     logger.info(output)
 

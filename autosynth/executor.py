@@ -66,6 +66,24 @@ class Executor(ABC):
         cwd: str = None,
         check: bool = False,
     ) -> str:
+        """Execute the provided command
+
+        Arguments:
+            command {typing.List[str]} -- The command provided as a list of string tokens.
+            log_file_path {typing.Optional[pathlib.Path]} -- If provided, the output of
+                the command should be written to this path.
+            environ {typing.Optional[typing.Mapping[str, str]]} -- Map of environment
+                variables to set. Defaults to the current environment.
+            cwd {typing.Optional[str]} -- Working directory to run the command from.
+                Defaults to the current working directory.
+            check {bool} -- If true, will raise an exception on failure.
+
+        Returns:
+            str -- The captured output.
+
+        Throws:
+            subprocess.CalledProcessError if the process fails and check=True is set.
+        """
         (_, output) = self.execute(
             command, log_file_path=log_file_path, environ=environ, cwd=cwd, check=check
         )

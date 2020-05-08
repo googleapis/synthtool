@@ -36,7 +36,9 @@ def clone_repo(
         source_url {str} -- Url of the remote repo
         target_path {str} -- Local directory name for the clone
     """
-    executor.run(["git", "clone", "--single-branch", source_url, "--", target_path])
+    executor.run(
+        ["git", "clone", "--single-branch", source_url, "--", target_path], check=True
+    )
 
 
 def configure_git(user: str, email: str, executor: Executor = DEFAULT_EXECUTOR) -> None:
@@ -44,15 +46,16 @@ def configure_git(user: str, email: str, executor: Executor = DEFAULT_EXECUTOR) 
         fh.write(GLOBAL_GITIGNORE)
 
     executor.run(
-        ["git", "config", "--global", "core.excludesfile", GLOBAL_GITIGNORE_FILE]
+        ["git", "config", "--global", "core.excludesfile", GLOBAL_GITIGNORE_FILE],
+        check=True,
     )
-    executor.run(["git", "config", "user.name", user])
-    executor.run(["git", "config", "user.email", email])
-    executor.run(["git", "config", "push.default", "simple"])
+    executor.run(["git", "config", "user.name", user], check=True)
+    executor.run(["git", "config", "user.email", email], check=True)
+    executor.run(["git", "config", "push.default", "simple"], check=True)
 
 
 def setup_branch(branch: str, executor: Executor = DEFAULT_EXECUTOR) -> None:
-    executor.run(["git", "checkout", "-b", branch])
+    executor.run(["git", "checkout", "-b", branch], check=True)
 
 
 def get_last_commit_to_file(
@@ -63,6 +66,7 @@ def get_last_commit_to_file(
     return executor.run(
         ["git", "log", "--pretty=format:%H", "-1", "--no-decorate", file_path],
         cwd=parent_dir,
+        check=True,
     ).strip()
 
 
@@ -79,7 +83,9 @@ def get_commit_shas_since(
         typing.List[str] -- A list of shas.  The 0th sha is sha argument (the oldest sha).
     """
     shas = executor.run(
-        ["git", "log", f"{sha}..HEAD", "--pretty=%H", "--no-decorate"], cwd=dir,
+        ["git", "log", f"{sha}..HEAD", "--pretty=%H", "--no-decorate"],
+        cwd=dir,
+        check=True,
     ).split()
     shas.append(sha)
     shas.reverse()
@@ -87,12 +93,12 @@ def get_commit_shas_since(
 
 
 def commit_all_changes(message, executor: Executor = DEFAULT_EXECUTOR):
-    executor.run(["git", "add", "-A"])
-    executor.run(["git", "commit", "-m", message])
+    executor.run(["git", "add", "-A"], check=True)
+    executor.run(["git", "commit", "-m", message], check=True)
 
 
 def push_changes(branch, executor: Executor = DEFAULT_EXECUTOR):
-    executor.run(["git", "push", "--force", "origin", branch])
+    executor.run(["git", "push", "--force", "origin", branch], check=True)
 
 
 def get_repo_root_dir(repo_path: str, executor: Executor = DEFAULT_EXECUTOR) -> str:
@@ -107,7 +113,9 @@ def get_repo_root_dir(repo_path: str, executor: Executor = DEFAULT_EXECUTOR) -> 
     path = pathlib.Path(repo_path)
     if not path.is_dir():
         path = path.parent
-    return executor.run(["git", "rev-parse", "--show-toplevel"], cwd=str(path)).strip()
+    return executor.run(
+        ["git", "rev-parse", "--show-toplevel"], cwd=str(path), check=True
+    ).strip()
 
 
 def patch_merge(
@@ -130,9 +138,10 @@ def patch_merge(
         ["git", "diff", "HEAD", branch_name],
         log_file_path=patch_file_path,
         cwd=git_repo_dir,
+        check=True,
     )
     if os.stat(patch_file_path).st_size:
-        executor.run(["git", "apply", patch_file_path], cwd=git_repo_dir)
+        executor.run(["git", "apply", patch_file_path], cwd=git_repo_dir, check=True)
 
 
 def get_commit_subject(
@@ -150,5 +159,6 @@ def get_commit_subject(
     lines = executor.run(
         ["git", "log", "-1", "--no-decorate", "--format=%B"] + ([sha] if sha else []),
         cwd=repo_dir,
+        check=True,
     ).splitlines()
     return lines[0].strip() if lines else ""

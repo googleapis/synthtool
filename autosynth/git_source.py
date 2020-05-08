@@ -49,7 +49,9 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
             preconfig["preclonedRepos"] = precloned_repos
         precloned_repos[self.remote] = self.repo_path
         # Check out my hash.
-        self.executor.execute(["git", "checkout", self.sha], cwd=self.repo_path)
+        self.executor.execute(
+            ["git", "checkout", self.sha], cwd=self.repo_path, check=True
+        )
 
     def get_comment(self) -> str:
         # Construct a comment using the text of the git commit.
@@ -58,6 +60,7 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
             git_log: str = self.executor.run(
                 ["git", "log", self.sha, "-1", "--no-decorate", pretty],
                 cwd=self.repo_path,
+                check=True,
             ).strip()
             self.comment = _compose_comment(self.remote, self.sha, git_log)
         return self.comment
@@ -71,7 +74,9 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
     def get_timestamp(self) -> datetime.datetime:
         if self.timestamp is None:
             unix_timestamp = self.executor.run(
-                ["git", "log", "-1", "--pretty=%at", self.sha], cwd=self.repo_path,
+                ["git", "log", "-1", "--pretty=%at", self.sha],
+                cwd=self.repo_path,
+                check=True,
             ).strip()
             self.timestamp = datetime.datetime.fromtimestamp(float(unix_timestamp))
         return self.timestamp
@@ -183,11 +188,11 @@ def enumerate_versions_for_working_repo(
     local_repo_dir = git.get_repo_root_dir(metadata_path)
     # Find the most recent commit hash.
     head_sha = executor.run(
-        ["git", "log", "-1", "--pretty=%H"], cwd=local_repo_dir,
+        ["git", "log", "-1", "--pretty=%H"], cwd=local_repo_dir, check=True
     ).strip()
     # Get the remote url.
     remote = executor.run(
-        ["git", "remote", "get-url", "origin"], cwd=local_repo_dir,
+        ["git", "remote", "get-url", "origin"], cwd=local_repo_dir, check=True
     ).strip()
     desc = f"This git repo ({remote})"
     version = GitSourceVersion(local_repo_dir, head_sha, remote, desc, "self")
