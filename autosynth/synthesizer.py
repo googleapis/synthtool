@@ -14,9 +14,9 @@
 # limitations under the License.
 
 import os
+import pathlib
 import subprocess
 import sys
-import tempfile
 import typing
 from abc import ABC, abstractmethod
 from autosynth.log import logger
@@ -32,7 +32,9 @@ class AbstractSynthesizer(ABC):
     """
 
     @abstractmethod
-    def synthesize(self, environ: typing.Mapping[str, str] = None) -> str:
+    def synthesize(
+        self, log_file_path: pathlib.Path, environ: typing.Mapping[str, str] = None
+    ) -> str:
         """
         Keyword Arguments:
             environ {[type]} -- Environment variables. (default: {None})
@@ -43,10 +45,10 @@ class AbstractSynthesizer(ABC):
         pass
 
     def synthesize_and_catch_exception(
-        self, environ: typing.Mapping[str, str] = None
+        self, log_file_path: pathlib.Path, environ: typing.Mapping[str, str] = None
     ) -> typing.Union[bool, str]:
         try:
-            return self.synthesize(environ)
+            return self.synthesize(log_file_path, environ)
         except subprocess.CalledProcessError:
             return False
 
@@ -75,7 +77,9 @@ class Synthesizer(AbstractSynthesizer):
         self.deprecated_execution = deprecated_execution
         self.synth_py_path = synth_py_path or "synth.py"
 
-    def synthesize(self, environ: typing.Mapping[str, str] = None) -> str:
+    def synthesize(
+        self, log_file_path: pathlib.Path, environ: typing.Mapping[str, str] = None
+    ) -> str:
         """
         Returns:
             The log of the call to synthtool.
@@ -96,22 +100,22 @@ class Synthesizer(AbstractSynthesizer):
             command = [sys.executable, self.synth_py_path]
 
         logger.info(command)
-        # Use a temporary file to tee the output, so we can see the output line
-        # by line and still return it as a string.
-        with tempfile.NamedTemporaryFile("wt+") as synth_log_file:
-            tee_proc = subprocess.Popen(
-                ["tee", synth_log_file.name], stdin=subprocess.PIPE
-            )
-            # Invoke synth.py.
-            synth_proc = subprocess.run(
-                command + self.extra_args,
-                stderr=subprocess.STDOUT,
-                stdout=tee_proc.stdin,
-                env=(environ or os.environ),
-                universal_newlines=True,
-            )
-            if synth_proc.returncode:
-                logger.error("Synthesis failed")
-                synth_proc.check_returncode()  # Raise an exception.
-            synth_log_file.seek(0)
-            return synth_log_file.read()
+
+        # Ensure the logfile directory exists
+        log_file_path.parent.mkdir(parents=True, exist_ok=True)
+        # Tee the output into a provided location so we can see the return the final output
+        tee_proc = subprocess.Popen(["tee", log_file_path], stdin=subprocess.PIPE)
+        # Invoke synth.py.
+        synth_proc = subprocess.run(
+            command + self.extra_args,
+            stderr=subprocess.STDOUT,
+            stdout=tee_proc.stdin,
+            env=(environ or os.environ),
+            universal_newlines=True,
+        )
+        if synth_proc.returncode:
+            logger.error("Synthesis failed")
+            synth_proc.check_returncode()  # Raise an exception.
+
+        with open(log_file_path, "rt") as fp:
+            return fp.read()
