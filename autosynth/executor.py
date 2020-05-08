@@ -34,6 +34,7 @@ class Executor(ABC):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
+        check: bool = False,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         """Execute the provided command
 
@@ -45,11 +46,15 @@ class Executor(ABC):
                 variables to set. Defaults to the current environment.
             cwd {typing.Optional[str]} -- Working directory to run the command from.
                 Defaults to the current working directory.
+            check {bool} -- If true, will raise an exception on failure.
 
         Returns:
             typing.Tuple[subprocess.CompletedProcess, str] -- The first item of the tuple is
                 the complete subprocess which  contains more metadata about the executed
                 process. The second item of the tuple is the captured output.
+
+        Throws:
+            subprocess.CalledProcessError if the process fails and check=True is set.
         """
         pass
 
@@ -59,9 +64,10 @@ class Executor(ABC):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
+        check: bool = False,
     ) -> str:
         (_, output) = self.execute(
-            command, log_file_path=log_file_path, environ=environ, cwd=cwd
+            command, log_file_path=log_file_path, environ=environ, cwd=cwd, check=check
         )
         return output
 
@@ -80,14 +86,16 @@ class LogCapturingExecutor(Executor):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
+        check: bool = False,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         name = " ".join(command)
 
         output_path = log_file_path or pathlib.Path(
             tempfile.NamedTemporaryFile("wt+").name
         )
-        logger.info(f"Running: {name}")
-        logger.info(f"Capturing into: {output_path}")
+        logger.debug(f"Running: {name}")
+        if log_file_path:
+            logger.debug(f"   -> {log_file_path}")
 
         # Ensure the logfile directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -95,6 +103,7 @@ class LogCapturingExecutor(Executor):
             "stderr": subprocess.STDOUT,
             "env": (environ or os.environ),
             "universal_newlines": True,
+            "check": check,
         }
         if cwd is not None:
             run_options["cwd"] = cwd
@@ -129,6 +138,7 @@ class LoggingExecutor(Executor):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
+        check: bool = False,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         name = " ".join((str(arg) for arg in command))
         logger.info(f"Running: {name}")
@@ -147,6 +157,7 @@ class LoggingExecutor(Executor):
             "stdout": tee_proc.stdin,
             "env": (environ or os.environ),
             "universal_newlines": True,
+            "check": check,
         }
         if cwd is not None:
             run_options["cwd"] = cwd

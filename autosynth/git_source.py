@@ -19,7 +19,9 @@ import typing
 
 import autosynth.abstract_source
 from autosynth import git
-from autosynth.executor import LogCapturingExecutor
+from autosynth.executor import Executor, LogCapturingExecutor
+
+DEFAULT_EXECUTOR = LogCapturingExecutor()
 
 
 class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
@@ -162,7 +164,9 @@ def enumerate_versions(
 
 
 def enumerate_versions_for_working_repo(
-    metadata_path: str, sources: typing.List[typing.Dict[str, typing.Dict]]
+    metadata_path: str,
+    sources: typing.List[typing.Dict[str, typing.Dict]],
+    executor: Executor = DEFAULT_EXECUTOR,
 ) -> typing.List[autosynth.abstract_source.AbstractSourceVersion]:
     """Enumerates every commit after the most recent commit to metadata_path.
 
@@ -178,11 +182,11 @@ def enumerate_versions_for_working_repo(
     # Get the repo root directory that contains metadata_path.
     local_repo_dir = git.get_repo_root_dir(metadata_path)
     # Find the most recent commit hash.
-    head_sha = self.executor.run(
+    head_sha = executor.run(
         ["git", "log", "-1", "--pretty=%H"], cwd=local_repo_dir,
     ).strip()
     # Get the remote url.
-    remote = self.executor.run(
+    remote = executor.run(
         ["git", "remote", "get-url", "origin"], cwd=local_repo_dir,
     ).strip()
     desc = f"This git repo ({remote})"
