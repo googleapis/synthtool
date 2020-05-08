@@ -21,7 +21,6 @@ import os
 import pathlib
 import re
 import shutil
-import subprocess
 import sys
 import tempfile
 import typing
@@ -30,7 +29,7 @@ import autosynth
 import autosynth.flags
 from autosynth import git, github, git_source
 from autosynth.abstract_source import AbstractSourceVersion
-from autosynth.executor import LogCapturingExecutor, LoggingExecutor
+from autosynth.executor import Executor, LogCapturingExecutor, LoggingExecutor
 from autosynth.synthesizer import Synthesizer, AbstractSynthesizer
 from autosynth.change_pusher import (
     AbstractChangePusher,
@@ -47,6 +46,8 @@ IGNORED_FILE_PATTERNS = [
     # synth.metadata files to be added.
     re.compile(r"M (.*?)synth.metadata")
 ]
+
+DEFAULT_EXECUTOR = LogCapturingExecutor()
 
 
 def load_metadata(metadata_path: str):
@@ -146,6 +147,7 @@ class SynthesizeLoopToolbox:
         metadata_path: str,
         synth_path: str,
         log_dir_path: pathlib.Path = None,
+        executor: Executor = None,
     ):
         self._temp_dir = temp_dir
         self._metadata_path = metadata_path
@@ -165,6 +167,7 @@ class SynthesizeLoopToolbox:
         self.log_dir_path = log_dir_path or pathlib.Path(
             tempfile.TemporaryDirectory().name
         )
+        self.executor = executor or DEFAULT_EXECUTOR
 
     def apply_version(self, version_index: int) -> None:
         """Applies one version from each group."""
@@ -180,11 +183,11 @@ class SynthesizeLoopToolbox:
 
     def checkout_new_branch(self, index: int) -> None:
         """Create a new branch for the version."""
-        subprocess.check_call(["git", "checkout", "-b", self.sub_branch(index)])
+        self.executor.execute(["git", "checkout", "-b", self.sub_branch(index)])
 
     def checkout_sub_branch(self, index: int):
         """Check out the branch for the version."""
-        subprocess.check_call(["git", "checkout", self.sub_branch(index)])
+        self.executor.execute(["git", "checkout", self.sub_branch(index)])
 
     def patch_merge_version(self, index: int, comment=None) -> bool:
         """Merges the given version into the current branch using a patch merge."""
@@ -226,11 +229,12 @@ class SynthesizeLoopToolbox:
                 self._metadata_path,
                 self._synth_path,
                 self.log_dir_path / source_name,
+                self.executor,
             )
             fork.source_name = source_name
             fork.commit_count = self.commit_count
             fork.version_zero = self.version_zero
-            subprocess.check_call(["git", "branch", fork_branch])
+            self.executor.execute(["git", "branch", fork_branch])
             forks.append(fork)
         return forks
 
@@ -254,7 +258,7 @@ class SynthesizeLoopToolbox:
             if 0 == index:
                 if self.version_zero.branch_name:
                     # Reuse version zero built for another source.
-                    subprocess.check_call(
+                    self.executor.execute(
                         ["git", "merge", "--ff-only", self.version_zero.branch_name]
                     )
                     return self.version_zero.has_changes
@@ -276,8 +280,8 @@ class SynthesizeLoopToolbox:
                 self.version_zero.has_changes = i_has_changes
             return i_has_changes
         finally:
-            subprocess.check_call(["git", "reset", "--hard", "HEAD"])
-            subprocess.check_call(["git", "checkout", self.branch])
+            self.executor.execute(["git", "reset", "--hard", "HEAD"])
+            self.executor.execute(["git", "checkout", self.branch])
 
     def count_commits_with_context(self) -> int:
         """Returns the number of commits that could be traced to a source version."""
@@ -356,7 +360,7 @@ def synthesize_loop(
             for fork in toolbox.fork():
                 if change_pusher.check_if_pr_already_exists(fork.branch):
                     continue
-                subprocess.check_call(["git", "checkout", fork.branch])
+                toolbox.executor.execute(["git", "checkout", fork.branch])
                 synthesize_inner_loop(fork, synthesizer)
                 commit_count += fork.commit_count
                 if fork.source_name == "self" or fork.count_commits_with_context() > 0:
@@ -422,29 +426,30 @@ def synthesize_range(
         version_ranges.append((old, middle))
 
 
-def git_branches_differ(branch_a: str, branch_b: str, metadata_path: str) -> bool:
+def git_branches_differ(
+    branch_a: str,
+    branch_b: str,
+    metadata_path: str,
+    executor: Executor = DEFAULT_EXECUTOR,
+) -> bool:
     # Check to see if any files besides synth.metadata were added, modified, deleted.
     diff_cmd = ["git", "diff", f"{branch_a}..{branch_b}"]
     diff_cmd.extend(["--", ".", f":(exclude){metadata_path}"])
-    proc = subprocess.run(diff_cmd, stdout=subprocess.PIPE, universal_newlines=True)
-    proc.check_returncode()
-    if bool(proc.stdout):
+
+    output = executor.run(diff_cmd)
+    if bool(output):
         return True
     # Check to see if synth.metadata was added.
-    proc = subprocess.run(
-        ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path],
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
+
+    diff_text = executor.run(
+        ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path]
     )
-    proc.check_returncode()
-    diff_text = proc.stdout
     pattern = f"^--- /dev/null"
     return bool(re.search(pattern, diff_text, re.MULTILINE))
 
 
-def has_changes():
-    output = subprocess.check_output(["git", "status", "--porcelain"])
-    output = output.decode("utf-8").strip()
+def has_changes(executor: Executor = DEFAULT_EXECUTOR):
+    output = executor.run(["git", "status", "--porcelain"]).strip()
     logger.info("Changed files:")
     logger.info(output)
 

@@ -23,6 +23,10 @@ import typing
 
 
 class Executor(ABC):
+    """An executor abstracts the handling of executing command line
+    scripts and allows consolidating handling of the command's output.
+    """
+
     @abstractmethod
     def execute(
         self,
@@ -31,6 +35,22 @@ class Executor(ABC):
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
+        """Execute the provided command
+
+        Arguments:
+            command {typing.List[str]} -- The command provided as a list of string tokens.
+            log_file_path {typing.Optional[pathlib.Path]} -- If provided, the output of
+                the command should be written to this path.
+            environ {typing.Optional[typing.Mapping[str, str]]} -- Map of environment
+                variables to set. Defaults to the current environment.
+            cwd {typing.Optional[str]} -- Working directory to run the command from.
+                Defaults to the current working directory.
+
+        Returns:
+            typing.Tuple[subprocess.CompletedProcess, str] -- The first item of the tuple is
+                the complete subprocess which  contains more metadata about the executed
+                process. The second item of the tuple is the captured output.
+        """
         pass
 
     def run(
@@ -47,6 +67,10 @@ class Executor(ABC):
 
 
 class LogCapturingExecutor(Executor):
+    """This executor executes the given command and captures the output in the provided
+    log collector.
+    """
+
     def __init__(self, log_collector: LogCollector = None):
         self.log_collector = log_collector or LogCollector()
 
@@ -63,7 +87,7 @@ class LogCapturingExecutor(Executor):
             tempfile.NamedTemporaryFile("wt+").name
         )
         logger.info(f"Running: {name}")
-        logger.info(f"Capturing into: {output_path.name}")
+        logger.info(f"Capturing into: {output_path}")
 
         # Ensure the logfile directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -84,6 +108,7 @@ class LogCapturingExecutor(Executor):
             output = fp.read()
             if proc.returncode:
                 self.log_collector.add_failure(name, output)
+                logger.error(f"Failed executing {name}")
             else:
                 self.log_collector.add_success(name, output)
 
@@ -91,6 +116,10 @@ class LogCapturingExecutor(Executor):
 
 
 class LoggingExecutor(Executor):
+    """This executor executes the given command and logs it to stdout and captures the
+    output in the provided log collector.
+    """
+
     def __init__(self, log_collector: LogCollector = None):
         self.log_collector = log_collector or LogCollector()
 
@@ -101,7 +130,7 @@ class LoggingExecutor(Executor):
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
-        name = " ".join(command)
+        name = " ".join((str(arg) for arg in command))
         logger.info(f"Running: {name}")
 
         output_path = log_file_path or pathlib.Path(
@@ -127,6 +156,7 @@ class LoggingExecutor(Executor):
         with open(output_path, "rt") as fp:
             output = fp.read()
             if proc.returncode:
+                logger.error(f"Failed executing {name}")
                 self.log_collector.add_failure(name, output)
             else:
                 self.log_collector.add_success(name, output)

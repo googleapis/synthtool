@@ -6,7 +6,6 @@ import argparse
 import functools
 import importlib
 import os
-import subprocess
 import sys
 
 import jinja2
@@ -14,27 +13,11 @@ import yaml
 
 from autosynth import github
 from autosynth.log import logger
-
-
-def run(args, *, cwd=None, check=True):
-    try:
-        return subprocess.run(
-            args,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            cwd=cwd,
-            check=check,
-            encoding="utf-8",
-        )
-    except subprocess.CalledProcessError as exc:
-        logger.error(
-            f"Failed executing {' '.join((str(arg) for arg in args))}:\n\n"
-            "{exc.stdout}"
-        )
-        raise exc
+from autosynth.executor import LoggingExecutor
 
 
 def synthesize_libraries(libraries, github_token, extra_args):
+    executor = LoggingExecutor()
     results = []
     for library in libraries:
         logger.info(f"Synthesizing {library['name']}.")
@@ -60,11 +43,11 @@ def synthesize_libraries(libraries, github_token, extra_args):
         if library.get("deprecated-execution", False):
             library_args.append("--deprecated-execution")
 
-        result = run(
-            command + library_args + library.get("args", []) + extra_args, check=False
+        (proc, output) = executor.execute(
+            command + library_args + library.get("args", []) + extra_args
         )
 
-        results.append({"config": library, "result": result})
+        results.append({"config": library, "result": proc, "output": output})
 
     return results
 
@@ -82,7 +65,7 @@ def _format_result(result):
 
     return {
         "name": result["config"]["name"],
-        "output": result["result"].stdout,
+        "output": result["output"],
         "error": error,
         "skipped": skipped,
     }

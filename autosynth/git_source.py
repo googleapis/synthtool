@@ -15,11 +15,11 @@
 import datetime
 import pathlib
 import re
-import subprocess
 import typing
 
 import autosynth.abstract_source
 from autosynth import git
+from autosynth.executor import LogCapturingExecutor
 
 
 class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
@@ -38,6 +38,7 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
         self.source_name = source_name
         self.timestamp: typing.Optional[datetime.datetime] = None
         self.comment: typing.Optional[str] = None
+        self.executor = LogCapturingExecutor()
 
     def apply(self, preconfig: typing.Dict) -> None:
         # Tell the preconfig where to find the local clone of the repo.
@@ -46,21 +47,16 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
             preconfig["preclonedRepos"] = precloned_repos
         precloned_repos[self.remote] = self.repo_path
         # Check out my hash.
-        subprocess.run(
-            ["git", "checkout", self.sha], cwd=self.repo_path
-        ).check_returncode()
+        self.executor.execute(["git", "checkout", self.sha], cwd=self.repo_path)
 
     def get_comment(self) -> str:
         # Construct a comment using the text of the git commit.
         if self.comment is None:
             pretty = "--pretty=%B%n%nSource-Author: %an <%ae>%nSource-Date: %ad"
-            git_log: str = subprocess.run(
+            git_log: str = self.executor.run(
                 ["git", "log", self.sha, "-1", "--no-decorate", pretty],
                 cwd=self.repo_path,
-                stdout=subprocess.PIPE,
-                universal_newlines=True,
-                check=True,
-            ).stdout.strip()
+            ).strip()
             self.comment = _compose_comment(self.remote, self.sha, git_log)
         return self.comment
 
@@ -72,13 +68,9 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
 
     def get_timestamp(self) -> datetime.datetime:
         if self.timestamp is None:
-            unix_timestamp = subprocess.run(
-                ["git", "log", "-1", "--pretty=%at", self.sha],
-                cwd=self.repo_path,
-                universal_newlines=True,
-                check=True,
-                stdout=subprocess.PIPE,
-            ).stdout.strip()
+            unix_timestamp = self.executor.run(
+                ["git", "log", "-1", "--pretty=%at", self.sha], cwd=self.repo_path,
+            ).strip()
             self.timestamp = datetime.datetime.fromtimestamp(float(unix_timestamp))
         return self.timestamp
 
@@ -186,21 +178,13 @@ def enumerate_versions_for_working_repo(
     # Get the repo root directory that contains metadata_path.
     local_repo_dir = git.get_repo_root_dir(metadata_path)
     # Find the most recent commit hash.
-    head_sha = subprocess.run(
-        ["git", "log", "-1", "--pretty=%H"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-        cwd=local_repo_dir,
-        check=True,
-    ).stdout.strip()
+    head_sha = self.executor.run(
+        ["git", "log", "-1", "--pretty=%H"], cwd=local_repo_dir,
+    ).strip()
     # Get the remote url.
-    remote = subprocess.run(
-        ["git", "remote", "get-url", "origin"],
-        stdout=subprocess.PIPE,
-        universal_newlines=True,
-        cwd=local_repo_dir,
-        check=True,
-    ).stdout.strip()
+    remote = self.executor.run(
+        ["git", "remote", "get-url", "origin"], cwd=local_repo_dir,
+    ).strip()
     desc = f"This git repo ({remote})"
     version = GitSourceVersion(local_repo_dir, head_sha, remote, desc, "self")
     # The change from this repository must always be built first.
