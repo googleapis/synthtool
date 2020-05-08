@@ -39,7 +39,8 @@ def configure_git(user: str, email: str) -> None:
 
 
 def setup_branch(branch: str) -> None:
-    subprocess.check_call(["git", "checkout", "-b", branch])
+    subprocess.check_call(["git", "branch", "-f", branch])
+    subprocess.check_call(["git", "checkout", branch])
 
 
 def get_last_commit_to_file(file_path: str) -> str:

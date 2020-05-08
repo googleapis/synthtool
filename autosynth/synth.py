@@ -178,7 +178,8 @@ class SynthesizeLoopToolbox:
 
     def checkout_new_branch(self, index: int) -> None:
         """Create a new branch for the version."""
-        subprocess.check_call(["git", "checkout", "-b", self.sub_branch(index)])
+        subprocess.check_call(["git", "branch", "-f", self.sub_branch(index)])
+        subprocess.check_call(["git", "checkout", self.sub_branch(index)])
 
     def checkout_sub_branch(self, index: int):
         """Check out the branch for the version."""
