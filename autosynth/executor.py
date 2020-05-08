@@ -191,3 +191,6 @@ class LoggingExecutor(Executor):
                 self.log_collector.add_success(name, output)
 
         return (proc, output)
+
+
+DEFAULT_EXECUTOR = LogCapturingExecutor()

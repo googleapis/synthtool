@@ -29,7 +29,12 @@ import autosynth
 import autosynth.flags
 from autosynth import git, github, git_source
 from autosynth.abstract_source import AbstractSourceVersion
-from autosynth.executor import Executor, LogCapturingExecutor, LoggingExecutor
+from autosynth.executor import (
+    Executor,
+    LogCapturingExecutor,
+    LoggingExecutor,
+    DEFAULT_EXECUTOR,
+)
 from autosynth.synthesizer import Synthesizer, AbstractSynthesizer
 from autosynth.change_pusher import (
     AbstractChangePusher,
@@ -46,8 +51,6 @@ IGNORED_FILE_PATTERNS = [
     # synth.metadata files to be added.
     re.compile(r"M (.*?)synth.metadata")
 ]
-
-DEFAULT_EXECUTOR = LogCapturingExecutor()
 
 
 def load_metadata(metadata_path: str):

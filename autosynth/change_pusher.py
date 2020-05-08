@@ -20,11 +20,9 @@ import uuid
 from abc import ABC, abstractmethod
 
 from autosynth import git, github
-from autosynth.executor import Executor, LogCapturingExecutor
+from autosynth.executor import Executor, DEFAULT_EXECUTOR
 from autosynth.log import logger
 import re
-
-DEFAULT_EXECUTOR = LogCapturingExecutor()
 
 
 class AbstractPullRequest(ABC):
@@ -120,7 +118,7 @@ class SquashingChangePusher(AbstractChangePusher):
 
     def __init__(self, inner_change_pusher: AbstractChangePusher):
         self.inner_change_pusher = inner_change_pusher
-        self.executor = LogCapturingExecutor()
+        self.executor = DEFAULT_EXECUTOR
 
     def push_changes(
         self, commit_count: int, branch: str, pr_title: str, synth_log: str = ""

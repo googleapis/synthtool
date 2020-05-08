@@ -15,7 +15,7 @@
 import os
 import typing
 import pathlib
-from autosynth.executor import Executor, LogCapturingExecutor
+from autosynth.executor import Executor, DEFAULT_EXECUTOR
 
 GLOBAL_GITIGNORE = """
 __pycache__/
@@ -24,7 +24,6 @@ __pycache__/
 """
 
 GLOBAL_GITIGNORE_FILE = os.path.expanduser("~/.autosynth-gitignore")
-DEFAULT_EXECUTOR = LogCapturingExecutor()
 
 
 def clone_repo(

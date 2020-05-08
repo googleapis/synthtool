@@ -19,9 +19,7 @@ import typing
 
 import autosynth.abstract_source
 from autosynth import git
-from autosynth.executor import Executor, LogCapturingExecutor
-
-DEFAULT_EXECUTOR = LogCapturingExecutor()
+from autosynth.executor import Executor, DEFAULT_EXECUTOR
 
 
 class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
@@ -40,7 +38,7 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
         self.source_name = source_name
         self.timestamp: typing.Optional[datetime.datetime] = None
         self.comment: typing.Optional[str] = None
-        self.executor = LogCapturingExecutor()
+        self.executor = DEFAULT_EXECUTOR
 
     def apply(self, preconfig: typing.Dict) -> None:
         # Tell the preconfig where to find the local clone of the repo.
