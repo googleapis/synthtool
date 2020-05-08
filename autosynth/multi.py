@@ -9,24 +9,27 @@ import os
 import sys
 
 import jinja2
+import pathlib
 import yaml
 
 from autosynth import github
 from autosynth.log import logger
-from autosynth.executor import LoggingExecutor
+from autosynth.executor import LogCapturingExecutor, LoggingExecutor
 
 
 def synthesize_libraries(libraries, github_token, extra_args):
-    executor = LoggingExecutor()
+    executor = LogCapturingExecutor()
+    base_log_path = pathlib.Path("./logs")
     results = []
     for library in libraries:
         logger.info(f"Synthesizing {library['name']}.")
 
         command = [sys.executable, "-m", "autosynth.synth"]
 
+        environ = os.environ
+        environ["GITHUB_TOKEN"] = github_token
+
         library_args = [
-            "--github-token",
-            github_token,
             "--repository",
             library["repository"],
             "--synth-path",
@@ -35,6 +38,7 @@ def synthesize_libraries(libraries, github_token, extra_args):
             library.get("branch-suffix", ""),
             "--pr-title",
             library.get("pr-title", ""),
+            "--hide-synth-log",
         ]
 
         if library.get("metadata-path"):
@@ -44,7 +48,9 @@ def synthesize_libraries(libraries, github_token, extra_args):
             library_args.append("--deprecated-execution")
 
         (proc, output) = executor.execute(
-            command + library_args + library.get("args", []) + extra_args
+            command + library_args + library.get("args", []) + extra_args,
+            log_file_path=base_log_path / library["repository"] / "sponge_log.log",
+            environ=environ,
         )
 
         results.append({"config": library, "result": proc, "output": output})
