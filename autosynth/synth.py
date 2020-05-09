@@ -511,6 +511,8 @@ def _inner_main(temp_dir: str) -> int:
 
     # capture logs for later
     base_synth_log_path = pathlib.Path(os.path.realpath("./logs")) / args.repository
+    if args.synth_path:
+        base_synth_log_path /= args.synth_path
     logger.info(f"logs will be written to: {base_synth_log_path}")
 
     working_repo_path = synthtool_git.clone(f"https://github.com/{args.repository}.git")
