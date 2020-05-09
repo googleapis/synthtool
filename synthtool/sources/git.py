@@ -20,6 +20,7 @@ import subprocess
 from typing import Dict, Optional, Tuple
 
 import synthtool
+import synthtool.preconfig
 from synthtool import _tracked_paths, cache, log, metadata, shell
 
 REPO_REGEX = (
@@ -78,9 +79,10 @@ def clone(
 
         if not dest.exists():
             cmd = ["git", "clone", "--single-branch", url, dest]
-            shell.run(cmd)
+            shell.run(cmd, check=True)
         else:
-            shell.run(["git", "pull"], cwd=str(dest))
+            shell.run(["git", "checkout", "master"], cwd=str(dest), check=True)
+            shell.run(["git", "pull"], cwd=str(dest), check=True)
         committish = committish or "master"
 
     if committish:

@@ -20,26 +20,25 @@ import json
 import os
 import pathlib
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
 import typing
+from typing import Dict, Sequence
+
+import synthtool.sources.git as synthtool_git
 
 import autosynth
 import autosynth.flags
-from autosynth import git, github, git_source
+from autosynth import git, git_source, github
 from autosynth.abstract_source import AbstractSourceVersion
-from autosynth.synthesizer import Synthesizer, AbstractSynthesizer
 from autosynth.change_pusher import (
     AbstractChangePusher,
     ChangePusher,
     SquashingChangePusher,
 )
 from autosynth.log import logger
-from typing import Dict, Sequence
-
-WORKING_REPO = "working_repo"
+from autosynth.synthesizer import AbstractSynthesizer, Synthesizer
 
 IGNORED_FILE_PATTERNS = [
     # Ignore modifications to synth.metadata in any directory, this still allows *new*
@@ -179,7 +178,8 @@ class SynthesizeLoopToolbox:
 
     def checkout_new_branch(self, index: int) -> None:
         """Create a new branch for the version."""
-        subprocess.check_call(["git", "checkout", "-b", self.sub_branch(index)])
+        subprocess.check_call(["git", "branch", "-f", self.sub_branch(index)])
+        subprocess.check_call(["git", "checkout", self.sub_branch(index)])
 
     def checkout_sub_branch(self, index: int):
         """Check out the branch for the version."""
@@ -511,13 +511,13 @@ def _inner_main(temp_dir: str) -> int:
 
     # capture logs for later
     base_synth_log_path = pathlib.Path(os.path.realpath("./logs")) / args.repository
+    if args.synth_path:
+        base_synth_log_path /= args.synth_path
     logger.info(f"logs will be written to: {base_synth_log_path}")
 
-    if os.path.exists(WORKING_REPO):
-        shutil.rmtree(WORKING_REPO)
-    git.clone_repo(f"https://github.com/{args.repository}.git", WORKING_REPO)
+    working_repo_path = synthtool_git.clone(f"https://github.com/{args.repository}.git")
 
-    os.chdir(WORKING_REPO)
+    os.chdir(working_repo_path)
 
     git.configure_git(args.github_user, args.github_email)
 
