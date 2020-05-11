@@ -225,6 +225,7 @@ class SynthesizeLoopToolbox:
             new_groups[i] = self.version_groups[i]
             source_name = self.version_groups[i][0].get_source_name()
             fork_branch = f"{self.branch}-{source_name}"
+            logger.info(f"forking: {fork_branch}")
             fork = SynthesizeLoopToolbox(
                 new_groups,
                 fork_branch,
@@ -237,7 +238,7 @@ class SynthesizeLoopToolbox:
             fork.source_name = source_name
             fork.commit_count = self.commit_count
             fork.version_zero = self.version_zero
-            self.executor.execute(["git", "branch", fork_branch])
+            self.executor.execute(["git", "branch", "-f", fork_branch])
             forks.append(fork)
         return forks
 
@@ -359,9 +360,12 @@ def synthesize_loop(
         return 0  # No versions, nothing to synthesize.
     try:
         if multiple_prs:
+            logger.info("Forking toolbox")
             commit_count = 0
             for fork in toolbox.fork():
+                logger.info(f"Forked branch: {fork.branch}")
                 if change_pusher.check_if_pr_already_exists(fork.branch):
+                    logger.info(f"{fork.branch} already exists... skipping")
                     continue
                 toolbox.executor.execute(["git", "checkout", fork.branch])
                 synthesize_inner_loop(fork, synthesizer)
@@ -369,7 +373,8 @@ def synthesize_loop(
                 if fork.source_name == "self" or fork.count_commits_with_context() > 0:
                     fork.push_changes(change_pusher)
             return commit_count
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         pass  # Fall back to non-forked loop below.
     synthesize_inner_loop(toolbox, synthesizer)
     toolbox.push_changes(change_pusher)
@@ -385,6 +390,8 @@ def synthesize_inner_loop(
         synthesizer, len(toolbox.versions) - 1
     ):
         return  # No differences, nothing more to do.
+
+    logger.info("Found changes -- digging deeper.")
 
     # Synthesize with the oldest version of all the sources.
     logger.info("Building oldest versions")
@@ -453,8 +460,8 @@ def git_branches_differ(
 
 def has_changes(executor: Executor = DEFAULT_EXECUTOR):
     output = executor.run(["git", "status", "--porcelain"]).strip()
-    logger.info("Changed files:")
-    logger.info(output)
+    logger.debug("Changed files:")
+    logger.debug(output)
 
     # Parse the git status output. Ignore any blank lines.
     changed_files = [line.strip() for line in output.split("\n") if line]
@@ -540,12 +547,14 @@ def _inner_main(temp_dir: str) -> int:
 
     metadata_path = os.path.join(args.metadata_path or "", "synth.metadata")
 
+    logger.info("autosynth flags:")
     flags = autosynth.flags.parse_flags()
     # Override flags specified in synth.py with flags specified in environment vars.
     for key in flags.keys():
         env_value = os.environ.get(key, "")
         if env_value:
             flags[key] = False if env_value.lower() == "false" else env_value
+            logger.info(f"{key}: {flags[key]}")
 
     metadata = load_metadata(metadata_path)
     multiple_commits = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS]

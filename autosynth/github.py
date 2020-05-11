@@ -52,6 +52,8 @@ class GitHub:
         self, repository: str, branch: str, title: str, body: str = None
     ) -> typing.Dict[str, typing.Any]:
         url = f"{_GITHUB_ROOT}/repos/{repository}/pulls"
+        logger.info(f"creating pull request to {repository} for branch {branch}")
+        logger.debug(body)
         response = self.session.post(
             url,
             json={

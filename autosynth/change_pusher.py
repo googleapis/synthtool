@@ -91,6 +91,7 @@ class ChangePusher(AbstractChangePusher):
             title=pr_title,
             body=build_pr_body(synth_log, trailers),
         )
+        logger.info(f"Created pull request: {pr['url']}.")
 
         # args.synth_path (and api: * labels) only exist in monorepos
         if self._synth_path:
