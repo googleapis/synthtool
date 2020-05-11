@@ -551,7 +551,9 @@ def _inner_main(temp_dir: str) -> int:
     multiple_commits = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS]
     multiple_prs = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_PRS]
 
-    executor = LogCapturingExecutor() if args.hide_synth_log else LoggingExecutor()
+    executor: typing.Union[
+        LogCapturingExecutor, LoggingExecutor
+    ] = LogCapturingExecutor() if args.hide_synth_log else LoggingExecutor()
 
     if (not multiple_commits and not multiple_prs) or not metadata:
         if change_pusher.check_if_pr_already_exists(branch):

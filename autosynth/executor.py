@@ -22,6 +22,9 @@ import tempfile
 import typing
 
 
+PathOrStr = typing.Union[pathlib.Path, str]
+
+
 class Executor(ABC):
     """An executor abstracts the handling of executing command line
     scripts and allows consolidating handling of the command's output.
@@ -31,9 +34,9 @@ class Executor(ABC):
     def execute(
         self,
         command: typing.List[str],
-        log_file_path: pathlib.Path = None,
+        log_file_path: typing.Optional[PathOrStr] = None,
         environ: typing.Mapping[str, str] = None,
-        cwd: str = None,
+        cwd: typing.Optional[PathOrStr] = None,
         check: bool = True,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         """Execute the provided command
@@ -61,16 +64,16 @@ class Executor(ABC):
     def run(
         self,
         command: typing.List[str],
-        log_file_path: pathlib.Path = None,
+        log_file_path: typing.Optional[PathOrStr] = None,
         environ: typing.Mapping[str, str] = None,
-        cwd: str = None,
+        cwd: typing.Optional[PathOrStr] = None,
         check: bool = True,
     ) -> str:
         """Execute the provided command
 
         Arguments:
             command {typing.List[str]} -- The command provided as a list of string tokens.
-            log_file_path {typing.Optional[pathlib.Path]} -- If provided, the output of
+            log_file_path {typing.Optional[PathOrStr]} -- If provided, the output of
                 the command should be written to this path.
             environ {typing.Optional[typing.Mapping[str, str]]} -- Map of environment
                 variables to set. Defaults to the current environment.
@@ -101,34 +104,36 @@ class LogCapturingExecutor(Executor):
     def execute(
         self,
         command: typing.List[str],
-        log_file_path: pathlib.Path = None,
+        log_file_path: typing.Optional[PathOrStr] = None,
         environ: typing.Mapping[str, str] = None,
-        cwd: str = None,
+        cwd: typing.Optional[PathOrStr] = None,
         check: bool = True,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         name = " ".join(command)
 
-        output_path = log_file_path or pathlib.Path(
-            tempfile.NamedTemporaryFile("wt+").name
+        output_path = pathlib.Path(
+            log_file_path or pathlib.Path(tempfile.NamedTemporaryFile("wt+").name)
         )
+
         logger.debug(f"Running: {name}")
         if log_file_path:
             logger.debug(f"   -> {log_file_path}")
 
         # Ensure the logfile directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        run_options = {
+        run_options: typing.Dict[str, typing.Any] = {
             "stderr": subprocess.STDOUT,
             "env": (environ or os.environ),
             "universal_newlines": True,
             "check": check,
         }
         if cwd is not None:
-            run_options["cwd"] = cwd
+            run_options["cwd"] = str(cwd)
 
         # Write output directly to log file
         with open(output_path, "w") as fp:
-            proc = subprocess.run(command, stdout=fp, **run_options)
+            run_options["stdout"] = fp
+            proc = subprocess.run(command, **run_options)
 
         # Read back log file to return the output
         with open(output_path, "rt") as fp:
@@ -153,16 +158,16 @@ class LoggingExecutor(Executor):
     def execute(
         self,
         command: typing.List[str],
-        log_file_path: pathlib.Path = None,
+        log_file_path: typing.Optional[PathOrStr] = None,
         environ: typing.Mapping[str, str] = None,
-        cwd: str = None,
+        cwd: typing.Optional[PathOrStr] = None,
         check: bool = True,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         name = " ".join((str(arg) for arg in command))
         logger.info(f"Running: {name}")
 
-        output_path = log_file_path or pathlib.Path(
-            tempfile.NamedTemporaryFile("wt+").name
+        output_path = pathlib.Path(
+            log_file_path or pathlib.Path(tempfile.NamedTemporaryFile("wt+").name)
         )
 
         # Ensure the logfile directory exists
@@ -170,7 +175,7 @@ class LoggingExecutor(Executor):
 
         # Tee the output into a provided location so we can see the return the final output
         tee_proc = subprocess.Popen(["tee", output_path], stdin=subprocess.PIPE)
-        run_options = {
+        run_options: typing.Dict[str, typing.Any] = {
             "stderr": subprocess.STDOUT,
             "stdout": tee_proc.stdin,
             "env": (environ or os.environ),
@@ -178,7 +183,7 @@ class LoggingExecutor(Executor):
             "check": check,
         }
         if cwd is not None:
-            run_options["cwd"] = cwd
+            run_options["cwd"] = str(cwd)
 
         proc = subprocess.run(command, **run_options)
 
