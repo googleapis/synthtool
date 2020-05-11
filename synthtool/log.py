@@ -77,3 +77,31 @@ def configure_logger(name: str, color: bool = bool(ColoredFormatter)):
 
 _setup_logging()
 logger = configure_logger("synthtool")
+
+
+def success(*args, **kwargs):
+    logger.success(*args, **kwargs)
+
+
+def debug(*args, **kwargs):
+    logger.debug(*args, **kwargs)
+
+
+def info(*args, **kwargs):
+    logger.info(*args, **kwargs)
+
+
+def warning(*args, **kwargs):
+    logger.warning(*args, **kwargs)
+
+
+def error(*args, **kwargs):
+    logger.warning(*args, **kwargs)
+
+
+def exception(*args, **kwargs):
+    logger.warning(*args, **kwargs)
+
+
+def critical(*args, **kwargs):
+    logger.critical(*args, **kwargs)
