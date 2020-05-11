@@ -447,7 +447,7 @@ def git_branches_differ(
     diff_text = executor.run(
         ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path]
     )
-    pattern = f"^--- /dev/null"
+    pattern = "^--- /dev/null"
     return bool(re.search(pattern, diff_text, re.MULTILINE))
 
 
