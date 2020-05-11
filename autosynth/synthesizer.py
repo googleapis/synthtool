@@ -103,7 +103,7 @@ class Synthesizer(AbstractSynthesizer):
             command = [sys.executable, self.synth_py_path]
 
         (proc, output) = self.executor.execute(
-            command=command, log_file_path=log_file_path, environ=environ,
+            command=command, log_file_path=log_file_path, environ=environ, check=False
         )
 
         if proc.returncode:

@@ -34,7 +34,7 @@ class Executor(ABC):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
-        check: bool = False,
+        check: bool = True,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         """Execute the provided command
 
@@ -104,7 +104,7 @@ class LogCapturingExecutor(Executor):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
-        check: bool = False,
+        check: bool = True,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         name = " ".join(command)
 
@@ -156,7 +156,7 @@ class LoggingExecutor(Executor):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
-        check: bool = False,
+        check: bool = True,
     ) -> typing.Tuple[subprocess.CompletedProcess, str]:
         name = " ".join((str(arg) for arg in command))
         logger.info(f"Running: {name}")

@@ -187,14 +187,12 @@ class SynthesizeLoopToolbox:
 
     def checkout_new_branch(self, index: int) -> None:
         """Create a new branch for the version."""
-        self.executor.execute(
-            ["git", "branch", "-f", self.sub_branch(index)], check=True
-        )
-        self.executor.execute(["git", "checkout", self.sub_branch(index)], check=True)
+        self.executor.execute(["git", "branch", "-f", self.sub_branch(index)])
+        self.executor.execute(["git", "checkout", self.sub_branch(index)])
 
     def checkout_sub_branch(self, index: int):
         """Check out the branch for the version."""
-        self.executor.execute(["git", "checkout", self.sub_branch(index)], check=True)
+        self.executor.execute(["git", "checkout", self.sub_branch(index)])
 
     def patch_merge_version(self, index: int, comment=None) -> bool:
         """Merges the given version into the current branch using a patch merge."""
@@ -241,7 +239,7 @@ class SynthesizeLoopToolbox:
             fork.source_name = source_name
             fork.commit_count = self.commit_count
             fork.version_zero = self.version_zero
-            self.executor.execute(["git", "branch", fork_branch], check=True)
+            self.executor.execute(["git", "branch", fork_branch])
             forks.append(fork)
         return forks
 
@@ -267,7 +265,6 @@ class SynthesizeLoopToolbox:
                     # Reuse version zero built for another source.
                     self.executor.execute(
                         ["git", "merge", "--ff-only", self.version_zero.branch_name],
-                        check=True,
                     )
                     return self.version_zero.has_changes
 
@@ -288,8 +285,8 @@ class SynthesizeLoopToolbox:
                 self.version_zero.has_changes = i_has_changes
             return i_has_changes
         finally:
-            self.executor.execute(["git", "reset", "--hard", "HEAD"], check=True)
-            self.executor.execute(["git", "checkout", self.branch], check=True)
+            self.executor.execute(["git", "reset", "--hard", "HEAD"])
+            self.executor.execute(["git", "checkout", self.branch])
 
     def count_commits_with_context(self) -> int:
         """Returns the number of commits that could be traced to a source version."""
@@ -368,7 +365,7 @@ def synthesize_loop(
             for fork in toolbox.fork():
                 if change_pusher.check_if_pr_already_exists(fork.branch):
                     continue
-                toolbox.executor.execute(["git", "checkout", fork.branch], check=True)
+                toolbox.executor.execute(["git", "checkout", fork.branch])
                 synthesize_inner_loop(fork, synthesizer)
                 commit_count += fork.commit_count
                 if fork.source_name == "self" or fork.count_commits_with_context() > 0:
