@@ -52,8 +52,6 @@ def configure_git(user: str, email: str, executor: Executor = DEFAULT_EXECUTOR) 
 
 
 def setup_branch(branch: str, executor: Executor = DEFAULT_EXECUTOR) -> None:
-    executor.run(["git", "checkout", "-b", branch])
-
     executor.run(["git", "branch", "-f", branch])
     executor.run(["git", "checkout", branch])
 
