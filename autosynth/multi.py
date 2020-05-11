@@ -14,7 +14,7 @@ import yaml
 
 from autosynth import github
 from autosynth.log import logger
-from autosynth.executor import LogCapturingExecutor, LoggingExecutor
+from autosynth.executor import LogCapturingExecutor
 
 
 def synthesize_libraries(libraries, github_token, extra_args):
