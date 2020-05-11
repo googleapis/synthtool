@@ -229,7 +229,7 @@ class SynthesizeLoopToolbox:
             fork.source_name = source_name
             fork.commit_count = self.commit_count
             fork.version_zero = self.version_zero
-            subprocess.check_call(["git", "branch", fork_branch])
+            subprocess.check_call(["git", "branch", "-f", fork_branch])
             forks.append(fork)
         return forks
 
@@ -361,7 +361,8 @@ def synthesize_loop(
                 if fork.source_name == "self" or fork.count_commits_with_context() > 0:
                     fork.push_changes(change_pusher)
             return commit_count
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         pass  # Fall back to non-forked loop below.
     synthesize_inner_loop(toolbox, synthesizer)
     toolbox.push_changes(change_pusher)
