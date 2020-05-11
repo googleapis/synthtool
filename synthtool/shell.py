@@ -14,7 +14,7 @@
 
 import subprocess
 
-from synthtool import log
+from synthtool.log import logger
 
 
 def run(args, *, cwd=None, check=True, hide_output=True):
@@ -33,7 +33,7 @@ def run(args, *, cwd=None, check=True, hide_output=True):
             encoding="utf-8",
         )
     except subprocess.CalledProcessError as exc:
-        log.error(
+        logger.error(
             f"Failed executing {' '.join((str(arg) for arg in args))}:\n\n{exc.stdout}"
         )
         raise exc

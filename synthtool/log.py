@@ -35,44 +35,24 @@ class LoggerWithSuccess(logging.getLoggerClass()):  # type: ignore
             pass
 
 
-logging.setLoggerClass(LoggerWithSuccess)
-logger = logging.getLogger("synthtool")
-logger.setLevel(logging.DEBUG)
-logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
-
-
-def success(*args, **kwargs):
-    logger.success(*args, **kwargs)
-
-
-def debug(*args, **kwargs):
-    logger.debug(*args, **kwargs)
-
-
-def info(*args, **kwargs):
-    logger.info(*args, **kwargs)
-
-
-def warning(*args, **kwargs):
-    logger.warning(*args, **kwargs)
-
-
-def error(*args, **kwargs):
-    logger.warning(*args, **kwargs)
-
-
-def exception(*args, **kwargs):
-    logger.warning(*args, **kwargs)
-
-
-def critical(*args, **kwargs):
-    logger.critical(*args, **kwargs)
-
-
 def _setup_logging(color: bool = bool(ColoredFormatter)):
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
+    logging.getLogger("urllib3.connectionpool").setLevel(logging.ERROR)
+    logging.setLoggerClass(LoggerWithSuccess)
+
+    # Silence any noisy loggers here.
+
+
+def configure_logger(name: str, color: bool = bool(ColoredFormatter)):
+    """Create and configure the default logger for autosynth.
+
+    The logger will prefix the log message with the current time and the
+    log severity.
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(logging.DEBUG)
+
     handler = logging.StreamHandler()
+    handler.setLevel(logging.DEBUG)
 
     if color is True and sys.stdout.isatty():
         formatter = ColoredFormatter(
@@ -91,10 +71,9 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
         formatter = logging.Formatter("%(asctime)s %(name)s > %(message)s")
 
     handler.setFormatter(formatter)
-
-    root_logger.addHandler(handler)
-
-    # Silence any noisy loggers here.
+    logger.addHandler(handler)
+    return logger
 
 
 _setup_logging()
+logger = configure_logger("synthtool")

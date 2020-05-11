@@ -18,7 +18,7 @@ from pathlib import Path
 import jinja2
 import re
 
-from synthtool import log
+from synthtool.log import logger
 from synthtool import tmp
 
 
@@ -90,7 +90,7 @@ class TemplateGroup:
 def release_quality_badge(input: str) -> str:
     """Generates a markdown badge for displaying a "Release Quality'."""
     if not input:
-        log.error(f"ensure you pass a string 'quality' to release_quality_badge")
+        logger.error(f"ensure you pass a string 'quality' to release_quality_badge")
         return ""
 
     release_quality = input.upper()
@@ -107,7 +107,7 @@ def release_quality_badge(input: str) -> str:
     elif release_quality == "DEPRECATED":
         badge = "deprecated-red"
     else:
-        log.error(
+        logger.error(
             "Expected 'release_quality' to be one of: (ga, beta, alpha, eap, deprecated)"
         )
         return ""

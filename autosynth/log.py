@@ -13,28 +13,10 @@
 # limitations under the License.
 
 import logging
+from synthtool.log import configure_logger
 
 
-def _configure_logger():
-    """Create and configure the default logger for autosynth.
-
-    The logger will prefix the log message with the current time and the
-    log severity.
-    """
-    logger = logging.getLogger("autosynth")
-    logger.setLevel(logging.DEBUG)
-
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-    )
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-    return logger
-
-
-logger = _configure_logger()
+logger = configure_logger("autosynth")
 
 
 class LogCollector:

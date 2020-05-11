@@ -20,7 +20,7 @@ import re
 import sys
 
 from synthtool import _tracked_paths
-from synthtool import log
+from synthtool.log import logger
 
 PathOrStr = Union[str, Path]
 ListOfPathsOrStrs = Iterable[Union[str, Path]]
@@ -192,7 +192,7 @@ def move(
                 f"contain files?"
             )
         else:
-            log.warning(
+            logger.warning(
                 f"No files in sources {sources} were copied. Does the source "
                 f"contain files?"
             )
@@ -226,17 +226,17 @@ def replace(
     paths = _filter_files(_expand_paths(sources, "."))
 
     if not paths:
-        log.warning(f"No files were found in sources {sources} for replace()")
+        logger.warning(f"No files were found in sources {sources} for replace()")
 
     count_replaced = 0
     for path in paths:
         replaced = _replace_in_file(path, expr, after)
         count_replaced += replaced
         if replaced:
-            log.info(f"Replaced {before!r} in {path}.")
+            logger.info(f"Replaced {before!r} in {path}.")
 
     if not count_replaced:
-        log.warning(
+        logger.warning(
             f"No replacements made in {sources} for pattern {before}, maybe "
             "replacement is no longer needed?"
         )

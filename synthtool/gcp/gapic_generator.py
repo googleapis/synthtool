@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Optional
 
 from synthtool import _tracked_paths
-from synthtool import log
+from synthtool.log import logger
 from synthtool import metadata
 from synthtool import shell
 from synthtool.gcp import artman
@@ -103,7 +103,7 @@ class GAPICGenerator:
 
         generator_dir = LOCAL_GENERATOR
         if generator_dir is not None:
-            log.debug(f"Using local generator at {generator_dir}")
+            logger.debug(f"Using local generator at {generator_dir}")
 
         # Run the code generator.
         # $ artman --config path/to/artman_api.yaml generate python_gapic
@@ -121,7 +121,7 @@ class GAPICGenerator:
                 f"Unable to find configuration yaml file: {(googleapis / config_path)}."
             )
 
-        log.debug(f"Running generator for {config_path}.")
+        logger.debug(f"Running generator for {config_path}.")
 
         if include_samples:
             if generator_args is None:
@@ -149,7 +149,7 @@ class GAPICGenerator:
                 f"Unable to find generated output of artman: {genfiles}."
             )
 
-        log.success(f"Generated code into {genfiles}.")
+        logger.success(f"Generated code into {genfiles}.")
 
         # Get the *.protos files and put them in a protos dir in the output
         if include_protos:
@@ -165,9 +165,9 @@ class GAPICGenerator:
             os.makedirs(proto_output_path, exist_ok=True)
 
             for i in proto_files:
-                log.debug(f"Copy: {i} to {proto_output_path / i.name}")
+                logger.debug(f"Copy: {i} to {proto_output_path / i.name}")
                 shutil.copyfile(i, proto_output_path / i.name)
-            log.success(f"Placed proto files into {proto_output_path}.")
+            logger.success(f"Placed proto files into {proto_output_path}.")
 
         if include_samples:
             samples_root_dir = None
@@ -209,10 +209,10 @@ class GAPICGenerator:
 
         if LOCAL_GOOGLEAPIS:
             self._googleapis = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(f"Using local googleapis at {self._googleapis}")
+            logger.debug(f"Using local googleapis at {self._googleapis}")
 
         else:
-            log.debug("Cloning googleapis.")
+            logger.debug("Cloning googleapis.")
             self._googleapis = git.clone(GOOGLEAPIS_URL)
 
         return self._googleapis
@@ -223,12 +223,12 @@ class GAPICGenerator:
 
         if LOCAL_GOOGLEAPIS:
             self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(
+            logger.debug(
                 f"Using local googleapis at {self._googleapis_private} for googleapis-private"
             )
 
         else:
-            log.debug("Cloning googleapis-private.")
+            logger.debug("Cloning googleapis-private.")
             self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
 
         return self._googleapis_private
@@ -300,7 +300,7 @@ class GAPICGenerator:
         test_files = googleapis_samples_dir.glob("**/*.test.yaml")
         os.makedirs(samples_test_dir, exist_ok=True)
         for i in test_files:
-            log.debug(f"Copy: {i} to {samples_test_dir / i.name}")
+            logger.debug(f"Copy: {i} to {samples_test_dir / i.name}")
             shutil.copyfile(i, samples_test_dir / i.name)
 
         # Download sample resources from sample_resources.yaml storage URIs.
@@ -321,7 +321,7 @@ class GAPICGenerator:
                 response = requests.get(uri, allow_redirects=True)
                 download_path = samples_resources_dir / os.path.basename(uri)
                 os.makedirs(samples_resources_dir, exist_ok=True)
-                log.debug(f"Download {uri} to {download_path}")
+                logger.debug(f"Download {uri} to {download_path}")
                 with open(download_path, "wb") as output:  # type: ignore
                     output.write(response.content)
 
@@ -339,7 +339,7 @@ class GAPICGenerator:
             "ruby": "bundle exec ruby",
         }
         if language not in LANGUAGE_EXECUTABLES:
-            log.info("skipping manifest gen")
+            logger.info("skipping manifest gen")
             return None
 
         manifest_arguments = [
@@ -355,7 +355,7 @@ class GAPICGenerator:
             if os.path.isfile(code_sample):
                 manifest_arguments.append(sample_path)
         try:
-            log.debug(f"Writing samples manifest {manifest_arguments}")
+            logger.debug(f"Writing samples manifest {manifest_arguments}")
             shell.run(manifest_arguments, cwd=samples_root_dir)
         except (subprocess.CalledProcessError, FileNotFoundError):
-            log.warning("gen-manifest failed (sample-tester may not be installed)")
+            logger.warning("gen-manifest failed (sample-tester may not be installed)")
