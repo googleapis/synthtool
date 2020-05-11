@@ -129,26 +129,22 @@ class SquashingChangePusher(AbstractChangePusher):
                 commit_count, branch, pr_title, synth_log
             )
 
-        self.executor.execute(
-            ["git", "checkout", branch], check=True
-        )  # Probably redundant.
+        self.executor.execute(["git", "checkout", branch])  # Probably redundant.
         with tempfile.NamedTemporaryFile() as message_file:
             # Collect the commit messages into a temporary file.
             message_file.write("changes triggered by multiple versions\n\n".encode())
             output = self.executor.run(
-                ["git", "log", f"-{commit_count}", "--format=* %s%n%b"], check=True
+                ["git", "log", f"-{commit_count}", "--format=* %s%n%b"]
             )
             message_file.write(output)
             message_file.file.close()  # type: ignore
             # Do a git dance to construct a branch with the commits squashed.
             temp_branch = str(uuid.uuid4())
-            self.executor.execute(["git", "branch", "-m", temp_branch], check=True)
-            self.executor.execute(["git", "checkout", "master"], check=True)
-            self.executor.execute(["git", "checkout", "-b", branch], check=True)
-            self.executor.execute(["git", "merge", "--squash", temp_branch], check=True)
-            self.executor.execute(
-                ["git", "commit", "-F", message_file.name], check=True
-            )
+            self.executor.execute(["git", "branch", "-m", temp_branch])
+            self.executor.execute(["git", "checkout", "master"])
+            self.executor.execute(["git", "checkout", "-b", branch])
+            self.executor.execute(["git", "merge", "--squash", temp_branch])
+            self.executor.execute(["git", "commit", "-F", message_file.name])
         return self.inner_change_pusher.push_changes(1, branch, pr_title, synth_log)
 
     def check_if_pr_already_exists(self, branch) -> bool:
@@ -200,9 +196,7 @@ def _collect_trailers(
     Returns:
         str -- The trailer lines from the recent commits.
     """
-    text = executor.run(
-        ["git", "log", f"-{commit_count}", "--pretty=%b"], cwd=git_dir, check=True
-    )
+    text = executor.run(["git", "log", f"-{commit_count}", "--pretty=%b"], cwd=git_dir)
     return _parse_trailers(text)
 
 

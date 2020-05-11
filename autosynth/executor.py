@@ -64,7 +64,7 @@ class Executor(ABC):
         log_file_path: pathlib.Path = None,
         environ: typing.Mapping[str, str] = None,
         cwd: str = None,
-        check: bool = False,
+        check: bool = True,
     ) -> str:
         """Execute the provided command
 

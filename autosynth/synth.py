@@ -444,20 +444,20 @@ def git_branches_differ(
     diff_cmd = ["git", "diff", f"{branch_a}..{branch_b}"]
     diff_cmd.extend(["--", ".", f":(exclude){metadata_path}"])
 
-    output = executor.run(diff_cmd, check=True)
+    output = executor.run(diff_cmd)
     if bool(output):
         return True
     # Check to see if synth.metadata was added.
 
     diff_text = executor.run(
-        ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path], check=True
+        ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path]
     )
     pattern = f"^--- /dev/null"
     return bool(re.search(pattern, diff_text, re.MULTILINE))
 
 
 def has_changes(executor: Executor = DEFAULT_EXECUTOR):
-    output = executor.run(["git", "status", "--porcelain"], check=True).strip()
+    output = executor.run(["git", "status", "--porcelain"]).strip()
     logger.info("Changed files:")
     logger.info(output)
 
