@@ -56,6 +56,9 @@ def configure_git(user: str, email: str, executor: Executor = DEFAULT_EXECUTOR) 
 def setup_branch(branch: str, executor: Executor = DEFAULT_EXECUTOR) -> None:
     executor.run(["git", "checkout", "-b", branch], check=True)
 
+    executor.run(["git", "branch", "-f", branch], check=True)
+    executor.run(["git", "checkout", branch], check=True)
+
 
 def get_last_commit_to_file(
     file_path: str, executor: Executor = DEFAULT_EXECUTOR

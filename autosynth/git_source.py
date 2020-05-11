@@ -17,6 +17,8 @@ import pathlib
 import re
 import typing
 
+import synthtool.sources.git as synthtool_git
+
 import autosynth.abstract_source
 from autosynth import git
 from autosynth.executor import Executor, DEFAULT_EXECUTOR
@@ -123,8 +125,7 @@ def enumerate_versions_for_source(
         return []
     remote = source["remote"]
     tail_sha = source["sha"]
-    local_repo_dir = str(temp_dir / name)
-    git.clone_repo(remote, local_repo_dir)
+    local_repo_dir = str(synthtool_git.clone(remote))
     # Get the list of commit hashes since the last library generation.
     shas = git.get_commit_shas_since(tail_sha, local_repo_dir)
     desc = f"Git repo {remote}"
