@@ -90,7 +90,7 @@ class TemplateGroup:
 def release_quality_badge(input: str) -> str:
     """Generates a markdown badge for displaying a "Release Quality'."""
     if not input:
-        log.error(f"ensure you pass a string 'quality' to release_quality_badge")
+        log.error("ensure you pass a string 'quality' to release_quality_badge")
         return ""
 
     release_quality = input.upper()

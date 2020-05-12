@@ -26,18 +26,6 @@ __pycache__/
 GLOBAL_GITIGNORE_FILE = os.path.expanduser("~/.autosynth-gitignore")
 
 
-def clone_repo(source_url: str, target_path: str) -> None:
-    """Clones a remote repo to a local directory.
-
-    Arguments:
-        source_url {str} -- Url of the remote repo
-        target_path {str} -- Local directory name for the clone
-    """
-    subprocess.check_call(
-        ["git", "clone", "--single-branch", source_url, "--", target_path]
-    )
-
-
 def configure_git(user: str, email: str) -> None:
     with open(GLOBAL_GITIGNORE_FILE, "w") as fh:
         fh.write(GLOBAL_GITIGNORE)
@@ -51,7 +39,8 @@ def configure_git(user: str, email: str) -> None:
 
 
 def setup_branch(branch: str) -> None:
-    subprocess.check_call(["git", "checkout", "-b", branch])
+    subprocess.check_call(["git", "branch", "-f", branch])
+    subprocess.check_call(["git", "checkout", branch])
 
 
 def get_last_commit_to_file(file_path: str) -> str:

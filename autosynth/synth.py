@@ -20,26 +20,25 @@ import json
 import os
 import pathlib
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
 import typing
+from typing import Dict, Sequence
+
+import synthtool.sources.git as synthtool_git
 
 import autosynth
 import autosynth.flags
-from autosynth import git, github, git_source
+from autosynth import git, git_source, github
 from autosynth.abstract_source import AbstractSourceVersion
-from autosynth.synthesizer import Synthesizer, AbstractSynthesizer
 from autosynth.change_pusher import (
     AbstractChangePusher,
     ChangePusher,
     SquashingChangePusher,
 )
 from autosynth.log import logger
-from typing import Dict, Sequence
-
-WORKING_REPO = "working_repo"
+from autosynth.synthesizer import AbstractSynthesizer, Synthesizer
 
 IGNORED_FILE_PATTERNS = [
     # Ignore modifications to synth.metadata in any directory, this still allows *new*
@@ -144,6 +143,7 @@ class SynthesizeLoopToolbox:
         temp_dir: str,
         metadata_path: str,
         synth_path: str,
+        log_dir_path: pathlib.Path = None,
     ):
         self._temp_dir = temp_dir
         self._metadata_path = metadata_path
@@ -160,6 +160,9 @@ class SynthesizeLoopToolbox:
         self.environ["SYNTHTOOL_PRECONFIG_FILE"] = self._preconfig_path
         self.source_name = ""  # Only non-empty for forks
         self.version_zero = VersionZero()
+        self.log_dir_path = log_dir_path or pathlib.Path(
+            tempfile.TemporaryDirectory().name
+        )
 
     def apply_version(self, version_index: int) -> None:
         """Applies one version from each group."""
@@ -175,7 +178,8 @@ class SynthesizeLoopToolbox:
 
     def checkout_new_branch(self, index: int) -> None:
         """Create a new branch for the version."""
-        subprocess.check_call(["git", "checkout", "-b", self.sub_branch(index)])
+        subprocess.check_call(["git", "branch", "-f", self.sub_branch(index)])
+        subprocess.check_call(["git", "checkout", self.sub_branch(index)])
 
     def checkout_sub_branch(self, index: int):
         """Check out the branch for the version."""
@@ -209,7 +213,7 @@ class SynthesizeLoopToolbox:
             [typing.List[SynthesizeLoopToolbox]] -- A toolbox for each source.
         """
         forks = []
-        for i, group in enumerate(self.version_groups):
+        for i, _group in enumerate(self.version_groups):
             new_groups = [[g[0]] for g in self.version_groups]
             new_groups[i] = self.version_groups[i]
             source_name = self.version_groups[i][0].get_source_name()
@@ -220,6 +224,7 @@ class SynthesizeLoopToolbox:
                 self._temp_dir,
                 self._metadata_path,
                 self._synth_path,
+                self.log_dir_path / source_name,
             )
             fork.source_name = source_name
             fork.commit_count = self.commit_count
@@ -253,12 +258,13 @@ class SynthesizeLoopToolbox:
                     )
                     return self.version_zero.has_changes
 
+            synth_log_path = self.log_dir_path / str(index) / "sponge_log.log"
             if index + 1 == len(self.versions):
                 # The youngest version.  Let exceptions raise because the
                 # current state is broken, and there's nothing we can do.
-                synthesizer.synthesize(self.environ)
+                synthesizer.synthesize(synth_log_path, self.environ)
             else:
-                synthesizer.synthesize_and_catch_exception(self.environ)
+                synthesizer.synthesize_and_catch_exception(synth_log_path, self.environ)
             # Save changes into the sub branch.
             i_has_changes = has_changes()
             if i_has_changes:
@@ -429,7 +435,7 @@ def git_branches_differ(branch_a: str, branch_b: str, metadata_path: str) -> boo
     )
     proc.check_returncode()
     diff_text = proc.stdout
-    pattern = f"^--- /dev/null"
+    pattern = "^--- /dev/null"
     return bool(re.search(pattern, diff_text, re.MULTILINE))
 
 
@@ -503,11 +509,15 @@ def _inner_main(temp_dir: str) -> int:
     )
     change_pusher: AbstractChangePusher = ChangePusher(args.repository, gh, branch)
 
-    if os.path.exists(WORKING_REPO):
-        shutil.rmtree(WORKING_REPO)
-    git.clone_repo(f"https://github.com/{args.repository}.git", WORKING_REPO)
+    # capture logs for later
+    base_synth_log_path = pathlib.Path(os.path.realpath("./logs")) / args.repository
+    if args.synth_path:
+        base_synth_log_path /= args.synth_path
+    logger.info(f"logs will be written to: {base_synth_log_path}")
 
-    os.chdir(WORKING_REPO)
+    working_repo_path = synthtool_git.clone(f"https://github.com/{args.repository}.git")
+
+    os.chdir(working_repo_path)
 
     git.configure_git(args.github_user, args.github_email)
 
@@ -536,7 +546,7 @@ def _inner_main(temp_dir: str) -> int:
             metadata_path,
             args.extra_args,
             deprecated_execution=args.deprecated_execution,
-        ).synthesize()
+        ).synthesize(base_synth_log_path)
 
         if not has_changes():
             logger.info("No changes. :)")
@@ -562,10 +572,15 @@ def _inner_main(temp_dir: str) -> int:
 
         # Prepare to call synthesize loop.
         synthesizer = Synthesizer(
-            metadata_path, args.extra_args, args.deprecated_execution, "synth.py"
+            metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
         )
         x = SynthesizeLoopToolbox(
-            source_versions, branch, temp_dir, metadata_path, args.synth_path
+            source_versions,
+            branch,
+            temp_dir,
+            metadata_path,
+            args.synth_path,
+            base_synth_log_path,
         )
         if not multiple_commits:
             change_pusher = SquashingChangePusher(change_pusher)

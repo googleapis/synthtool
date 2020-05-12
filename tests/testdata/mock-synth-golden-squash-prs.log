@@ -1,7 +1,9 @@
-commit 3c25ad4bca383a3248d5f05abc87e0e33e9dbd6d
+commit b2feb453f021a09e486919dfe79980c38125a22e
 Author: Jeffrey Rennie <rennie@google.com>
-Date:   Wed Apr 22 12:37:51 2020 -0700
+Date:   Wed May 6 09:15:08 2020 -0700
 
+    changes triggered by multiple versions
+    
     * Wrote c-more to c.txt.
     
     * Wrote c to c.txt.
@@ -27,9 +29,9 @@ index 0000000..0794b8a
 +c-more
 \ No newline at end of file
 
-commit ec0d8367aa2e53f951625078ac87d432bbebd057
+commit 3a3e7a2e74a010875449e9d0df16d2a1a9d1e612
 Author: Jeffrey Rennie <rennie@google.com>
-Date:   Wed Apr 22 12:37:47 2020 -0700
+Date:   Wed May 6 09:15:04 2020 -0700
 
     Added Readme
 

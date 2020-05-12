@@ -34,7 +34,7 @@ def list_repositories():
             "name": "README",
             "repository": "googleapis/google-api-java-client-services",
             "branch-suffix": "readme",
-            "pr-title": f"Regenerate client list in README",
+            "pr-title": "Regenerate client list in README",
             "args": ["README"],
         }
     )

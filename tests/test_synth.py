@@ -67,7 +67,7 @@ class NoChange:
         pass
 
     def get_comment(self) -> str:
-        return f"no change"
+        return "no change"
 
 
 class Failed:
@@ -77,7 +77,7 @@ class Failed:
         raise subprocess.CalledProcessError(-1, "synthesize", "", "")
 
     def get_comment(self) -> str:
-        return f"failed"
+        return "failed"
 
 
 class MockSynthesizer(AbstractSynthesizer):
@@ -89,7 +89,9 @@ class MockSynthesizer(AbstractSynthesizer):
     def add_action(self, action):
         self._actions.append(action)
 
-    def synthesize(self, environ: typing.Mapping[str, str] = None) -> str:
+    def synthesize(
+        self, logfile: pathlib.Path, environ: typing.Mapping[str, str] = None
+    ) -> str:
         actions = self._actions
         self._actions = []
         for action in actions:
@@ -528,7 +530,9 @@ with open("synth.metadata", "wt") as f:
 class SimpleSynthesizer(AbstractSynthesizer):
     """Invokes synth.py and does nothing more."""
 
-    def synthesize(self, environ: typing.Mapping[str, str] = None) -> str:
+    def synthesize(
+        self, logfile: pathlib.Path, environ: typing.Mapping[str, str] = None
+    ) -> str:
         subprocess.check_call([sys.executable, "synth.py"])
         return "synth log"
 
@@ -581,7 +585,7 @@ def test_working_repo():
 def assert_git_log_matches(golden_log_path: pathlib.Path):
     handle, git_log_path = tempfile.mkstemp(".log")
     log_cmd = ["git", "log", "-p", "--no-decorate"]
-    log_cmd.extend(["--", ".", f":(exclude)synth.metadata"])
+    log_cmd.extend(["--", ".", ":(exclude)synth.metadata"])
     with os.fdopen(handle, "w") as git_log:
         subprocess.run(log_cmd, stdout=git_log)
     util.assert_git_logs_match(git_log_path, str(golden_log_path), log_lines_match)
