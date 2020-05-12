@@ -17,10 +17,8 @@ import os
 import shutil
 import tempfile
 
-from synthtool import _tracked_paths
-from synthtool import log
-from synthtool import metadata
-from synthtool import shell
+from synthtool import _tracked_paths, metadata, shell
+from synthtool.log import logger
 from synthtool.sources import git
 
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
@@ -173,7 +171,7 @@ class GAPICBazel:
 
         bazel_run_args = ["bazel", "build", bazel_target]
 
-        log.debug(f"Generating code for: {bazel_target}.")
+        logger.debug(f"Generating code for: {bazel_target}.")
         shell.run(bazel_run_args)
 
         # We've got tar file!
@@ -211,9 +209,9 @@ class GAPICBazel:
             os.makedirs(proto_output_path, exist_ok=True)
 
             for i in proto_files:
-                log.debug(f"Copy: {i} to {proto_output_path / i.name}")
+                logger.debug(f"Copy: {i} to {proto_output_path / i.name}")
                 shutil.copyfile(i, proto_output_path / i.name)
-            log.success(f"Placed proto files into {proto_output_path}.")
+            logger.success(f"Placed proto files into {proto_output_path}.")
 
         os.chdir(cwd)
 
@@ -225,7 +223,7 @@ class GAPICBazel:
             )
 
         # Huzzah, it worked.
-        log.success(f"Generated code into {output_dir}.")
+        logger.success(f"Generated code into {output_dir}.")
 
         # Record this in the synthtool metadata.
         metadata.add_client_destination(
@@ -245,10 +243,10 @@ class GAPICBazel:
 
         if LOCAL_GOOGLEAPIS:
             self._googleapis = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(f"Using local googleapis at {self._googleapis}")
+            logger.debug(f"Using local googleapis at {self._googleapis}")
 
         else:
-            log.debug("Cloning googleapis.")
+            logger.debug("Cloning googleapis.")
             self._googleapis = git.clone(GOOGLEAPIS_URL)
 
         return self._googleapis
@@ -259,12 +257,12 @@ class GAPICBazel:
 
         if LOCAL_GOOGLEAPIS:
             self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(
+            logger.debug(
                 f"Using local googleapis at {self._googleapis_private} for googleapis-private"
             )
 
         else:
-            log.debug("Cloning googleapis-private.")
+            logger.debug("Cloning googleapis-private.")
             self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
 
         return self._googleapis_private
@@ -277,17 +275,17 @@ class GAPICBazel:
             self._discovery_artifact_manager = Path(
                 LOCAL_DISCOVERY_ARTIFACT_MANAGER
             ).expanduser()
-            log.debug(
+            logger.debug(
                 f"Using local discovery_artifact_manager at {self._discovery_artifact_manager} for googleapis-private"
             )
         else:
-            log.debug("Cloning discovery-artifact-manager.")
+            logger.debug("Cloning discovery-artifact-manager.")
             self._discovery_artifact_manager = git.clone(DISCOVERY_ARTIFACT_MANAGER_URL)
 
         return self._discovery_artifact_manager
 
     def _ensure_dependencies_installed(self):
-        log.debug("Ensuring dependencies.")
+        logger.debug("Ensuring dependencies.")
 
         dependencies = ["bazel", "zip", "unzip", "tar"]
         failed_dependencies = []

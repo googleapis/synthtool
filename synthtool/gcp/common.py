@@ -19,10 +19,10 @@ import yaml
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from synthtool.languages import node
-from synthtool.sources import git, templates
 from synthtool import _tracked_paths
-from synthtool import log
+from synthtool.languages import node
+from synthtool.log import logger
+from synthtool.sources import git, templates
 
 
 TEMPLATES_URL: str = git.make_repo_clone_url("googleapis/synthtool")
@@ -33,7 +33,7 @@ LOCAL_TEMPLATES: Optional[str] = os.environ.get("SYNTHTOOL_TEMPLATES")
 class CommonTemplates:
     def __init__(self):
         if LOCAL_TEMPLATES:
-            log.debug(f"Using local templates at {LOCAL_TEMPLATES}")
+            logger.debug(f"Using local templates at {LOCAL_TEMPLATES}")
             self._template_root = LOCAL_TEMPLATES
         else:
             templates_git = git.clone(TEMPLATES_URL)
@@ -68,7 +68,7 @@ class CommonTemplates:
             kwargs["system_test_local_dependencies"] = kwargs[
                 "system_test_dependencies"
             ]
-            log.warning(
+            logger.warning(
                 "Template argument 'system_test_dependencies' is deprecated."
                 "Use 'system_test_local_dependencies' or 'system_test_external_dependencies'"
                 "instead."
