@@ -19,6 +19,7 @@ import subprocess
 import sys
 import typing
 from abc import ABC, abstractmethod
+from autosynth import executor
 from autosynth.log import logger
 
 
@@ -106,7 +107,7 @@ class Synthesizer(AbstractSynthesizer):
         # Tee the output into a provided location so we can see the return the final output
         tee_proc = subprocess.Popen(["tee", log_file_path], stdin=subprocess.PIPE)
         # Invoke synth.py.
-        synth_proc = subprocess.run(
+        synth_proc = executor.run(
             command + self.extra_args,
             stderr=subprocess.STDOUT,
             stdout=tee_proc.stdin,
