@@ -169,7 +169,13 @@ class GAPICBazel:
         cwd = os.getcwd()
         os.chdir(str(api_definitions_repo))
 
-        bazel_run_args = ["bazel", "build", bazel_target]
+        bazel_run_args = [
+            "bazel",
+            "--max_idle_secs=60",
+            "--shutdown_on_low_sys_mem",
+            "build",
+            bazel_target,
+        ]
 
         logger.debug(f"Generating code for: {bazel_target}.")
         shell.run(bazel_run_args)
