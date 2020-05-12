@@ -13,10 +13,9 @@
 # limitations under the License.
 
 import base64
-from typing import Generator, Sequence, Dict, Optional
-
+from typing import Any, Generator, Sequence, Dict, Optional
 import requests
-import typing
+from autosynth.log import logger
 
 _GITHUB_ROOT: str = "https://api.github.com"
 
@@ -50,7 +49,7 @@ class GitHub:
 
     def create_pull_request(
         self, repository: str, branch: str, title: str, body: str = None
-    ) -> typing.Dict[str, typing.Any]:
+    ) -> Dict[str, Any]:
         url = f"{_GITHUB_ROOT}/repos/{repository}/pulls"
         logger.info(f"creating pull request to {repository} for branch {branch}")
         logger.debug(body)
