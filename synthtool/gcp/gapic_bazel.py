@@ -172,7 +172,6 @@ class GAPICBazel:
         bazel_run_args = [
             "bazel",
             "--max_idle_secs=60",
-            "--shutdown_on_low_sys_mem",
             "build",
             bazel_target,
         ]
