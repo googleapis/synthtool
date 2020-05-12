@@ -51,6 +51,7 @@ def synthesize_libraries(libraries, github_token, extra_args):
             command + library_args + library.get("args", []) + extra_args,
             log_file_path=base_log_path / library["repository"] / "sponge_log.log",
             environ=environ,
+            check=False,
         )
 
         results.append({"config": library, "result": proc, "output": output})
