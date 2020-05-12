@@ -19,7 +19,7 @@ from typing import List, Sequence
 
 import click
 import pkg_resources
-import synthtool.log
+from synthtool.log import logger
 import synthtool.metadata
 from synthtool import preconfig
 
@@ -82,7 +82,7 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
     synth_file = os.path.abspath(synthfile)
 
     if os.path.lexists(synth_file):
-        synthtool.log.debug(f"Executing {synth_file}.")
+        logger.debug(f"Executing {synth_file}.")
         # https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly
         spec = importlib.util.spec_from_file_location("synth", synth_file)
         synth_module = importlib.util.module_from_spec(spec)
@@ -94,7 +94,7 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
             spec.loader.exec_module(synth_module)  # type: ignore
 
     else:
-        synthtool.log.exception(f"{synth_file} not found.")
+        logger.exception(f"{synth_file} not found.")
         sys.exit(1)
 
 
