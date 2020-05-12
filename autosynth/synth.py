@@ -436,7 +436,7 @@ def git_branches_differ(branch_a: str, branch_b: str, metadata_path: str) -> boo
     )
     proc.check_returncode()
     diff_text = proc.stdout
-    pattern = f"^--- /dev/null"
+    pattern = "^--- /dev/null"
     return bool(re.search(pattern, diff_text, re.MULTILINE))
 
 
