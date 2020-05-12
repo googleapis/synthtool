@@ -67,7 +67,7 @@ class NoChange:
         pass
 
     def get_comment(self) -> str:
-        return f"no change"
+        return "no change"
 
 
 class Failed:
@@ -77,7 +77,7 @@ class Failed:
         raise subprocess.CalledProcessError(-1, "synthesize", "", "")
 
     def get_comment(self) -> str:
-        return f"failed"
+        return "failed"
 
 
 class MockSynthesizer(AbstractSynthesizer):
@@ -585,7 +585,7 @@ def test_working_repo():
 def assert_git_log_matches(golden_log_path: pathlib.Path):
     handle, git_log_path = tempfile.mkstemp(".log")
     log_cmd = ["git", "log", "-p", "--no-decorate"]
-    log_cmd.extend(["--", ".", f":(exclude)synth.metadata"])
+    log_cmd.extend(["--", ".", ":(exclude)synth.metadata"])
     with os.fdopen(handle, "w") as git_log:
         subprocess.run(log_cmd, stdout=git_log)
     util.assert_git_logs_match(git_log_path, str(golden_log_path), log_lines_match)

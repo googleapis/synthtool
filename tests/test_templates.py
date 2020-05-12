@@ -64,7 +64,7 @@ def test_release_quality_badge():
     result = t.render(
         "README.md", metadata={"repo": {"release_level": "beta"}, "samples": {}}
     ).read_text()
-    assert f"https://img.shields.io/badge/release%20level-beta-yellow.svg" in result
+    assert "https://img.shields.io/badge/release%20level-beta-yellow.svg" in result
     assert "This library is considered to be in **beta**" in result
 
 
