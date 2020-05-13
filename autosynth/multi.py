@@ -16,79 +16,43 @@ from autosynth import executor, github
 from autosynth.log import logger
 
 
-def run(args, *, cwd=None, check=True, env=os.environ):
-    try:
-        return executor.run(
-            args,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            cwd=cwd,
-            check=check,
-            encoding="utf-8",
-            env=env,
-        )
-    except subprocess.CalledProcessError as exc:
-        logger.error(
-            f"Failed executing {' '.join((str(arg) for arg in args))}:\n\n"
-            "{exc.stdout}"
-        )
-        raise exc
+def synthesize_library(library, github_token, extra_args):
+    logger.info(f"Synthesizing {library['name']}.")
 
+    command = [sys.executable, "-m", "autosynth.synth"]
 
-def synthesize_libraries(libraries, github_token, extra_args):
-    results = []
-    for library in libraries:
-        logger.info(f"Synthesizing {library['name']}.")
+    env = os.environ
+    env["GITHUB_TOKEN"] = github_token
 
-        command = [sys.executable, "-m", "autosynth.synth"]
+    library_args = [
+        "--repository",
+        library["repository"],
+        "--synth-path",
+        library.get("synth-path", ""),
+        "--branch-suffix",
+        library.get("branch-suffix", ""),
+        "--pr-title",
+        library.get("pr-title", ""),
+    ]
 
-        env = os.environ
-        env["GITHUB_TOKEN"] = github_token
+    if library.get("metadata-path"):
+        library_args.extend(["--metadata-path", library.get("metadata-path")])
 
-        library_args = [
-            "--repository",
-            library["repository"],
-            "--synth-path",
-            library.get("synth-path", ""),
-            "--branch-suffix",
-            library.get("branch-suffix", ""),
-            "--pr-title",
-            library.get("pr-title", ""),
-        ]
+    if library.get("deprecated-execution", False):
+        library_args.append("--deprecated-execution")
 
-        if library.get("metadata-path"):
-            library_args.extend(["--metadata-path", library.get("metadata-path")])
-
-        if library.get("deprecated-execution", False):
-            library_args.append("--deprecated-execution")
-
-        result = run(
-            command + library_args + library.get("args", []) + extra_args,
-            check=False,
-            env=env,
-        )
-
-        results.append({"config": library, "result": result})
-
-    return results
-
-
-def _format_result(result):
-    error = False
-    skipped = False
-    returncode = result["result"].returncode
-
-    if returncode != 0:
-        if returncode == 28:
-            skipped = True
-        else:
-            error = True
-
+    result = executor.run(
+        command + library_args + library.get("args", []) + extra_args,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+        encoding="utf-8",
+        env=env,
+    )
     return {
-        "name": result["config"]["name"],
-        "output": result["result"].stdout,
-        "error": error,
-        "skipped": skipped,
+        "name": library["name"],
+        "output": result.stdout,
+        "error": result.returncode not in (0, 28),
     }
 
 
@@ -113,85 +77,78 @@ def _list_issues_cached(gh, *args, **kwargs):
     return list(gh.list_issues(*args, **kwargs))
 
 
-def _close_issue(gh, result, existing_issue):
+def _close_issue(gh, repository: str, existing_issue: dict):
     if existing_issue is None:
         return
 
     gh.create_issue_comment(
-        result["config"]["repository"],
+        repository,
         issue_number=existing_issue["number"],
         comment="Autosynth passed, closing! :green_heart:",
     )
     gh.patch_issue(
-        result["config"]["repository"],
-        issue_number=existing_issue["number"],
-        state="closed",
+        repository, issue_number=existing_issue["number"], state="closed",
     )
 
 
-def _file_or_comment_on_issue(gh, result, issue_title, existing_issue):
+def _file_or_comment_on_issue(
+    gh, name: str, repository: str, issue_title: str, existing_issue: dict, output: str
+):
     message = f"""\
 Here's the output from running `synth.py`:
 
 ```
-{result['result'].stdout}
+{output}
 ```
 
 Google internal developers can see the full log [here](https://sponge/{os.environ.get('KOKORO_BUILD_ID')}).
 """
 
     if not existing_issue:
-        issue_details = f"Hello! Autosynth couldn't regenerate {result['config']['name']}. :broken_heart:\n\n{message}"
+        issue_details = (
+            f"Hello! Autosynth couldn't regenerate {name}. :broken_heart:\n\n{message}"
+        )
         labels = ["autosynth failure", "priority: p1", "type: bug"]
 
-        api_label = gh.get_api_label(
-            result["config"]["repository"], result["config"]["name"]
-        )
+        api_label = gh.get_api_label(repository, name)
         if api_label:
             labels.append(api_label)
 
         gh.create_issue(
-            result["config"]["repository"],
-            title=issue_title,
-            body=issue_details,
-            labels=labels,
+            repository, title=issue_title, body=issue_details, labels=labels,
         )
 
     # otherwise leave a comment on the existing issue.
     else:
-        comment_body = f"Autosynth is still having trouble generating {result['config']['name']}. :sob:\n\n{message}"
+        comment_body = (
+            f"Autosynth is still having trouble generating {name}. :sob:\n\n{message}"
+        )
 
         gh.create_issue_comment(
-            result["config"]["repository"],
-            issue_number=existing_issue["number"],
-            comment=comment_body,
+            repository, issue_number=existing_issue["number"], comment=comment_body,
         )
 
 
-def report_to_github_issues(gh, results):
-    for result in results:
-        if result["config"].get("no_create_issue"):
-            continue
+def report_to_github(gh, name: str, repository: str, error: bool, output: str):
+    issue_title = f"Synthesis failed for {name}"
 
-        issue_title = f"Synthesis failed for {result['config']['name']}"
+    # Get a list of all open autosynth failure issues, and check if there's
+    # an existing one.
+    open_issues = _list_issues_cached(
+        gh, repository, state="open", label="autosynth failure"
+    )
+    existing_issue = [issue for issue in open_issues if issue["title"] == issue_title]
+    existing_issue = existing_issue[0] if len(existing_issue) else None
 
-        # Get a list of all open autosynth failure issues, and check if there's
-        # an existing one.
-        open_issues = _list_issues_cached(
-            gh, result["config"]["repository"], state="open", label="autosynth failure"
+    # If successful, close any outstanding issues for synthesizing this
+    # library.
+    if not error:
+        _close_issue(gh, repository, existing_issue)
+    # Otherwise, file an issue or comment on an existing issue for synthesis.
+    else:
+        _file_or_comment_on_issue(
+            gh, name, repository, issue_title, existing_issue, output
         )
-        existing_issue = [
-            issue for issue in open_issues if issue["title"] == issue_title
-        ]
-        existing_issue = existing_issue[0] if len(existing_issue) else None
-
-        # If successful, close any outstanding issues for synthesizing this
-        # library.
-        if result["result"].returncode in (0, 28):
-            _close_issue(gh, result, existing_issue)
-        # Otherwise, file an issue or comment on an existing issue for synthesis.
-        else:
-            _file_or_comment_on_issue(gh, result, issue_title, existing_issue)
 
 
 def main():
@@ -218,14 +175,25 @@ def main():
 
     gh = github.GitHub(args.github_token)
 
-    results = synthesize_libraries(config, args.github_token, args.extra_args[1:])
-    formatted_results = [_format_result(result) for result in results]
+    results = []
+    for library in config:
+        result = synthesize_library(library, args.github_token, args.extra_args[1:])
+        results.append(result)
 
-    make_report(args.config, formatted_results)
+        if library.get("no_create_issue"):
+            continue
 
-    report_to_github_issues(gh, results)
+        report_to_github(
+            gh=gh,
+            name=library["name"],
+            repository=library["repository"],
+            error=result["error"],
+            output=result["output"],
+        )
 
-    num_failures = len([result for result in formatted_results if result["error"]])
+    make_report(args.config, results)
+
+    num_failures = len([result for result in results if result["error"]])
     if num_failures > 0:
         logger.error(f"Failed to synthesize {num_failures} job(s).")
         sys.exit(1)
