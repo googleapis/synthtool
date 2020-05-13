@@ -24,7 +24,7 @@ from typing import List, Iterable, Dict
 
 import google.protobuf.json_format
 
-from synthtool import log
+from synthtool.log import logger
 from synthtool.protos import metadata_pb2
 
 
@@ -86,7 +86,7 @@ def _get_new_files(newer_than: float) -> List[str]:
             try:
                 mtime = os.path.getmtime(filepath)
             except FileNotFoundError:
-                log.warning(
+                logger.warning(
                     f"FileNotFoundError while getting modified time for {filepath}."
                 )
                 continue
@@ -112,7 +112,7 @@ def write(outfile: str = "synth.metadata") -> None:
     with open(outfile, "w") as fh:
         fh.write(jsonified)
 
-    log.debug(f"Wrote metadata to {outfile}.")
+    logger.debug(f"Wrote metadata to {outfile}.")
 
 
 @deprecation.deprecated(deprecated_in="2020.02.04")
@@ -229,7 +229,7 @@ def _add_git_source_from_directory(name: str, dir_path: str) -> int:
         ["git", "-C", dir_path, "status"], universal_newlines=True
     )
     if completed_process.returncode:
-        log.warning("%s is not directory in a git repo.", dir_path)
+        logger.warning("%s is not directory in a git repo.", dir_path)
         return 0
     completed_process = subprocess.run(
         ["git", "-C", dir_path, "remote", "get-url", "origin"],

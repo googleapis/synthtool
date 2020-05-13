@@ -12,13 +12,13 @@ import sys
 import jinja2
 import yaml
 
-from autosynth import github
+from autosynth import executor, github
 from autosynth.log import logger
 
 
 def run(args, *, cwd=None, check=True):
     try:
-        return subprocess.run(
+        return executor.run(
             args,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,

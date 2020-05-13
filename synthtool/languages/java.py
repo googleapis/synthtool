@@ -18,10 +18,9 @@ import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
+from synthtool import cache, shell
 from synthtool.gcp import common, samples, snippets
-from synthtool import cache
-from synthtool import log
-from synthtool import shell
+from synthtool.log import logger
 from pathlib import Path
 from typing import Any, Optional, Dict, List
 
@@ -77,13 +76,13 @@ def format_code(
     files = list(glob.iglob(os.path.join(path, "**/*.java"), recursive=True))
 
     # Run the formatter as a jar file
-    log.info("Running java formatter on {} files".format(len(files)))
+    logger.info("Running java formatter on {} files".format(len(files)))
     for _ in range(times):
         shell.run(["java", "-jar", str(jar), "--replace"] + files)
 
 
 def _download_formatter(version: str, dest: Path) -> None:
-    log.info("Downloading java formatter")
+    logger.info("Downloading java formatter")
     url = JAR_DOWNLOAD_URL.format(version=version)
     response = requests.get(url)
     response.raise_for_status()
@@ -326,7 +325,7 @@ def _merge_common_templates(
 ) -> str:
     # keep any existing pom.xml
     if file_path.match("pom.xml"):
-        log.debug(f"existing pom file found ({file_path}) - keeping the existing")
+        logger.debug(f"existing pom file found ({file_path}) - keeping the existing")
         return destination_text
 
     # by default return the newly generated content

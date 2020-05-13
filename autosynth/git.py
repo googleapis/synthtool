@@ -16,6 +16,7 @@ import os
 import subprocess
 import typing
 import pathlib
+from autosynth import executor
 
 GLOBAL_GITIGNORE = """
 __pycache__/
@@ -30,23 +31,23 @@ def configure_git(user: str, email: str) -> None:
     with open(GLOBAL_GITIGNORE_FILE, "w") as fh:
         fh.write(GLOBAL_GITIGNORE)
 
-    subprocess.check_call(
+    executor.check_call(
         ["git", "config", "--global", "core.excludesfile", GLOBAL_GITIGNORE_FILE]
     )
-    subprocess.check_call(["git", "config", "user.name", user])
-    subprocess.check_call(["git", "config", "user.email", email])
-    subprocess.check_call(["git", "config", "push.default", "simple"])
+    executor.check_call(["git", "config", "user.name", user])
+    executor.check_call(["git", "config", "user.email", email])
+    executor.check_call(["git", "config", "push.default", "simple"])
 
 
 def setup_branch(branch: str) -> None:
-    subprocess.check_call(["git", "branch", "-f", branch])
-    subprocess.check_call(["git", "checkout", branch])
+    executor.check_call(["git", "branch", "-f", branch])
+    executor.check_call(["git", "checkout", branch])
 
 
 def get_last_commit_to_file(file_path: str) -> str:
     """Returns the commit hash of the most recent change to a file."""
     parent_dir = pathlib.Path(file_path).parent
-    proc = subprocess.run(
+    proc = executor.run(
         ["git", "log", "--pretty=format:%H", "-1", "--no-decorate", file_path],
         stdout=subprocess.PIPE,
         universal_newlines=True,
@@ -66,7 +67,7 @@ def get_commit_shas_since(sha: str, dir: str) -> typing.List[str]:
     Returns:
         typing.List[str] -- A list of shas.  The 0th sha is sha argument (the oldest sha).
     """
-    proc = subprocess.run(
+    proc = executor.run(
         ["git", "log", f"{sha}..HEAD", "--pretty=%H", "--no-decorate"],
         universal_newlines=True,
         stdout=subprocess.PIPE,
@@ -80,12 +81,12 @@ def get_commit_shas_since(sha: str, dir: str) -> typing.List[str]:
 
 
 def commit_all_changes(message):
-    subprocess.check_call(["git", "add", "-A"])
-    subprocess.check_call(["git", "commit", "-m", message])
+    executor.check_call(["git", "add", "-A"])
+    executor.check_call(["git", "commit", "-m", message])
 
 
 def push_changes(branch):
-    subprocess.check_call(["git", "push", "--force", "origin", branch])
+    executor.check_call(["git", "push", "--force", "origin", branch])
 
 
 def get_repo_root_dir(repo_path: str) -> str:
@@ -100,7 +101,7 @@ def get_repo_root_dir(repo_path: str) -> str:
     path = pathlib.Path(repo_path)
     if not path.is_dir():
         path = path.parent
-    proc = subprocess.run(
+    proc = executor.run(
         ["git", "rev-parse", "--show-toplevel"],
         stdout=subprocess.PIPE,
         universal_newlines=True,
@@ -124,11 +125,11 @@ def patch_merge(
         git_repo_dir {str} -- The repo directory (default: current working directory)
     """
     with open(patch_file_path, "wb+") as patch_file:
-        subprocess.check_call(
+        executor.check_call(
             ["git", "diff", "HEAD", branch_name], stdout=patch_file, cwd=git_repo_dir
         )
     if os.stat(patch_file_path).st_size:
-        subprocess.check_call(["git", "apply", patch_file_path], cwd=git_repo_dir)
+        executor.check_call(["git", "apply", patch_file_path], cwd=git_repo_dir)
 
 
 def get_commit_subject(repo_dir: str = None, sha: str = None) -> str:
@@ -141,7 +142,7 @@ def get_commit_subject(repo_dir: str = None, sha: str = None) -> str:
     Returns:
         {str} -- the subject line
     """
-    commit_message: str = subprocess.run(
+    commit_message: str = executor.run(
         ["git", "log", "-1", "--no-decorate", "--format=%B"] + ([sha] if sha else []),
         stdout=subprocess.PIPE,
         universal_newlines=True,

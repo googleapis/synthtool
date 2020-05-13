@@ -21,7 +21,7 @@ import typing
 import synthtool.sources.git as synthtool_git
 
 import autosynth.abstract_source
-from autosynth import git
+from autosynth import git, executor
 
 
 class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
@@ -48,7 +48,7 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
             preconfig["preclonedRepos"] = precloned_repos
         precloned_repos[self.remote] = self.repo_path
         # Check out my hash.
-        subprocess.run(
+        executor.run(
             ["git", "checkout", self.sha], cwd=self.repo_path
         ).check_returncode()
 
@@ -56,7 +56,7 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
         # Construct a comment using the text of the git commit.
         if self.comment is None:
             pretty = "--pretty=%B%n%nSource-Author: %an <%ae>%nSource-Date: %ad"
-            git_log: str = subprocess.run(
+            git_log: str = executor.run(
                 ["git", "log", self.sha, "-1", "--no-decorate", pretty],
                 cwd=self.repo_path,
                 stdout=subprocess.PIPE,
@@ -74,7 +74,7 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
 
     def get_timestamp(self) -> datetime.datetime:
         if self.timestamp is None:
-            unix_timestamp = subprocess.run(
+            unix_timestamp = executor.run(
                 ["git", "log", "-1", "--pretty=%at", self.sha],
                 cwd=self.repo_path,
                 universal_newlines=True,
@@ -187,7 +187,7 @@ def enumerate_versions_for_working_repo(
     # Get the repo root directory that contains metadata_path.
     local_repo_dir = git.get_repo_root_dir(metadata_path)
     # Find the most recent commit hash.
-    head_sha = subprocess.run(
+    head_sha = executor.run(
         ["git", "log", "-1", "--pretty=%H"],
         stdout=subprocess.PIPE,
         universal_newlines=True,
@@ -195,7 +195,7 @@ def enumerate_versions_for_working_repo(
         check=True,
     ).stdout.strip()
     # Get the remote url.
-    remote = subprocess.run(
+    remote = executor.run(
         ["git", "remote", "get-url", "origin"],
         stdout=subprocess.PIPE,
         universal_newlines=True,

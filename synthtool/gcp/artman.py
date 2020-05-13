@@ -18,9 +18,8 @@ import os
 import platform
 import tempfile
 
-from synthtool import log
-from synthtool import metadata
-from synthtool import shell
+from synthtool import metadata, shell
+from synthtool.log import logger
 
 ARTMAN_VERSION = os.environ.get("SYNTHTOOL_ARTMAN_VERSION", "latest")
 
@@ -143,7 +142,7 @@ class Artman:
         return output_dir
 
     def _ensure_dependencies_installed(self):
-        log.debug("Ensuring dependencies.")
+        logger.debug("Ensuring dependencies.")
 
         dependencies = ["docker", "git"]
         failed_dependencies = []
@@ -158,7 +157,7 @@ class Artman:
             )
 
     def _install_artman(self):
-        log.debug("Pulling artman image.")
+        logger.debug("Pulling artman image.")
         shell.run(
             ["docker", "pull", f"googleapis/artman:{ARTMAN_VERSION}"], hide_output=False
         )
