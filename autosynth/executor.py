@@ -19,11 +19,11 @@ from typing import List
 
 def run(command: List[str], **args):
     """Wrapper around subprocess.run which logs the command."""
-    logger.debug("Running: {' '.join(command)}")
+    logger.debug(f"Running: {' '.join(command)}")
     return subprocess.run(command, **args)
 
 
 def check_call(command: List[str], **args):
     """Wrapper around subprocess.check_call which logs the command."""
-    logger.debug("Running: {' '.join(command)}")
+    logger.debug(f"Running: {' '.join(command)}")
     subprocess.check_call(command, **args)
