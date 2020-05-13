@@ -69,23 +69,8 @@ def fix_pb2_grpc_headers(*, proto_root: str = "**/*_pb2_grpc.py") -> None:
 
 
 def _get_help(filename: str) -> str:
+    """Function used by sample readmegen"""
     return shell.run(["python", filename, "--help"]).stdout
-
-
-def _get_noxfile_metadata(sample_dir: Path) -> dict:
-    metadata: Dict[str, Any] = {}
-    with open(sample_dir / "noxfile.py.yml") as f:
-        metadata = yaml.load(f, Loader=yaml.SafeLoader) or {}
-
-    # set defaults
-    metadata["DEFAULT_VERSIONS"] = SAMPLES_VERSIONS
-    if "ignored_versions" not in metadata:
-        metadata["ignored_versions"] = IGNORED_VERSIONS
-    if "install_library_from_source" not in metadata:
-        metadata["install_library_from_source"] = False
-
-    return metadata
-
 
 def _get_sample_readme_metadata(sample_dir: Path) -> dict:
     sample_readme = sample_dir / "README.rst.in"
@@ -124,14 +109,11 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         else:
             root = "."
 
-    excludes = ["noxfile.py.yml"]
+    excludes = []
     if skip_readmes:
-        excludes += [
-            str(p.relative_to(SAMPLES_TEMPLATE_PATH))
-            for p in SAMPLES_TEMPLATE_PATH.glob("*.rst")
-        ]
+        excludes.append("README.rst")
     t = templates.TemplateGroup(SAMPLES_TEMPLATE_PATH, excludes=excludes)
-    noxfile_yml_template = templates.Templates(SAMPLES_TEMPLATE_PATH)
+
     t.env.globals["get_help"] = _get_help  # for sample readmegen
 
     for req in Path(root).glob("**/requirements.txt"):
@@ -140,27 +122,13 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
 
         excludes = ["**/*tmpl*"]  # .tmpl. files are partial templates
 
-        # Create a noxfile.py.yml if one doesn't exist.
-        # This must be copied first into the repo so the noxfile can be generated
-        if not Path(sample_project_dir / "noxfile.py.yml").exists():
-            log.info("No 'noxfile.py.yml' found. Generating a default config.")
-            metadata = {"install_library_from_source": in_client_library}
-            noxfile_yml = noxfile_yml_template.render(
-                "noxfile.py.yml", subdir=sample_project_dir, **metadata
-            )
-            _tracked_paths.add(noxfile_yml)
-            s.copy([noxfile_yml], sample_project_dir)
-
-        noxfile_metadata = _get_noxfile_metadata(sample_project_dir)
-
         sample_readme_metadata: Dict[str, Any] = {}
         if not skip_readmes:
             sample_readme_metadata = _get_sample_readme_metadata(sample_project_dir)
+            # Don't generate readme if there's no metadata
             if sample_readme_metadata == {}:
                 excludes.append("**/*README.rst")
 
-        result = t.render(
-            subdir=sample_project_dir, **noxfile_metadata, **sample_readme_metadata
-        )
+        result = t.render(subdir=sample_project_dir, **sample_readme_metadata)
         _tracked_paths.add(result)
         s.copy([result], excludes=excludes)
