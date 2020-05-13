@@ -6,8 +6,10 @@ import argparse
 import functools
 import importlib
 import os
+import requests
 import subprocess
 import sys
+import typing
 
 import jinja2
 import yaml
@@ -16,7 +18,15 @@ from autosynth import executor, github
 from autosynth.log import logger
 
 
-def synthesize_library(library, github_token, extra_args):
+def synthesize_library(
+    library: typing.Dict, github_token: str, extra_args: typing.List[str]
+) -> typing.Dict:
+    """Run autosynth on a single library.
+
+    Arguments:
+        library {dict} - Library configuration
+
+    """
     logger.info(f"Synthesizing {library['name']}.")
 
     command = [sys.executable, "-m", "autosynth.synth"]
@@ -49,14 +59,23 @@ def synthesize_library(library, github_token, extra_args):
         encoding="utf-8",
         env=env,
     )
+    error = result.returncode not in (0, 28)
+    if error:
+        logger.error(f"Synthesis failed for {library['name']}")
     return {
         "name": library["name"],
         "output": result.stdout,
-        "error": result.returncode not in (0, 28),
+        "error": error,
     }
 
 
-def make_report(name, results):
+def make_report(name: str, results: typing.List[typing.Dict]) -> None:
+    """Write an xunit report sponge_log.xml to the current directory.
+
+    Arguments:
+        name {str} - Name of the report
+        results {typing.List[typing.Dict]} - List of synth results
+    """
     with open("report.xml.j2") as fh:
         template = jinja2.Template(fh.read())
 
@@ -81,6 +100,7 @@ def _close_issue(gh, repository: str, existing_issue: dict):
     if existing_issue is None:
         return
 
+    logger.info(f"Closing issue: {existing_issue['url']}")
     gh.create_issue_comment(
         repository,
         issue_number=existing_issue["number"],
@@ -114,9 +134,10 @@ Google internal developers can see the full log [here](https://sponge/{os.enviro
         if api_label:
             labels.append(api_label)
 
-        gh.create_issue(
+        issue = gh.create_issue(
             repository, title=issue_title, body=issue_details, labels=labels,
         )
+        logger.info(f"Opened issue: {issue['url']}")
 
     # otherwise leave a comment on the existing issue.
     else:
@@ -127,9 +148,21 @@ Google internal developers can see the full log [here](https://sponge/{os.enviro
         gh.create_issue_comment(
             repository, issue_number=existing_issue["number"], comment=comment_body,
         )
+        logger.info(f"Updated issue: {existing_issue['url']}")
 
 
-def report_to_github(gh, name: str, repository: str, error: bool, output: str):
+def report_to_github(gh, name: str, repository: str, error: bool, output: str) -> None:
+    """Update GitHub with the status of the autosynth run.
+
+    On failure, will either open a new issue or comment on an existing issue. On
+    success, will close any open autosynth issues.
+
+    Arguments:
+        name {str} - Name of the library
+        repository {str} - GitHub repository with the format [owner]/[repo]
+        error {bool} - Whether or not the autosynth run failed
+        output {str} - Output of the individual autosynth run
+    """
     issue_title = f"Synthesis failed for {name}"
 
     # Get a list of all open autosynth failure issues, and check if there's
@@ -137,8 +170,8 @@ def report_to_github(gh, name: str, repository: str, error: bool, output: str):
     open_issues = _list_issues_cached(
         gh, repository, state="open", label="autosynth failure"
     )
-    existing_issue = [issue for issue in open_issues if issue["title"] == issue_title]
-    existing_issue = existing_issue[0] if len(existing_issue) else None
+    existing_issues = [issue for issue in open_issues if issue["title"] == issue_title]
+    existing_issue = existing_issues[0] if len(existing_issues) else None
 
     # If successful, close any outstanding issues for synthesizing this
     # library.
@@ -183,13 +216,17 @@ def main():
         if library.get("no_create_issue"):
             continue
 
-        report_to_github(
-            gh=gh,
-            name=library["name"],
-            repository=library["repository"],
-            error=result["error"],
-            output=result["output"],
-        )
+        try:
+            report_to_github(
+                gh=gh,
+                name=library["name"],
+                repository=library["repository"],
+                error=result["error"],
+                output=result["output"],
+            )
+        except requests.HTTPError:
+            # ignore as GitHub commands already log errors on failure
+            pass
 
     make_report(args.config, results)
 
