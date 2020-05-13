@@ -60,12 +60,14 @@ def synthesize_library(
         env=env,
     )
     error = result.returncode not in (0, 28)
+    skipped = result.returncode == 28
     if error:
         logger.error(f"Synthesis failed for {library['name']}")
     return {
         "name": library["name"],
         "output": result.stdout,
         "error": error,
+        "skipped": skipped,
     }
 
 
