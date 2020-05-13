@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import base64
-from typing import Generator, Sequence, Dict, Optional, Union, List
+from typing import Generator, Sequence, Dict, Optional, Union, List, cast
 import requests
 from autosynth.log import logger
 
@@ -48,7 +48,7 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/pulls"
         response = self.session.get(url, params=kwargs)
-        return _handle_response_json(response)
+        return cast(List[Dict], _handle_response_json(response))
 
     def create_pull_request(
         self, repository: str, branch: str, title: str, body: str = None
@@ -81,9 +81,9 @@ class GitHub:
                 "maintainer_can_modify": True,
             },
         )
-        return _handle_response_json(response)
+        return cast(Dict, _handle_response_json(response))
 
-    def get_tree(self, repository: str, tree_sha: str = "master") -> Sequence[dict]:
+    def get_tree(self, repository: str, tree_sha: str = "master") -> Sequence[Dict]:
         """Returns a single tree using the SHA1 value for that tree.
 
         See: https://developer.github.com/v3/git/trees/#get-a-tree
@@ -99,7 +99,7 @@ class GitHub:
         url = f"{_GITHUB_ROOT}/repos/{repository}/git/trees/{tree_sha}"
         response = self.session.get(url, params={})
 
-        return _handle_response_json(response)
+        return cast(List[Dict], _handle_response_json(response))
 
     def get_contents(self, repository: str, path: str, ref: str = None) -> bytes:
         """Fetch the raw file contents for a file and return a bytestring.
@@ -121,10 +121,10 @@ class GitHub:
         url = f"{_GITHUB_ROOT}/repos/{repository}/contents/{path}"
         response = self.session.get(url, params={"ref": ref})
 
-        json = _handle_response_json(response)
+        json = cast(Dict, _handle_response_json(response))
         return base64.b64decode(json["content"])
 
-    def list_files(self, repository: str, path: str, ref: str = None) -> Sequence[dict]:
+    def list_files(self, repository: str, path: str, ref: str = None) -> Sequence[Dict]:
         """List all files in a given repository path.
 
         Arguments:
@@ -141,7 +141,7 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/contents/{path}"
         response = self.session.get(url, params={"ref": ref})
-        return _handle_response_json(response)
+        return cast(List[Dict], _handle_response_json(response))
 
     def check_for_file(self, repository: str, path: str, ref: str = None) -> bool:
         """Check to see if a file exists in a given repository.
@@ -182,8 +182,8 @@ class GitHub:
 
         while url:
             response = self.session.get(url, params=kwargs)
-            response.raise_for_status()
-            for item in response.json():
+            items = cast(List[Dict], _handle_response_json(response))
+            for item in items:
                 yield item
 
             url = response.links.get("next", {}).get("url")
@@ -212,7 +212,7 @@ class GitHub:
         response = self.session.post(
             url, json={"title": title, "body": body, "labels": labels}
         )
-        return _handle_response_json(response)
+        return cast(Dict, _handle_response_json(response))
 
     def patch_issue(self, repository: str, issue_number: int, **kwargs) -> Dict:
         """Patch values on an issue
@@ -233,7 +233,7 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/issues/{issue_number}"
         response = self.session.patch(url, json=kwargs)
-        return _handle_response_json(response)
+        return cast(Dict, _handle_response_json(response))
 
     def create_issue_comment(
         self, repository: str, issue_number: int, comment: str
@@ -262,7 +262,7 @@ class GitHub:
 
     def replace_issue_labels(
         self, repository: str, issue_number: str, labels: Sequence[str]
-    ) -> dict:
+    ) -> List[Dict]:
         """Replace all labels on an issue.
 
         See: https://developer.github.com/v3/issues/labels/#replace-all-labels-for-an-issue
@@ -281,12 +281,12 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/issues/{issue_number}/labels"
         response = self.session.put(url, json={"labels": labels})
-        response.raise_for_status()
-        return response.json()
+
+        return cast(List[Dict], _handle_response_json(response))
 
     def update_pull_labels(
         self, pull: dict, add: Sequence[str] = None, remove: Sequence[str] = None
-    ) -> dict:
+    ) -> List[Dict]:
         """Updates labels for a github pull, adding and removing labels as needed.
 
         Arguments:
