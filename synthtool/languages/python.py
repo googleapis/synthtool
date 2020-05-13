@@ -127,7 +127,11 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
             sample_readme_metadata = _get_sample_readme_metadata(sample_project_dir)
             # Don't generate readme if there's no metadata
             if sample_readme_metadata == {}:
-                excludes.append("**/*README.rst")
+                excludes.append("**/README.rst")
+
+        if Path(sample_project_dir / "noxfile_config.py").exists():
+            # Don't overwrite existing noxfile configs
+            excludes.append("**/noxfile_config.py")
 
         result = t.render(subdir=sample_project_dir, **sample_readme_metadata)
         _tracked_paths.add(result)
