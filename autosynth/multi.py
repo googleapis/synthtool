@@ -16,7 +16,7 @@ from autosynth import executor, github
 from autosynth.log import logger
 
 
-def run(args, *, cwd=None, check=True):
+def run(args, *, cwd=None, check=True, env=os.environ):
     try:
         return executor.run(
             args,
@@ -25,6 +25,7 @@ def run(args, *, cwd=None, check=True):
             cwd=cwd,
             check=check,
             encoding="utf-8",
+            env=env,
         )
     except subprocess.CalledProcessError as exc:
         logger.error(
@@ -41,9 +42,10 @@ def synthesize_libraries(libraries, github_token, extra_args):
 
         command = [sys.executable, "-m", "autosynth.synth"]
 
+        env = os.environ
+        env["GITHUB_TOKEN"] = github_token
+
         library_args = [
-            "--github-token",
-            github_token,
             "--repository",
             library["repository"],
             "--synth-path",
@@ -61,7 +63,9 @@ def synthesize_libraries(libraries, github_token, extra_args):
             library_args.append("--deprecated-execution")
 
         result = run(
-            command + library_args + library.get("args", []) + extra_args, check=False
+            command + library_args + library.get("args", []) + extra_args,
+            check=False,
+            env=env,
         )
 
         results.append({"config": library, "result": result})
