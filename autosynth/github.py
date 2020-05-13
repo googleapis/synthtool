@@ -48,7 +48,7 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/pulls"
         response = self.session.get(url, params=kwargs)
-        return cast(List[Dict], _handle_response_json(response))
+        return cast(List[Dict], _get_json_or_raise_exception(response))
 
     def create_pull_request(
         self, repository: str, branch: str, title: str, body: str = None
@@ -81,7 +81,7 @@ class GitHub:
                 "maintainer_can_modify": True,
             },
         )
-        return cast(Dict, _handle_response_json(response))
+        return cast(Dict, _get_json_or_raise_exception(response))
 
     def get_tree(self, repository: str, tree_sha: str = "master") -> Sequence[Dict]:
         """Returns a single tree using the SHA1 value for that tree.
@@ -99,7 +99,7 @@ class GitHub:
         url = f"{_GITHUB_ROOT}/repos/{repository}/git/trees/{tree_sha}"
         response = self.session.get(url, params={})
 
-        return cast(List[Dict], _handle_response_json(response))
+        return cast(List[Dict], _get_json_or_raise_exception(response))
 
     def get_contents(self, repository: str, path: str, ref: str = None) -> bytes:
         """Fetch the raw file contents for a file and return a bytestring.
@@ -121,7 +121,7 @@ class GitHub:
         url = f"{_GITHUB_ROOT}/repos/{repository}/contents/{path}"
         response = self.session.get(url, params={"ref": ref})
 
-        json = cast(Dict, _handle_response_json(response))
+        json = cast(Dict, _get_json_or_raise_exception(response))
         return base64.b64decode(json["content"])
 
     def list_files(self, repository: str, path: str, ref: str = None) -> Sequence[Dict]:
@@ -141,7 +141,7 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/contents/{path}"
         response = self.session.get(url, params={"ref": ref})
-        return cast(List[Dict], _handle_response_json(response))
+        return cast(List[Dict], _get_json_or_raise_exception(response))
 
     def check_for_file(self, repository: str, path: str, ref: str = None) -> bool:
         """Check to see if a file exists in a given repository.
@@ -182,7 +182,7 @@ class GitHub:
 
         while url:
             response = self.session.get(url, params=kwargs)
-            items = cast(List[Dict], _handle_response_json(response))
+            items = cast(List[Dict], _get_json_or_raise_exception(response))
             for item in items:
                 yield item
 
@@ -212,7 +212,7 @@ class GitHub:
         response = self.session.post(
             url, json={"title": title, "body": body, "labels": labels}
         )
-        return cast(Dict, _handle_response_json(response))
+        return cast(Dict, _get_json_or_raise_exception(response))
 
     def patch_issue(self, repository: str, issue_number: int, **kwargs) -> Dict:
         """Patch values on an issue
@@ -233,7 +233,7 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/issues/{issue_number}"
         response = self.session.patch(url, json=kwargs)
-        return cast(Dict, _handle_response_json(response))
+        return cast(Dict, _get_json_or_raise_exception(response))
 
     def create_issue_comment(
         self, repository: str, issue_number: int, comment: str
@@ -282,7 +282,7 @@ class GitHub:
         url = f"{_GITHUB_ROOT}/repos/{repository}/issues/{issue_number}/labels"
         response = self.session.put(url, json={"labels": labels})
 
-        return cast(List[Dict], _handle_response_json(response))
+        return cast(List[Dict], _get_json_or_raise_exception(response))
 
     def update_pull_labels(
         self, pull: dict, add: Sequence[str] = None, remove: Sequence[str] = None
@@ -332,7 +332,7 @@ class GitHub:
 
         while url:
             response = self.session.get(url)
-            json = _handle_response_json(response)
+            json = _get_json_or_raise_exception(response)
             for item in json:
                 labels.append(item["name"])
 
@@ -363,7 +363,7 @@ class GitHub:
         return None
 
 
-def _handle_response_json(response: requests.Response) -> Union[Dict, List]:
+def _get_json_or_raise_exception(response: requests.Response) -> Union[Dict, List]:
     """Helper to parse json response from GitHub.
 
     If the response error code indicates an error (400+), try to log the
@@ -390,4 +390,4 @@ def _handle_response_json(response: requests.Response) -> Union[Dict, List]:
         return json
     except ValueError as e:
         logger.error(f"Error parsing response json: {e}")
-        raise e
+        raise
