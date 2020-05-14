@@ -129,12 +129,16 @@ def _close_issue(gh, result, existing_issue):
     )
 
 
+def _last_n_result_characters(proc: subprocess.CompletedProcess, n: int) -> str:
+    return proc.stdout.decode("utf-8").strip()[-n:]
+
+
 def _file_or_comment_on_issue(gh, result, issue_title, existing_issue):
     message = f"""\
 Here's the output from running `synth.py`:
 
 ```
-{result['result'].stdout}
+{_last_n_result_characters(result['result'], 1000)}
 ```
 
 Google internal developers can see the full log [here](https://sponge/{os.environ.get('KOKORO_BUILD_ID')}).
