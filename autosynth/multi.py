@@ -14,7 +14,7 @@ import typing
 import jinja2
 import yaml
 
-from autosynth import executor, github
+from autosynth import executor, github, synth
 from autosynth.log import logger
 
 
@@ -59,8 +59,8 @@ def synthesize_library(
         encoding="utf-8",
         env=env,
     )
-    error = result.returncode not in (0, 28)
-    skipped = result.returncode == 28
+    error = result.returncode not in (0, synth.EXIT_CODE_SKIPPED)
+    skipped = result.returncode == synth.EXIT_CODE_SKIPPED
     if error:
         logger.error(f"Synthesis failed for {library['name']}")
     return {
