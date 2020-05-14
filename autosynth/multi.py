@@ -126,13 +126,15 @@ def _close_issue(gh, repository: str, existing_issue: dict):
 
 
 def _file_or_comment_on_issue(
-    gh, name: str, repository: str, issue_title: str, existing_issue: dict, output: str
+    gh, name, repository, issue_title, existing_issue, output
 ):
+    # GitHub rejects issues with bodies > 64k
+    output_to_report = output[-10000:]
     message = f"""\
 Here's the output from running `synth.py`:
 
 ```
-{output}
+{output_to_report}
 ```
 
 Google internal developers can see the full log [here](https://sponge/{os.environ.get('KOKORO_BUILD_ID')}).
