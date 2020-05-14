@@ -18,8 +18,26 @@ from autosynth import executor, github, synth
 from autosynth.log import logger
 
 
+def _execute(command: typing.List[str], env: typing.Dict) -> typing.Tuple[int, bytes]:
+    """Helper to wrap command invocation for testing"""
+    result = executor.run(
+        command=command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        check=False,
+        encoding="utf-8",
+        env=env,
+    )
+    return (result.returncode, result.stdout)
+
+
 def synthesize_library(
-    library: typing.Dict, github_token: str, extra_args: typing.List[str]
+    library: typing.Dict,
+    github_token: str,
+    extra_args: typing.List[str],
+    runner: typing.Callable[
+        [typing.List[str], typing.Dict], typing.Tuple[int, bytes]
+    ] = _execute,
 ) -> typing.Dict:
     """Run autosynth on a single library.
 
@@ -51,21 +69,15 @@ def synthesize_library(
     if library.get("deprecated-execution", False):
         library_args.append("--deprecated-execution")
 
-    result = executor.run(
-        command + library_args + library.get("args", []) + extra_args,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        check=False,
-        encoding="utf-8",
-        env=env,
-    )
-    error = result.returncode not in (0, synth.EXIT_CODE_SKIPPED)
-    skipped = result.returncode == synth.EXIT_CODE_SKIPPED
+    # run autosynth in a separate process
+    (returncode, output) = runner(command, env)
+    error = returncode not in (0, synth.EXIT_CODE_SKIPPED)
+    skipped = returncode == synth.EXIT_CODE_SKIPPED
     if error:
         logger.error(f"Synthesis failed for {library['name']}")
     return {
         "name": library["name"],
-        "output": result.stdout,
+        "output": output,
         "error": error,
         "skipped": skipped,
     }
@@ -186,6 +198,48 @@ def report_to_github(gh, name: str, repository: str, error: bool, output: str) -
         )
 
 
+def load_config(
+    config: str,
+) -> typing.Optional[typing.List[typing.Dict[str, typing.Any]]]:
+    """Load configuration from either a configuration YAML or from a module.
+
+    If a yaml path is provided, it must return a top level "libraries" entry
+    which contains a list of repository definitions.
+
+    If a module is provided, it will invoke list_repositories() on the
+    module which should return a list of repository definitions.
+
+    A repository definition is a dictionary which contains:
+    * name {str} -- Required. The name of the repo/client
+    * repository {str} -- Required. GitHub repository with the format [owner]/[repo]
+    * synth-path {str} -- Optional. Path within the repository to the synth.py file.
+    * branch-suffix {str} -- Optional. When opening a pull request, use this suffix for
+        branch name
+    * metadata-path {str} -- Optional. Path to location of synth.metadata file.
+    * deprecated-execution {bool} -- Optional. If set, will invoke synthtool with the
+        synthtool binary rather than as a module. Defaults to False.
+    * no_create_issue {bool} -- Optional. If set, will not manage GitHub issues when
+        autosynth fails for any reason. Defaults to False.
+
+    Arguments:
+        config {str} -- Path to configuration YAML or module name
+
+    Returns:
+        List[Dict[str, Any]] - List of library configurations to synthesize
+        None - The configuration file doesn't exist and no module found
+    """
+    if os.path.exists(config):
+        with open(config) as fh:
+            return yaml.load(fh)["libraries"]
+    else:
+        try:
+            provider = importlib.import_module(config)
+            return provider.list_repositories()  # type: ignore
+        except (ImportError, AttributeError):
+            pass
+    return None
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config")
@@ -194,17 +248,7 @@ def main():
 
     args = parser.parse_args()
 
-    config = None
-    if os.path.exists(args.config):
-        with open(args.config) as fh:
-            config = yaml.load(fh)["libraries"]
-    else:
-        try:
-            provider = importlib.import_module(args.config)
-            config = provider.list_repositories()
-        except (ImportError, AttributeError):
-            pass
-
+    config = load_config(args.config)
     if config is None:
         sys.exit("No configuration could be loaded.")
 

@@ -1,0 +1,5 @@
+libraries:
+  - name: test1
+    repository: googleapis/test1
+  - name: test2
+    repository: googleapis/test2
