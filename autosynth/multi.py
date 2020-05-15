@@ -18,7 +18,7 @@ from autosynth import executor, github, synth
 from autosynth.log import logger
 
 
-def _execute(command: typing.List[str], env: typing.Dict) -> typing.Tuple[int, bytes]:
+def _execute(command: typing.List[str], env: typing.Any) -> typing.Tuple[int, bytes]:
     """Helper to wrap command invocation for testing"""
     result = executor.run(
         command=command,
@@ -36,7 +36,7 @@ def synthesize_library(
     github_token: str,
     extra_args: typing.List[str],
     runner: typing.Callable[
-        [typing.List[str], typing.Dict], typing.Tuple[int, bytes]
+        [typing.List[str], typing.Any], typing.Tuple[int, bytes]
     ] = _execute,
 ) -> typing.Dict:
     """Run autosynth on a single library.
