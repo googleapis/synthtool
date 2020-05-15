@@ -141,7 +141,7 @@ Here's the output from running `synth.py`:
 {output_to_report}
 ```
 
-Google internal developers can see the full log [here](https://sponge/{os.environ.get('KOKORO_BUILD_ID')}).
+Google internal developers can see the full log [here](http://sponge/{os.environ.get('KOKORO_BUILD_ID')}).
 """
 
     if not existing_issue:
