@@ -308,7 +308,11 @@ def main():
     num_failures = len([result for result in results if result["error"]])
     if num_failures > 0:
         logger.error(f"Failed to synthesize {num_failures} job(s).")
-        sys.exit(1)
+        failure_percent = 100 * num_failures / len(results)
+        if failure_percent < 10:
+            pass  # It's most likely an issue with a few APIs.
+        else:
+            sys.exit(1)  # Raise the attention of autosynth maintainers.
 
 
 if __name__ == "__main__":
