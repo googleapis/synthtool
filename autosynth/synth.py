@@ -365,6 +365,9 @@ def synthesize_loop(
     except Exception as e:
         logger.error(e)
         pass  # Fall back to non-forked loop below.
+
+    if change_pusher.check_if_pr_already_exists(toolbox.branch):
+        return 0
     synthesize_inner_loop(toolbox, synthesizer)
     toolbox.push_changes(change_pusher)
     return toolbox.commit_count
