@@ -28,6 +28,9 @@ def _execute(
     command: typing.List[str], env: typing.Any, log_file_path: pathlib.Path
 ) -> typing.Tuple[int, bytes]:
     """Helper to wrap command invocation for testing"""
+    # Ensure the logfile directory exists
+    log_file_path.parent.mkdir(parents=True, exist_ok=True)
+    logger.debug(f"Logging to {log_file_path}")
     tee_proc = subprocess.Popen(["tee", log_file_path], stdin=subprocess.PIPE)
     result = executor.run(
         command=command,
@@ -70,6 +73,7 @@ def synthesize_library(
         library.get("branch-suffix", ""),
         "--pr-title",
         library.get("pr-title", ""),
+        "--hide-synth-output",
     ]
 
     if library.get("metadata-path"):

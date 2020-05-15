@@ -107,7 +107,7 @@ class ChangePusher(AbstractChangePusher):
 
         if prs:
             pr = prs[0]
-            logger.info(f'PR already exists: {pr["html_url"]}')
+            logger.info(f'PR already exists for {branch}: {pr["html_url"]}')
         return bool(prs)
 
 
