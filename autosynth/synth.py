@@ -497,6 +497,7 @@ def _inner_main(temp_dir: str) -> int:
         "--branch-suffix", default=os.environ.get("BRANCH_SUFFIX", None)
     )
     parser.add_argument("--pr-title", default="")
+    parser.add_argument("--hide-synth-output", default=False, action="store_true")
     parser.add_argument("extra_args", nargs=argparse.REMAINDER)
 
     args = parser.parse_args()
@@ -548,6 +549,7 @@ def _inner_main(temp_dir: str) -> int:
             metadata_path,
             args.extra_args,
             deprecated_execution=args.deprecated_execution,
+            hide_output=args.hide_synth_output,
         ).synthesize(base_synth_log_path)
 
         if not has_changes():
@@ -574,7 +576,11 @@ def _inner_main(temp_dir: str) -> int:
 
         # Prepare to call synthesize loop.
         synthesizer = Synthesizer(
-            metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
+            metadata_path,
+            args.extra_args,
+            deprecated_execution=args.deprecated_execution,
+            synth_py_path="synth.py",
+            hide_output=args.hide_synth_output,
         )
         x = SynthesizeLoopToolbox(
             source_versions,

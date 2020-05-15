@@ -63,6 +63,7 @@ class Synthesizer(AbstractSynthesizer):
         extra_args: list,
         deprecated_execution: bool = False,
         synth_py_path: str = None,
+        hide_output: bool = False,
     ):
         """
         Arguments:
@@ -77,6 +78,7 @@ class Synthesizer(AbstractSynthesizer):
         self.extra_args = extra_args
         self.deprecated_execution = deprecated_execution
         self.synth_py_path = synth_py_path or "synth.py"
+        self.hide_output = hide_output
 
     def synthesize(
         self, log_file_path: pathlib.Path, environ: typing.Mapping[str, str] = None
@@ -104,16 +106,30 @@ class Synthesizer(AbstractSynthesizer):
 
         # Ensure the logfile directory exists
         log_file_path.parent.mkdir(parents=True, exist_ok=True)
-        # Tee the output into a provided location so we can see the return the final output
-        tee_proc = subprocess.Popen(["tee", log_file_path], stdin=subprocess.PIPE)
-        # Invoke synth.py.
-        synth_proc = executor.run(
-            command + self.extra_args,
-            stderr=subprocess.STDOUT,
-            stdout=tee_proc.stdin,
-            env=(environ or os.environ),
-            universal_newlines=True,
-        )
+        logger.debug(f"Capturing log output to {log_file_path}")
+
+        if self.hide_output:
+            with open(log_file_path, "w") as fp:
+                synth_proc = executor.run(
+                    command + self.extra_args,
+                    stderr=subprocess.STDOUT,
+                    stdout=fp,
+                    env=(environ or os.environ),
+                    universal_newlines=True,
+                )
+            pass
+        else:
+            # Tee the output into a provided location so we can see the return the final output
+            tee_proc = subprocess.Popen(["tee", log_file_path], stdin=subprocess.PIPE)
+            # Invoke synth.py.
+            synth_proc = executor.run(
+                command + self.extra_args,
+                stderr=subprocess.STDOUT,
+                stdout=tee_proc.stdin,
+                env=(environ or os.environ),
+                universal_newlines=True,
+            )
+
         if synth_proc.returncode:
             logger.error("Synthesis failed")
             synth_proc.check_returncode()  # Raise an exception.
