@@ -83,7 +83,7 @@ def generate(repository: str, commit_hash="master", synth_path="") -> str:
         try:
             commit_count = autosynth.synth.main()
         except SystemExit as sysexit:
-            if sysexit.code == 28:
+            if sysexit.code == autosynth.synth.EXIT_CODE_SKIPPED:
                 pass  # Nothing changed, and that's ok.
             else:
                 raise

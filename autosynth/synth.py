@@ -45,6 +45,7 @@ IGNORED_FILE_PATTERNS = [
     # synth.metadata files to be added.
     re.compile(r"M (.*?)synth.metadata")
 ]
+EXIT_CODE_SKIPPED = 28
 
 
 def load_metadata(metadata_path: str):
@@ -551,7 +552,7 @@ def _inner_main(temp_dir: str) -> int:
 
         if not has_changes():
             logger.info("No changes. :)")
-            sys.exit(28)
+            sys.exit(EXIT_CODE_SKIPPED)
 
         git.commit_all_changes(pr_title)
         change_pusher.push_changes(1, branch, pr_title, synth_log)
@@ -591,7 +592,7 @@ def _inner_main(temp_dir: str) -> int:
 
         if commit_count == 0:
             logger.info("No changes. :)")
-            sys.exit(28)
+            sys.exit(EXIT_CODE_SKIPPED)
 
         return commit_count
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<testsuites name="test-report" tests="3" failures="1" skipped="1">
+    
+    <testsuite name="test1" tests="1" errors="0" failures="0" skipped="0">
+        <testcase classname="test1" name="synthesize">
+            
+            <system-out>b&#39;some output data&#39;</system-out>
+            
+        </testcase>
+    </testsuite>
+    
+    <testsuite name="test2" tests="1" errors="0" failures="1" skipped="0">
+        <testcase classname="test2" name="synthesize">
+            
+            <failure>b&#39;something failed&#39;</failure>
+            
+        </testcase>
+    </testsuite>
+    
+    <testsuite name="test3" tests="1" errors="0" failures="0" skipped="1">
+        <testcase classname="test3" name="synthesize">
+            
+            <system-out>b&#39;something skipped&#39;</system-out>
+            
+        </testcase>
+    </testsuite>
+    
+</testsuites>
