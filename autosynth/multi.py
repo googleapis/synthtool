@@ -72,7 +72,9 @@ def synthesize_library(
         library_args.append("--deprecated-execution")
 
     # run autosynth in a separate process
-    (returncode, output) = runner(command, env)
+    (returncode, output) = runner(
+        command + library_args + library.get("args", []) + extra_args, env
+    )
     error = returncode not in (0, synth.EXIT_CODE_SKIPPED)
     skipped = returncode == synth.EXIT_CODE_SKIPPED
     if error:
