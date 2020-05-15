@@ -22,6 +22,7 @@ import synthtool.sources.git as synthtool_git
 
 import autosynth.abstract_source
 from autosynth import git, executor
+from autosynth.log import logger
 
 
 class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
@@ -47,9 +48,13 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
         if not precloned_repos:
             preconfig["preclonedRepos"] = precloned_repos
         precloned_repos[self.remote] = self.repo_path
+        logger.info(f"Checking out source: {self.source_name} to {self.sha}")
         # Check out my hash.
         executor.run(
-            ["git", "checkout", self.sha], cwd=self.repo_path
+            ["git", "checkout", self.sha],
+            cwd=self.repo_path,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
         ).check_returncode()
 
     def get_comment(self) -> str:

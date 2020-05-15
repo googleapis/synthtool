@@ -106,7 +106,7 @@ class Synthesizer(AbstractSynthesizer):
 
         # Ensure the logfile directory exists
         log_file_path.parent.mkdir(parents=True, exist_ok=True)
-        logger.debug(f"Capturing log output to {log_file_path}")
+        logger.info(f"Capturing log output to {log_file_path}")
 
         if self.hide_output:
             with open(log_file_path, "w") as fp:

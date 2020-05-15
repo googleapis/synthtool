@@ -85,12 +85,14 @@ class ChangePusher(AbstractChangePusher):
         git.push_changes(branch)
         trailers = _collect_trailers(commit_count)
 
+        logger.info(f"Creating pull request for branch: {branch}")
         pr = self._gh.create_pull_request(
             self._repository,
             branch=branch,
             title=pr_title,
             body=build_pr_body(synth_log, trailers),
         )
+        logger.info(f"PR URL: {pr['html_url']}")
 
         # args.synth_path (and api: * labels) only exist in monorepos
         if self._synth_path:

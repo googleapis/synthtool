@@ -213,6 +213,7 @@ class SynthesizeLoopToolbox:
         Returns:
             [typing.List[SynthesizeLoopToolbox]] -- A toolbox for each source.
         """
+        logger.info("Forking toolbox for multiple pull requests")
         forks = []
         for i, _group in enumerate(self.version_groups):
             new_groups = [[g[0]] for g in self.version_groups]
@@ -232,6 +233,7 @@ class SynthesizeLoopToolbox:
             fork.version_zero = self.version_zero
             executor.check_call(["git", "branch", "-f", fork_branch])
             forks.append(fork)
+        logger.info(f"{len(forks)} forks")
         return forks
 
     def synthesize_version_in_new_branch(
@@ -354,6 +356,7 @@ def synthesize_loop(
         if multiple_prs:
             commit_count = 0
             for fork in toolbox.fork():
+                logger.info(f"Generating branch: {fork.branch}")
                 if change_pusher.check_if_pr_already_exists(fork.branch):
                     continue
                 executor.check_call(["git", "checkout", fork.branch])
@@ -406,7 +409,9 @@ def synthesize_range(
     ]
     while version_ranges:
         old, young = version_ranges.pop()
+        logger.info(f"Synthesizing between {old} and {young}")
         if young == old + 1:
+            logger.info(f"{young} introduced a change!")
             # The base case: Found a version that triggered a change.
             toolbox.patch_merge_version(young)
             continue
