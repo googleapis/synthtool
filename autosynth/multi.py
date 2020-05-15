@@ -6,11 +6,11 @@ import argparse
 import functools
 import importlib
 import os
+import pathlib
 import requests
 import subprocess
 import sys
 import typing
-
 import jinja2
 import yaml
 
@@ -18,27 +18,34 @@ from autosynth import executor, github, synth
 from autosynth.log import logger
 
 
-def _execute(command: typing.List[str], env: typing.Any) -> typing.Tuple[int, bytes]:
+# Callable type to help dependency inject for testing
+Runner = typing.Callable[
+    [typing.List[str], typing.Any, pathlib.Path], typing.Tuple[int, bytes]
+]
+
+
+def _execute(
+    command: typing.List[str], env: typing.Any, log_file_path: pathlib.Path
+) -> typing.Tuple[int, bytes]:
     """Helper to wrap command invocation for testing"""
+    tee_proc = subprocess.Popen(["tee", log_file_path], stdin=subprocess.PIPE)
     result = executor.run(
         command=command,
-        stdout=subprocess.PIPE,
+        stdout=tee_proc.stdin,
         stderr=subprocess.STDOUT,
         check=False,
         encoding="utf-8",
         env=env,
     )
-    return (result.returncode, result.stdout)
-
-
-# Callable type to help dependency inject for testing
-Runner = typing.Callable[[typing.List[str], typing.Any], typing.Tuple[int, bytes]]
+    with open(log_file_path, "rb") as fp:
+        return (result.returncode, fp.read())
 
 
 def synthesize_library(
     library: typing.Dict,
     github_token: str,
     extra_args: typing.List[str],
+    base_log_path: pathlib.Path,
     runner: Runner = _execute,
 ) -> typing.Dict:
     """Run autosynth on a single library.
@@ -71,9 +78,12 @@ def synthesize_library(
     if library.get("deprecated-execution", False):
         library_args.append("--deprecated-execution")
 
+    log_file_path = base_log_path / library["repository"] / "sponge_log.log"
     # run autosynth in a separate process
     (returncode, output) = runner(
-        command + library_args + library.get("args", []) + extra_args, env
+        command + library_args + library.get("args", []) + extra_args,
+        env,
+        log_file_path,
     )
     error = returncode not in (0, synth.EXIT_CODE_SKIPPED)
     skipped = returncode == synth.EXIT_CODE_SKIPPED
@@ -251,6 +261,7 @@ def synthesize_libraries(
     gh: github.GitHub,
     github_token: str,
     extra_args: typing.List[str],
+    base_log_path: pathlib.Path,
     runner: Runner = _execute,
 ) -> typing.List[typing.Dict]:
     """Synthesize all libraries and report any error as GitHub issues.
@@ -267,7 +278,9 @@ def synthesize_libraries(
     """
     results = []
     for library in libraries:
-        result = synthesize_library(library, github_token, extra_args[1:], runner)
+        result = synthesize_library(
+            library, github_token, extra_args[1:], base_log_path, runner
+        )
         results.append(result)
 
         # skip issue management
@@ -302,7 +315,10 @@ def main():
 
     gh = github.GitHub(args.github_token)
 
-    results = synthesize_libraries(config, gh, args.github_token, args.extra_args[1:])
+    base_log_path = pathlib.Path("./log")
+    results = synthesize_libraries(
+        config, gh, args.github_token, args.extra_args[1:], base_log_path
+    )
     make_report(args.config, results)
 
     num_failures = len([result for result in results if result["error"]])
