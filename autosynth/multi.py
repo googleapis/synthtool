@@ -31,13 +31,15 @@ def _execute(command: typing.List[str], env: typing.Any) -> typing.Tuple[int, by
     return (result.returncode, result.stdout)
 
 
+# Callable type to help dependency inject for testing
+Runner = typing.Callable[[typing.List[str], typing.Any], typing.Tuple[int, bytes]]
+
+
 def synthesize_library(
     library: typing.Dict,
     github_token: str,
     extra_args: typing.List[str],
-    runner: typing.Callable[
-        [typing.List[str], typing.Any], typing.Tuple[int, bytes]
-    ] = _execute,
+    runner: Runner = _execute,
 ) -> typing.Dict:
     """Run autosynth on a single library.
 
@@ -242,25 +244,31 @@ def load_config(
     return None
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--config")
-    parser.add_argument("--github-token", default=os.environ.get("GITHUB_TOKEN"))
-    parser.add_argument("extra_args", nargs=argparse.REMAINDER)
+def synthesize_libraries(
+    libraries: typing.Dict,
+    gh: github.GitHub,
+    github_token: str,
+    extra_args: typing.List[str],
+    runner: Runner = _execute,
+) -> typing.List[typing.Dict]:
+    """Synthesize all libraries and report any error as GitHub issues.
 
-    args = parser.parse_args()
+    Arguments:
+        libraries {typing.List[typing.Dict]} -- Autosynth configuration. See load_config
+            for more information on the structure.
+        gh {github.GitHub} -- GitHub API wrapper
+        github_token {str} -- API Token for GitHub
+        extra_args {typing.List[str]} -- Additional command line arguments to pass to autosynth.synth
 
-    config = load_config(args.config)
-    if config is None:
-        sys.exit("No configuration could be loaded.")
-
-    gh = github.GitHub(args.github_token)
-
+    Returns:
+        typing.List[typing.Dict] -- List of results for each autosynth.synth run.
+    """
     results = []
-    for library in config:
-        result = synthesize_library(library, args.github_token, args.extra_args[1:])
+    for library in libraries:
+        result = synthesize_library(library, github_token, extra_args[1:], runner)
         results.append(result)
 
+        # skip issue management
         if library.get("no_create_issue"):
             continue
 
@@ -275,7 +283,24 @@ def main():
         except requests.HTTPError:
             # ignore as GitHub commands already log errors on failure
             pass
+    return results
 
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config")
+    parser.add_argument("--github-token", default=os.environ.get("GITHUB_TOKEN"))
+    parser.add_argument("extra_args", nargs=argparse.REMAINDER)
+
+    args = parser.parse_args()
+
+    config = load_config(args.config)
+    if config is None:
+        sys.exit("No configuration could be loaded.")
+
+    gh = github.GitHub(args.github_token)
+
+    results = synthesize_libraries(config, gh, args.github_token, args.extra_args[1:])
     make_report(args.config, results)
 
     num_failures = len([result for result in results if result["error"]])

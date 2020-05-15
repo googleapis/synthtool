@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from autosynth import github, multi, synth
+import requests
 import unittest.mock
 
 
@@ -196,3 +197,43 @@ def test_load_config_from_module():
 def test_load_config_missing():
     config = multi.load_config("non-existent")
     assert config is None
+
+
+def test_synthesize_libraries():
+    gh = unittest.mock.Mock(github.GitHub)
+    gh.list_issues.return_value = []
+    config = [
+        {"name": "test1", "repository": "googleapis/test1"},
+        {"name": "test2", "repository": "googleapis/test2"},
+    ]
+    mock_execute = unittest.mock.Mock()
+    mock_execute.return_value = (0, b"success")
+
+    results = multi.synthesize_libraries(
+        config, gh, "some-github-token", [], mock_execute
+    )
+    assert len(results) == 2
+    gh.create_issue.assert_not_called()
+    gh.create_issue_comment.assert_not_called()
+    gh.patch_issue.assert_not_called()
+
+
+def test_synthesize_libraries_with_failures():
+    gh = unittest.mock.Mock(github.GitHub)
+    gh.list_issues.return_value = []
+    gh.create_issue.side_effect = requests.HTTPError()
+
+    config = [
+        {"name": "test1", "repository": "googleapis/test1"},
+        {"name": "test2", "repository": "googleapis/test2"},
+    ]
+    mock_execute = unittest.mock.Mock()
+    mock_execute.side_effect = [(1, b"failure 1"), (2, b"failure 2")]
+
+    results = multi.synthesize_libraries(
+        config, gh, "some-github-token", [], mock_execute
+    )
+    assert len(results) == 2
+    assert gh.create_issue.call_count == 2
+    gh.create_issue_comment.assert_not_called()
+    gh.patch_issue.assert_not_called()
