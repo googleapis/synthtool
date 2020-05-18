@@ -48,9 +48,8 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
             preconfig["preclonedRepos"] = precloned_repos
         precloned_repos[self.remote] = self.repo_path
         # Check out my hash.
-        executor.run(
-            ["git", "checkout", self.sha], cwd=self.repo_path
-        ).check_returncode()
+        executor.check_call(["git", "reset", "--hard", "HEAD"], cwd=self.repo_path)
+        executor.check_call(["git", "checkout", self.sha], cwd=self.repo_path)
 
     def get_comment(self) -> str:
         # Construct a comment using the text of the git commit.

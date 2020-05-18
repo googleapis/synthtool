@@ -88,6 +88,9 @@ class GAPICBazel:
             api_definitions_repo = self._clone_googleapis()
             api_definitions_repo_name = "googleapis"
 
+        # conditionally apply custom toolchain
+        _check_for_custom_kokoro_bazel_rules(api_definitions_repo)
+
         # Sanity check: We should have a googleapis repo; if we do not,
         # something went wrong, and we should abort.
         if not api_definitions_repo:
@@ -254,17 +257,6 @@ class GAPICBazel:
             logger.debug("Cloning googleapis.")
             self._googleapis = git.clone(GOOGLEAPIS_URL)
 
-        # Look for .kokoro/.bazelrc. If it exists, append it to the root .bazelrc file.
-        # This allows us to generate versions of googleapis prior to the python3
-        # toolchains being available
-        custom_bazel_config = self._googleapis / ".kokoro" / ".bazelrc"
-        bazel_root_config = self._googleapis / ".bazelrc"
-        if custom_bazel_config.exists() and bazel_root_config.exists():
-            logger.debug(f"Add custom bazel config: {custom_bazel_config}")
-            with open(bazel_root_config, "a") as root_config:
-                with open(custom_bazel_config, "r") as custom_config:
-                    root_config.write(custom_config.read())
-
         return self._googleapis
 
     def _clone_googleapis_private(self):
@@ -314,3 +306,20 @@ class GAPICBazel:
             raise EnvironmentError(
                 f"Dependencies missing: {', '.join(failed_dependencies)}"
             )
+
+
+def _check_for_custom_kokoro_bazel_rules(root_dir: Path):
+    # skip if not running on Kokoro
+    if not os.environ.get("KOKORO_BUILD_ID"):
+        return
+
+    # Look for .kokoro/.bazelrc. If it exists, append it to the root .bazelrc file.
+    # This allows us to generate versions of googleapis prior to the python3
+    # toolchains being available
+    custom_bazel_config = root_dir / ".kokoro" / ".bazelrc"
+    bazel_root_config = root_dir / ".bazelrc"
+    if custom_bazel_config.exists():
+        logger.debug(f"Add custom bazel config: {custom_bazel_config}")
+        with open(bazel_root_config, "a+") as root_config:
+            with open(custom_bazel_config, "r") as custom_config:
+                root_config.write(custom_config.read())

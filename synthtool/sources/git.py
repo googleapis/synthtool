@@ -82,6 +82,7 @@ def clone(
             cmd = ["git", "clone", "--single-branch", url, dest]
             shell.run(cmd, check=True)
         else:
+            shell.run(["git", "reset", "--hard", "HEAD"], cwd=str(dest), check=True)
             shell.run(["git", "checkout", "master"], cwd=str(dest), check=True)
             shell.run(["git", "pull"], cwd=str(dest), check=True)
         committish = committish or "master"
