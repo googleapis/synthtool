@@ -254,6 +254,17 @@ class GAPICBazel:
             logger.debug("Cloning googleapis.")
             self._googleapis = git.clone(GOOGLEAPIS_URL)
 
+        # Look for .kokoro/.bazelrc. If it exists, append it to the root .bazelrc file.
+        # This allows us to generate versions of googleapis prior to the python3
+        # toolchains being available
+        custom_bazel_config = self._googleapis / ".kokoro" / ".bazelrc"
+        bazel_root_config = self._googleapis / ".bazelrc"
+        if custom_bazel_config.exists() and bazel_root_config.exists():
+            logger.debug(f"Add custom bazel config: {custom_bazel_config}")
+            with open(bazel_root_config, "a") as root_config:
+                with open(custom_bazel_config, "r") as custom_config:
+                    root_config.write(custom_config.read())
+
         return self._googleapis
 
     def _clone_googleapis_private(self):
