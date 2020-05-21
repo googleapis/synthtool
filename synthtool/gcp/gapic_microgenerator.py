@@ -19,10 +19,8 @@ import os
 import platform
 import tempfile
 
-from synthtool import _tracked_paths
-from synthtool import log
-from synthtool import metadata
-from synthtool import shell
+from synthtool import _tracked_paths, metadata, shell
+from synthtool.log import logger
 from synthtool.sources import git
 
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
@@ -97,7 +95,7 @@ class GAPICMicrogenerator:
 
         # Pull the code generator for the requested language.
         # If a code generator version was specified, honor that.
-        log.debug(
+        logger.debug(
             f"Pulling Docker image: gapic-generator-{language}:{generator_version}"
         )
         shell.run(
@@ -185,7 +183,7 @@ class GAPICMicrogenerator:
                 docker_run_args.append(f"--{key}")
                 docker_run_args.append(value)
 
-        log.debug(f"Generating code for: {proto_path}.")
+        logger.debug(f"Generating code for: {proto_path}.")
         shell.run(docker_run_args)
 
         # Sanity check: Does the output location have code in it?
@@ -196,7 +194,7 @@ class GAPICMicrogenerator:
             )
 
         # Huzzah, it worked.
-        log.success(f"Generated code into {output_dir}.")
+        logger.success(f"Generated code into {output_dir}.")
 
         # Record this in the synthtool metadata.
         metadata.add_client_destination(
@@ -216,10 +214,10 @@ class GAPICMicrogenerator:
 
         if LOCAL_GOOGLEAPIS:
             self._googleapis = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(f"Using local googleapis at {self._googleapis}")
+            logger.debug(f"Using local googleapis at {self._googleapis}")
 
         else:
-            log.debug("Cloning googleapis.")
+            logger.debug("Cloning googleapis.")
             self._googleapis = git.clone(GOOGLEAPIS_URL)
 
         return self._googleapis
@@ -230,18 +228,18 @@ class GAPICMicrogenerator:
 
         if LOCAL_GOOGLEAPIS:
             self._googleapis_private = Path(LOCAL_GOOGLEAPIS).expanduser()
-            log.debug(
+            logger.debug(
                 f"Using local googleapis at {self._googleapis_private} for googleapis-private"
             )
 
         else:
-            log.debug("Cloning googleapis-private.")
+            logger.debug("Cloning googleapis-private.")
             self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
 
         return self._googleapis_private
 
     def _ensure_dependencies_installed(self):
-        log.debug("Ensuring dependencies.")
+        logger.debug("Ensuring dependencies.")
 
         dependencies = ["docker", "git"]
         failed_dependencies = []

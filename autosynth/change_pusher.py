@@ -20,7 +20,7 @@ import typing
 import uuid
 from abc import ABC, abstractmethod
 
-from autosynth import git, github
+from autosynth import git, github, executor
 from autosynth.log import logger
 import re
 
@@ -128,12 +128,12 @@ class SquashingChangePusher(AbstractChangePusher):
                 commit_count, branch, pr_title, synth_log
             )
 
-        subprocess.check_call(["git", "checkout", branch])  # Probably redundant.
+        executor.check_call(["git", "checkout", branch])  # Probably redundant.
         with tempfile.NamedTemporaryFile() as message_file:
             # Collect the commit messages into a temporary file.
             message_file.write("changes triggered by multiple versions\n\n".encode())
             message_file.flush()
-            subprocess.run(
+            executor.run(
                 ["git", "log", f"-{commit_count}", "--format=* %s%n%b"],
                 stdout=message_file,
                 check=True,
@@ -141,11 +141,11 @@ class SquashingChangePusher(AbstractChangePusher):
             message_file.file.close()  # type: ignore
             # Do a git dance to construct a branch with the commits squashed.
             temp_branch = str(uuid.uuid4())
-            subprocess.check_call(["git", "branch", "-m", temp_branch])
-            subprocess.check_call(["git", "checkout", "master"])
-            subprocess.check_call(["git", "checkout", "-b", branch])
-            subprocess.check_call(["git", "merge", "--squash", temp_branch])
-            subprocess.check_call(["git", "commit", "-F", message_file.name])
+            executor.check_call(["git", "branch", "-m", temp_branch])
+            executor.check_call(["git", "checkout", "master"])
+            executor.check_call(["git", "checkout", "-b", branch])
+            executor.check_call(["git", "merge", "--squash", temp_branch])
+            executor.check_call(["git", "commit", "-F", message_file.name])
         return self.inner_change_pusher.push_changes(1, branch, pr_title, synth_log)
 
     def check_if_pr_already_exists(self, branch) -> bool:
@@ -193,7 +193,7 @@ def _collect_trailers(commit_count: int, git_dir: typing.Optional[str] = None) -
     Returns:
         str -- The trailer lines from the recent commits.
     """
-    text = subprocess.run(
+    text = executor.run(
         ["git", "log", f"-{commit_count}", "--pretty=%b"],
         universal_newlines=True,
         check=True,

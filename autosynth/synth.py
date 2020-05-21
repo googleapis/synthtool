@@ -30,7 +30,7 @@ import synthtool.sources.git as synthtool_git
 
 import autosynth
 import autosynth.flags
-from autosynth import git, git_source, github
+from autosynth import executor, git, git_source, github
 from autosynth.abstract_source import AbstractSourceVersion
 from autosynth.change_pusher import (
     AbstractChangePusher,
@@ -45,6 +45,7 @@ IGNORED_FILE_PATTERNS = [
     # synth.metadata files to be added.
     re.compile(r"M (.*?)synth.metadata")
 ]
+EXIT_CODE_SKIPPED = 28
 
 
 def load_metadata(metadata_path: str):
@@ -178,12 +179,12 @@ class SynthesizeLoopToolbox:
 
     def checkout_new_branch(self, index: int) -> None:
         """Create a new branch for the version."""
-        subprocess.check_call(["git", "branch", "-f", self.sub_branch(index)])
-        subprocess.check_call(["git", "checkout", self.sub_branch(index)])
+        executor.check_call(["git", "branch", "-f", self.sub_branch(index)])
+        executor.check_call(["git", "checkout", self.sub_branch(index)])
 
     def checkout_sub_branch(self, index: int):
         """Check out the branch for the version."""
-        subprocess.check_call(["git", "checkout", self.sub_branch(index)])
+        executor.check_call(["git", "checkout", self.sub_branch(index)])
 
     def patch_merge_version(self, index: int, comment=None) -> bool:
         """Merges the given version into the current branch using a patch merge."""
@@ -229,7 +230,7 @@ class SynthesizeLoopToolbox:
             fork.source_name = source_name
             fork.commit_count = self.commit_count
             fork.version_zero = self.version_zero
-            subprocess.check_call(["git", "branch", "-f", fork_branch])
+            executor.check_call(["git", "branch", "-f", fork_branch])
             forks.append(fork)
         return forks
 
@@ -253,7 +254,7 @@ class SynthesizeLoopToolbox:
             if 0 == index:
                 if self.version_zero.branch_name:
                     # Reuse version zero built for another source.
-                    subprocess.check_call(
+                    executor.check_call(
                         ["git", "merge", "--ff-only", self.version_zero.branch_name]
                     )
                     return self.version_zero.has_changes
@@ -275,8 +276,8 @@ class SynthesizeLoopToolbox:
                 self.version_zero.has_changes = i_has_changes
             return i_has_changes
         finally:
-            subprocess.check_call(["git", "reset", "--hard", "HEAD"])
-            subprocess.check_call(["git", "checkout", self.branch])
+            executor.check_call(["git", "reset", "--hard", "HEAD"])
+            executor.check_call(["git", "checkout", self.branch])
 
     def count_commits_with_context(self) -> int:
         """Returns the number of commits that could be traced to a source version."""
@@ -355,7 +356,7 @@ def synthesize_loop(
             for fork in toolbox.fork():
                 if change_pusher.check_if_pr_already_exists(fork.branch):
                     continue
-                subprocess.check_call(["git", "checkout", fork.branch])
+                executor.check_call(["git", "checkout", fork.branch])
                 synthesize_inner_loop(fork, synthesizer)
                 commit_count += fork.commit_count
                 if fork.source_name == "self" or fork.count_commits_with_context() > 0:
@@ -364,6 +365,9 @@ def synthesize_loop(
     except Exception as e:
         logger.error(e)
         pass  # Fall back to non-forked loop below.
+
+    if change_pusher.check_if_pr_already_exists(toolbox.branch):
+        return 0
     synthesize_inner_loop(toolbox, synthesizer)
     toolbox.push_changes(change_pusher)
     return toolbox.commit_count
@@ -424,12 +428,12 @@ def git_branches_differ(branch_a: str, branch_b: str, metadata_path: str) -> boo
     # Check to see if any files besides synth.metadata were added, modified, deleted.
     diff_cmd = ["git", "diff", f"{branch_a}..{branch_b}"]
     diff_cmd.extend(["--", ".", f":(exclude){metadata_path}"])
-    proc = subprocess.run(diff_cmd, stdout=subprocess.PIPE, universal_newlines=True)
+    proc = executor.run(diff_cmd, stdout=subprocess.PIPE, universal_newlines=True)
     proc.check_returncode()
     if bool(proc.stdout):
         return True
     # Check to see if synth.metadata was added.
-    proc = subprocess.run(
+    proc = executor.run(
         ["git", "diff", f"{branch_a}..{branch_b}", "--", metadata_path],
         stdout=subprocess.PIPE,
         universal_newlines=True,
@@ -518,82 +522,93 @@ def _inner_main(temp_dir: str) -> int:
 
     working_repo_path = synthtool_git.clone(f"https://github.com/{args.repository}.git")
 
-    os.chdir(working_repo_path)
+    try:
+        os.chdir(working_repo_path)
 
-    git.configure_git(args.github_user, args.github_email)
+        git.configure_git(args.github_user, args.github_email)
 
-    git.setup_branch(branch)
+        git.setup_branch(branch)
 
-    if args.synth_path:
-        os.chdir(args.synth_path)
+        if args.synth_path:
+            os.chdir(args.synth_path)
 
-    metadata_path = os.path.join(args.metadata_path or "", "synth.metadata")
+        metadata_path = os.path.join(args.metadata_path or "", "synth.metadata")
 
-    flags = autosynth.flags.parse_flags()
-    # Override flags specified in synth.py with flags specified in environment vars.
-    for key in flags.keys():
-        env_value = os.environ.get(key, "")
-        if env_value:
-            flags[key] = False if env_value.lower() == "false" else env_value
+        flags = autosynth.flags.parse_flags()
+        # Override flags specified in synth.py with flags specified in environment vars.
+        for key in flags.keys():
+            env_value = os.environ.get(key, "")
+            if env_value:
+                flags[key] = False if env_value.lower() == "false" else env_value
 
-    metadata = load_metadata(metadata_path)
-    multiple_commits = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS]
-    multiple_prs = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_PRS]
-    if (not multiple_commits and not multiple_prs) or not metadata:
-        if change_pusher.check_if_pr_already_exists(branch):
-            return 0
+        metadata = load_metadata(metadata_path)
+        multiple_commits = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_COMMITS]
+        multiple_prs = flags[autosynth.flags.AUTOSYNTH_MULTIPLE_PRS]
+        if (not multiple_commits and not multiple_prs) or not metadata:
+            if change_pusher.check_if_pr_already_exists(branch):
+                return 0
 
-        synth_log = Synthesizer(
-            metadata_path,
-            args.extra_args,
-            deprecated_execution=args.deprecated_execution,
-        ).synthesize(base_synth_log_path)
+            synth_log = Synthesizer(
+                metadata_path,
+                args.extra_args,
+                deprecated_execution=args.deprecated_execution,
+            ).synthesize(base_synth_log_path)
 
-        if not has_changes():
-            logger.info("No changes. :)")
-            sys.exit(28)
+            if not has_changes():
+                logger.info("No changes. :)")
+                sys.exit(EXIT_CODE_SKIPPED)
 
-        git.commit_all_changes(pr_title)
-        change_pusher.push_changes(1, branch, pr_title, synth_log)
-        return 1
+            git.commit_all_changes(pr_title)
+            change_pusher.push_changes(1, branch, pr_title, synth_log)
+            return 1
 
-    else:
-        if not multiple_prs and change_pusher.check_if_pr_already_exists(branch):
-            return 0  # There's already an existing PR
+        else:
+            if not multiple_prs and change_pusher.check_if_pr_already_exists(branch):
+                return 0  # There's already an existing PR
 
-        # Enumerate the versions to loop over.
-        sources = metadata.get("sources", [])
-        source_versions = [
-            git_source.enumerate_versions_for_working_repo(metadata_path, sources)
-        ]
-        # Add supported source version types below:
-        source_versions.extend(
-            git_source.enumerate_versions(sources, pathlib.Path(temp_dir))
-        )
+            # Enumerate the versions to loop over.
+            sources = metadata.get("sources", [])
+            source_versions = [
+                git_source.enumerate_versions_for_working_repo(metadata_path, sources)
+            ]
+            # Add supported source version types below:
+            source_versions.extend(
+                git_source.enumerate_versions(sources, pathlib.Path(temp_dir))
+            )
 
-        # Prepare to call synthesize loop.
-        synthesizer = Synthesizer(
-            metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
-        )
-        x = SynthesizeLoopToolbox(
-            source_versions,
-            branch,
-            temp_dir,
-            metadata_path,
-            args.synth_path,
-            base_synth_log_path,
-        )
-        if not multiple_commits:
-            change_pusher = SquashingChangePusher(change_pusher)
+            # Prepare to call synthesize loop.
+            synthesizer = Synthesizer(
+                metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
+            )
+            x = SynthesizeLoopToolbox(
+                source_versions,
+                branch,
+                temp_dir,
+                metadata_path,
+                args.synth_path,
+                base_synth_log_path,
+            )
+            if not multiple_commits:
+                change_pusher = SquashingChangePusher(change_pusher)
 
-        # Call the loop.
-        commit_count = synthesize_loop(x, multiple_prs, change_pusher, synthesizer)
+            # Call the loop.
+            commit_count = synthesize_loop(x, multiple_prs, change_pusher, synthesizer)
 
-        if commit_count == 0:
-            logger.info("No changes. :)")
-            sys.exit(28)
+            if commit_count == 0:
+                logger.info("No changes. :)")
+                sys.exit(EXIT_CODE_SKIPPED)
 
-        return commit_count
+            return commit_count
+    finally:
+        if args.synth_path:
+            # We're generating code in a mono repo.  The state left behind will
+            # probably be useful for generating the next API.
+            pass
+        else:
+            # We're generating a single API in a single repo, and using a different
+            # repo to generate the next API.  So the next synth will not be able to
+            # use any of this state.  Clean it up to avoid running out of disk space.
+            executor.run(["git", "clean", "-fdx"], cwd=working_repo_path)
 
 
 if __name__ == "__main__":
