@@ -39,18 +39,10 @@ TEST_CONFIG = {
     # You can opt out from the test for specific Python versions.
     'ignored_versions': ["2.7"],
 
-    # Declare optional test sessions you want to opt-in. Currently we
-    # have the following optional test sessions:
-    #     'cloud_run' # Test session for Cloud Run application.
-    'opt_in_sessions': [],
-
-    # Only relevant for the `cloud_run` session. Specify the file
-    # names for your e2e test.
-    'cloud_run_e2e_test_files': ['e2e_test.py'],
-
     # An envvar key for determining the project id to use. Change it
-    # to 'BUILD_SPECIFIC_GCLOUD_PROJECT' if you want to opt in using
-    # a build specific Cloud project.
+    # to 'BUILD_SPECIFIC_GCLOUD_PROJECT' if you want to opt in using a
+    # build specific Cloud project. You can also use your own string
+    # to use your own Cloud project.
     'gcloud_project_env': 'GCLOUD_PROJECT',
     # 'gcloud_project_env': 'BUILD_SPECIFIC_GCLOUD_PROJECT',
 
@@ -96,17 +88,12 @@ IGNORED_VERSIONS = TEST_CONFIG['ignored_versions']
 
 TESTED_VERSIONS = sorted([v for v in ALL_VERSIONS if v not in IGNORED_VERSIONS])
 
-INSTALL_LIBRARY_FROM_SOURCE = os.environ.get(bool("INSTALL_LIBRARY_FROM_SOURCE", False)
-
+INSTALL_LIBRARY_FROM_SOURCE = bool(os.environ.get("INSTALL_LIBRARY_FROM_SOURCE", False))
 #
 # Style Checks
 #
 
 
-# Ignore I202 "Additional newline in a section of imports." to accommodate
-# region tags in import blocks. Since we specify an explicit ignore, we also
-# have to explicitly ignore the list of default ignores:
-# `E121,E123,E126,E226,E24,E704,W503,W504` as shown by `flake8 --help`.
 def _determine_local_import_names(start_dir):
     """Determines all import names that should be considered "local".
 
@@ -123,13 +110,23 @@ def _determine_local_import_names(start_dir):
     ]
 
 
+# Linting with flake8.
+#
+# We ignore the following rules:
+#   E203: whitespace before ‘:’
+#   E266: too many leading ‘#’ for block comment
+#   E501: line too long
+#   I202: Additional newline in a section of imports
+#
+# We also need to specify the rules which are ignored by default:
+# ['E226', 'W504', 'E126', 'E123', 'W503', 'E24', 'E704', 'E121']
 FLAKE8_COMMON_ARGS = [
     "--show-source",
     "--builtin=gettext",
     "--max-complexity=20",
     "--import-order-style=google",
     "--exclude=.nox,.cache,env,lib,generated_pb2,*_pb2.py,*_pb2_grpc.py",
-    "--ignore=E121,E123,E126,E203,E226,E24,E266,E501,E704,W503,W504,I100,I201,I202",
+    "--ignore=E121,E123,E126,E203,E226,E24,E266,E501,E704,W503,W504,I202",
     "--max-line-length=88",
 ]
 
@@ -142,7 +139,7 @@ def lint(session):
     args = FLAKE8_COMMON_ARGS + [
         "--application-import-names",
         ",".join(local_names),
-        ".",
+        "."
     ]
     session.run("flake8", *args)
 
@@ -162,9 +159,9 @@ def _session_tests(session, post_install=None):
 
     if os.path.exists("requirements-test.txt"):
         session.install("-r", "requirements-test.txt")
-    
-    if _is_client_library_repo() and INSTALL_LIBRARY_FROM_SOURCE:
-        session.install('-e', _get_repo_root())
+
+    if INSTALL_LIBRARY_FROM_SOURCE:
+        session.install("-e", _get_repo_root())
 
     if post_install:
         post_install(session)
@@ -189,57 +186,6 @@ def py(session):
         session.skip("SKIPPED: {} tests are disabled for this sample.".format(
             session.python
         ))
-
-
-#
-# cloud_run session
-#
-
-@nox.session
-def cloud_run(session):
-    """Run tests for cloud run."""
-    if 'cloud_run' not in TEST_CONFIG['opt_in_sessions']:
-        session.skip('SKIPPED: cloud_run tests are disabled for this sample.')
-        return
-
-    if os.path.exists("requirements.txt"):
-        session.install("-r", "requirements.txt")
-
-    if os.path.exists("requirements-test.txt"):
-        session.install("-r", "requirements-test.txt")
-
-    user_envs = get_pytest_env_vars()
-
-    # Only update gcloud on Kokoro.
-    if os.environ.get("KOKORO_JOB_NAME"):
-        # Activate service account
-        key_file = os.environ['GOOGLE_APPLICATION_CREDENTIALS']
-        session.run(
-            "gcloud", "auth", "activate-service-account",
-            "--key-file={}".format(key_file)
-        )
-
-        # Set gcloud project
-        project = user_envs['GCLOUD_PROJECT']
-        session.run("gcloud", "config", "set", "project", project)
-
-    test_files = TEST_CONFIG['cloud_run_e2e_test_files']
-    session.run(
-        "pytest",
-        *(PYTEST_COMMON_ARGS + session.posargs + test_files),
-        # Pytest will return 5 when no tests are collected. This can happen
-        # on travis where slow and flaky tests are excluded.
-        # See http://doc.pytest.org/en/latest/_modules/_pytest/main.html
-        success_codes=[0, 5],
-        env=user_envs
-    )
-
-def _is_client_library_repo():
-    """Returns true if in a client library repository"""
-    root = _get_repo_root()
-    if os.path.exists(os.path.join(root, "setup.py")):
-        return True
-    return False
 
 
 #
