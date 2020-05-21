@@ -79,6 +79,7 @@ class TemplateGroup:
     def render(self, subdir: PathOrStr = ".", **kwargs) -> Path:
         for template_name in self.env.list_templates():
             if template_name not in self.excludes:
+                print(template_name)
                 _render_to_path(self.env, template_name, self.dir / subdir, kwargs)
             else:
                 print(f"Skipping: {template_name}")
