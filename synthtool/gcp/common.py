@@ -73,6 +73,10 @@ class CommonTemplates:
                 "Use 'system_test_local_dependencies' or 'system_test_external_dependencies'"
                 "instead."
             )
+        
+        # Don't add samples templates if there are no samples
+        if "samples" not in kwargs:
+            self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
 
         return self._generic_library("python_library", **kwargs)
 
