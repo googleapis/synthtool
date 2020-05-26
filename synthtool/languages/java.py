@@ -58,6 +58,7 @@ BAD_LICENSE = """/\\*
  \\* the License.
  \\*/
 """
+DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 7
 
 
 def format_code(
@@ -361,6 +362,10 @@ def common_templates(excludes: List[str] = [], **kwargs) -> None:
     metadata["snippets"] = snippets.all_snippets(
         ["samples/**/src/main/java/**/*.java", "samples/**/pom.xml"]
     )
+    if repo_metadata and "min_java_version" in repo_metadata:
+        metadata["min_java_version"] = repo_metadata["min_java_version"]
+    else:
+        metadata["min_java_version"] = DEFAULT_MIN_SUPPORTED_JAVA_VERSION
 
     kwargs["metadata"] = metadata
     templates = gcp.CommonTemplates().java_library(**kwargs)
