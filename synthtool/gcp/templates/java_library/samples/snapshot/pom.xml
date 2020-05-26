@@ -32,6 +32,7 @@
       <artifactId>{{ artifact_id }}</artifactId>
       <version>{{ metadata['latest_version'] }}</version>
     </dependency>
+  <!-- {x-version-update-end} -->
 
     <dependency>
       <groupId>junit</groupId>
@@ -46,7 +47,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <!-- {x-version-update-end} -->
 
   <!-- compile and run all snippet tests -->
   <build>
