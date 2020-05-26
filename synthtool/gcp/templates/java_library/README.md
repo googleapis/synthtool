@@ -147,8 +147,8 @@ Apache 2.0 - See [LICENSE][license] for more information.
 ## CI Status
 
 Java Version | Status
------------- | ------
-{% if metadata['min_java_version'] <= 7 %}Java 7 | [![Kokoro CI][kokoro-badge-image-1]][kokoro-badge-link-1]{% endif -%}
+------------ | ------{% if metadata['min_java_version'] <= 7 %}
+Java 7 | [![Kokoro CI][kokoro-badge-image-1]][kokoro-badge-link-1]{% endif %}
 Java 8 | [![Kokoro CI][kokoro-badge-image-2]][kokoro-badge-link-2]
 Java 8 OSX | [![Kokoro CI][kokoro-badge-image-3]][kokoro-badge-link-3]
 Java 8 Windows | [![Kokoro CI][kokoro-badge-image-4]][kokoro-badge-link-4]
