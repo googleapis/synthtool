@@ -13,7 +13,9 @@
 # limitations under the License.
 
 from autosynth import github, multi, synth
+import pathlib
 import requests
+import tempfile
 import unittest.mock
 
 
@@ -30,7 +32,15 @@ def test_synthesize_library_success():
     mock_execute = unittest.mock.Mock()
     mock_execute.return_value = (0, b"success")
 
-    result = multi.synthesize_library(config, "fake-github-token", [], mock_execute)
+    with tempfile.TemporaryDirectory() as base_log_path:
+        result = multi.synthesize_library(
+            library=config,
+            github_token="fake-github-token",
+            extra_args=[],
+            base_log_path=pathlib.Path(base_log_path),
+            runner=mock_execute,
+        )
+
     assert result["name"] == "test1"
     assert result["output"] == b"success"
     assert result["error"] is False
@@ -43,7 +53,15 @@ def test_synthesize_library_failure():
     mock_execute = unittest.mock.Mock()
     mock_execute.return_value = (1, b"something failed")
 
-    result = multi.synthesize_library(config, "fake-github-token", [], mock_execute)
+    with tempfile.TemporaryDirectory() as base_log_path:
+        result = multi.synthesize_library(
+            library=config,
+            github_token="fake-github-token",
+            extra_args=[],
+            base_log_path=pathlib.Path(base_log_path),
+            runner=mock_execute,
+        )
+
     assert result["name"] == "test1"
     assert result["output"] == b"something failed"
     assert result["error"] is True
@@ -56,7 +74,15 @@ def test_synthesize_library_skip():
     mock_execute = unittest.mock.Mock()
     mock_execute.return_value = (synth.EXIT_CODE_SKIPPED, b"nothing changed")
 
-    result = multi.synthesize_library(config, "fake-github-token", [], mock_execute)
+    with tempfile.TemporaryDirectory() as base_log_path:
+        result = multi.synthesize_library(
+            library=config,
+            github_token="fake-github-token",
+            extra_args=[],
+            base_log_path=pathlib.Path(base_log_path),
+            runner=mock_execute,
+        )
+
     assert result["name"] == "test1"
     assert result["output"] == b"nothing changed"
     assert result["error"] is False
@@ -209,9 +235,16 @@ def test_synthesize_libraries():
     mock_execute = unittest.mock.Mock()
     mock_execute.return_value = (0, b"success")
 
-    results = multi.synthesize_libraries(
-        config, gh, "some-github-token", [], mock_execute
-    )
+    with tempfile.TemporaryDirectory() as base_log_path:
+        results = multi.synthesize_libraries(
+            libraries=config,
+            gh=gh,
+            github_token="some-github-token",
+            extra_args=[],
+            base_log_path=pathlib.Path(base_log_path),
+            runner=mock_execute,
+        )
+
     assert len(results) == 2
     gh.create_issue.assert_not_called()
     gh.create_issue_comment.assert_not_called()
@@ -230,9 +263,16 @@ def test_synthesize_libraries_with_failures():
     mock_execute = unittest.mock.Mock()
     mock_execute.side_effect = [(1, b"failure 1"), (2, b"failure 2")]
 
-    results = multi.synthesize_libraries(
-        config, gh, "some-github-token", [], mock_execute
-    )
+    with tempfile.TemporaryDirectory() as base_log_path:
+        results = multi.synthesize_libraries(
+            libraries=config,
+            gh=gh,
+            github_token="some-github-token",
+            extra_args=[],
+            base_log_path=pathlib.Path(base_log_path),
+            runner=mock_execute,
+        )
+
     assert len(results) == 2
     assert gh.create_issue.call_count == 2
     gh.create_issue_comment.assert_not_called()
