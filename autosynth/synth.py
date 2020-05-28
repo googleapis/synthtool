@@ -608,7 +608,7 @@ def _inner_main(temp_dir: str) -> int:
             # We're generating a single API in a single repo, and using a different
             # repo to generate the next API.  So the next synth will not be able to
             # use any of this state.  Clean it up to avoid running out of disk space.
-            executor.check_call(["git", "clean", "-fdx"], cwd=working_repo_path)
+            executor.run(["git", "clean", "-fdx"], cwd=working_repo_path)
 
 
 if __name__ == "__main__":
