@@ -74,6 +74,14 @@ class CommonTemplates:
                 "instead."
             )
         
+        # Set default Python versions for noxfile.py
+        if "default_python_version" not in kwargs:
+            kwargs["default_python_version"] = "3.7"
+        if "unit_test_python_versions" not in kwargs:
+            kwargs["unit_test_python_versions"] = ["2.7", "3.5", "3.6", "3.7", "3.8"]
+        if "system_test_python_versions" not in kwargs:
+            kwargs["system_test_python_versions"] = ["2.7", "3.7"]
+
         # Don't add samples templates if there are no samples
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
