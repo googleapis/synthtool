@@ -34,12 +34,29 @@ def test_render():
     assert result.read_text() == "Hello, world!\n"
 
 
+def test_render_with_subdir():
+    t = templates.Templates(FIXTURES)
+    result = t.render("example.j2", name="world", subdir="foo/bar")
+
+    assert result.match("**/foo/bar/example")
+    assert result.name == "example"
+    assert result.read_text() == "Hello, world!\n"
+
+
 def test_render_group():
     t = templates.TemplateGroup(FIXTURES / "group")
     result = t.render(var_a="hello", var_b="world")
 
     assert (result / "1.txt").read_text() == "hello\n"
     assert (result / "subdir" / "2.txt").read_text() == "world\n"
+
+
+def test_render_group_with_subdir():
+    t = templates.TemplateGroup(FIXTURES / "group")
+    result = t.render(subdir="foo/bar", var_a="hello", var_b="world")
+
+    assert (result / "foo/bar" / "1.txt").read_text() == "hello\n"
+    assert (result / "foo/bar" / "subdir" / "2.txt").read_text() == "world\n"
 
 
 def test_render_preserve_mode():
