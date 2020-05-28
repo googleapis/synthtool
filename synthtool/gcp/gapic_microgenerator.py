@@ -26,6 +26,9 @@ from synthtool.sources import git
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
 GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
 LOCAL_GOOGLEAPIS: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS")
+GENERATOR_VERSION: str = os.environ.get(
+    "SYNTHTOOL_GAPIC_GENERATOR_PYTHON_VERSION", "latest"
+)
 
 
 class GAPICMicrogenerator:
@@ -75,7 +78,7 @@ class GAPICMicrogenerator:
         proto_path: Union[str, Path] = None,
         extra_proto_files: List[str] = [],
         output_dir: Union[str, Path] = None,
-        generator_version: str = "latest",
+        generator_version: str = GENERATOR_VERSION,
         generator_args: Mapping[str, str] = None,
     ):
         # Determine which googleapis repo to use

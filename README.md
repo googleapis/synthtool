@@ -243,6 +243,27 @@ You can change this by setting the environment variable `SYNTHTOOL_ARTMAN_VERSIO
 export SYNTHTOOL_ARTMAN_VERSION=0.16.2
 ```
 
+### GAPIC Generator Python Version
+SynthTool uses the latest version of [gcr.io/gapic-images/gapic-generator-python](https://gcr.io/gapic-images/gapic-generator-python). You can change this by
+setting the environment variable `SYNTHTOOL_GAPIC_GENERATOR_PYTHON_VERSION` to the desired version tag.
+
+```
+export SYNTHTOOL_GAPIC_GENERATOR_PYTHON_VERSION=0.22.0
+```
+
+Alternatively you can set the generator version by passing it to `gapic.py_library`.
+
+```python
+import synthtool as s
+import synthtool.gcp as gcp
+
+gapic = gcp.GAPICMicrogenerator()
+
+library = gapic.py_library(
+    "bigquery/connection", "v1beta1", generator_version="0.22.0"
+)
+```
+
 ### Local Googleapis
 SynthTool supports generation from a local copy of googleapis.
 Specify the path to `googleapis` in the environment variable `SYNTHTOOL_GOOGLEAPIS`.
