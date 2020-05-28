@@ -73,7 +73,7 @@ class CommonTemplates:
                 "Use 'system_test_local_dependencies' or 'system_test_external_dependencies'"
                 "instead."
             )
-        
+
         # Set default Python versions for noxfile.py
         if "default_python_version" not in kwargs:
             kwargs["default_python_version"] = "3.7"

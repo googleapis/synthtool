@@ -72,6 +72,7 @@ def _get_help(filename: str) -> str:
     """Function used by sample readmegen"""
     return shell.run(["python", filename, "--help"]).stdout
 
+
 def _get_sample_readme_metadata(sample_dir: Path) -> dict:
     sample_readme = sample_dir / "README.rst.in"
 
