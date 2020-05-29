@@ -74,8 +74,8 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 - See the Python [Contributing Guide][python_contributing]
   or instructions to install dependencies, run tests, and submit a contribution.
 
-[python_tasks_library]: https://github.com/googleapis/google-cloud-python/tree/master/tasks
-[python_tasks_synth_py]: https://github.com/googleapis/google-cloud-python/blob/master/tasks/synth.py
+[python_tasks_library]: https://github.com/googleapis/python-tasks/blob/master/
+[python_tasks_synth_py]: https://github.com/googleapis/python-tasks/blob/master/synth.py
 [python_contributing]: https://github.com/googleapis/google-cloud-python/blob/master/CONTRIBUTING.rst
 
 ### Java
@@ -96,8 +96,8 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 - See the Java [Contributing Guide][java_contributing]
   or instructions to install dependencies, run tests, and submit a contribution.
 
-[java_tasks_library]: https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-clients/google-cloud-tasks
-[java_tasks_synth_py]: https://github.com/googleapis/google-cloud-java/blob/master/google-cloud-clients/google-cloud-tasks/synth.py
+[java_tasks_library]: https://github.com/googleapis/java-tasks/blob/master/
+[java_tasks_synth_py]: https://github.com/googleapis/java-tasks/blob/master/synth.py
 [java_contributing]: https://github.com/googleapis/google-cloud-java/blob/master/CONTRIBUTING.md
 
 ### Node.js
