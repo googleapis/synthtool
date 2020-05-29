@@ -19,10 +19,10 @@ set -eo pipefail
 # kokoro-trampoline@cloud-devrel-kokoro-resources.iam.gserviceaccount.com
 SECRET_LOCATION="$KOKORO_GFILE_DIR/secret_manager"
 mkdir -p $SECRET_LOCATION
-export CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE=${KOKORO_GFILE_DIR}/kokoro-trampoline.service-account.json
 for key in $(echo $SECRET_MANAGER_KEYS | sed "s/,/ /g")
 do
-  gcloud secrets versions access latest --quiet --secret $key > \
+  gcloud secrets versions access latest \
+    --credential-file-override=${KOKORO_GFILE_DIR}/kokoro-trampoline.service-account.json \
+    --quiet --secret $key > \
     "$SECRET_LOCATION/$key"
 done
-unset CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE
