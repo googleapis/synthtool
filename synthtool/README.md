@@ -11,7 +11,7 @@ This tool helps to generate and layout cloud client libraries. Synthtool runs th
 
 2. **Bazel**  can be downloaded from [bazel.build](https://bazel.build/).
 
-3. **Docker**  Some synth.py files will require [Docker] to generate code.
+3. **Docker**  Some synth.py files require [Docker] to generate code.
 
 [python_downloads]: https://www.python.org/downloads/
 [pyenv]: https://github.com/pyenv/pyenv
@@ -220,7 +220,7 @@ library = gapic.node_library('speech', 'v1', private=True)
 
 * **Using SSH:** Before running Synthtool, set the environment variable `AUTOSYNTH_USE_SSH` to `true`.
 
-The repo will be cloned using SSH.
+The repo is cloned using SSH.
 * **Using HTTPS:** Generate a [GitHub Personal Access Token](https://github.com/settings/tokens) with scope `repo`.
 Run `synthtool`.
 
@@ -328,13 +328,13 @@ changes in the generated library code.
 |  B         |  Y                    |
 
 
-Here's what autosynth will generate for each flag setting.
+Here's what autosynth generates for each flag setting.
 
 ```py
 AUTOSYNTH_MULTIPLE_COMMITS = True
 ```
 
-Autosynth will create one PR, with a single commit for each original commit:
+Autosynth creates one PR, with a single commit for each original commit:
 | PR |
 | - |
 | A |
@@ -349,7 +349,7 @@ AUTOSYNTH_MULTIPLE_COMMITS = True
 AUTOSYNTH_MULTIPLE_PRS = True
 ```
 
-Autosynth will create two PRs, with a single commit for each original commit:
+Autosynth creates two PRs, with a single commit for each original commit:
 | PR1 |
 | - |
 | A |
@@ -367,7 +367,7 @@ Autosynth will create two PRs, with a single commit for each original commit:
 AUTOSYNTH_MULTIPLE_PRS = True
 ```
 
-Autosynth will create two PRs, with a single commit combining all the 
+Autosynth creates two PRs, with a single commit combining all the 
 original commits.
 
 | PR1 |
@@ -381,6 +381,6 @@ original commits.
 
 ## Helpful tips
 ### Where does the generated code go?
-SynthTool will run [Artman](https://hub.docker.com/r/googleapis/artman) which will create generated code that
+SynthTool runs [Artman](https://hub.docker.com/r/googleapis/artman) which creates generated code that
 can be found at `~/.cache/synthtool/googleapis<-private>/artman_genfiles`. This is useful for figuring out
 what it is you need to copy for your specific library.
