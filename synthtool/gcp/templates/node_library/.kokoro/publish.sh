@@ -17,7 +17,6 @@
 set -eo pipefail
 
 export NPM_CONFIG_PREFIX=/home/node/.npm-global
-$(dirname $0)/populate-secrets.sh # Secret Manager secrets.
 
 # Start the releasetool reporter
 python3 -m pip install gcp-releasetool
