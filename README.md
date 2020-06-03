@@ -80,12 +80,8 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 ### Java
 - Clone the destination repository:
   ```
-  git clone git@github.com:googleapis/google-cloud-java.git
-  cd google-cloud-java/
-  ```
-- Navigate to the destination directory to generate the library:
-  ```
-  cd google-cloud-clients/google-cloud-tasks/
+  git clone git@github.com:googleapis/java-tasks.git
+  cd java-tasks/
   ```
 - Run `synthtool` to generate using the existing [`synth.py`][java_tasks_synth_py]
   file for the [Google Cloud Java Client for Cloud Tasks][java_tasks_library]:
@@ -95,9 +91,9 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 - See the Java [Contributing Guide][java_contributing]
   or instructions to install dependencies, run tests, and submit a contribution.
 
-[java_tasks_library]: https://github.com/googleapis/google-cloud-java/tree/master/google-cloud-clients/google-cloud-tasks
-[java_tasks_synth_py]: https://github.com/googleapis/google-cloud-java/blob/master/google-cloud-clients/google-cloud-tasks/synth.py
-[java_contributing]: https://github.com/googleapis/google-cloud-java/blob/master/CONTRIBUTING.md
+[java_tasks_library]: https://github.com/googleapis/java-tasks
+[java_tasks_synth_py]: https://github.com/googleapis/java-tasks/blob/master/synth.py
+[java_contributing]: https://github.com/googleapis/java-tasks/blob/master/CONTRIBUTING.md
 
 ### Node.js
 - Clone the destination repository:

@@ -24,6 +24,25 @@ import autosynth.abstract_source
 from autosynth import git, executor
 
 
+def _strip_pr_number(commit_subject: str) -> str:
+    """Strips PR numbers from commit subjects.
+
+    Because the PR# is for a different repo, and is misinterpreted by github as
+    referring to an issue in the current repo.
+    See https://github.com/googleapis/synthtool/issues/596
+    Arguments:
+        commit_subject {str} -- The subject line of a commit.
+
+    Returns:
+        str -- The subject line, with any commit hash removed.
+    """
+    match = re.match(r"^(.*?)\s*\(#\d+\)$", commit_subject)
+    if match:
+        return match.group(1)
+    else:
+        return commit_subject
+
+
 class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
     def __init__(
         self,
@@ -52,17 +71,32 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
             ["git", "checkout", self.sha], cwd=self.repo_path
         ).check_returncode()
 
+    def _get_pretty(self, pretty: str) -> str:
+        """Gets the pretty log for this commit.
+
+        Arguments:
+            pretty {str} -- the git log pretty format
+
+        Returns:
+            str -- the output of the git log command, stripped of leading and trailing
+                   whitespace
+        """
+        git_log: str = executor.run(
+            ["git", "log", self.sha, "-1", "--no-decorate", f"--pretty={pretty}"],
+            cwd=self.repo_path,
+            stdout=subprocess.PIPE,
+            universal_newlines=True,
+            check=True,
+        ).stdout.strip()
+        return git_log
+
     def get_comment(self) -> str:
         # Construct a comment using the text of the git commit.
         if self.comment is None:
-            pretty = "--pretty=%B%n%nSource-Author: %an <%ae>%nSource-Date: %ad"
-            git_log: str = executor.run(
-                ["git", "log", self.sha, "-1", "--no-decorate", pretty],
-                cwd=self.repo_path,
-                stdout=subprocess.PIPE,
-                universal_newlines=True,
-                check=True,
-            ).stdout.strip()
+            subject = _strip_pr_number(self._get_pretty("%s"))
+            pretty = "%b%n%nSource-Author: %an <%ae>%nSource-Date: %ad"
+            body = self._get_pretty(pretty)
+            git_log = f"{subject}\n\n{body}".strip()
             self.comment = _compose_comment(self.remote, self.sha, git_log)
         return self.comment
 
