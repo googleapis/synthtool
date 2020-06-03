@@ -36,7 +36,7 @@ def _strip_pr_number(commit_subject: str) -> str:
     Returns:
         str -- The subject line, with any commit hash removed.
     """
-    match = re.match(r"(.*)\(#\d+\)", commit_subject)
+    match = re.match(r"^(.*?)\s*\(#\d+\)$", commit_subject)
     if match:
         return match.group(1)
     else:
