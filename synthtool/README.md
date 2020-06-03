@@ -285,7 +285,7 @@ cd path/to/local/gapic-generator
 ```
 
 ### Local Template Files
-SynthTool supports specifying a local directory of templates. Specify the patht to the root
+SynthTool supports specifying a local directory of templates. Specify the path to the root
 template directory (not a SynthTool clone) in the environment variable `SYNTHTOOL_TEMPLATES`.
 
 ```
