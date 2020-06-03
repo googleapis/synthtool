@@ -248,3 +248,12 @@ def test_enumerate_versions_with_functionally_duplicate_sources():
         )
         assert 1 == ev.call_count
         assert [[v1, v2]] == versions
+
+
+def test_strip_pr_number():
+    strip = autosynth.git_source._strip_pr_number
+    assert "fix bugs", strip("fix bugs (#244)")
+    # variations that should not be stripped
+    assert "fix bugs (#)", strip("fix bugs (#)")
+    assert "fix bugs #244", strip("fix bugs #244")
+    assert "fix (#244) bugs", strip("fix (#244) bugs")
