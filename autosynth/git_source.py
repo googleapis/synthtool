@@ -93,7 +93,7 @@ class GitSourceVersion(autosynth.abstract_source.AbstractSourceVersion):
     def get_comment(self) -> str:
         # Construct a comment using the text of the git commit.
         if self.comment is None:
-            subject = self._get_pretty("%s")
+            subject = _strip_pr_number(self._get_pretty("%s"))
             pretty = "%b%n%nSource-Author: %an <%ae>%nSource-Date: %ad"
             body = self._get_pretty(pretty)
             git_log = f"{subject}\n\n{body}".strip()
