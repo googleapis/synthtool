@@ -73,7 +73,7 @@ def test_get_comment(git_versions_fixture):
     comment = git_versions_fixture[0].get_comment()
     assert (
         comment
-        == "chore(deps): update dependency linkinator to v2\n\n\n\nSource-Author: WhiteSource Renovate <bot@renovateapp.com>\nSource-Date: Mon Feb 10 18:05:01 2020 +0100\nSource-Repo: googleapis/nodejs-secret-manager\nSource-Sha: f8ca222851e8e3c5ae6755b402fecc75a46588e4\nSource-Link: https://github.com/googleapis/nodejs-secret-manager/commit/f8ca222851e8e3c5ae6755b402fecc75a46588e4"
+        == "chore(deps): update dependency linkinator to v2\n\nSource-Author: WhiteSource Renovate <bot@renovateapp.com>\nSource-Date: Mon Feb 10 18:05:01 2020 +0100\nSource-Repo: googleapis/nodejs-secret-manager\nSource-Sha: f8ca222851e8e3c5ae6755b402fecc75a46588e4\nSource-Link: https://github.com/googleapis/nodejs-secret-manager/commit/f8ca222851e8e3c5ae6755b402fecc75a46588e4"
     )
 
 
