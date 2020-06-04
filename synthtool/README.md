@@ -13,10 +13,11 @@ This tool helps to generate and layout cloud client libraries. Synthtool runs th
 
 3. **Docker**  Some synth.py files require [Docker] to generate code.
 
-4. Add synthtool to your **PYTHONPATH**
+4. Add this repo to your **PYTHONPATH**.
 
     ```
-    export PYTHONPATH=`realpath .`
+    cd synthtool
+    export PYTHONPATH=`pwd`
     ```
 
 
