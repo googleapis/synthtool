@@ -83,6 +83,47 @@ class GitHub:
         )
         return cast(Dict, _get_json_or_raise_exception(response))
 
+    def update_pull_request(
+        self,
+        repository: str,
+        pull_number: int,
+        title: str = None,
+        body: str = None,
+        state=None,
+    ) -> Dict:
+        """Update an existing pull request.
+
+        See: https://developer.github.com/v3/pulls/#update-a-pull-request
+        Any of title, body, and state can be null, if only a subset are being updated.
+
+        Arguments:
+            repository {str} -- GitHub repository with the format [owner]/[repo]
+            pull_number {int} -- The number of the pull request.
+            title {Optional[str]} -- The new title
+            body {Optional[str]} -- The new body.
+            state {Optional[str]} -- "open" or "closed"
+
+        Returns:
+            Dict -- Parsed pull request json data
+
+        Throws:
+            ValueError if the response does not contain valid json (unlikely).
+            HttpError if the server returns an error code.
+        """
+        url = f"{_GITHUB_ROOT}/repos/{repository}/pulls/{pull_number}"
+        json = {
+            "title": title,
+            "body": body,
+            "state": state,
+        }
+        # Remove fields that are not being updated.
+        json = dict(
+            [(key, value) for (key, value) in json.items() if value is not None]
+        )
+
+        response = self.session.patch(url, json=json)
+        return cast(Dict, _get_json_or_raise_exception(response))
+
     def get_tree(self, repository: str, tree_sha: str = "master") -> Sequence[Dict]:
         """Returns a single tree using the SHA1 value for that tree.
 
