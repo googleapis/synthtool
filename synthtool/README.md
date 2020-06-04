@@ -13,26 +13,23 @@ This tool helps to generate and layout cloud client libraries. Synthtool runs th
 
 3. **Docker**  Some synth.py files require [Docker] to generate code.
 
+4. Add synthtool to your **PYTHONPATH**
+
+    ```
+    export PYTHONPATH=`realpath .`
+    ```
+
+
 [python_downloads]: https://www.python.org/downloads/
 [pyenv]: https://github.com/pyenv/pyenv
 [Docker]: https://docs.docker.com/v17.09/engine/installation/#desktop
 
-## Add synthtool to your PYTHONPATH
-
-```
-export PYTHONPATH=`realpath .`
-```
 
 ## Basic usage
 To start the process of generation, clone the destination repository.
 ```
-git clone git@github.com:googleapis/google-cloud-python.git
-cd google-cloud-python/
-```
-
-Navigate to the destination directory.
-```
-cd tasks/
+git clone git@github.com:googleapis/python-tasks.git
+cd python-tasks/
 ```
 
 ### Running `synthtool`
@@ -59,12 +56,8 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 ### Python
 - Clone the destination repository:
   ```
-  git clone git@github.com:googleapis/google-cloud-python.git
-  cd google-cloud-python/
-  ```
-- Navigate to the destination directory:
-  ```
-  cd tasks/
+  git clone git@github.com:googleapis/python-tasks.git
+  cd python-tasks/
   ```
 - Run `synthtool` to generate using the existing [`synth.py`][python_tasks_synth_py]
   file for the [Python Client for Cloud Tasks API][python_tasks_library]:
@@ -74,9 +67,9 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 - See the Python [Contributing Guide][python_contributing]
   or instructions to install dependencies, run tests, and submit a contribution.
 
-[python_tasks_library]: https://github.com/googleapis/google-cloud-python/tree/master/tasks
-[python_tasks_synth_py]: https://github.com/googleapis/google-cloud-python/blob/master/tasks/synth.py
-[python_contributing]: https://github.com/googleapis/google-cloud-python/blob/master/CONTRIBUTING.rst
+[python_tasks_library]: https://github.com/googleapis/python-tasks
+[python_tasks_synth_py]: https://github.com/googleapis/python-tasks/blob/master/synth.py
+[python_contributing]: https://github.com/googleapis/python-tasks/blob/master/CONTRIBUTING.rst
 
 ### Java
 - Clone the destination repository:
