@@ -20,7 +20,7 @@ This tool helps to generate and layout cloud client libraries. Synthtool runs th
 ## Add synthtool to your PYTHONPATH
 
 ```
-..\synthtool$ export PYTHONPATH=`realpath .`
+export PYTHONPATH=`realpath .`
 ```
 
 ## Basic usage
