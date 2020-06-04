@@ -93,12 +93,14 @@ class ChangePusher(AbstractChangePusher):
         trailers = _collect_trailers(commit_count)
 
         pr = self._existing_pull_requests.get(branch)
-        if not pr:
+        new_body = build_pr_body(synth_log, trailers)
+        if pr:
+            pr = self._gh.update_pull_request(
+                self._repository, pr["number"], body=new_body
+            )
+        else:
             pr = self._gh.create_pull_request(
-                self._repository,
-                branch=branch,
-                title=pr_title,
-                body=build_pr_body(synth_log, trailers),
+                self._repository, branch=branch, title=pr_title, body=new_body,
             )
 
             # args.synth_path (and api: * labels) only exist in monorepos
