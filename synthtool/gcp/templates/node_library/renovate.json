@@ -15,5 +15,6 @@
       "groupName": "linters"
     }
   ],
-  "ignoreDeps": ["typescript"]
+  "ignoreDeps": ["typescript"],
+  "masterIssue": true
 }
