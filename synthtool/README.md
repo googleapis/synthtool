@@ -30,7 +30,7 @@ git clone git@github.com:googleapis/google-cloud-python.git
 cd google-cloud-python/
 ```
 
-Navigate to the destination directory to generate the library.
+Navigate to the destination directory.
 ```
 cd tasks/
 ```
@@ -62,7 +62,7 @@ Find examples below in different programming languages (Cloud Tasks API used as 
   git clone git@github.com:googleapis/google-cloud-python.git
   cd google-cloud-python/
   ```
-- Navigate to the destination directory to generate the library:
+- Navigate to the destination directory:
   ```
   cd tasks/
   ```
@@ -120,7 +120,7 @@ Find examples below in different programming languages (Cloud Tasks API used as 
   git clone git@github.com:googleapis/google-cloud-php.git
   cd google-cloud-php/
   ```
-- Navigate to the destination directory to generate the library:
+- Navigate to the destination directory:
   ```
   cd Tasks/
   ```
@@ -142,7 +142,7 @@ Find examples below in different programming languages (Cloud Tasks API used as 
   git clone git@github.com:googleapis/google-cloud-ruby.git
   cd google-cloud-ruby/
   ```
-- Navigate to the destination directory to generate the library:
+- Navigate to the destination directory:
   ```
   cd google-cloud-tasks/
   ```
