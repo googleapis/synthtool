@@ -141,11 +141,18 @@ def _close_issue(gh, repository: str, existing_issue: dict):
     )
 
 
+def _get_sponge_log_url(repository: str) -> str:
+    invocation_id = os.environ.get("KOKORO_BUILD_ID")
+    target = repository.split("/")[-1]
+    return f"http://sponge2/results/invocations/{invocation_id}/targets/github%2Fsynthtool;config=default/tests;query={target};failed=false"
+
+
 def _file_or_comment_on_issue(
     gh, name, repository, issue_title, existing_issue, output
 ):
     # GitHub rejects issues with bodies > 64k
     output_to_report = output[-10000:]
+    sponge_log_url = _get_sponge_log_url(repository)
     message = f"""\
 Here's the output from running `synth.py`:
 
@@ -153,7 +160,7 @@ Here's the output from running `synth.py`:
 {output_to_report}
 ```
 
-Google internal developers can see the full log [here](http://sponge/{os.environ.get('KOKORO_BUILD_ID')}).
+Google internal developers can see the full log [here]({sponge_log_url}).
 """
 
     if not existing_issue:
