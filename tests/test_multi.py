@@ -42,7 +42,7 @@ def test_synthesize_library_success():
         )
 
     assert result["name"] == "test1"
-    assert result["output"] == b"success"
+    assert result["output"] == "success"
     assert result["error"] is False
     assert result["skipped"] is False
 
@@ -63,7 +63,7 @@ def test_synthesize_library_failure():
         )
 
     assert result["name"] == "test1"
-    assert result["output"] == b"something failed"
+    assert result["output"] == "something failed"
     assert result["error"] is True
     assert result["skipped"] is False
 
@@ -84,7 +84,7 @@ def test_synthesize_library_skip():
         )
 
     assert result["name"] == "test1"
-    assert result["output"] == b"nothing changed"
+    assert result["output"] == "nothing changed"
     assert result["error"] is False
     assert result["skipped"] is True
 
@@ -95,19 +95,19 @@ def test_make_report():
         [
             {
                 "name": "test1",
-                "output": b"some output data",
+                "output": "some output data",
                 "error": False,
                 "skipped": False,
             },
             {
                 "name": "test2",
-                "output": b"something failed",
+                "output": "something failed",
                 "error": True,
                 "skipped": False,
             },
             {
                 "name": "test3",
-                "output": b"something skipped",
+                "output": "something skipped",
                 "error": False,
                 "skipped": True,
             },
