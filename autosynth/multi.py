@@ -93,7 +93,7 @@ def synthesize_library(
         logger.error(f"Synthesis failed for {library['name']}")
     return {
         "name": library["name"],
-        "output": output,
+        "output": output.decode("utf-8"),
         "error": error,
         "skipped": skipped,
     }
