@@ -317,7 +317,7 @@ def main():
 
     gh = github.GitHub(args.github_token)
 
-    base_log_path = pathlib.Path("./log")
+    base_log_path = pathlib.Path("./logs")
     results = synthesize_libraries(
         config, gh, args.github_token, args.extra_args[1:], base_log_path
     )
