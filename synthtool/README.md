@@ -17,7 +17,7 @@ This tool helps to generate and layout cloud client libraries. Synthtool runs th
 
     ```
     cd synthtool
-    python3 -m pip install -e .
+    export PYTHONPATH=`pwd`
     ```
 
 
