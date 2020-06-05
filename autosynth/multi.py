@@ -144,7 +144,7 @@ def _close_issue(gh, repository: str, existing_issue: dict):
 def _get_sponge_log_url(repository: str) -> str:
     invocation_id = os.environ.get("KOKORO_BUILD_ID")
     target = repository.split("/")[-1]
-    return f"https://sponge2/results/invocations/{invocation_id}/targets/github%2Fsynthtool;config=default/tests;query={target};failed=false"
+    return f"http://sponge2/results/invocations/{invocation_id}/targets/github%2Fsynthtool;config=default/tests;query={target};failed=false"
 
 
 def _file_or_comment_on_issue(
