@@ -548,11 +548,15 @@ def _inner_main(temp_dir: str) -> int:
             if change_pusher.check_if_pr_already_exists(branch):
                 return 0
 
+            synth_log_path = base_synth_log_path
+            for arg in args.extra_args:
+                synth_log_path = synth_log_path / arg
+
             synth_log = Synthesizer(
                 metadata_path,
                 args.extra_args,
                 deprecated_execution=args.deprecated_execution,
-            ).synthesize(base_synth_log_path)
+            ).synthesize(synth_log_path / "sponge_log.log")
 
             if not has_changes():
                 logger.info("No changes. :)")
