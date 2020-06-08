@@ -101,6 +101,7 @@ class Synthesizer(AbstractSynthesizer):
             command = [sys.executable, self.synth_py_path]
 
         logger.info(command)
+        logger.debug(f"log_file_path: {log_file_path}")
 
         # Ensure the logfile directory exists
         log_file_path.parent.mkdir(parents=True, exist_ok=True)
