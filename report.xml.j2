@@ -6,7 +6,7 @@
             {% if result.error %}
             <failure>{{result.output|e}}</failure>
             {% else %}
-            <system-out>{{result.output|e}}</system-out>
+            <system-out>Full log can be found at {{result.log_url}}</system-out>
             {% endif %}
         </testcase>
     </testsuite>

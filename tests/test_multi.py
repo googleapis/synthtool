@@ -45,6 +45,7 @@ def test_synthesize_library_success():
     assert result["output"] == "success"
     assert result["error"] is False
     assert result["skipped"] is False
+    assert "test1" in result["log_url"]
 
 
 def test_synthesize_library_failure():
@@ -98,18 +99,21 @@ def test_make_report():
                 "output": "some output data",
                 "error": False,
                 "skipped": False,
+                "log_url": "http://sponge2/test1",
             },
             {
                 "name": "test2",
                 "output": "something failed",
                 "error": True,
                 "skipped": False,
+                "log_url": "http://sponge2/test2",
             },
             {
                 "name": "test3",
                 "output": "something skipped",
                 "error": False,
                 "skipped": True,
+                "log_url": "http://sponge2/test3",
             },
         ],
     )

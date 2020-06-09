@@ -96,6 +96,7 @@ def synthesize_library(
         "output": output.decode("utf-8"),
         "error": error,
         "skipped": skipped,
+        "log_url": _get_sponge_log_url(library["repository"]),
     }
 
 
