@@ -1,3 +1,5 @@
+![Diagram of relationship between Autosynth, Synthtool, and Github](./images/flow.png)
+
 # SynthTool (for client libraries)
 
 This repository contains two, related tools for generating source code for

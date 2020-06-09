@@ -1,5 +1,7 @@
 # Automated Synthesis of Client Libraries
 
+![Diagram of relationship between Autosynth, Synthtool, and Github](../images/flow.png)
+
 On a regular schedule, at least once per day, a job automatically
 re-synthesize all the source code for all the client libraries in 
 http://github.com/googleapis.  That way, changes to API definitions
