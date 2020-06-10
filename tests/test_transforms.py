@@ -151,6 +151,33 @@ def test__move_to_dest(expand_path_fixtures):
     ]
 
 
+def test__dont_overwrite():
+    with tempfile.TemporaryDirectory() as dira, tempfile.TemporaryDirectory() as dirb:
+        Path(dira).joinpath("README.md").write_text("README")
+        Path(dira).joinpath("code.py").write_text("# code.py")
+        Path(dira).joinpath("BUILD").write_text("bazel")
+
+        Path(dirb).joinpath("README.md").write_text("chickens")
+        Path(dirb).joinpath("code.py").write_text("# chickens")
+
+        cwd = os.getcwd()
+        os.chdir(dirb)
+        try:
+            _tracked_paths.add(dira)
+            transforms.move(
+                [Path(dira).joinpath("*")], merge=transforms.dont_overwrite(["*.md"])
+            )
+        finally:
+            os.chdir(cwd)
+
+        # Should not have been overwritten.
+        assert "chickens" == Path(dirb).joinpath("README.md").read_text()
+        # Should have been overwritten.
+        assert "# code.py" == Path(dirb).joinpath("code.py").read_text()
+        # Should have been written.
+        assert "bazel" == Path(dirb).joinpath("BUILD").read_text()
+
+
 def test__move_to_dest_subdir(expand_path_fixtures):
     tmp_path = Path(str(expand_path_fixtures))
     _tracked_paths.add(expand_path_fixtures)
