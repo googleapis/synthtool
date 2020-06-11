@@ -19,6 +19,8 @@ from typing import Dict, List
 
 OPEN_SNIPPET_REGEX = r".*\[START ([a-z0-9_]+)\].*$"
 CLOSE_SNIPPET_REGEX = r".*\[END ([a-z0-9_]+)\].*$"
+OPEN_EXCLUDE_REGEX = r".*\[START_EXCLUDE\].*$"
+CLOSE_EXCLUDE_REGEX = r".*\[END_EXCLUDE\].*$"
 
 
 def _trim_leading_whitespace(lines: List[str]) -> List[str]:
@@ -65,23 +67,36 @@ def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
     snippet_lines = {}  # type: Dict[str, List[str]]
     open_snippets = set()
     with open(sample_file) as f:
+        excluding = False
         # Iterate over each line:
         # - If the line matches an opening snippet tag, add that snippet tag to
         #   the set of open tags.
         # - If the line matches a closing snippet tag, remove that snippet tag
         #   from the set of open tags.
-        # - Otherwise, add the line to each of the open snippets
+        # - If the line matches an opening exclude tag, record that we excluding
+        #   content.
+        # - If the line matches a closing exclude tag, record that we are capturing
+        #   content again.
+        # - Otherwise, if we are not excluding content, add the line to each of the
+        #   open snippets
         #
-        # This allows us to handle parsing nested or interleaved snippets.
+        # This allows us to handle parsing nested or interleaved snippets and ignore
+        # blocks of code in the snippets
         for line in f:
             open_match = re.match(pattern=OPEN_SNIPPET_REGEX, string=line)
             close_match = re.match(pattern=CLOSE_SNIPPET_REGEX, string=line)
+            open_exclude_match = re.match(pattern=OPEN_EXCLUDE_REGEX, string=line)
+            close_exclude_match = re.match(pattern=CLOSE_EXCLUDE_REGEX, string=line)
             if open_match:
                 open_snippets.add(open_match[1])
                 snippet_lines[open_match[1]] = []
             elif close_match:
                 open_snippets.discard(close_match[1])
-            else:
+            elif open_exclude_match:
+                excluding = True
+            elif close_exclude_match:
+                excluding = False
+            elif not excluding:
                 for snippet in open_snippets:
                     snippet_lines[snippet].append(line)
 
