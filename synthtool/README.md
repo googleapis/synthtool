@@ -156,6 +156,12 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 [ruby_contributing]: https://github.com/googleapis/google-cloud-ruby/blob/master/.github/CONTRIBUTING.md
 
 ## Features
+
+### Common transforms
+
+Functions in synthtool make it easier to copy files, merge files, etc.
+See the [pydocs](https://htmlpreview.github.io/?https://github.com/googleapis/synthtool/blob/master/synthtool/pydoc.html) for more details.
+
 ### Templating
 SynthTool supports template files using [Jinja](http://jinja.pocoo.org/).
 
