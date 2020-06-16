@@ -288,7 +288,10 @@ class SynthesizeLoopToolbox:
         if self.commit_count < 1:
             return
         pr_title = _compose_pr_title(
-            self.count_commits_with_context(), self._synth_path, self.source_name
+            self.commit_count,
+            self.count_commits_with_context(),
+            self._synth_path,
+            self.source_name,
         )
         pr = change_pusher.push_changes(self.commit_count, self.branch, pr_title)
         # Add a label to make it easy to collect statistics about commits with context.
@@ -302,7 +305,10 @@ class SynthesizeLoopToolbox:
 
 
 def _compose_pr_title(
-    commits_with_context_count: int, synth_path: str, source_name: str
+    commit_count: int,
+    commits_with_context_count: int,
+    synth_path: str,
+    source_name: str,
 ) -> str:
     """Compose a title for the pull request for changes merged by this toolbox.
 
@@ -316,7 +322,7 @@ def _compose_pr_title(
     """
     synth_path_space = f"{synth_path} " if synth_path else ""
     synth_path_squared = f"[{synth_path}] " if synth_path else ""
-    if 1 == commits_with_context_count:
+    if 1 == commits_with_context_count and 1 == commit_count:
         return synth_path_squared + git.get_commit_subject()
     elif source_name:
         return (
@@ -548,11 +554,15 @@ def _inner_main(temp_dir: str) -> int:
             if change_pusher.check_if_pr_already_exists(branch):
                 return 0
 
+            synth_log_path = base_synth_log_path
+            for arg in args.extra_args:
+                synth_log_path = synth_log_path / arg
+
             synth_log = Synthesizer(
                 metadata_path,
                 args.extra_args,
                 deprecated_execution=args.deprecated_execution,
-            ).synthesize(base_synth_log_path)
+            ).synthesize(synth_log_path / "sponge_log.log")
 
             if not has_changes():
                 logger.info("No changes. :)")

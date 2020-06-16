@@ -25,6 +25,11 @@ from autosynth.log import logger
 import re
 
 
+"""Text we include in the pull request body so the user can request autosynth
+to automatically regenerate this pull request."""
+REGENERATE_CHECKBOX_TEXT = "- [x] To automatically regenerate this PR, check this box."
+
+
 class AbstractPullRequest(ABC):
     """Abstractly, manipulates an existing pull request."""
 
@@ -78,6 +83,8 @@ class ChangePusher(AbstractChangePusher):
         self._repository = repository
         self._gh = gh
         self._synth_path = synth_path
+        # maps branch name to pr json response
+        self._existing_pull_requests: typing.Dict[str, typing.Any] = {}
 
     def push_changes(
         self, commit_count: int, branch: str, pr_title: str, synth_log: str = ""
@@ -85,19 +92,23 @@ class ChangePusher(AbstractChangePusher):
         git.push_changes(branch)
         trailers = _collect_trailers(commit_count)
 
-        pr = self._gh.create_pull_request(
-            self._repository,
-            branch=branch,
-            title=pr_title,
-            body=build_pr_body(synth_log, trailers),
-        )
+        pr = self._existing_pull_requests.get(branch)
+        new_body = build_pr_body(synth_log, trailers)
+        if pr:
+            pr = self._gh.update_pull_request(
+                self._repository, pr["number"], body=new_body
+            )
+        else:
+            pr = self._gh.create_pull_request(
+                self._repository, branch=branch, title=pr_title, body=new_body,
+            )
 
-        # args.synth_path (and api: * labels) only exist in monorepos
-        if self._synth_path:
-            api_label = self._gh.get_api_label(self._repository, self._synth_path)
+            # args.synth_path (and api: * labels) only exist in monorepos
+            if self._synth_path:
+                api_label = self._gh.get_api_label(self._repository, self._synth_path)
 
-            if api_label:
-                self._gh.update_pull_labels(pr, add=[api_label])
+                if api_label:
+                    self._gh.update_pull_labels(pr, add=[api_label])
         return PullRequest(self._gh, pr)
 
     def check_if_pr_already_exists(self, branch) -> bool:
@@ -107,7 +118,13 @@ class ChangePusher(AbstractChangePusher):
 
         if prs:
             pr = prs[0]
+            self._existing_pull_requests[branch] = pr
             logger.info(f'PR already exists: {pr["html_url"]}')
+            body: str = pr["body"]
+            if REGENERATE_CHECKBOX_TEXT in body:
+                logger.info("Someone requested the PR to be regenerated.")
+                return False
+
         return bool(prs)
 
 
@@ -175,6 +192,8 @@ https://source.cloud.google.com/results/invocations/{kokoro_build_id}/targets"""
 This PR was generated using Autosynth. :rainbow:
 
 {build_log_text}
+
+{REGENERATE_CHECKBOX_TEXT.replace('[x]', '[ ]')}
 
 {trailers}
 """.strip()
