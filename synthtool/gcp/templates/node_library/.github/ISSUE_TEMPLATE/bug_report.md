@@ -6,10 +6,10 @@ about: Create a report to help us improve
 
 Thanks for stopping by to let us know something could be better!
 
-**PLEASE READ**
+**PLEASE READ**: If you have a support contract with Google, please create an issue in the [support console](https://cloud.google.com/support/) instead of filing on GitHub. This will ensure a timely response.
 
 1) Is this a client library issue or a product issue?
-This is the client library for {{metadata['product']}}. We will only be able to assist with issues that pertain to the behaviors of this library. If the issue you're experiencing is due to the behavior of the product itself, please visit [{{metadata['product']}} Support page]({{metadata['product-url']}}/docs/getting-support) to reach the most relevant engineers.
+This is the client library for {{metadata['name_pretty']}}. We will only be able to assist with issues that pertain to the behaviors of this library. If the issue you're experiencing is due to the behavior of the product itself, please visit the [{{metadata['name_pretty']}} Support page]({{metadata['support_documentation']}}) to reach the most relevant engineers.
 
 2) Did someone already solve this?
   - Search the issues already opened: https://github.com/{{metadata['repository']}}/issues
@@ -17,7 +17,7 @@ This is the client library for {{metadata['product']}}. We will only be able to 
   - Search or ask on StackOverflow (engineers monitor these tags): http://stackoverflow.com/questions/tagged/google-cloud-platform+node.js
 
 3) Do you have a support contract?
-If you have a support contract with Google, please create an issue in the [support console](https://cloud.google.com/support/) instead of filing on GitHub. This will ensure a timely response.
+Please create an issue in the [support console](https://cloud.google.com/support/) to ensure a timely response.
 
 If the support paths suggested above still do not result in a resolution, please provide the following details.
 
