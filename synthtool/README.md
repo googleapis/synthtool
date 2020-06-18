@@ -107,7 +107,7 @@ Find examples below in different programming languages (Cloud Tasks API used as 
 - See the Node.js [Contributing Guide][node_tasks_contributing]
   or instructions to install dependencies, run tests, and submit a contribution.
 
-[node_tasks_library]: https://github.com/googleapis/nodejs-task
+[node_tasks_library]: https://github.com/googleapis/nodejs-tasks
 [node_tasks_synth_py]: https://github.com/googleapis/nodejs-tasks/blob/master/synth.py
 [node_tasks_contributing]: https://github.com/googleapis/nodejs-tasks/blob/master/CONTRIBUTING.md
 
@@ -165,15 +165,15 @@ See the [pydocs](https://htmlpreview.github.io/?https://github.com/googleapis/sy
 ### Templating
 SynthTool supports template files using [Jinja](http://jinja.pocoo.org/).
 
-Templates are found in subdirectories of [`synthtool/gcp/templates/`](synthtool/gcp/templates/)
+Templates are found in subdirectories of [`synthtool/gcp/templates/`](gcp/templates/)
 for each language,
  - e.g. the template directories for [Python][python_templates],
-[Node.js][node_templates], [PHP][php_tasks_synth_py], or [Ruby][ruby_templates].
+[Node.js][node_templates], [PHP][php_templates], or [Ruby][ruby_templates].
 
-[python_templates]: synthtool/gcp/templates/python_library/
-[node_templates]: synthtool/gcp/templates/node_library/
-[php_templates]: synthtool/gcp/templates/php_library/
-[ruby_templates]:  synthtool/gcp/templates/ruby_library/
+[python_templates]: gcp/templates/python_library/
+[node_templates]: gcp/templates/node_library/
+[php_templates]: gcp/templates/php_library/
+[ruby_templates]:  gcp/templates/ruby_library/
 
 You can generate and copy templates using `gcp.CommonTemplates` in your `synth.py`:
 ```py
@@ -325,7 +325,7 @@ Assume that since the library source code was last generated, A, B and X, Y
 were committed to googleapis and synthtool respectively, and they all triggered
 changes in the generated library code.
 
-| [googleapis](https://github.com/googleapis/googleapis) | [synthtool (templates)](https://github.com/googleapis/synthtool/tree/master/synthtool/gcp/templates) |
+| [googleapis](https://github.com/googleapis/googleapis) | [synthtool (templates)](gcp/templates) |
 | :--------: | :-------------------: |
 |  A         |  X                    |
 |  B         |  Y                    |
