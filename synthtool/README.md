@@ -168,7 +168,7 @@ SynthTool supports template files using [Jinja](http://jinja.pocoo.org/).
 Templates are found in subdirectories of [`synthtool/gcp/templates/`](gcp/templates/)
 for each language,
  - e.g. the template directories for [Python][python_templates],
-[Node.js][node_templates], [PHP][php_tasks_synth_py], or [Ruby][ruby_templates].
+[Node.js][node_templates], [PHP][php_templates], or [Ruby][ruby_templates].
 
 [python_templates]: gcp/templates/python_library/
 [node_templates]: gcp/templates/node_library/
