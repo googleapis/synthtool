@@ -31,10 +31,12 @@ LOCAL_TEMPLATES: Optional[str] = os.environ.get("SYNTHTOOL_TEMPLATES")
 
 
 class CommonTemplates:
-    def __init__(self):
-        if LOCAL_TEMPLATES:
+    def __init__(self, template_path: Optional[Path] = None):
+        if template_path:
+            self._template_root = template_path
+        elif LOCAL_TEMPLATES:
             logger.debug(f"Using local templates at {LOCAL_TEMPLATES}")
-            self._template_root = LOCAL_TEMPLATES
+            self._template_root = Path(LOCAL_TEMPLATES)
         else:
             templates_git = git.clone(TEMPLATES_URL)
             self._template_root = templates_git / DEFAULT_TEMPLATES_PATH
@@ -51,9 +53,7 @@ class CommonTemplates:
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
                 self.excludes.append("samples/README.md")
 
-        t = templates.TemplateGroup(
-            Path(self._template_root) / directory, self.excludes
-        )
+        t = templates.TemplateGroup(self._template_root / directory, self.excludes)
         result = t.render(**kwargs)
         _tracked_paths.add(result)
 
