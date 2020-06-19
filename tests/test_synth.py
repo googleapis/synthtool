@@ -446,7 +446,7 @@ def test_synthesize_loop_uses_single_commit_title_for_pr_title(
     assert golden_calls == calls
 
 
-def test_synthesize_loop_always_succeeds_when_latest_version_succeeds(
+def test_synthesize_loop_always_pushes_something_when_latest_version_succeeds(
     synthesize_loop_fixture: SynthesizeLoopFixture,
 ):
     histories = [
@@ -454,9 +454,14 @@ def test_synthesize_loop_always_succeeds_when_latest_version_succeeds(
         [Failed(), WriteFile("b.txt", "b")],
     ]
     source_versions = compile_histories(histories, synthesize_loop_fixture.synthesizer)
-    # Synthesize loop should not throw an exception.
-    commit_count = synthesize_loop_fixture.synthesize_loop(source_versions, True)
-    assert commit_count > 0
+    # Synthesize loop will throw an exception.
+    try:
+        synthesize_loop_fixture.synthesize_loop(source_versions, True)
+        assert False, "Expected an exception to be thrown."
+    except Exception:
+        pass
+    # But the loop still should have pushed a change.
+    synthesize_loop_fixture.change_pusher.push_changes.assert_called()
 
 
 def make_working_repo(working_dir: str):
