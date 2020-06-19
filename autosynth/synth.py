@@ -356,6 +356,7 @@ def synthesize_loop(
     """
     if not toolbox.versions:
         return 0  # No versions, nothing to synthesize.
+
     try:
         if multiple_prs:
             commit_count = 0
@@ -370,8 +371,31 @@ def synthesize_loop(
             return commit_count
     except Exception as e:
         logger.error(e)
-        pass  # Fall back to non-forked loop below.
+        # Fallback to the single_pr loop to try to make some progress.
+        synthesize_loop_single_pr(toolbox, change_pusher, synthesizer)
+        # But still report the failure.
+        raise
 
+    return synthesize_loop_single_pr(toolbox, change_pusher, synthesizer)
+
+
+def synthesize_loop_single_pr(
+    toolbox: SynthesizeLoopToolbox,
+    change_pusher: AbstractChangePusher,
+    synthesizer: AbstractSynthesizer,
+) -> int:
+    """Loops through all source versions and creates a commit for every version
+    changed that caused a change in the generated code.
+
+    This function creates a single pull request for all sources.
+    Arguments:
+        toolbox {SynthesizeLoopToolbox} -- a toolbox
+        change_pusher {AbstractChangePusher} -- Used to push changes to github.
+        synthesizer {AbstractSynthesizer} -- Invokes synthesize.
+
+    Returns:
+        int -- Number of commits committed to this repo.
+    """
     if change_pusher.check_if_pr_already_exists(toolbox.branch):
         return 0
     synthesize_inner_loop(toolbox, synthesizer)
