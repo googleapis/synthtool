@@ -42,7 +42,7 @@ echo "****************** DEPENDENCY LIST COMPLETENESS CHECK *******************"
 function completenessCheck() {
   # Output dep list with compile scope generated using the original pom
   msg "Generating dependency list using original pom..."
-  mvn dependency:list -f pom.xml -Dsort=true | grep '\[INFO]    .*:.*:.*:.*:.*' | grep -v ':test$' >.org-list.txt
+  mvn dependency:list -f pom.xml -Dsort=true | grep '\[INFO]    .*:.*:.*:.*:.*' | sed -e s/\\s--\\smodule.*// | grep -v ':test$' >.org-list.txt
 
   # Output dep list generated using the flattened pom (test scope deps are ommitted)
   msg "Generating dependency list using flattened pom..."
