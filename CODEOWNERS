@@ -1,1 +1,10 @@
 *   @SurferJeffAtGoogle
+
+# assign templates to the language team that owns them
+synthtool/gcp/templates/java_library/*          @googleapis/yoshi-java
+synthtool/gcp/templates/node_library/*          @googleapis/yoshi-nodejs
+synthtool/gcp/templates/node_split_library/*    @googleapis/yoshi-nodejs
+synthtool/gcp/templates/php_library/*           @googleapis/yoshi-php
+synthtool/gcp/templates/python_library/*        @googleapis/yoshi-python
+synthtool/gcp/templates/python_samples/*        @googleapis/yoshi-python
+synthtool/gcp/templates/ruby_library/*          @googleapis/yoshi-ruby
