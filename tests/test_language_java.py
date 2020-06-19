@@ -23,6 +23,7 @@ import requests_mock
 import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
+TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
 
 SAMPLE_METADATA = """
 <metadata>
@@ -91,7 +92,7 @@ def test_working_common_templates():
 
         try:
             # generate the common templates
-            java.common_templates()
+            java.common_templates(template_path=TEMPLATES_PATH)
             assert os.path.isfile("README.md")
 
             # ensure pom.xml files are valid XML
