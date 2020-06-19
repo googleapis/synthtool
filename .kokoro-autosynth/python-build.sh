@@ -24,7 +24,8 @@ pyenv install 3.6.10
 pyenv install 3.7.7
 pyenv install 3.8.3
 
-pyenv shell 3.8.3 3.7.7 3.6.10
+# 'pyenv shell' takes precedence over 'pyenv global'
+pyenv shell 3.6.10 3.7.7 3.8.3
 
 # Run the normal autosynth build
 ${KOKORO_ARTIFACTS_DIR}/github/synthtool/.kokoro-autosynth/build.sh
