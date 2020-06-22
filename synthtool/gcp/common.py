@@ -80,12 +80,16 @@ class CommonTemplates:
         if "unit_test_python_versions" not in kwargs:
             kwargs["unit_test_python_versions"] = ["3.6", "3.7", "3.8"]
             if "microgenerator" not in kwargs:
-                kwargs["unit_test_python_versions"] = ["2.7", "3.5"] + kwargs["unit_test_python_versions"]
-    
+                kwargs["unit_test_python_versions"] = ["2.7", "3.5"] + kwargs[
+                    "unit_test_python_versions"
+                ]
+
         if "system_test_python_versions" not in kwargs:
             kwargs["system_test_python_versions"] = ["3.8"]
             if "microgenerator" not in kwargs:
-                kwargs["system_test_python_versions"] = ["2.7"] + kwargs["system_test_python_versions"]
+                kwargs["system_test_python_versions"] = ["2.7"] + kwargs[
+                    "system_test_python_versions"
+                ]
 
         # Don't add samples templates if there are no samples
         if "samples" not in kwargs:
