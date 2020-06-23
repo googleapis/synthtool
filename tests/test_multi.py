@@ -17,6 +17,7 @@ import pathlib
 import requests
 import tempfile
 import unittest.mock
+import os
 
 
 def list_repositories():
@@ -112,6 +113,7 @@ def test_make_report():
                 "skipped": True,
             },
         ],
+        pathlib.Path(os.getcwd()),
     )
     matching_lines = 0
     with open("sponge_log.xml", "rt") as fp:

@@ -1,4 +1,17 @@
 #!/usr/bin/env python3.6
+# Copyright 2020 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 """Synthesizes multiple libraries and reports status."""
 
@@ -11,12 +24,11 @@ import requests
 import subprocess
 import sys
 import typing
-import jinja2
 import yaml
 
 from autosynth import executor, github, synth
 from autosynth.log import logger
-
+from synthtool.report import make_report
 
 # Callable type to help dependency inject for testing
 Runner = typing.Callable[
@@ -72,6 +84,8 @@ def synthesize_library(
         library.get("branch-suffix", ""),
         "--pr-title",
         library.get("pr-title", ""),
+        "--base-log-dir",
+        str(base_log_path),
     ]
 
     if library.get("metadata-path"):
@@ -80,7 +94,11 @@ def synthesize_library(
     if library.get("deprecated-execution", False):
         library_args.append("--deprecated-execution")
 
-    log_file_path = base_log_path / library["repository"] / "sponge_log.log"
+    log_file_dir = (
+        pathlib.Path(base_log_path)
+        / pathlib.Path(library.get("synth-path", "") or library["repository"]).name
+    )
+    log_file_path = log_file_dir / "sponge_log.log"
     # run autosynth in a separate process
     (returncode, output) = runner(
         command + library_args + library.get("args", []) + extra_args,
@@ -89,6 +107,17 @@ def synthesize_library(
     )
     error = returncode not in (0, synth.EXIT_CODE_SKIPPED)
     skipped = returncode == synth.EXIT_CODE_SKIPPED
+    # Leave a sponge_log.xml side-by-side with sponge_log.log, and sponge
+    # will understand they're for the same task and render them accordingly.
+    results = [
+        {
+            "name": library["name"],
+            "error": error,
+            "output": "See the test log.",
+            "skipped": skipped,
+        }
+    ]
+    make_report(library["name"], results, log_file_dir)
     if error:
         logger.error(f"Synthesis failed for {library['name']}")
     return {
@@ -97,27 +126,6 @@ def synthesize_library(
         "error": error,
         "skipped": skipped,
     }
-
-
-def make_report(name: str, results: typing.List[typing.Dict]) -> None:
-    """Write an xunit report sponge_log.xml to the current directory.
-
-    Arguments:
-        name {str} - Name of the report
-        results {typing.List[typing.Dict]} - List of synth results
-    """
-    with open("report.xml.j2") as fh:
-        template = jinja2.Template(fh.read())
-
-    output = template.render(
-        name=name,
-        failures=len([result for result in results if result["error"]]),
-        skips=len([result for result in results if result["skipped"]]),
-        results=results,
-    )
-
-    with open("sponge_log.xml", "w") as fh:
-        fh.write(output)
 
 
 @functools.lru_cache()
@@ -310,6 +318,21 @@ def synthesize_libraries(
     return results
 
 
+def find_base_log_path() -> pathlib.Path:
+    """Finds the base directory for logs.
+
+    The log path directory gets rendered in sponge and fusion, and sometimes long
+    paths get cut off.  So try for a short path name.
+    """
+    cwd_path = pathlib.Path(os.getcwd())
+    # Search through parent directories for a directory called src, because that's the
+    # root of the tree that kokoro scans when collecting logs.
+    for path in [cwd_path] + list(cwd_path.parents):
+        if path.name == "src":
+            return path / "logs"
+    return cwd_path / "logs"
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config")
@@ -324,11 +347,10 @@ def main():
 
     gh = github.GitHub(args.github_token)
 
-    base_log_path = pathlib.Path("./logs")
+    base_log_path = find_base_log_path()
     results = synthesize_libraries(
         config, gh, args.github_token, args.extra_args[1:], base_log_path
     )
-    make_report(args.config, results)
 
     num_failures = len([result for result in results if result["error"]])
     if num_failures > 0:
