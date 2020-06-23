@@ -1,3 +1,4 @@
+#!/bin/bash
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-env_vars: {
-    key: "MULTISYNTH_CONFIG"
-    value: "autosynth.providers.python"
-}
+set -eo pipefail
 
-env_vars: {
-    key: "AUTOSYNTH_MULTIPLE_COMMITS"
-    value: "true"
-}
+cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
 
-env_vars: {
-    key: "AUTOSYNTH_MULTIPLE_PRS"
-    value: "true"
-}
+# Install more versions of Python so repo owners can choosoe which version
+# of Python to run the formatter 'black' with
+cd /home/kbuilder/.pyenv/plugins/python-build/../.. && git pull && cd -
+pyenv install 3.6.10
+pyenv install 3.7.7
+pyenv install 3.8.3
 
-build_file: "synthtool/.kokoro-autosynth/python-build.sh"
+# 'pyenv shell' takes precedence over 'pyenv global'
+pyenv shell 3.6.10 3.7.7 3.8.3
 
-# bump the timeout for this job to 10 hours
-timeout_mins: 600
+# Run the normal autosynth build
+${KOKORO_ARTIFACTS_DIR}/github/synthtool/.kokoro-autosynth/build.sh
