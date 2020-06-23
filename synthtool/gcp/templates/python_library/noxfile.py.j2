@@ -75,7 +75,7 @@ def default(session):
 
     {%- if microgenerator %}
     session.install("asyncmock", "pytest-asyncio")
-    {% endif -%}
+    {% endif %}
     session.install("mock", "pytest", "pytest-cov")
     session.install("-e", "."){% for dependency in unit_test_dependencies %}
     session.install("-e", "{{dependency}}"){% endfor %}
