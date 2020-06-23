@@ -520,6 +520,7 @@ def _inner_main(temp_dir: str) -> int:
     )
     parser.add_argument("--synth-path", default=os.environ.get("SYNTH_PATH"))
     parser.add_argument("--metadata-path", default=os.environ.get("METADATA_PATH"))
+    parser.add_argument("--base-log-dir", default="")
     parser.add_argument(
         "--deprecated-execution",
         default=False,
@@ -545,9 +546,16 @@ def _inner_main(temp_dir: str) -> int:
     change_pusher: AbstractChangePusher = ChangePusher(args.repository, gh, branch)
 
     # capture logs for later
-    base_synth_log_path = pathlib.Path(os.path.realpath("./logs")) / args.repository
-    if args.synth_path:
-        base_synth_log_path /= args.synth_path
+    # The logs directory path will be rendered in Sponge and Fusion as the test name,
+    # so drop all the unimportant parts.
+    base_log_dir = (
+        pathlib.Path(args.base_log_dir)
+        if args.base_log_dir
+        else pathlib.Path(os.getcwd()) / "logs"
+    )
+    base_synth_log_path = (
+        base_log_dir / pathlib.Path(args.synth_path or args.repository).name
+    )
     logger.info(f"logs will be written to: {base_synth_log_path}")
 
     working_repo_path = synthtool_git.clone(f"https://github.com/{args.repository}.git")

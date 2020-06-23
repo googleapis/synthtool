@@ -23,7 +23,7 @@ import shutil
 import nox
 
 
-BLACK_VERSION = "black==19.3b0"
+BLACK_VERSION = "black==19.10b0"
 BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
 
 DEFAULT_PYTHON_VERSION="{{ default_python_version }}" 
@@ -72,6 +72,10 @@ def lint_setup_py(session):
 
 def default(session):
     # Install all test dependencies, then install this package in-place.
+
+    {%- if microgenerator %}
+    session.install("asyncmock", "pytest-asyncio")
+    {% endif %}
     session.install("mock", "pytest", "pytest-cov")
     session.install("-e", "."){% for dependency in unit_test_dependencies %}
     session.install("-e", "{{dependency}}"){% endfor %}
