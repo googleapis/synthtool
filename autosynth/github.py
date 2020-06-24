@@ -13,8 +13,18 @@
 # limitations under the License.
 
 import base64
-from typing import Generator, Sequence, Dict, Optional, Union, List, cast
+from typing import (
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Sequence,
+    Union,
+    cast,
+)
+
 import requests
+
 from autosynth.log import logger
 
 _GITHUB_ROOT: str = "https://api.github.com"
@@ -182,7 +192,13 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/contents/{path}"
         response = self.session.get(url, params={"ref": ref})
-        return cast(List[Dict], _get_json_or_raise_exception(response))
+        try:
+            return cast(List[Dict], _get_json_or_raise_exception(response))
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                return []
+            else:
+                raise
 
     def check_for_file(self, repository: str, path: str, ref: str = None) -> bool:
         """Check to see if a file exists in a given repository.
@@ -352,6 +368,25 @@ class GitHub:
             issue_number=pull["number"],
             labels=list(label_names),
         )
+
+    def list_repos(self, org: str) -> List[str]:
+        """Returns a list of all the repositories in an organization.
+
+        Args:
+            org (str): The name of the organization.
+
+        Returns:
+            List[str]: The list of repository names.
+        """
+        url = f"{_GITHUB_ROOT}/orgs/{org}/repos?type=public"
+        repo_names = []
+        while url:
+            response = self.session.get(url)
+            json = _get_json_or_raise_exception(response)
+            for repo in json:
+                repo_names.append(repo["name"])
+            url = response.links.get("next", {}).get("url")
+        return repo_names
 
     def get_labels(self, repository: str) -> Sequence[str]:
         """Returns labels for a repository.
