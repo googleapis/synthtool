@@ -1,0 +1,2 @@
+*.ts text eol=lf
+*.js test eol=lf
