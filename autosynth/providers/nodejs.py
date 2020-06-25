@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from list_split_repositories import list_split_repositories
+from autosynth.providers.list_split_repositories import list_split_repositories
 
 
 def list_repositories():
