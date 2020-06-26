@@ -64,7 +64,9 @@ def list_split_repositories(
     """
 
     gh = github.GitHub(os.environ["GITHUB_TOKEN"])
-    all_repos = set(gh.list_repos("googleapis"))
+    all_repos = set(
+        [repo["name"] for repo in gh.list_repos("googleapis") if not repo["archived"]]
+    )
     # Find repos with the language as part of the repo name.
     lang_repos = set([repo for repo in all_repos if repo_name_chunk in repo.split("-")])
     if majority_languages:

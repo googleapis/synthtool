@@ -369,24 +369,25 @@ class GitHub:
             labels=list(label_names),
         )
 
-    def list_repos(self, org: str) -> List[str]:
+    def list_repos(self, org: str) -> List[Dict]:
         """Returns a list of all the repositories in an organization.
+
+        See https://developer.github.com/v3/repos/#list-organization-repositories
 
         Args:
             org (str): The name of the organization.
 
         Returns:
-            List[str]: The list of repository names.
+            List[Dict]: The list of repository names.
         """
         url = f"{_GITHUB_ROOT}/orgs/{org}/repos?type=public"
-        repo_names = []
+        repos: List[Dict] = []
         while url:
             response = self.session.get(url)
             json = _get_json_or_raise_exception(response)
-            for repo in json:
-                repo_names.append(repo["name"])
+            repos.extend(json)
             url = response.links.get("next", {}).get("url")
-        return repo_names
+        return repos
 
     def get_languages(self, repository) -> Dict[str, int]:
         """Returns the # of lines of code of each programming language in the repo.
