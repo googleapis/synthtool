@@ -72,7 +72,6 @@ def get_pytest_env_vars():
     env_key = TEST_CONFIG['gcloud_project_env']
     # This should error out if not set.
     ret['GOOGLE_CLOUD_PROJECT'] = os.environ[env_key]
-    ret['GCLOUD_PROJECT'] = os.environ[env_key]  # deprecated
 
     # Apply user supplied envs.
     ret.update(TEST_CONFIG['envs'])
