@@ -13,32 +13,57 @@
 # limitations under the License.
 
 import os
-import pathlib
-from typing import Dict, List
-
-import yaml
+from typing import Dict, List, Sequence
 
 from autosynth import github
 
+"""Chunks that identify a repo from its name as belonging to a language.
 
-def list_split_repositories(lang: str) -> List[Dict]:
-    """Finds repos in github named like *-lang-*, and combines with lang-addendum.yaml."""
-    # Load the repo list from the addendum.
-    text = open(pathlib.Path(__file__).parent / f"{lang}-addendum.yaml", "rt").read()
-    addendum = list(yaml.safe_load(text) or [])
-    # Find repos on github.
-    repos = _list_github_repositories(lang) + addendum
-    repos.sort(key=lambda x: x["name"])
-    return repos
+In other words, we can look at the repo name python-spanner and know that it's
+for a python library because it contains the word 'python'.
+"""
+_ALL_NAME_CHUNKS = ("nodejs", "python", "ruby", "dotnet", "php", "java", "go", "elixir")
 
 
-def _list_github_repositories(lang: str) -> List[Dict]:
-    """Find repos on github with a matching named and synth.py file."""
+def list_split_repositories(
+    repo_name_chunk: str, majority_languages: Sequence[str] = ()
+) -> List[Dict]:
+    """List github repos for a programming language.
+
+    Args:
+        repo_name_chunk (str): return repos that have this chunk in the repo name.
+            Example: "nodejs"
+        majority_languages (Sequence[str], optional): return repos that have a majority
+            of their code written in one of these programming languages.
+            Example: ("JavaScript", "TypeScript")
+
+    Returns:
+        List[Dict]: [description]
+    """
+
     gh = github.GitHub(os.environ["GITHUB_TOKEN"])
-    all_repos = gh.list_repos("googleapis")
-    lang_repos = [repo for repo in all_repos if lang in repo.split("-")]
+    all_repos = set(gh.list_repos("googleapis"))
+    # Find repos with the language as part of the repo name.
+    lang_repos = set([repo for repo in all_repos if repo_name_chunk in repo.split("-")])
+    if majority_languages:
+        # Ignore all repos whose name tags them for a language.
+        all_name_chunks = set(_ALL_NAME_CHUNKS)
+        all_lang_repos = set(
+            [
+                repo
+                for repo in all_repos
+                if all_name_chunks.intersection(set(repo.split("-")))
+            ]
+        )
+        # Find repos with the majority of their code written in the language.
+        for repo in all_repos - all_lang_repos:
+            languages = gh.get_languages(f"googleapis/{repo}")
+            ranks = [(count, lang) for (lang, count) in languages.items()]
+            if ranks and max(ranks)[1] in majority_languages:
+                lang_repos.add(repo)
+
     synth_repos = []
-    for repo in lang_repos:
+    for repo in sorted(lang_repos):
         # Only repos with a synth.py in the top-level directory.
         if not gh.list_files(f"googleapis/{repo}", "synth.py"):
             continue

@@ -16,7 +16,7 @@ from autosynth.providers.list_split_repositories import list_split_repositories
 
 
 def list_repositories():
-    return list_split_repositories("python")
+    return list_split_repositories("python", ("Python",))
 
 
 if __name__ == "__main__":

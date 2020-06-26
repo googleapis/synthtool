@@ -388,6 +388,28 @@ class GitHub:
             url = response.links.get("next", {}).get("url")
         return repo_names
 
+    def get_languages(self, repository) -> Dict[str, int]:
+        """Returns the # of lines of code of each programming language in the repo.
+
+        See: https://developer.github.com/v3/repos/#list-repository-languages
+
+        Args:
+            repository {str} -- GitHub repository with the format [owner]/[repo]
+
+        Returns:
+            Dict[str, int]: Map of programming language to lines of code.
+        """
+        url = f"{_GITHUB_ROOT}/repos/{repository}/languages"
+        langs: Dict[str, int] = {}
+
+        while url:
+            response = self.session.get(url)
+            json = _get_json_or_raise_exception(response)
+            langs.update(json)
+
+            url = response.links.get("next", {}).get("url")
+        return langs
+
     def get_labels(self, repository: str) -> Sequence[str]:
         """Returns labels for a repository.
 

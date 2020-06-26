@@ -16,7 +16,7 @@ from autosynth.providers.list_split_repositories import list_split_repositories
 
 
 def list_repositories():
-    repos = list_split_repositories("java")
+    repos = list_split_repositories("java", ("Java",))
     # Ignore apiary services repo (has separate provider)
     return [repo for repo in repos if repo["name"] != "google-api-java-client-services"]
 

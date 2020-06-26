@@ -16,7 +16,7 @@ from autosynth.providers.list_split_repositories import list_split_repositories
 
 
 def list_repositories():
-    return list_split_repositories("nodejs")
+    return list_split_repositories("nodejs", ("JavaScript", "TypeScript"))
 
 
 if __name__ == "__main__":
