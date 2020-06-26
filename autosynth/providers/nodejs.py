@@ -12,41 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-import os
-
-from autosynth import github
-
-
-def _get_repo_list_from_sloth(gh):
-    contents = gh.get_contents("googleapis/sloth", "repos.json")
-    repos = json.loads(contents)["repos"]
-    return repos
-
-
-def _is_nodejs_synth_repo(gh, repo):
-    # Only nodejs repos.
-    if repo["language"] != "nodejs":
-        return False
-    # No private repos.
-    if "private" in repo["repo"]:
-        return False
-    # Only repos with a synth.py in the top-level directory.
-    if not gh.check_for_file(repo["repo"], "synth.py"):
-        return False
-
-    return True
+from autosynth.providers.list_split_repositories import list_split_repositories
 
 
 def list_repositories():
-    gh = github.GitHub(os.environ["GITHUB_TOKEN"])
-    repos = _get_repo_list_from_sloth(gh)
-    repos = [repo for repo in repos if _is_nodejs_synth_repo(gh, repo)]
-
-    return [
-        {"name": repo["repo"].split("/")[-1], "repository": repo["repo"]}
-        for repo in repos
-    ]
+    return list_split_repositories("nodejs", ("JavaScript", "TypeScript"))
 
 
 if __name__ == "__main__":
