@@ -22,7 +22,29 @@ from autosynth import github
 In other words, we can look at the repo name python-spanner and know that it's
 for a python library because it contains the word 'python'.
 """
-_ALL_NAME_CHUNKS = ("nodejs", "python", "ruby", "dotnet", "php", "java", "go", "elixir")
+_SILVER_NAME_CHUNKS = (
+    "nodejs",
+    "python",
+    "ruby",
+    "dotnet",
+    "php",
+    "java",
+    "go",
+    "elixir",
+)
+
+"""Language names as reported by github."""
+_SILVER_LANGUAGE_NAMES = (
+    "JavaScript",
+    "TypeScript",
+    "Python",
+    "Java",
+    "PHP",
+    "Ruby",
+    "Go",
+    "C#",
+    "Elixir",
+)
 
 
 def list_split_repositories(
@@ -47,18 +69,24 @@ def list_split_repositories(
     lang_repos = set([repo for repo in all_repos if repo_name_chunk in repo.split("-")])
     if majority_languages:
         # Ignore all repos whose name tags them for a language.
-        all_name_chunks = set(_ALL_NAME_CHUNKS)
+        silver_name_chunks = set(_SILVER_NAME_CHUNKS)
         all_lang_repos = set(
             [
                 repo
                 for repo in all_repos
-                if all_name_chunks.intersection(set(repo.split("-")))
+                if silver_name_chunks.intersection(set(repo.split("-")))
             ]
         )
         # Find repos with the majority of their code written in the language.
+        silver_language_names = set(_SILVER_LANGUAGE_NAMES)
         for repo in all_repos - all_lang_repos:
             languages = gh.get_languages(f"googleapis/{repo}")
-            ranks = [(count, lang) for (lang, count) in languages.items()]
+            ranks = [
+                (count, lang)
+                for (lang, count) in languages.items()
+                # Ignore languages we don't care about, like Shell.
+                if lang in silver_language_names
+            ]
             if ranks and max(ranks)[1] in majority_languages:
                 lang_repos.add(repo)
 
