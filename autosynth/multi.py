@@ -268,8 +268,9 @@ def load_config(
         try:
             provider = importlib.import_module(config)
             return provider.list_repositories()  # type: ignore
-        except (ImportError, AttributeError):
-            pass
+        except (ImportError, AttributeError) as e:
+            logger.warning("Failed to load %s", config)
+            logger.warning("%s", e)
     return None
 
 
