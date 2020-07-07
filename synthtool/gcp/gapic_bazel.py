@@ -171,7 +171,7 @@ class GAPICBazel:
 
         bazel_run_args = [
             "bazel",
-            "--max_idle_secs=60",
+            "--max_idle_secs=240",
             "build",
             bazel_target,
         ]
