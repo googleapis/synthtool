@@ -1,5 +1,26 @@
 [//]: # "This README.md file is auto-generated, all changes to this file will be lost."
 [//]: # "To regenerate it, use `python -m synthtool`."
+<<<<<<< HEAD
+=======
+
+## Python Sample Folder for {{ metadata['repo']['name_pretty'] }} 
+
+This directory contains samples for {{ metadata['repo']['name_pretty'] }}.
+
+## Getting Started
+-------------------------------------------------------------------------------
+
+### Prerequisites
+See the [Authentication Getting Started Guide][authentication]. Contribution guidelines, the language style guide, and license information can be found in the base parent directiory.{% if metadata['repo']['requires_billing'] %}You will need to [enable billing][enable_billing] to use Google {{ metadata['repo']['name_pretty'] }}.{% endif %}
+{% if metadata['repo']['custom_content'] is defined %}{{ metadata['repo']['custom_content']}}{% endif %}
+If this is your first time working with GCP products, you will need to set up a project. *For more information on basic setup, view the information in the parent directory's README.*
+
+### Install Dependencies
+
+1. Check to make sure you have `pip` installed and have created a `virtualenv`.
+
+1. Clone the sample folder and navigate to the sample directory you want to use.
+>>>>>>> Update README.md
 
 ## Python Sample Folder for {{ metadata['repo']['name_pretty'] }} 
 
@@ -52,5 +73,8 @@ For [contributing guidelines][contrib_guide], the [Python style guide][py_style]
 [issues]: https://github.com/GoogleCloudPlatform/google-cloud-python/issues
 [contrib_guide]: https://github.com/googleapis/google-cloud-python/blob/master/CONTRIBUTING.rst
 [py_style]: http://google.github.io/styleguide/pyguide.html
+<<<<<<< HEAD
 [cloud_sdk]: https://cloud.google.com/sdk/docs
 [gcloud_shell]: https://cloud.google.com/shell/docs
+=======
+>>>>>>> Update README.md
