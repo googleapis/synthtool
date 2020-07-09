@@ -1,4 +1,4 @@
-# Copyright 2018 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,10 +29,20 @@ def test_samples_billing():
         "README.md", metadata={"repo":{
         "name_pretty": "Bigtable",
         "repo": "googleapis/python-bigtable",
-        "requires_billing": True
-        }}
+        "requires_billing": True,
+        "samples": [
+            {"name": "Quickstart",
+            "description": "Example sample for product",
+            "file": "quickstart.py",
+            "custom_content": "This is custom text for the sample",
+            "runnable": True},
+            {"name": "Hello World",
+            "description": "Example beginner application",
+            "file": "main.py"}]
+        }
+  }
     ).read_text()
-    assert "enable billing" in result
+    assert "and you will need to [enable billing]" in result
 
 def test_samples_footer():
     t = templates.Templates(PYTHON_SAMPLES)
@@ -40,7 +50,7 @@ def test_samples_footer():
         "README.md", metadata={"repo": {
         "name_pretty": "Storage",
         "repo": "googleapis/python-storage",
-        "cloud_client_library": True,
+        "client_library": True,
         }}
     ).read_text()
     assert "Google Cloud Client Library for Python" in result
@@ -57,7 +67,8 @@ def test_samples_custom_content():
             {"name": "Quickstart",
             "description": "Example sample for product",
             "file": "quickstart.py",
-            "custom_content": "This is custom text for the sample"}
+            "custom_content": "This is custom text for the sample",
+            "runnable": True}
             ]}}
     ).read_text()
     assert "This is custom text for the sample" in result
@@ -94,7 +105,8 @@ def test_samples_cloudshell():
         "samples": [
             {"name": "Quickstart",
             "description": "Example sample for product",
-            "file": "quickstart.py"}
+            "file": "quickstart.py",
+            "runnable": True}
         ]}}
     ).read_text()
     assert "git_repo=https://github.com/googleapis/python-bigtable" in result
