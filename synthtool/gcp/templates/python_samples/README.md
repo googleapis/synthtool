@@ -1,6 +1,6 @@
 [//]: # "This README.md file is auto-generated, all changes to this file will be lost."
 [//]: # "To regenerate it, use `python -m synthtool`."
-Java idiomatic client for [{{metadata['repo']['name_pretty']}}]
+
 ## Python Sample Folder for {{ metadata['repo']['name_pretty'] }} 
 
 This directory contains samples for {{ metadata['repo']['name_pretty'] }}.
