@@ -184,7 +184,9 @@ def _common_generation(
 
     cloud_prefix = "cloud-" if cloud_api else ""
     package_name = package_pattern.format(service=service, version=version)
-    fix_proto_headers(library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}")
+    fix_proto_headers(
+        library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}"
+    )
     fix_grpc_headers(
         library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}", package_name
     )
