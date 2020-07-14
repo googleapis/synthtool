@@ -26,12 +26,12 @@ To run this sample:
 1. Make a fork of this repo and clone the branch locally, then navigate to the sample directory you want to use.
 
 1. Install the dependencies needed to run the samples.
-        ```bash
+        ```
             $ pip install -r requirements.txt
         ```
 
 1. Run the sample using
-        ```bash
+        ```
             $ python {{ metadata['repo']['samples'][sample]['file']}}
         ```
 
