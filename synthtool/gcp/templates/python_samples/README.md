@@ -9,13 +9,14 @@ This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which
 ## Samples
 {% if metadata['repo']['samples']|length %}
 Samples, quickstarts, and other documentation available for this product is available at <a href="{{ metadata['repo']['product_documentation'] }}">the product documentation.</a>.
-
 {% for sample in range(metadata['repo']['samples']|length) %}
 
 ### {{ metadata['repo']['samples'][sample]['name']}}
 
 {{ metadata['repo']['samples'][sample]['description']}}
-{% if metadata['repo']['samples'][sample]['runnable'] %} <a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ metadata['repo']['samples'][sample]['file'] }}"><img alt="Open in Cloud Shell" src="http://gstatic.com/cloudssh/images/open-btn.png"> 
+{% if metadata['repo']['samples'][sample]['runnable'] %}
+
+<a href="https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ metadata['repo']['samples'][sample]['file'] }}"><img alt="Open in Cloud Shell" src="http://gstatic.com/cloudssh/images/open-btn.png"> 
 </a>
 
 To run this sample:
@@ -25,14 +26,15 @@ To run this sample:
 1. Make a fork of this repo and clone the branch locally, then navigate to the sample directory you want to use.
 
 1. Install the dependencies needed to run the samples.
-```bash
-    $ pip install -r requirements.txt
-```
+        ```bash
+            $ pip install -r requirements.txt
+        ```
 
 1. Run the sample using
-```bash
-    $ python {{ metadata['repo']['samples'][sample]['file']}}
-```
+        ```bash
+            $ python {{ metadata['repo']['samples'][sample]['file']}}
+        ```
+
 {% endif %}
 {% if metadata['repo']['samples'][sample]['custom_content'] is defined %}{{ metadata['repo']['samples'][sample]['custom_content'] }}{% endif %}{% endfor %}{% endif %}
 
