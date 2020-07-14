@@ -13,8 +13,18 @@
 # limitations under the License.
 
 import base64
-from typing import Generator, Sequence, Dict, Optional, Union, List, cast
+from typing import (
+    Dict,
+    Generator,
+    List,
+    Optional,
+    Sequence,
+    Union,
+    cast,
+)
+
 import requests
+
 from autosynth.log import logger
 
 _GITHUB_ROOT: str = "https://api.github.com"
@@ -182,7 +192,13 @@ class GitHub:
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}/contents/{path}"
         response = self.session.get(url, params={"ref": ref})
-        return cast(List[Dict], _get_json_or_raise_exception(response))
+        try:
+            return cast(List[Dict], _get_json_or_raise_exception(response))
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404:
+                return []
+            else:
+                raise
 
     def check_for_file(self, repository: str, path: str, ref: str = None) -> bool:
         """Check to see if a file exists in a given repository.
@@ -352,6 +368,48 @@ class GitHub:
             issue_number=pull["number"],
             labels=list(label_names),
         )
+
+    def list_repos(self, org: str) -> List[Dict]:
+        """Returns a list of all the repositories in an organization.
+
+        See https://developer.github.com/v3/repos/#list-organization-repositories
+
+        Args:
+            org (str): The name of the organization.
+
+        Returns:
+            List[Dict]: The list of repository names.
+        """
+        url = f"{_GITHUB_ROOT}/orgs/{org}/repos?type=public"
+        repos: List[Dict] = []
+        while url:
+            response = self.session.get(url)
+            json = _get_json_or_raise_exception(response)
+            repos.extend(json)
+            url = response.links.get("next", {}).get("url")
+        return repos
+
+    def get_languages(self, repository) -> Dict[str, int]:
+        """Returns the # of lines of code of each programming language in the repo.
+
+        See: https://developer.github.com/v3/repos/#list-repository-languages
+
+        Args:
+            repository {str} -- GitHub repository with the format [owner]/[repo]
+
+        Returns:
+            Dict[str, int]: Map of programming language to lines of code.
+        """
+        url = f"{_GITHUB_ROOT}/repos/{repository}/languages"
+        langs: Dict[str, int] = {}
+
+        while url:
+            response = self.session.get(url)
+            json = _get_json_or_raise_exception(response)
+            langs.update(json)
+
+            url = response.links.get("next", {}).get("url")
+        return langs
 
     def get_labels(self, repository: str) -> Sequence[str]:
         """Returns labels for a repository.
