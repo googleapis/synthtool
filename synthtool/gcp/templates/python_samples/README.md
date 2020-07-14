@@ -1,14 +1,11 @@
 [//]: # "This README.md file is auto-generated, all changes to this file will be lost."
 [//]: # "To regenerate it, use `python -m synthtool`."
 
-## Python Sample Folder for {{ metadata['repo']['name_pretty'] }} 
+## Python Samples for {{ metadata['repo']['name_pretty'] }}
 
-This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a refererence for how to use this product. {% if metadata['repo']['custom_content'] is defined %}
-{{ metadata['repo']['custom_content']}}{% endif %}
-
-## Samples
-{% if metadata['repo']['samples']|length %}
-Samples, quickstarts, and other documentation available for this product is available at <a href="{{ metadata['repo']['product_documentation'] }}">the product documentation.</a>
+This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a refererence for how to use {{ metadata['repo']['name_pretty'] }}. {% if metadata['repo']['custom_content'] is defined %}
+{{ metadata['repo']['custom_content']}}{% endif %}{% if metadata['repo']['samples']|length %}
+Samples, quickstarts, and other documentation are available at <a href="{{ metadata['repo']['product_documentation'] }}">cloud.google.com</a>.
 {% for sample in range(metadata['repo']['samples']|length) %}
 
 ### {{ metadata['repo']['samples'][sample]['name']}}
@@ -26,26 +23,24 @@ To run this sample:
 1. Make a fork of this repo and clone the branch locally, then navigate to the sample directory you want to use.
 
 1. Install the dependencies needed to run the samples.
-        ```
-            $ pip install -r requirements.txt
-        ```
+
+        pip install -r requirements.txt
 
 1. Run the sample using
-        ```
-            $ python {{ metadata['repo']['samples'][sample]['file']}}
-        ```
+
+        python {{ metadata['repo']['samples'][sample]['file']}}
 
 {% endif %}
 {% if metadata['repo']['samples'][sample]['custom_content'] is defined %}{{ metadata['repo']['samples'][sample]['custom_content'] }}{% endif %}{% endfor %}{% endif %}
 
 ## Additional Information
 {% if metadata['repo']|length %}{% if metadata['repo']['client_library'] %}
-This sample uses the [Google Cloud Client Library for Python][client_library_python].{% endif %}
+These samples use the [Google Cloud Client Library for Python][client_library_python].{% endif %}
 You can read the documentation for more details on API usage and use GitHub
 to [browse the source][source] and [report issues][issues].{% endif %}
 
 ### Contributing
-For [contributing guidelines][contrib_guide], the [Python style guide][py_style], and more information on prerequisite steps to contribute, view the product source code at <a href="https://github.com/{{ metadata['repo']['repo'] }}">{{ metadata['repo']['repo'] }}</a>.
+For [contributing guidelines][contrib_guide], the [Python style guide][py_style], and more information on prerequisite steps to contribute, view the source code at <a href="https://github.com/{{ metadata['repo']['repo'] }}">{{ metadata['repo']['repo'] }}</a>.
 
 [authentication]: https://cloud.google.com/docs/authentication/getting-started
 [enable_billing]:https://cloud.google.com/apis/docs/getting-started#enabling_billing
