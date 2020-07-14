@@ -97,6 +97,10 @@ class CommonTemplates:
                     "system_test_python_versions"
                 ]
 
+        # If cov_level is not given, set it to None.
+        if "cov_level" not in kwargs:
+            kwargs["cov_level"] = None
+
         # Don't add samples templates if there are no samples
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
