@@ -54,3 +54,4 @@ For [contributing guidelines][contrib_guide], the [Python style guide][py_style]
 [py_style]: http://google.github.io/styleguide/pyguide.html
 [cloud_sdk]: https://cloud.google.com/sdk/docs
 [gcloud_shell]: https://cloud.google.com/shell/docs
+[gcloud_shell]: https://cloud.google.com/shell/docs
