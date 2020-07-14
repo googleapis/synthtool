@@ -8,7 +8,7 @@ This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which
 
 ## Samples
 {% if metadata['repo']['samples']|length %}
-Samples, quickstarts, and other documentation available for this product is available at <a href="{{ metadata['repo']['product_documentation'] }}">the product documentation.</a>.
+Samples, quickstarts, and other documentation available for this product is available at <a href="{{ metadata['repo']['product_documentation'] }}">the product documentation.</a>
 {% for sample in range(metadata['repo']['samples']|length) %}
 
 ### {{ metadata['repo']['samples'][sample]['name']}}
