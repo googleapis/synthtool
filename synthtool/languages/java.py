@@ -160,6 +160,7 @@ def _common_generation(
     package_pattern: str,
     suffix: str = "",
     destination_name: str = None,
+    cloud_api: bool = True,
 ):
     """Helper function to execution the common generation cleanup actions.
 
@@ -181,48 +182,32 @@ def _common_generation(
     if destination_name is None:
         destination_name = service
 
+    cloud_prefix = "cloud-" if cloud_api else ""
     package_name = package_pattern.format(service=service, version=version)
-    fix_proto_headers(library / f"proto-google-cloud-{service}-{version}{suffix}")
+    fix_proto_headers(library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}")
     fix_grpc_headers(
-        library / f"grpc-google-cloud-{service}-{version}{suffix}", package_name
+        library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}", package_name
     )
 
     s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
-        f"google-cloud-{destination_name}/src",
+        [library / f"gapic-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+        f"google-{cloud_prefix}{destination_name}/src",
         required=True,
     )
     s.copy(
-        [library / f"grpc-google-cloud-{service}-{version}{suffix}/src"],
-        f"grpc-google-cloud-{destination_name}-{version}/src",
+        [library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+        f"grpc-google-{cloud_prefix}{destination_name}-{version}/src",
         required=True,
     )
     s.copy(
-        [library / f"proto-google-cloud-{service}-{version}{suffix}/src"],
-        f"proto-google-cloud-{destination_name}-{version}/src",
+        [library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+        f"proto-google-{cloud_prefix}{destination_name}-{version}/src",
         required=True,
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
-        "samples/generated/src",
-        excludes=["**/*.manifest.yaml"],
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/resources"],
-        "samples/generated/resources",
-    )
-    s.copy(
-        [
-            library
-            / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src/**/*.manifest.yaml"
-        ],
-        f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
     )
 
-    format_code(f"google-cloud-{destination_name}/src")
-    format_code(f"grpc-google-cloud-{destination_name}-{version}/src")
-    format_code(f"proto-google-cloud-{destination_name}-{version}/src")
-    format_code("samples/src")
+    format_code(f"google-{cloud_prefix}{destination_name}/src")
+    format_code(f"grpc-google-{cloud_prefix}{destination_name}-{version}/src")
+    format_code(f"proto-google-{cloud_prefix}{destination_name}-{version}/src")
 
 
 def gapic_library(
@@ -284,6 +269,7 @@ def bazel_library(
     package_pattern: str = "com.google.cloud.{service}.{version}",
     gapic: gcp.GAPICBazel = None,
     destination_name: str = None,
+    cloud_api: bool = True,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via bazel.
@@ -309,13 +295,15 @@ def bazel_library(
 
     library = gapic.java_library(service=service, version=version, **kwargs)
 
+    cloud_prefix = "cloud-" if cloud_api else ""
     _common_generation(
         service=service,
         version=version,
-        library=library / f"google-cloud-{service}-{version}-java",
+        library=library / f"google-{cloud_prefix}{service}-{version}-java",
         package_pattern=package_pattern,
         suffix="-java",
         destination_name=destination_name,
+        cloud_api=cloud_api,
     )
 
     return library
