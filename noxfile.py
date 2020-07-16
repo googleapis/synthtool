@@ -14,7 +14,7 @@
 
 import nox
 
-@nox.session(python=['3.6', '3.8'])
+@nox.session(python=['3.6'])
 def generate_protos(session):
     session.install("grpcio-tools")
     session.run(
