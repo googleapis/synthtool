@@ -12,13 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-import stat
-import sys
 from pathlib import Path
 
-from synthtool.gcp import common
-from synthtool.gcp import samples
 from synthtool.sources import templates
 
 PYTHON_SAMPLES = Path(__file__).parent.parent / "synthtool/gcp/templates/python_samples"
