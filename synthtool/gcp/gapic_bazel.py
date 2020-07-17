@@ -190,7 +190,7 @@ class GAPICBazel:
             "tar",
             "-C",
             str(output_dir),
-            "--strip-components=1",
+            "--strip-components={}".format("0" if language == "java" else "1"),
             "-xzf",
             tar_file,
         ]
