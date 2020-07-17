@@ -48,6 +48,7 @@ function completenessCheck() {
   mvn dependency:list -f pom.xml -DincludeScope=runtime -Dsort=true | grep '\[INFO]    .*:.*:.*:.*:.*' | sed -e s/\\s--\\smodule.*// >.org-list.txt
 
   # Output dep list generated using the flattened pom (only 'compile' and 'runtime' scopes)
+  msg "Generating dependency list using flattened pom..."
   mvn dependency:list -f .flattened-pom.xml -DincludeScope=runtime -Dsort=true | grep '\[INFO]    .*:.*:.*:.*:.*' >.new-list.txt
 
   # Compare two dependency lists
