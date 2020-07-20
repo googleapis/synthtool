@@ -58,7 +58,9 @@ class GAPICBazel:
         return self._generate_code(service, version, "php", **kwargs)
 
     def java_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "java", **kwargs)
+        return self._generate_code(
+            service, version, "java", tar_strip_components=0, **kwargs
+        )
 
     def ruby_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, "ruby", **kwargs)
@@ -76,6 +78,7 @@ class GAPICBazel:
         bazel_target: str = None,
         include_protos: bool = False,
         proto_output_path: Union[str, Path] = None,
+        tar_strip_components: int = 1,
     ):
         # Determine which googleapis repo to use
         if discogapic:
@@ -190,7 +193,7 @@ class GAPICBazel:
             "tar",
             "-C",
             str(output_dir),
-            "--strip-components=1",
+            f"--strip-components={tar_strip_components}",
             "-xzf",
             tar_file,
         ]
