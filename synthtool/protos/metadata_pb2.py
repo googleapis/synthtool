@@ -20,7 +20,8 @@ DESCRIPTOR = _descriptor.FileDescriptor(
     package="yoshi.synth.metadata",
     syntax="proto3",
     serialized_options=None,
-    serialized_pb=b'\n\x0emetadata.proto\x12\x14yoshi.synth.metadata\x1a\x1fgoogle/protobuf/timestamp.proto"\xdd\x01\n\x08Metadata\x12\x33\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x02\x18\x01\x12-\n\x07sources\x18\x02 \x03(\x0b\x32\x1c.yoshi.synth.metadata.Source\x12\x37\n\x0c\x64\x65stinations\x18\x03 \x03(\x0b\x32!.yoshi.synth.metadata.Destination\x12\x34\n\tnew_files\x18\x04 \x03(\x0b\x32\x1d.yoshi.synth.metadata.NewFileB\x02\x18\x01"\xb8\x01\n\x06Source\x12.\n\x03git\x18\x01 \x01(\x0b\x32\x1f.yoshi.synth.metadata.GitSourceH\x00\x12:\n\tgenerator\x18\x02 \x01(\x0b\x32%.yoshi.synth.metadata.GeneratorSourceH\x00\x12\x38\n\x08template\x18\x03 \x01(\x0b\x32$.yoshi.synth.metadata.TemplateSourceH\x00\x42\x08\n\x06source"m\n\tGitSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06remote\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\t\x12\x14\n\x0cinternal_ref\x18\x04 \x01(\t\x12\x12\n\nlocal_path\x18\x05 \x01(\t\x12\x0b\n\x03log\x18\x06 \x01(\t"F\n\x0fGeneratorSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x14\n\x0c\x64ocker_image\x18\x03 \x01(\t"?\n\x0eTemplateSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06origin\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t"\x94\x01\n\x0b\x44\x65stination\x12\x39\n\x06\x63lient\x18\x01 \x01(\x0b\x32\'.yoshi.synth.metadata.ClientDestinationH\x00\x12;\n\x07\x66ileset\x18\x02 \x01(\x0b\x32(.yoshi.synth.metadata.FileSetDestinationH\x00\x42\r\n\x0b\x44\x65stination"\x17\n\x07NewFile\x12\x0c\n\x04path\x18\x01 \x01(\t"\x7f\n\x11\x43lientDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\x10\n\x08\x61pi_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61pi_version\x18\x03 \x01(\t\x12\x10\n\x08language\x18\x04 \x01(\t\x12\x11\n\tgenerator\x18\x05 \x01(\t\x12\x0e\n\x06\x63onfig\x18\x06 \x01(\t"3\n\x12\x46ileSetDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\r\n\x05\x66iles\x18\x02 \x03(\tb\x06proto3',
+    create_key=_descriptor._internal_create_key,
+    serialized_pb=b'\n\x0emetadata.proto\x12\x14yoshi.synth.metadata\x1a\x1fgoogle/protobuf/timestamp.proto"\xf6\x01\n\x08Metadata\x12\x33\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x02\x18\x01\x12-\n\x07sources\x18\x02 \x03(\x0b\x32\x1c.yoshi.synth.metadata.Source\x12\x37\n\x0c\x64\x65stinations\x18\x03 \x03(\x0b\x32!.yoshi.synth.metadata.Destination\x12\x34\n\tnew_files\x18\x04 \x03(\x0b\x32\x1d.yoshi.synth.metadata.NewFileB\x02\x18\x01\x12\x17\n\x0fgenerated_files\x18\x05 \x03(\t"\xb8\x01\n\x06Source\x12.\n\x03git\x18\x01 \x01(\x0b\x32\x1f.yoshi.synth.metadata.GitSourceH\x00\x12:\n\tgenerator\x18\x02 \x01(\x0b\x32%.yoshi.synth.metadata.GeneratorSourceH\x00\x12\x38\n\x08template\x18\x03 \x01(\x0b\x32$.yoshi.synth.metadata.TemplateSourceH\x00\x42\x08\n\x06source"m\n\tGitSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06remote\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\t\x12\x14\n\x0cinternal_ref\x18\x04 \x01(\t\x12\x12\n\nlocal_path\x18\x05 \x01(\t\x12\x0b\n\x03log\x18\x06 \x01(\t"F\n\x0fGeneratorSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x14\n\x0c\x64ocker_image\x18\x03 \x01(\t"?\n\x0eTemplateSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06origin\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t"\x94\x01\n\x0b\x44\x65stination\x12\x39\n\x06\x63lient\x18\x01 \x01(\x0b\x32\'.yoshi.synth.metadata.ClientDestinationH\x00\x12;\n\x07\x66ileset\x18\x02 \x01(\x0b\x32(.yoshi.synth.metadata.FileSetDestinationH\x00\x42\r\n\x0b\x44\x65stination"\x17\n\x07NewFile\x12\x0c\n\x04path\x18\x01 \x01(\t"\x7f\n\x11\x43lientDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\x10\n\x08\x61pi_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61pi_version\x18\x03 \x01(\t\x12\x10\n\x08language\x18\x04 \x01(\t\x12\x11\n\tgenerator\x18\x05 \x01(\t\x12\x0e\n\x06\x63onfig\x18\x06 \x01(\t"3\n\x12\x46ileSetDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\r\n\x05\x66iles\x18\x02 \x03(\tb\x06proto3',
     dependencies=[google_dot_protobuf_dot_timestamp__pb2.DESCRIPTOR,],
 )
 
@@ -31,6 +32,7 @@ _METADATA = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="update_time",
@@ -49,6 +51,7 @@ _METADATA = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=b"\030\001",
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="sources",
@@ -67,6 +70,7 @@ _METADATA = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="destinations",
@@ -85,6 +89,7 @@ _METADATA = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="new_files",
@@ -103,6 +108,26 @@ _METADATA = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=b"\030\001",
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
+        ),
+        _descriptor.FieldDescriptor(
+            name="generated_files",
+            full_name="yoshi.synth.metadata.Metadata.generated_files",
+            index=4,
+            number=5,
+            type=9,
+            cpp_type=9,
+            label=3,
+            has_default_value=False,
+            default_value=[],
+            message_type=None,
+            enum_type=None,
+            containing_type=None,
+            is_extension=False,
+            extension_scope=None,
+            serialized_options=None,
+            file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -114,7 +139,7 @@ _METADATA = _descriptor.Descriptor(
     extension_ranges=[],
     oneofs=[],
     serialized_start=74,
-    serialized_end=295,
+    serialized_end=320,
 )
 
 
@@ -124,6 +149,7 @@ _SOURCE = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="git",
@@ -142,6 +168,7 @@ _SOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="generator",
@@ -160,6 +187,7 @@ _SOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="template",
@@ -178,6 +206,7 @@ _SOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -193,11 +222,12 @@ _SOURCE = _descriptor.Descriptor(
             full_name="yoshi.synth.metadata.Source.source",
             index=0,
             containing_type=None,
+            create_key=_descriptor._internal_create_key,
             fields=[],
         ),
     ],
-    serialized_start=298,
-    serialized_end=482,
+    serialized_start=323,
+    serialized_end=507,
 )
 
 
@@ -207,6 +237,7 @@ _GITSOURCE = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="name",
@@ -225,6 +256,7 @@ _GITSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="remote",
@@ -243,6 +275,7 @@ _GITSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="sha",
@@ -261,6 +294,7 @@ _GITSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="internal_ref",
@@ -279,6 +313,7 @@ _GITSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="local_path",
@@ -297,6 +332,7 @@ _GITSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="log",
@@ -315,6 +351,7 @@ _GITSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -325,8 +362,8 @@ _GITSOURCE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=484,
-    serialized_end=593,
+    serialized_start=509,
+    serialized_end=618,
 )
 
 
@@ -336,6 +373,7 @@ _GENERATORSOURCE = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="name",
@@ -354,6 +392,7 @@ _GENERATORSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="version",
@@ -372,6 +411,7 @@ _GENERATORSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="docker_image",
@@ -390,6 +430,7 @@ _GENERATORSOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -400,8 +441,8 @@ _GENERATORSOURCE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=595,
-    serialized_end=665,
+    serialized_start=620,
+    serialized_end=690,
 )
 
 
@@ -411,6 +452,7 @@ _TEMPLATESOURCE = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="name",
@@ -429,6 +471,7 @@ _TEMPLATESOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="origin",
@@ -447,6 +490,7 @@ _TEMPLATESOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="version",
@@ -465,6 +509,7 @@ _TEMPLATESOURCE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -475,8 +520,8 @@ _TEMPLATESOURCE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=667,
-    serialized_end=730,
+    serialized_start=692,
+    serialized_end=755,
 )
 
 
@@ -486,6 +531,7 @@ _DESTINATION = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="client",
@@ -504,6 +550,7 @@ _DESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="fileset",
@@ -522,6 +569,7 @@ _DESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -537,11 +585,12 @@ _DESTINATION = _descriptor.Descriptor(
             full_name="yoshi.synth.metadata.Destination.Destination",
             index=0,
             containing_type=None,
+            create_key=_descriptor._internal_create_key,
             fields=[],
         ),
     ],
-    serialized_start=733,
-    serialized_end=881,
+    serialized_start=758,
+    serialized_end=906,
 )
 
 
@@ -551,6 +600,7 @@ _NEWFILE = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="path",
@@ -569,6 +619,7 @@ _NEWFILE = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -579,8 +630,8 @@ _NEWFILE = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=883,
-    serialized_end=906,
+    serialized_start=908,
+    serialized_end=931,
 )
 
 
@@ -590,6 +641,7 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="source",
@@ -608,6 +660,7 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="api_name",
@@ -626,6 +679,7 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="api_version",
@@ -644,6 +698,7 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="language",
@@ -662,6 +717,7 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="generator",
@@ -680,6 +736,7 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="config",
@@ -698,6 +755,7 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -708,8 +766,8 @@ _CLIENTDESTINATION = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=908,
-    serialized_end=1035,
+    serialized_start=933,
+    serialized_end=1060,
 )
 
 
@@ -719,6 +777,7 @@ _FILESETDESTINATION = _descriptor.Descriptor(
     filename=None,
     file=DESCRIPTOR,
     containing_type=None,
+    create_key=_descriptor._internal_create_key,
     fields=[
         _descriptor.FieldDescriptor(
             name="source",
@@ -737,6 +796,7 @@ _FILESETDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
         _descriptor.FieldDescriptor(
             name="files",
@@ -755,6 +815,7 @@ _FILESETDESTINATION = _descriptor.Descriptor(
             extension_scope=None,
             serialized_options=None,
             file=DESCRIPTOR,
+            create_key=_descriptor._internal_create_key,
         ),
     ],
     extensions=[],
@@ -765,8 +826,8 @@ _FILESETDESTINATION = _descriptor.Descriptor(
     syntax="proto3",
     extension_ranges=[],
     oneofs=[],
-    serialized_start=1037,
-    serialized_end=1088,
+    serialized_start=1062,
+    serialized_end=1113,
 )
 
 _METADATA.fields_by_name[
