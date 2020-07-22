@@ -6,7 +6,7 @@ requests
 pyyaml
 jinja2
 deprecation
-protobuf
+protobuf~=3.12
 watchdog
 
 # some java processing requires xml handling
