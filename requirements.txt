@@ -7,6 +7,7 @@ pyyaml
 jinja2
 deprecation
 protobuf
+watchdog
 
 # some java processing requires xml handling
 lxml
