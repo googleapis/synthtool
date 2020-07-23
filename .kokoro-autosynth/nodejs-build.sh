@@ -17,9 +17,6 @@ set -eo pipefail
 
 cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
 
-# Ensure `curl` is available
-sudo apt-get update && sudo apt-get -y install curl
-
 # Use `nvm` to bootstrap the installation of node.js and npm.
 # To learn more: https://github.com/nvm-sh/nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
