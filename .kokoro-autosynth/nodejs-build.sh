@@ -17,16 +17,17 @@ set -eo pipefail
 
 cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
 
-# Install Node 12, as the Kokoro image
-# uses an older version by default
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
+# Use `nvm` to bootstrap the installation of node.js and npm.
+# To learn more: https://github.com/nvm-sh/nvm
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
-sudo rm /usr/local/bin/node
-sudo ln -s /usr/bin/nodejs /usr/local/bin/node
+# Use the latest LTS version of nodejs.  This can change over time, but
+# should prevent the need to modify this file every year.
+nvm install --lts
 
-# Verify Node 12 is being used
+# Verify expected versions of nodejs and npm
 node --version
+npm --version
 
 # Run the normal autosynth build
 ${KOKORO_ARTIFACTS_DIR}/github/synthtool/.kokoro-autosynth/build.sh
