@@ -64,7 +64,7 @@ class CommonTemplates:
         Determines whether generation is being done in a client library or in a samples
         folder so it can either generate in the current directory or the client lib's
         'samples' folder. A custom path for where to generate may also be specified.
-        Renders README.md according to .repo.metadata.json and
+        Renders README.md according to .repo.metadata.json
 
         Args:
             sample_project_dir (Union[Path, str]): The directory for samples, where
