@@ -59,31 +59,31 @@ class CommonTemplates:
 
         return result
 
-    def py_samples(self, sample_project_dir: PathOrStr = ".", **kwargs) -> Path:
+    def py_samples(self, **kwargs) -> Path:
         """
         Determines whether generation is being done in a client library or in a samples
         folder so it can either generate in the current directory or the client lib's
         'samples' folder. A custom path for where to generate may also be specified.
         Renders README.md according to .repo.metadata.json
-
-        Args:
-            sample_project_dir (Union[Path, str]): The directory for samples, where
-            the README is to be generated
         """
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
         # load common repo meta information (metadata that's not language specific).
-        if "metadata" in kwargs:
-            self._load_generic_metadata(kwargs["metadata"])
+        self._load_generic_metadata(kwargs["metadata"])
+
         in_client_library = Path("samples").exists()
-        if sample_project_dir == ".": #if set to default value
+        sample_project_dir = kwargs.get('metadata').get('repo').get('sample_project_dir')
+        #None if custom path not specified
+
+        if sample_project_dir is None: #Not found in metadata
             if in_client_library:
                 sample_project_dir = "samples"
-            elif "sample_project_dir" in kwargs["metadata"]["repo"]:
-            # a custom path may be specified
-                if Path(sample_project_dir).exists():
-                    sample_project_dir = kwargs["metadata"]["repo"]["sample_project_dir"]
+            else:
+                sample_project_dir = "."
+        elif not Path(sample_project_dir).exists():
+            raise Exception(f"{sample_project_dir} does not exist")
+         
         logger.debug(f"Generating templates for samples directory '{sample_project_dir}'")
         py_samples_templates = Path(self._template_root) / "python_samples"
         t = templates.TemplateGroup(py_samples_templates)
