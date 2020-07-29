@@ -81,10 +81,10 @@ class CommonTemplates:
             else:
                 sample_project_dir = "."
         elif not Path(sample_project_dir).exists():
-            raise Exception(f"{sample_project_dir} does not exist")
+            raise Exception(f"'{sample_project_dir}' does not exist")
          
         logger.debug(f"Generating templates for samples directory '{sample_project_dir}'")
-        py_samples_templates = Path(self._template_root) / "python_samples"
+        py_samples_templates = Path(self._template_root) / "python_samples" / "new_README"
         t = templates.TemplateGroup(py_samples_templates)
         result = t.render(subdir=sample_project_dir, **kwargs)
         _tracked_paths.add(result)
