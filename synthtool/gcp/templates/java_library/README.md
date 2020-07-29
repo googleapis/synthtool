@@ -14,9 +14,6 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
-
-A fairly comprehensive list of changes in each version may be found in
-[the CHANGELOG](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/CHANGELOG.md).
 ## Quickstart
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
