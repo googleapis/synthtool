@@ -105,6 +105,7 @@ class CommonTemplates:
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
 
+        self.excludes += [".kokoro/docker/docs/fetch_gpg_keys.sh"]
         return self._generic_library("python_library", **kwargs)
 
     def java_library(self, **kwargs) -> Path:
