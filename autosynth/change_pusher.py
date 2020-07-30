@@ -178,7 +178,7 @@ def build_pr_body(synth_log: str, trailers: str = ""):
     kokoro_build_id = os.environ.get("KOKORO_BUILD_ID")
     if synth_log:
         length_limit = 40000
-        if len(synth_log) > length_limit
+        if len(synth_log) > length_limit:
             synth_log = "[LOG TRUNCATED]\n" + synth_log[-length_limit:]
         build_log_text = f"""
 <details><summary>Log from Synthtool</summary>
