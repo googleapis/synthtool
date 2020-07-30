@@ -116,6 +116,4 @@ working_repo/
 sponge_log.xml
 
 # synthtool testing artifacts
-repo.metadata.json
-synth.py
 synth.metadata
