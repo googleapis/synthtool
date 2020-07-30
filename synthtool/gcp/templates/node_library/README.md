@@ -24,7 +24,7 @@
 {{ metadata['description'] }}
 {% endif %}
 
-A fairly comprehensive list of changes in each version may be found in
+A comprehensive list of changes in each version may be found in
 [the CHANGELOG](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/CHANGELOG.md).
 
 {% if metadata['repo']['client_documentation'] %}* [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]{% endif %}
