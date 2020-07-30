@@ -32,11 +32,10 @@ def test_build_pr_body_with_kokoro_build_id():
 
 def test_build_pr_body_with_synth_log_and_kokoro_build_id():
     with util.ModifiedEnvironment({"KOKORO_BUILD_ID": "42"}):
-        # The synth log should override the kokoro build id.
         synth_log = "A great pull request."
         pr_body = build_pr_body(synth_log)
         assert (
-            pr_body.find("https://source.cloud.google.com/results/invocations/42") == -1
+            pr_body.find("https://source.cloud.google.com/results/invocations/42") > -1
         )
         assert pr_body.find(synth_log) > -1
 
