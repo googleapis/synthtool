@@ -19,6 +19,7 @@ import pytest
 from synthtool import gcp
 import synthtool
 
+
 def test_python_library():
     os.chdir(Path(__file__).parent / "fixtures/python_library")
     template_dir = Path(__file__).parent.parent / "synthtool/gcp/templates"
