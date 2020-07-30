@@ -403,6 +403,31 @@ def test_synthesize_loop_preconfig(synthesize_loop_fixture: SynthesizeLoopFixtur
         assert {"a.txt": "a", "b.txt": "b"} == preconfig
 
 
+def test_synthesize_loop_track_obsolete_files(
+    synthesize_loop_fixture: SynthesizeLoopFixture,
+):
+    # Create a synth.metadata with empty generatedFiles.
+    metadata = {"generatedFiles": []}
+    with open("synth.metadata", "wt") as synth_metadata:
+        synth_metadata.write(json.dumps(metadata))
+    git.commit_all_changes("Added synth.metadata with empty generatedFiles.")
+
+    # Create a generated change that populate synth.metadata's generatedFiles.
+    metadata = {"generatedFiles": ["a.txt"]}
+    write_metadata = WriteFile("synth.metadata", json.dumps(metadata))
+
+    # Invoke the synthesize loop.
+    change_history = [[NoChange(), write_metadata]]
+    source_versions = compile_histories(
+        change_history, synthesize_loop_fixture.synthesizer
+    )
+    synthesize_loop_fixture.synthesize_loop(source_versions)
+
+    # Confirm the synth loop pushed a change.
+    calls = synthesize_loop_fixture.change_pusher.mock_calls
+    assert call.push_changes(1, "test", "chore: start tracking obsolete files") in calls
+
+
 def test_synthesize_loop_skips_multiple_existing_prs(
     synthesize_loop_fixture: SynthesizeLoopFixture,
 ):
