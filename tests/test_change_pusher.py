@@ -40,6 +40,18 @@ def test_build_pr_body_with_synth_log_and_kokoro_build_id():
         assert pr_body.find(synth_log) > -1
 
 
+def test_build_pr_body_with_very_long_synth_log():
+    with util.ModifiedEnvironment({"KOKORO_BUILD_ID": "42"}):
+        synth_log = "abcdefghi\n" * 10000
+        pr_body = build_pr_body(synth_log)
+        assert (
+            pr_body.find("https://source.cloud.google.com/results/invocations/42") > -1
+        )
+        assert pr_body.find("abcdefghi") > -1
+        assert pr_body.find("[LOG TRUNCATED]") > -1
+        assert len(pr_body) < 60000
+
+
 def test_build_pr_body_with_synth_trailers():
     synth_log = "synth log"
     pr_body = build_pr_body(synth_log, "a: b\nc: d")
