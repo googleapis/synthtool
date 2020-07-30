@@ -18,6 +18,7 @@ import re
 import yaml
 from pathlib import Path
 from typing import Dict, List, Optional
+from sys import exit
 
 from synthtool import _tracked_paths
 from synthtool.languages import node
@@ -64,7 +65,7 @@ class CommonTemplates:
         Determines whether generation is being done in a client library or in a samples
         folder so it can either generate in the current directory or the client lib's
         'samples' folder. A custom path for where to generate may also be specified.
-        Renders README.md according to .repo.metadata.json
+        Renders README.md according to .repo-metadata.json
         """
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
@@ -74,7 +75,6 @@ class CommonTemplates:
 
         in_client_library = Path("samples").exists()
         sample_project_dir = kwargs.get('metadata').get('repo').get('sample_project_dir') #None if custom path not specified
-
         if sample_project_dir is None: #Not found in metadata
             if in_client_library:
                 sample_project_dir = "samples"

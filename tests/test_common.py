@@ -45,8 +45,8 @@ def test_py_samples_custom_path():
     path_to_gen = MOCK / "custom_path"
     os.chdir(path_to_gen)
     os.system("python3 -m synthtool")
-    assert os.path.isfile(path_to_gen / "README.md")
-    os.remove(path_to_gen / "README.md")
+    assert os.path.isfile(path_to_gen / "custom_samples_folder" / "README.md")
+    os.remove(path_to_gen / "custom_samples_folder" / "README.md")
 
 def test_py_samples_custom_path_DNE():
     with raises(Exception) as e:
