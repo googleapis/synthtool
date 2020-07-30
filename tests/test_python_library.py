@@ -15,9 +15,7 @@
 import os
 from pathlib import Path
 
-import pytest
 from synthtool import gcp
-import synthtool
 
 
 def test_python_library():
@@ -25,3 +23,8 @@ def test_python_library():
     template_dir = Path(__file__).parent.parent / "synthtool/gcp/templates"
     common = gcp.CommonTemplates(template_path=template_dir)
     templated_files = common.py_library()
+
+    assert os.path.exists(
+        templated_files / ".kokoro/docs/docs-presubmit.cfg")
+    assert os.path.exists(
+        templated_files / ".kokoro/docker/docs/fetch_gpg_keys.sh")
