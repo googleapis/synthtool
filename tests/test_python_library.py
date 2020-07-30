@@ -25,5 +25,3 @@ def test_python_library():
     template_dir = Path(__file__).parent.parent / "synthtool/gcp/templates"
     common = gcp.CommonTemplates(template_path=template_dir)
     templated_files = common.py_library()
-    print(templated_files)
-    pytest.fail()
