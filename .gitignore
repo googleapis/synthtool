@@ -114,6 +114,3 @@ venv.bak/
 # synthtool artifacts
 working_repo/
 sponge_log.xml
-
-# synthtool testing artifacts
-synth.metadata
