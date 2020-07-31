@@ -111,6 +111,10 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
             root = "."
 
     excludes = []
+
+    # todo(kolea2): temporary exclusion until samples are ready to be migrated to new format
+    excludes.append("README.md")
+
     if skip_readmes:
         excludes.append("README.rst")
     t = templates.TemplateGroup(SAMPLES_TEMPLATE_PATH, excludes=excludes)

@@ -59,6 +59,12 @@ class CommonTemplates:
 
         return result
 
+    def py_samples(self, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+        return self._generic_library("python_samples", **kwargs)
+
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
