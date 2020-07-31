@@ -71,8 +71,11 @@ class CommonTemplates:
             kwargs["metadata"] = {}
         # load common repo meta information (metadata that's not language specific).
         self._load_generic_metadata(kwargs["metadata"])
-        self.excludes.extend(["README.rst", "auth_api_key.tmpl.rst", "auth.tmpl.rst", "install_deps.tmpl.rst", "install_portaudio.tmpl.rst", "noxfile.py.j2"])
         # temporary exclusion prior to old templates being migrated out
+        self.excludes.extend([
+            "README.rst", "auth_api_key.tmpl.rst",
+            "auth.tmpl.rst", "install_deps.tmpl.rst",
+            "install_portaudio.tmpl.rst", "noxfile.py.j2"])
 
         in_client_library = Path("samples").exists()
         sample_project_dir = kwargs.get('metadata').get('repo').get('sample_project_dir') #None if custom path not specified
