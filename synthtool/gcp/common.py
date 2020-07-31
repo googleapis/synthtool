@@ -84,9 +84,13 @@ class CommonTemplates:
         )
 
         in_client_library = Path("samples").exists()
-        sample_project_dir = (
-            kwargs.get("metadata").get("repo").get("sample_project_dir")
-        )  # None if custom path not specified
+        try:
+            sample_project_dir = (
+                kwargs.get("metadata").get("repo").get("sample_project_dir")
+            )
+        except KeyError:
+            sample_project_dir = None
+
         if sample_project_dir is None:  # Not found in metadata
             if in_client_library:
                 sample_project_dir = "samples"
