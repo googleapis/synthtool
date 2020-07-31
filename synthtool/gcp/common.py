@@ -72,22 +72,32 @@ class CommonTemplates:
         # load common repo meta information (metadata that's not language specific).
         self._load_generic_metadata(kwargs["metadata"])
         # temporary exclusion prior to old templates being migrated out
-        self.excludes.extend([
-            "README.rst", "auth_api_key.tmpl.rst",
-            "auth.tmpl.rst", "install_deps.tmpl.rst",
-            "install_portaudio.tmpl.rst", "noxfile.py.j2"])
+        self.excludes.extend(
+            [
+                "README.rst",
+                "auth_api_key.tmpl.rst",
+                "auth.tmpl.rst",
+                "install_deps.tmpl.rst",
+                "install_portaudio.tmpl.rst",
+                "noxfile.py.j2",
+            ]
+        )
 
         in_client_library = Path("samples").exists()
-        sample_project_dir = kwargs.get('metadata').get('repo').get('sample_project_dir') #None if custom path not specified
-        if sample_project_dir is None: #Not found in metadata
+        sample_project_dir = (
+            kwargs.get("metadata").get("repo").get("sample_project_dir")
+        )  # None if custom path not specified
+        if sample_project_dir is None:  # Not found in metadata
             if in_client_library:
                 sample_project_dir = "samples"
             else:
                 sample_project_dir = "."
         elif not Path(sample_project_dir).exists():
             raise Exception(f"'{sample_project_dir}' does not exist")
-         
-        logger.debug(f"Generating templates for samples directory '{sample_project_dir}'")
+
+        logger.debug(
+            f"Generating templates for samples directory '{sample_project_dir}'"
+        )
         py_samples_templates = Path(self._template_root) / "python_samples"
         t = templates.TemplateGroup(py_samples_templates, self.excludes)
         result = t.render(subdir=sample_project_dir, **kwargs)
