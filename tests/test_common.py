@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from synthtool.gcp.common import decamelize, CommonTemplates
+from synthtool.gcp.common import decamelize
 from pathlib import Path
 from pytest import raises
 import os
