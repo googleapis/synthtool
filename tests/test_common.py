@@ -13,6 +13,15 @@
 # limitations under the License.
 
 from synthtool.gcp.common import decamelize
+from pathlib import Path
+from pytest import raises
+import os
+import synthtool as s
+import tempfile
+import shutil
+
+MOCK = Path(__file__).parent / "generationmock"
+common = s.gcp.CommonTemplates()
 
 
 def test_converts_camel_to_title():
@@ -29,3 +38,74 @@ def test_handles_acronym():
 def test_handles_empty_string():
     assert decamelize(None) == ""
     assert decamelize("") == ""
+
+
+def test_py_samples_clientlib():
+    path_to_gen = MOCK / "client_library"
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(path_to_gen, Path(tempdir) / "client_library")
+        cwd = os.getcwd()
+        os.chdir(workdir)
+
+        try:
+            sample_files = common.py_samples(
+                unit_cov_level=97, cov_level=99, samples=True
+            )
+            s.move(sample_files, excludes=["noxfile.py"])
+            assert os.path.isfile(workdir / "samples" / "README.md")
+        finally:
+            os.chdir(cwd)
+
+
+def test_py_samples_custom_path():
+    path_to_gen = MOCK / "custom_path"
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(path_to_gen, Path(tempdir) / "custom_path")
+        cwd = os.getcwd()
+        os.chdir(workdir)
+
+        try:
+            sample_files = common.py_samples(
+                unit_cov_level=97, cov_level=99, samples=True
+            )
+            s.move(sample_files, excludes=["noxfile.py"])
+            assert os.path.isfile(workdir / "custom_samples_folder" / "README.md")
+        finally:
+            os.chdir(cwd)
+
+
+def test_py_samples_custom_path_DNE():
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(
+            MOCK / "custom_path_DNE", Path(tempdir) / "custom_path_DNE"
+        )
+        cwd = os.getcwd()
+        os.chdir(workdir)
+
+        try:
+            with raises(Exception) as e:
+                os.chdir(workdir / "custom_path_DNE")
+                sample_files = common.py_samples(
+                    unit_cov_level=97, cov_level=99, samples=True
+                )
+                s.move(sample_files, excludes=["noxfile.py"])
+                assert "'nonexistent_folder' does not exist" in str(e.value)
+        finally:
+            os.chdir(cwd)
+
+
+def test_py_samples_samples_folder():
+    path_to_gen = MOCK / "samples_folder"
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(path_to_gen, Path(tempdir) / "samples_folder")
+        cwd = os.getcwd()
+        os.chdir(workdir)
+
+        try:
+            sample_files = common.py_samples(
+                unit_cov_level=97, cov_level=99, samples=True
+            )
+            s.move(sample_files, excludes=["noxfile.py"])
+            assert os.path.isfile(workdir / "README.md")
+        finally:
+            os.chdir(cwd)
