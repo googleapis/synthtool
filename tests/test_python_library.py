@@ -26,3 +26,20 @@ def test_python_library():
 
     assert os.path.exists(templated_files / ".kokoro/docs/docs-presubmit.cfg")
     assert os.path.exists(templated_files / ".kokoro/docker/docs/fetch_gpg_keys.sh")
+
+
+def test_split_system_tests():
+    os.chdir(Path(__file__).parent / "fixtures/python_library")
+    template_dir = Path(__file__).parent.parent / "synthtool/gcp/templates"
+    common = gcp.CommonTemplates(template_path=template_dir)
+    templated_files = common.py_library(split_system_tests=True)
+
+    with open(templated_files / ".kokoro/presubmit/presubmit.cfg", "r") as f:
+        contents = f.read()
+        assert "RUN_SYSTEM_TESTS" in contents
+        assert "false" in contents
+
+    assert os.path.exists(templated_files / ".kokoro/presubmit/system-3.8.cfg")
+    with open(templated_files / ".kokoro/presubmit/system-3.8.cfg", "r") as f:
+        contents = f.read()
+        assert "system-3.8" in contents
