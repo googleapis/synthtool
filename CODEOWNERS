@@ -1,4 +1,4 @@
-*   @SurferJeffAtGoogle
+*   @SurferJeffAtGoogle @chingor13 @bcoe
 
 # assign templates to the language team that owns them
 synthtool/gcp/templates/java_library/*          @googleapis/yoshi-java

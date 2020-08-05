@@ -24,7 +24,7 @@ import subprocess
 import sys
 import tempfile
 import typing
-from typing import Dict, Sequence
+from typing import Dict, Optional, Sequence
 
 import synthtool.sources.git as synthtool_git
 
@@ -48,7 +48,7 @@ IGNORED_FILE_PATTERNS = [
 EXIT_CODE_SKIPPED = 28
 
 
-def load_metadata(metadata_path: str):
+def load_metadata(metadata_path: str) -> Dict:
     path = pathlib.Path(metadata_path)
     if not path.exists():
         return {}
@@ -66,6 +66,8 @@ class FlatVersion:
         self.version = version
         self.sort_key = (self.version.get_timestamp(), group_number)
         self.merged = False
+        # This gets set to true or false after synthesizing code for this version.
+        self.branch_has_changes: Optional[bool] = None
 
 
 def flatten_and_sort_source_versions(
@@ -248,6 +250,11 @@ class SynthesizeLoopToolbox:
         Returns:
             bool -- True if the code generated differs.
         """
+        # Did we already generate this version?  Return cached result.
+        branch_already_has_changes = self.versions[index].branch_has_changes
+        if branch_already_has_changes is not None:
+            return branch_already_has_changes
+
         self.apply_version(index)
         self.checkout_new_branch(index)
         try:
@@ -268,12 +275,13 @@ class SynthesizeLoopToolbox:
                 synthesizer.synthesize_and_catch_exception(synth_log_path, self.environ)
             # Save changes into the sub branch.
             i_has_changes = has_changes()
-            if i_has_changes:
-                git.commit_all_changes(self.versions[index].version.get_comment())
+            git.commit_all_changes(self.versions[index].version.get_comment())
             if 0 == index:
                 # Record version zero info so other sources can reuse.
                 self.version_zero.branch_name = self.sub_branch(0)
                 self.version_zero.has_changes = i_has_changes
+            # Cache the outcome.
+            self.versions[index].branch_has_changes = i_has_changes
             return i_has_changes
         finally:
             executor.check_call(["git", "reset", "--hard", "HEAD"])
@@ -302,6 +310,11 @@ class SynthesizeLoopToolbox:
         else:
             label = "context: partial"
         pr.add_labels([label])
+
+    def metadata_contains_generated_files(self, branch_name: str) -> bool:
+        executor.check_call(["git", "checkout", branch_name])
+        metadata = load_metadata(self._metadata_path)
+        return bool(metadata.get("generatedFiles"))
 
 
 def _compose_pr_title(
@@ -356,6 +369,26 @@ def synthesize_loop(
     """
     if not toolbox.versions:
         return 0  # No versions, nothing to synthesize.
+
+    # Synthesize the library with the most recent versions of all sources.
+    youngest = len(toolbox.versions) - 1
+    has_changes = toolbox.synthesize_version_in_new_branch(synthesizer, youngest)
+    if not has_changes:
+        if not toolbox.metadata_contains_generated_files(
+            toolbox.branch
+        ) and toolbox.metadata_contains_generated_files(toolbox.sub_branch(youngest)):
+            # Special case: the repo owner turned on obsolete file tracking.
+            # Generate a one-time PR containing only metadata changes.
+            executor.check_call(["git", "checkout", toolbox.branch])
+            executor.check_call(
+                ["git", "merge", "--squash", toolbox.sub_branch(youngest)]
+            )
+            pr_title = "chore: start tracking obsolete files"
+            executor.check_call(["git", "commit", "-m", pr_title])
+            pr = change_pusher.push_changes(1, toolbox.branch, pr_title)
+            pr.add_labels(["context: full"])
+            return 1
+        return 0  # No changes, nothing to do.
 
     try:
         if multiple_prs:
