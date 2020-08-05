@@ -80,9 +80,28 @@ def get_commit_shas_since(sha: str, dir: str) -> typing.List[str]:
     return shas
 
 
-def commit_all_changes(message):
+def commit_all_changes(message: str) -> int:
+    """Commits all changes in the repo.
+
+    Args:
+        message (str): the commit message
+
+    Returns:
+        int: 1 if a change was commited, otherwise 0.
+    """
     executor.check_call(["git", "add", "-A"])
-    executor.check_call(["git", "commit", "-m", message])
+    status = executor.run(
+        ["git", "status", "--porcelain"],
+        universal_newlines=True,
+        stdout=subprocess.PIPE,
+        check=True,
+    ).stdout.strip()
+    if status:
+        executor.check_call(["git", "commit", "-m", message])
+        return 1
+    else:
+        # There are no changes to commit.
+        return 0
 
 
 def push_changes(branch):

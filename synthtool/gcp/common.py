@@ -15,16 +15,19 @@
 import json
 import os
 import re
+import shutil
 import yaml
 from pathlib import Path
 from typing import Dict, List, Optional
+
+import jinja2
 
 from synthtool import _tracked_paths
 from synthtool.languages import node
 from synthtool.log import logger
 from synthtool.sources import git, templates
 
-
+PathOrStr = templates.PathOrStr
 TEMPLATES_URL: str = git.make_repo_clone_url("googleapis/synthtool")
 DEFAULT_TEMPLATES_PATH = "synthtool/gcp/templates"
 LOCAL_TEMPLATES: Optional[str] = os.environ.get("SYNTHTOOL_TEMPLATES")
@@ -60,10 +63,48 @@ class CommonTemplates:
         return result
 
     def py_samples(self, **kwargs) -> Path:
+        """
+        Determines whether generation is being done in a client library or in a samples
+        folder so it can either generate in the current directory or the client lib's
+        'samples' folder. A custom path for where to generate may also be specified.
+        Renders README.md according to .repo-metadata.json
+        """
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
-        return self._generic_library("python_samples", **kwargs)
+        # load common repo meta information (metadata that's not language specific).
+        self._load_generic_metadata(kwargs["metadata"])
+        # temporary exclusion prior to old templates being migrated out
+        self.excludes.extend(
+            [
+                "README.rst",
+                "auth_api_key.tmpl.rst",
+                "auth.tmpl.rst",
+                "install_deps.tmpl.rst",
+                "install_portaudio.tmpl.rst",
+                "noxfile.py.j2",
+            ]
+        )
+
+        in_client_library = Path("samples").exists()
+        sample_project_dir = kwargs["metadata"]["repo"].get("sample_project_dir")
+
+        if sample_project_dir is None:  # Not found in metadata
+            if in_client_library:
+                sample_project_dir = "samples"
+            else:
+                sample_project_dir = "."
+        elif not Path(sample_project_dir).exists():
+            raise Exception(f"'{sample_project_dir}' does not exist")
+
+        logger.debug(
+            f"Generating templates for samples directory '{sample_project_dir}'"
+        )
+        py_samples_templates = Path(self._template_root) / "python_samples"
+        t = templates.TemplateGroup(py_samples_templates, self.excludes)
+        result = t.render(subdir=sample_project_dir, **kwargs)
+        _tracked_paths.add(result)
+        return result
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
@@ -105,7 +146,27 @@ class CommonTemplates:
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
 
-        return self._generic_library("python_library", **kwargs)
+        ret = self._generic_library("python_library", **kwargs)
+
+        # If split_system_tests is set to True, we disable the system
+        # test in the main presubmit build and create individual build
+        # configs for each python versions.
+        if kwargs.get("split_system_tests", False):
+            template_root = self._template_root / "py_library_split_systests"
+            # copy the main presubmit config
+            shutil.copy2(
+                template_root / ".kokoro/presubmit/presubmit.cfg",
+                ret / ".kokoro/presubmit/presubmit.cfg",
+            )
+            env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_root)))
+            tmpl = env.get_template(".kokoro/presubmit/system.cfg")
+            for v in kwargs["system_test_python_versions"]:
+                nox_session = f"system-{v}"
+                dest = ret / f".kokoro/presubmit/system-{v}.cfg"
+                content = tmpl.render(nox_session=nox_session)
+                with open(dest, "w") as f:
+                    f.write(content)
+        return ret
 
     def java_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
