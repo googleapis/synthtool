@@ -213,19 +213,22 @@ class MetadataTrackerAndWriter:
         self.observer.start()
 
     def __exit__(self, type, value, traceback):
-        if should_track_obsolete_files():
-            time.sleep(2)  # Finish collecting observations about modified files.
-            self.observer.stop()
-            self.observer.join()
-            for path in git_ignore(self.handler.get_touched_file_paths()):
-                _metadata.generated_files.append(path)
-            _remove_obsolete_files(self.old_metadata)
+        if value:
+            pass  # An exception was raised.  Don't write metadata or clean up.
         else:
-            self.observer.stop()
-        _clear_local_paths(get())
-        _metadata.sources.sort(key=_source_key)
-        if _enable_write_metadata:
-            write(self.metadata_file_path)
+            if should_track_obsolete_files():
+                time.sleep(2)  # Finish collecting observations about modified files.
+                self.observer.stop()
+                self.observer.join()
+                for path in git_ignore(self.handler.get_touched_file_paths()):
+                    _metadata.generated_files.append(path)
+                _remove_obsolete_files(self.old_metadata)
+            else:
+                self.observer.stop()
+            _clear_local_paths(get())
+            _metadata.sources.sort(key=_source_key)
+            if _enable_write_metadata:
+                write(self.metadata_file_path)
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:
