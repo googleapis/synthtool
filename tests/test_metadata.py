@@ -21,7 +21,7 @@ import sys
 
 import pytest
 
-from synthtool import metadata
+from synthtool import _tracked_paths, metadata, transforms
 from synthtool.tmp import tmpdir
 
 
@@ -172,6 +172,25 @@ def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
 
     assert 1 == len(metadata.get().generated_files)
     assert "code/c" == metadata.get().generated_files[0]
+
+    # Confirm remove_obsolete_files deletes b but not c.
+    assert not os.path.exists("code/b")
+    assert os.path.exists("code/c")
+
+
+def test_excluded_file_not_removed(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+    _tracked_paths.add(source_tree.tmpdir / "build")
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+
+    metadata.reset()
+    # Create a second source tree and copy it into the first.
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        # exclude code/c from being copied should mean it doesn't get deleted.
+        transforms.move(source_tree.tmpdir / "build", excludes=["code/c"])
 
     # Confirm remove_obsolete_files deletes b but not c.
     assert not os.path.exists("code/b")
