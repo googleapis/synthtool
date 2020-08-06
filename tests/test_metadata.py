@@ -216,6 +216,28 @@ def test_nothing_happens_when_disabled(source_tree, preserve_track_obsolete_file
     assert os.path.exists("code/c")
 
 
+def test_nothing_happens_when_exception(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+
+    metadata.reset()
+    try:
+        with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+            source_tree.write("code/c")
+            raise "Exception!"
+    except:  # noqa: E722
+        pass
+
+    assert 0 == len(metadata.get().new_files)
+
+    # Confirm no files were deleted.
+    assert os.path.exists("code/b")
+    assert os.path.exists("code/c")
+
+
 def test_old_file_ignored_by_git_not_removed(
     source_tree, preserve_track_obsolete_file_flag
 ):
