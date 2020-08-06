@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import fnmatch
 import locale
 import os
 import pathlib
@@ -19,8 +20,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
-import time
 import threading
+import time
 from typing import Dict, Iterable, List
 
 import google.protobuf.json_format
@@ -40,11 +41,16 @@ def get_environment_bool(var_name: str) -> bool:
 
 _track_obsolete_files = get_environment_bool("SYNTHTOOL_TRACK_OBSOLETE_FILES")
 
+# The list of file patterns excluded during a copy() or move() operation.
+_excluded_patterns: List[str] = []
+
 
 def reset() -> None:
     """Clear all metadata so far."""
     global _metadata
     _metadata = metadata_pb2.Metadata()
+    global _excluded_patterns
+    _excluded_patterns = []
 
 
 def get():
@@ -54,6 +60,13 @@ def get():
 def add_git_source(**kwargs) -> None:
     """Adds a git source to the current metadata."""
     _metadata.sources.add(git=metadata_pb2.GitSource(**kwargs))
+
+
+def add_pattern_excluded_during_copy(file_path: str) -> None:
+    """Adds a file excluded during copy.
+
+    Used to avoid deleting an obsolete file that is excluded."""
+    _excluded_patterns.append(file_path)
 
 
 def add_generator_source(**kwargs) -> None:
@@ -107,11 +120,22 @@ def _remove_obsolete_files(old_metadata):
     """
     old_files = set(old_metadata.generated_files)
     new_files = set(_metadata.generated_files)
+    excluded_patterns = set([pattern for pattern in _excluded_patterns])
     obsolete_files = old_files - new_files
     for file_path in git_ignore(obsolete_files):
         try:
-            logger.info(f"Removing obsolete file {file_path}...")
-            os.unlink(file_path)
+            matched_pattern = False
+            for pattern in excluded_patterns:
+                if fnmatch.fnmatch(file_path, pattern):
+                    matched_pattern = True
+                    break
+            if matched_pattern:
+                logger.info(
+                    f"Leaving obsolete file {file_path} because it matched excluded pattern {pattern} during copy."
+                )
+            else:
+                logger.info(f"Removing obsolete file {file_path}...")
+                os.unlink(file_path)
         except FileNotFoundError:
             pass  # Already deleted.  That's OK.
 
