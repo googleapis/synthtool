@@ -62,11 +62,11 @@ def add_git_source(**kwargs) -> None:
     _metadata.sources.add(git=metadata_pb2.GitSource(**kwargs))
 
 
-def add_pattern_excluded_during_copy(file_path: str) -> None:
+def add_pattern_excluded_during_copy(glob_pattern: str) -> None:
     """Adds a file excluded during copy.
 
     Used to avoid deleting an obsolete file that is excluded."""
-    _excluded_patterns.append(file_path)
+    _excluded_patterns.append(glob_pattern)
 
 
 def add_generator_source(**kwargs) -> None:
