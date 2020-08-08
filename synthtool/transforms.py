@@ -21,6 +21,7 @@ import sys
 
 from synthtool import _tracked_paths
 from synthtool.log import logger
+from synthtool import metadata
 
 PathOrStr = Union[str, Path]
 ListOfPathsOrStrs = Iterable[Union[str, Path]]
@@ -177,6 +178,9 @@ def move(
         True if any files were copied, False otherwise.
     """
     copied = False
+
+    for excluded_pattern in excludes or []:
+        metadata.add_pattern_excluded_during_copy(str(excluded_pattern))
 
     for source in _expand_paths(sources):
         if destination is None:
