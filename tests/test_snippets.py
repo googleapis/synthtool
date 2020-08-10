@@ -85,6 +85,25 @@ var line3 = 3;
     os.chdir(cwd)
 
 
+def test_interleaving_snippets_with_exclude():
+    cwd = os.getcwd()
+    os.chdir(FIXTURES)
+
+    all_snippets = snippets.all_snippets_from_file(
+        "snippets/interleaved_with_exclude.js"
+    )
+    assert len(all_snippets) == 1
+
+    assert (
+        all_snippets["snippet_1"]
+        == """var line1 = 1;
+var line3 = 3;
+"""
+    )
+
+    os.chdir(cwd)
+
+
 def test_nested_snippets():
     cwd = os.getcwd()
     os.chdir(FIXTURES)
