@@ -19,7 +19,7 @@ import yaml
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from synthtool import _tracked_paths, transforms
+from synthtool import _tracked_paths
 from synthtool.languages import node
 from synthtool.log import logger
 from synthtool.sources import git, templates
@@ -59,7 +59,7 @@ class CommonTemplates:
 
         return result
 
-def py_samples(self, **kwargs) -> Path:
+    def py_samples(self, **kwargs) -> Path:
         """
         Determines whether generation is being done in a client library or in a samples
         folder so it can either generate in the current directory or the client lib's
@@ -71,19 +71,7 @@ def py_samples(self, **kwargs) -> Path:
             kwargs["metadata"] = {}
         # load common repo meta information (metadata that's not language specific).
         self._load_generic_metadata(kwargs["metadata"])
-
-        in_client_library = Path("samples").exists()
-        sample_project_dir = kwargs["metadata"]["repo"].get("sample_project_dir")
-
-        if sample_project_dir is None:  # Not found in metadata
-            if in_client_library:
-                sample_project_dir = "samples"
-            else:
-                sample_project_dir = "."
-        elif not Path(sample_project_dir).exists():
-            raise Exception(f"'{sample_project_dir}' does not exist")
-        kwargs["subdir"] = sample_project_dir
-
+        # temporary exclusion prior to old templates being migrated out
         self.excludes.extend(
             [
                 "README.rst",
@@ -95,46 +83,25 @@ def py_samples(self, **kwargs) -> Path:
             ]
         )
 
-        samples_dict = kwargs["metadata"]["repo"].get("samples").copy()
+        in_client_library = Path("samples").exists()
+        sample_project_dir = kwargs["metadata"]["repo"].get("sample_project_dir")
+
+        if sample_project_dir is None:  # Not found in metadata
+            if in_client_library:
+                sample_project_dir = "samples"
+            else:
+                sample_project_dir = "."
+        elif not Path(sample_project_dir).exists():
+            raise Exception(f"'{sample_project_dir}' does not exist")
+
         logger.debug(
-            f"{samples_dict}'"
+            f"Generating templates for samples directory '{sample_project_dir}'"
         )
-
-        result = []
-
-        for sample_idx, sample in enumerate(samples_dict):
-            if sample.get("override_path") != None:
-                logger.debug(
-                    f"[{sample}]"
-                )
-                result.append(self.py_samples_override(**kwargs))
-                # kwargs["metadata"]["repo"]["samples"].pop()
-        result.append(self._generic_library("python_samples", **kwargs))
-        logger.debug(f"{result}")
+        py_samples_templates = Path(self._template_root) / "python_samples"
+        t = templates.TemplateGroup(py_samples_templates, self.excludes)
+        result = t.render(subdir=sample_project_dir, **kwargs)
+        _tracked_paths.add(result)
         return result
-
-    def py_samples_override(self, override_path="new_path", **kwargs) -> List[Path]:
-        copy_kwargs = kwargs.copy()
-        logger.debug(f"I'm here! {copy_kwargs}")
-        copy_kwargs["subdir"] = override_path
-        return self._generic_library("python_samples", **copy_kwargs)
-        # samples_dict = kwargs["metadata"]["repo"].get("samples").copy()
-        # for sample_idx, sample in enumerate(samples_dict):
-        #     if sample.get("override_path") != None:
-        #         override_path = sample.get("override_path")
-                # isolated_metadata = kwargs.copy()
-                # isolated_metadata["metadata"]["repo"]["samples"] = [sample]
-                # logger.debug(
-                #     f"override folder: '{override_path}' \n kwargs: '{isolated_metadata}'"
-                # )
-                # logger.debug(
-                #     f"Generating templates for sample in directory '{override_path}'"
-                # )
-                # py_samples_templates = Path(self._template_root) / "python_samples"
-                # o = templates.TemplateGroup(py_samples_templates, self.excludes)
-                # o_result = o.render(subdir=override_path, **isolated_metadata)
-                # _tracked_paths.add(o_result)
-                # #THEN pop this sample off the kwargs/metadat
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
