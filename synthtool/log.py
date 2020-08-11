@@ -48,10 +48,10 @@ def configure_logger(name: str, color: bool = bool(ColoredFormatter)):
     log severity.
     """
     logger = logging.getLogger(name)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
 
     handler = logging.StreamHandler()
-    handler.setLevel(logging.DEBUG)
+    handler.setLevel(logging.INFO)
 
     if color is True and sys.stdout.isatty():
         formatter = ColoredFormatter(
