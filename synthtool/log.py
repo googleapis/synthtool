@@ -42,6 +42,7 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
     # Silence any noisy loggers here.
     logging.getLogger("watchdog.observers").setLevel(logging.INFO)
 
+
 def configure_logger(name: str, color: bool = bool(ColoredFormatter)):
     """Create and configure the default logger for autosynth.
     The logger will prefix the log message with the current time and the
