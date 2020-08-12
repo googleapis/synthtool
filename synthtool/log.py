@@ -40,6 +40,7 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
     logging.setLoggerClass(LoggerWithSuccess)
 
     # Silence any noisy loggers here.
+    logging.getLogger("watchdog.observers").setLevel(logging.INFO)
 
 
 def configure_logger(name: str, color: bool = bool(ColoredFormatter)):
@@ -48,10 +49,10 @@ def configure_logger(name: str, color: bool = bool(ColoredFormatter)):
     log severity.
     """
     logger = logging.getLogger(name)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
+    handler.setLevel(logging.DEBUG)
 
     if color is True and sys.stdout.isatty():
         formatter = ColoredFormatter(
