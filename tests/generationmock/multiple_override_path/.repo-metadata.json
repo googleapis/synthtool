@@ -22,12 +22,12 @@
               "description": "Example beginner application",
               "file": "main.py",
               "override_path": "another_override"},
-              {"name": "Hello AGAIN",
-              "description": "Example beginner application",
+              {"name": "Hello Synthtool",
+              "description": "Example application",
               "file": "main.py",
               "override_path": "another_override"},
               {"name": "Last Example",
-              "description": "Example beginner application",
+              "description": "Last application",
               "file": "example.py"}
     ]
   }

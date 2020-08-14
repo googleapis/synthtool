@@ -110,6 +110,7 @@ def test_py_samples_samples_folder():
         finally:
             os.chdir(cwd)
 
+
 def test_py_samples_override():
     path_to_gen = MOCK / "override_path"
     with tempfile.TemporaryDirectory() as tempdir:
@@ -122,11 +123,12 @@ def test_py_samples_override():
                 unit_cov_level=97, cov_level=99, samples=True
             )
             for path in sample_files:
-                s.move(path, excludes=['noxfile.py'])
+                s.move(path, excludes=["noxfile.py"])
             assert os.path.isfile(workdir / "README.md")
             assert os.path.isfile(workdir / "override" / "README.md")
         finally:
             os.chdir(cwd)
+
 
 def test_py_samples_override_content():
     path_to_gen = MOCK / "override_path"
@@ -140,19 +142,20 @@ def test_py_samples_override_content():
                 unit_cov_level=97, cov_level=99, samples=True
             )
             for path in sample_files:
-                s.move(path, excludes=['noxfile.py'])
+                s.move(path, excludes=["noxfile.py"])
             os.chdir(workdir)
-            with open('README.md') as f:
+            with open("README.md") as f:
                 result = f.read()
                 assert "Hello World" in result
                 assert "Quickstart" not in result
             os.chdir(workdir / "override")
-            with open('README.md') as f:
+            with open("README.md") as f:
                 result = f.read()
                 assert "Hello World" not in result
-                assert "Quickstart"  in result
+                assert "Quickstart" in result
         finally:
             os.chdir(cwd)
+
 
 def test_py_samples_multiple_override():
     path_to_gen = MOCK / "multiple_override_path"
@@ -165,17 +168,45 @@ def test_py_samples_multiple_override():
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
-            print(sample_files)
             for path in sample_files:
-                s.move(path, excludes=['noxfile.py'])
+                s.move(path, excludes=["noxfile.py"])
             assert os.path.isfile(workdir / "README.md")
             assert os.path.isfile(workdir / "override" / "README.md")
             assert os.path.isfile(workdir / "another_override" / "README.md")
             os.chdir(workdir / "another_override")
-            with open('README.md') as f:
+            with open("README.md") as f:
                 result = f.read()
-                print(result)
                 assert "Hello World" in result
-                assert "Hello AGAIN"  in result
+                assert "Hello Synthtool" in result
+        finally:
+            os.chdir(cwd)
+
+
+def test_py_samples_multiple_override_content():
+    path_to_gen = MOCK / "multiple_override_path"
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(path_to_gen, Path(tempdir) / "multiple_override_path")
+        cwd = os.getcwd()
+        os.chdir(workdir)
+
+        try:
+            sample_files = common.py_samples(
+                unit_cov_level=97, cov_level=99, samples=True
+            )
+            for path in sample_files:
+                s.move(path, excludes=["noxfile.py"])
+            os.chdir(workdir / "override")
+            with open("README.md") as f:
+                result = f.read()
+                assert "Quickstart" in result
+            os.chdir(workdir / "another_override")
+            with open("README.md") as f:
+                result = f.read()
+                assert "Hello World" in result
+                assert "Hello Synthtool" in result
+            os.chdir(workdir)
+            with open("README.md") as f:
+                result = f.read()
+                assert "Last Example" in result
         finally:
             os.chdir(cwd)
