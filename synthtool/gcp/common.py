@@ -16,9 +16,11 @@ import json
 import os
 import re
 import yaml
+from copy import copy, deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
 
+import synthtool as s
 from synthtool import _tracked_paths
 from synthtool.languages import node
 from synthtool.log import logger
@@ -59,18 +61,21 @@ class CommonTemplates:
 
         return result
 
-    def py_samples(self, **kwargs) -> Path:
+    def py_samples(self, **kwargs) -> List[Path]:
         """
         Determines whether generation is being done in a client library or in a samples
         folder so it can either generate in the current directory or the client lib's
         'samples' folder. A custom path for where to generate may also be specified.
         Renders README.md according to .repo-metadata.json
         """
+        logger.debug(f"start") ##DEBUG
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
+
         # load common repo meta information (metadata that's not language specific).
         self._load_generic_metadata(kwargs["metadata"])
+
         # temporary exclusion prior to old templates being migrated out
         self.excludes.extend(
             [
@@ -83,6 +88,7 @@ class CommonTemplates:
             ]
         )
 
+        # determine if in client lib and set custom root sample dir if specified, else None
         in_client_library = Path("samples").exists()
         sample_project_dir = kwargs["metadata"]["repo"].get("sample_project_dir")
 
@@ -93,15 +99,103 @@ class CommonTemplates:
                 sample_project_dir = "."
         elif not Path(sample_project_dir).exists():
             raise Exception(f"'{sample_project_dir}' does not exist")
+            
+        samples_dict = deepcopy(kwargs["metadata"]["repo"].get("samples"))
+        result = []
+        copy_kwargs = deepcopy(kwargs) # deep copy is req. here to avoid kwargs being affected
+        new_samples_dict = []
+        override_paths_to_samples = {}
+        #i = 0
+        for sample_idx, sample in enumerate(samples_dict): #while i < len(samples_dict):#
+            # logger.debug(f"START LENGTH: {len(samples_dict)}")
+            # logger.debug(f"{sample_idx}")
+            # logger.debug(sample)
+            # logger.debug(f"OUTER {sample_idx}")
+            override_path = samples_dict[sample_idx].get("override_path")
+            if override_path != None:
+                # logger.debug(f"INNER {sample_idx}")
+                current_samples = override_paths_to_samples.get(override_path)
+                logger.debug(f"CURR SAMPLES: {current_samples}")
+                if current_samples != None:
+                    logger.debug(f"CURR SAMPLES 2: {current_samples}")
+                    override_paths_to_samples[override_path] = current_samples.append(sample)
+                    logger.debug(f" 3: {override_paths_to_samples}")
+                    logger.debug(f" 3: {override_paths_to_samples[override_path]}")
+                else:
+                    override_paths_to_samples[override_path] = [sample]
+                # current_samples = [current_samples]
 
+                pathh = sample.get("override_path")
+                # logger.debug(f"OVERRIDE PATH IS {pathh} for sample {sample}") ##DEBUG
+                
+                # logger.debug("post pop kwargs:")
+                # logger.debug(kwargs["metadata"]["repo"]["samples"])
+                # samples_dict.pop(sample_idx)
+            else:
+                new_samples_dict.append(sample)
+            # logger.debug(f"END LENGTH: {len(samples_dict)}")
+            # logger.debug(f"idx after IF: {sample_idx}")
+            # logger.debug(f"dict after IF: {samples_dict}")
+        for override_path in override_paths_to_samples:
+                result.append(
+                    self.py_samples_override(
+                        root=sample_project_dir,
+                        override_path=override_path,
+                        sample=override_paths_to_samples[override_path],
+                        **copy_kwargs
+                        )
+                )
+                logger.debug("result is")
+                logger.debug(result)
+        kwargs["metadata"]["repo"]["samples"] = new_samples_dict
         logger.debug(
             f"Generating templates for samples directory '{sample_project_dir}'"
         )
-        py_samples_templates = Path(self._template_root) / "python_samples"
-        t = templates.TemplateGroup(py_samples_templates, self.excludes)
-        result = t.render(subdir=sample_project_dir, **kwargs)
-        _tracked_paths.add(result)
+        kwargs["subdir"] = sample_project_dir
+        result.append(self._generic_library("python_samples", **kwargs))
+
+        logger.debug(f"{kwargs}") ##DEBUG
+
+        for path in result:
+            # .add() records the root of the paths and needs to be applied to each
+            _tracked_paths.add(path)
+
         return result
+        
+    def py_samples_override(self, root, override_path, sample, **copy_kwargs) -> Path:
+        #
+        copy_kwargs["metadata"]["repo"]["sample_project_dir"] = override_path
+        logger.debug("SAMPLE in pys override")
+        logger.debug(sample)
+        copy_kwargs["metadata"]["repo"]["samples"] = sample
+        if root != ".":
+            override_path = Path(root) / override_path
+
+        logger.debug(
+            f"Generating templates for override path '{override_path}'"
+        )
+
+        copy_kwargs["subdir"] = override_path
+        return self._generic_library("python_samples", **copy_kwargs)
+
+        # for sample_idx, sample in enumerate(samples_dict):
+        #     if sample.get("override_path") == override_path:
+        #         if root != ".":
+        #             override_path = Path(root) / override_path
+
+        #         logger.debug(
+        #             f"Generating templates for override path '{override_path}'"
+        #         )
+
+        #         copy_kwargs["subdir"] = override_path
+        #         return self._generic_library("python_samples", **copy_kwargs)
+        #     else:
+        #         raise Exception("What")
+        # #         new_samples_dict.append(sample)
+        # # #         copy_kwargs["metadata"]["repo"]["samples"].remove(sample)
+        # # copy_kwargs["metadata"]["repo"]["samples"] = new_samples_dict
+
+
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
