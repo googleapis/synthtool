@@ -16,7 +16,7 @@ import json
 import os
 import re
 import yaml
-from copy import copy, deepcopy
+from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
 
