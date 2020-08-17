@@ -102,7 +102,9 @@ class CommonTemplates:
         elif not Path(sample_project_dir).exists():
             raise Exception(f"'{sample_project_dir}' does not exist")
 
-        override_paths_to_samples = {}  # Dict of format { override_path : sample(s) }
+        override_paths_to_samples: Dict[
+            str, List[str]
+        ] = {}  # Dict of format { override_path : sample(s) }
         samples_dict = deepcopy(kwargs["metadata"]["repo"].get("samples"))
         default_samples_dict = []  # Dict which will generate in sample_project_dir
 
