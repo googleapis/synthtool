@@ -40,6 +40,7 @@ def _setup_logging(color: bool = bool(ColoredFormatter)):
     logging.setLoggerClass(LoggerWithSuccess)
 
     # Silence any noisy loggers here.
+    logging.getLogger("watchdog.observers").setLevel(logging.INFO)
 
 
 def configure_logger(name: str, color: bool = bool(ColoredFormatter)):

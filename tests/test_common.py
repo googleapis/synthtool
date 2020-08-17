@@ -110,7 +110,6 @@ def test_py_samples_samples_folder():
         finally:
             os.chdir(cwd)
 
-
 def test_py_samples_override():
     path_to_gen = MOCK / "override_path"
     with tempfile.TemporaryDirectory() as tempdir:

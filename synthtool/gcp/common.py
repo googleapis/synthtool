@@ -15,12 +15,15 @@
 import json
 import os
 import re
+import shutil
 import yaml
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
 
 import synthtool as s
+import jinja2
+
 from synthtool import _tracked_paths
 from synthtool.languages import node
 from synthtool.log import logger
@@ -70,7 +73,7 @@ class CommonTemplates:
         - Delegates generation of additional sample documents alternate/overridden folders
         through py_samples_override()
         """
-        logger.debug(f"start")  ##DEBUG
+        logger.debug(f"start")
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
@@ -213,7 +216,27 @@ class CommonTemplates:
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
 
-        return self._generic_library("python_library", **kwargs)
+        ret = self._generic_library("python_library", **kwargs)
+
+        # If split_system_tests is set to True, we disable the system
+        # test in the main presubmit build and create individual build
+        # configs for each python versions.
+        if kwargs.get("split_system_tests", False):
+            template_root = self._template_root / "py_library_split_systests"
+            # copy the main presubmit config
+            shutil.copy2(
+                template_root / ".kokoro/presubmit/presubmit.cfg",
+                ret / ".kokoro/presubmit/presubmit.cfg",
+            )
+            env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_root)))
+            tmpl = env.get_template(".kokoro/presubmit/system.cfg")
+            for v in kwargs["system_test_python_versions"]:
+                nox_session = f"system-{v}"
+                dest = ret / f".kokoro/presubmit/system-{v}.cfg"
+                content = tmpl.render(nox_session=nox_session)
+                with open(dest, "w") as f:
+                    f.write(content)
+        return ret
 
     def java_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json

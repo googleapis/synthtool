@@ -88,6 +88,9 @@ class TestClone(unittest.TestCase):
         return super().tearDown()
 
     def testClone(self):
+        # clear out metadata before creating new metadata and asserting on it
+        metadata.reset()
+
         local_directory = git.clone("https://github.com/googleapis/nodejs-vision.git")
         self.assertEqual("nodejs-vision", local_directory.name)
         self.assertEqual("nodejs-vision", metadata.get().sources[0].git.name)
