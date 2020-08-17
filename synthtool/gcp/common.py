@@ -73,7 +73,6 @@ class CommonTemplates:
         - Delegates generation of additional sample documents alternate/overridden folders
         through py_samples_override()
         """
-        logger.debug(f"start")
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
@@ -123,13 +122,15 @@ class CommonTemplates:
                 else:
                     cur_override_sample.append(sample)
                     override_paths_to_samples[override_path] = cur_override_sample
+            # If override path none, will be generated in the default
+            # folder: sample_project_dir
             else:
                 default_samples_dict.append(sample)
 
         result = (
             []
         )  # List of paths to tempdirs which will be copied into sample folders
-        copy_kwargs = deepcopy(
+        overridden_samples_kwargs = deepcopy(
             kwargs
         )  # deep copy is req. here to avoid kwargs being affected
         for override_path in override_paths_to_samples:
@@ -139,7 +140,7 @@ class CommonTemplates:
                     root=sample_project_dir,
                     override_path=override_path,
                     override_samples=override_paths_to_samples[override_path],
-                    **copy_kwargs,
+                    **overridden_samples_kwargs,
                 )
             )
         kwargs["metadata"]["repo"]["samples"] = default_samples_dict
@@ -158,23 +159,25 @@ class CommonTemplates:
         return result
 
     def py_samples_override(
-        self, root, override_path, override_samples, **copy_kwargs
+        self, root, override_path, override_samples, **overridden_samples_kwargs
     ) -> Path:
         """
         Handles additional generation of READMEs where "override_path"s
         are set in one or more samples' metadata
         """
-        copy_kwargs["metadata"]["repo"]["sample_project_dir"] = override_path
+        overridden_samples_kwargs["metadata"]["repo"][
+            "sample_project_dir"
+        ] = override_path
         # Set samples metadata to ONLY samples intended to generate
         # under this directory (override_path)
-        copy_kwargs["metadata"]["repo"]["samples"] = override_samples
+        overridden_samples_kwargs["metadata"]["repo"]["samples"] = override_samples
         if root != ".":
             override_path = Path(root) / override_path
 
         logger.debug(f"Generating templates for override path '{override_path}'")
 
-        copy_kwargs["subdir"] = override_path
-        return self._generic_library("python_samples", **copy_kwargs)
+        overridden_samples_kwargs["subdir"] = override_path
+        return self._generic_library("python_samples", **overridden_samples_kwargs)
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
