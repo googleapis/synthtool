@@ -110,7 +110,9 @@ class CommonTemplates:
         # override paths
         for sample_idx, sample in enumerate(samples_dict):
             override_path = samples_dict[sample_idx].get("override_path")
-            if override_path is not None:  # sample should be placed in an override README
+            if (
+                override_path is not None
+            ):  # sample should be placed in an override README
                 cur_override_sample = override_paths_to_samples.get(override_path)
                 # Base case: No samples are yet planned to gen in this override dir
                 if cur_override_sample is None:
