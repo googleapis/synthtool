@@ -22,4 +22,3 @@ jobs:
       - name: Run PMD & Spotbugs
         run: mvn -P lint --quiet --batch-mode compile pmd:cpd-check spotbugs:check
         working-directory: samples/snippets
-  
