@@ -231,6 +231,7 @@ class MetadataTrackerAndWriter:
         self.old_metadata = _read_or_empty(self.metadata_file_path)
         _add_self_git_source()
         watch_dir = pathlib.Path(self.metadata_file_path).parent
+        os.makedirs(watch_dir, exist_ok=True)
         self.handler = FileSystemEventHandler(watch_dir)
         self.observer = watchdog.observers.Observer()
         self.observer.schedule(self.handler, str(watch_dir), recursive=True)

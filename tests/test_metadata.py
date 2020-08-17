@@ -417,3 +417,15 @@ def test_disable_writing_metadata(source_tree: SourceTree):
         assert not metadata_path.exists()
     finally:
         metadata.enable_write_metadata(True)
+
+
+def test_watch_dir_does_not_exist_yet(source_tree):
+    new_dir_path = source_tree.tmpdir / "blahblah"
+    metadata_path = new_dir_path / "synth.metadata"
+
+    assert not os.path.exists(new_dir_path)
+
+    with metadata.MetadataTrackerAndWriter(metadata_path):
+        pass
+
+    assert os.path.exists(new_dir_path)
