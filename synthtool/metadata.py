@@ -231,25 +231,29 @@ class MetadataTrackerAndWriter:
         self.old_metadata = _read_or_empty(self.metadata_file_path)
         _add_self_git_source()
         watch_dir = pathlib.Path(self.metadata_file_path).parent
+        os.makedirs(watch_dir, exist_ok=True)
         self.handler = FileSystemEventHandler(watch_dir)
         self.observer = watchdog.observers.Observer()
         self.observer.schedule(self.handler, str(watch_dir), recursive=True)
         self.observer.start()
 
     def __exit__(self, type, value, traceback):
-        if should_track_obsolete_files():
-            time.sleep(2)  # Finish collecting observations about modified files.
-            self.observer.stop()
-            self.observer.join()
-            for path in git_ignore(self.handler.get_touched_file_paths()):
-                _metadata.generated_files.append(path)
-            _remove_obsolete_files(self.old_metadata)
+        if value:
+            pass  # An exception was raised.  Don't write metadata or clean up.
         else:
-            self.observer.stop()
-        _clear_local_paths(get())
-        _metadata.sources.sort(key=_source_key)
-        if _enable_write_metadata:
-            write(self.metadata_file_path)
+            if should_track_obsolete_files():
+                time.sleep(2)  # Finish collecting observations about modified files.
+                self.observer.stop()
+                self.observer.join()
+                for path in git_ignore(self.handler.get_touched_file_paths()):
+                    _metadata.generated_files.append(path)
+                _remove_obsolete_files(self.old_metadata)
+            else:
+                self.observer.stop()
+            _clear_local_paths(get())
+            _metadata.sources.sort(key=_source_key)
+            if _enable_write_metadata:
+                write(self.metadata_file_path)
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:

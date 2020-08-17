@@ -87,10 +87,10 @@ def all_snippets_from_file(sample_file: str) -> Dict[str, str]:
             close_match = re.match(pattern=CLOSE_SNIPPET_REGEX, string=line)
             open_exclude_match = re.match(pattern=OPEN_EXCLUDE_REGEX, string=line)
             close_exclude_match = re.match(pattern=CLOSE_EXCLUDE_REGEX, string=line)
-            if open_match:
+            if open_match and not excluding:
                 open_snippets.add(open_match[1])
                 snippet_lines[open_match[1]] = []
-            elif close_match:
+            elif close_match and not excluding:
                 open_snippets.discard(close_match[1])
             elif open_exclude_match:
                 excluding = True
