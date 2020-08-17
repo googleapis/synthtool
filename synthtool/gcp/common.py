@@ -20,8 +20,6 @@ import yaml
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
-
-import synthtool as s
 import jinja2
 
 from synthtool import _tracked_paths
@@ -112,10 +110,10 @@ class CommonTemplates:
         # override paths
         for sample_idx, sample in enumerate(samples_dict):
             override_path = samples_dict[sample_idx].get("override_path")
-            if override_path != None:  # sample should be placed in an override README
+            if override_path is not None:  # sample should be placed in an override README
                 cur_override_sample = override_paths_to_samples.get(override_path)
                 # Base case: No samples are yet planned to gen in this override dir
-                if cur_override_sample == None:
+                if cur_override_sample is None:
                     override_paths_to_samples[override_path] = [sample]
                 # Else: Sample docs will be generated in README merged with other
                 # sample doc(s) already planned to generate in this dir
