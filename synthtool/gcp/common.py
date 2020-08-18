@@ -17,9 +17,9 @@ import os
 import re
 import shutil
 import yaml
+from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
-
 import jinja2
 
 from synthtool import _tracked_paths
@@ -62,18 +62,22 @@ class CommonTemplates:
 
         return result
 
-    def py_samples(self, **kwargs) -> Path:
+    def py_samples(self, **kwargs) -> List[Path]:
         """
-        Determines whether generation is being done in a client library or in a samples
-        folder so it can either generate in the current directory or the client lib's
-        'samples' folder. A custom path for where to generate may also be specified.
-        Renders README.md according to .repo-metadata.json
+        Handles generation of README.md templates for Python samples
+        - Determines whether generation is being done in a client library or in a samples
+        folder automatically
+        - Otherwise accepts manually set sample_project_dir through kwargs metadata
+        - Delegates generation of additional sample documents alternate/overridden folders
+        through py_samples_override()
         """
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
+
         # load common repo meta information (metadata that's not language specific).
         self._load_generic_metadata(kwargs["metadata"])
+
         # temporary exclusion prior to old templates being migrated out
         self.excludes.extend(
             [
@@ -86,6 +90,7 @@ class CommonTemplates:
             ]
         )
 
+        # determine if in client lib and set custom root sample dir if specified, else None
         in_client_library = Path("samples").exists()
         sample_project_dir = kwargs["metadata"]["repo"].get("sample_project_dir")
 
@@ -97,14 +102,84 @@ class CommonTemplates:
         elif not Path(sample_project_dir).exists():
             raise Exception(f"'{sample_project_dir}' does not exist")
 
+        override_paths_to_samples: Dict[
+            str, List[str]
+        ] = {}  # Dict of format { override_path : sample(s) }
+        samples_dict = deepcopy(kwargs["metadata"]["repo"].get("samples"))
+        default_samples_dict = []  # Dict which will generate in sample_project_dir
+
+        # Iterate through samples to store override_paths_to_samples for all existing
+        # override paths
+        for sample_idx, sample in enumerate(samples_dict):
+            override_path = samples_dict[sample_idx].get("override_path")
+            if (
+                override_path is not None
+            ):  # sample should be placed in an override README
+                cur_override_sample = override_paths_to_samples.get(override_path)
+                # Base case: No samples are yet planned to gen in this override dir
+                if cur_override_sample is None:
+                    override_paths_to_samples[override_path] = [sample]
+                # Else: Sample docs will be generated in README merged with other
+                # sample doc(s) already planned to generate in this dir
+                else:
+                    cur_override_sample.append(sample)
+                    override_paths_to_samples[override_path] = cur_override_sample
+            # If override path none, will be generated in the default
+            # folder: sample_project_dir
+            else:
+                default_samples_dict.append(sample)
+
+        result = (
+            []
+        )  # List of paths to tempdirs which will be copied into sample folders
+        overridden_samples_kwargs = deepcopy(
+            kwargs
+        )  # deep copy is req. here to avoid kwargs being affected
+        for override_path in override_paths_to_samples:
+            # Generate override sample docs
+            result.append(
+                self.py_samples_override(
+                    root=sample_project_dir,
+                    override_path=override_path,
+                    override_samples=override_paths_to_samples[override_path],
+                    **overridden_samples_kwargs,
+                )
+            )
+        kwargs["metadata"]["repo"]["samples"] = default_samples_dict
+
         logger.debug(
             f"Generating templates for samples directory '{sample_project_dir}'"
         )
-        py_samples_templates = Path(self._template_root) / "python_samples"
-        t = templates.TemplateGroup(py_samples_templates, self.excludes)
-        result = t.render(subdir=sample_project_dir, **kwargs)
-        _tracked_paths.add(result)
+        kwargs["subdir"] = sample_project_dir
+        # Generate default sample docs
+        result.append(self._generic_library("python_samples", **kwargs))
+
+        for path in result:
+            # .add() records the root of the paths and needs to be applied to each
+            _tracked_paths.add(path)
+
         return result
+
+    def py_samples_override(
+        self, root, override_path, override_samples, **overridden_samples_kwargs
+    ) -> Path:
+        """
+        Handles additional generation of READMEs where "override_path"s
+        are set in one or more samples' metadata
+        """
+        overridden_samples_kwargs["metadata"]["repo"][
+            "sample_project_dir"
+        ] = override_path
+        # Set samples metadata to ONLY samples intended to generate
+        # under this directory (override_path)
+        overridden_samples_kwargs["metadata"]["repo"]["samples"] = override_samples
+        if root != ".":
+            override_path = Path(root) / override_path
+
+        logger.debug(f"Generating templates for override path '{override_path}'")
+
+        overridden_samples_kwargs["subdir"] = override_path
+        return self._generic_library("python_samples", **overridden_samples_kwargs)
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json

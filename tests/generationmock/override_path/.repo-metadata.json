@@ -1,0 +1,25 @@
+{
+    "name": "bigtable",
+    "name_pretty": "Cloud Bigtable",
+    "product_documentation": "https://cloud.google.com/bigtable",
+    "client_documentation": "https://googleapis.dev/python/bigtable/latest",
+    "issue_tracker": "https://issuetracker.google.com/savedsearches/559777",
+    "release_level": "ga",
+    "language": "python",
+    "repo": "googleapis/python-bigtable",
+    "distribution_name": "google-cloud-bigtable",
+    "api_id": "bigtable.googleapis.com",
+    "requires_billing": true,
+    "client_library": true,
+    "samples": [
+              {"name": "Quickstart",
+              "description": "Example sample for product",
+              "file": "quickstart.py",
+              "custom_content": "This is custom text for the sample",
+              "runnable": "True",
+              "override_path": "override"},
+              {"name": "Hello World",
+              "description": "Example beginner application",
+              "file": "main.py"}
+    ]
+  }
