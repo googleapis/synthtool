@@ -90,7 +90,7 @@ class CommonTemplates:
             ]
         )
 
-        # enit sure samples will generate
+        # ensure samples will generate
         kwargs["metadata"]["samples"] = True
 
         # determine if in client lib and set custom root sample dir if specified, else None
