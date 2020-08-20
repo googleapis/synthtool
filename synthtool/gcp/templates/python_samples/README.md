@@ -3,7 +3,7 @@
 
 ## Python Samples for {{ metadata['repo']['name_pretty'] }}
 
-This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a refererence for how to use {{ metadata['repo']['name_pretty'] }}. {% if metadata['repo']['custom_content'] is defined %}
+This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a refererence for how to use this product. {% if metadata['repo']['custom_content'] is defined %}
 {{ metadata['repo']['custom_content']}}{% endif %}{% if metadata['repo']['samples']|length %}
 Samples, quickstarts, and other documentation are available at <a href="{{ metadata['repo']['product_documentation'] }}">cloud.google.com</a>.
 {% for sample in range(metadata['repo']['samples']|length) %}
@@ -37,7 +37,7 @@ To run this sample:
 {% if metadata['repo']|length %}{% if metadata['repo']['client_library'] %}
 These samples use the [Google Cloud Client Library for Python][client_library_python].{% endif %}
 You can read the documentation for more details on API usage and use GitHub
-to [browse the source][source] and [report issues][issues].{% endif %}
+to <a href="https://github.com/{{ metadata['repo']['repo'] }}">browse the source</a> and [report issues][issues].{% endif %}
 
 ### Contributing
 For [contributing guidelines][contrib_guide], the [Python style guide][py_style], and more information on prerequisite steps to contribute, view the source code at <a href="https://github.com/{{ metadata['repo']['repo'] }}">{{ metadata['repo']['repo'] }}</a>.
@@ -45,7 +45,6 @@ For [contributing guidelines][contrib_guide], the [Python style guide][py_style]
 [authentication]: https://cloud.google.com/docs/authentication/getting-started
 [enable_billing]:https://cloud.google.com/apis/docs/getting-started#enabling_billing
 [client_library_python]: https://googlecloudplatform.github.io/google-cloud-python/
-[source]: https://github.com/GoogleCloudPlatform/google-cloud-python
 [issues]: https://github.com/GoogleCloudPlatform/google-cloud-python/issues
 [contrib_guide]: https://github.com/googleapis/google-cloud-python/blob/master/CONTRIBUTING.rst
 [py_style]: http://google.github.io/styleguide/pyguide.html
