@@ -40,7 +40,7 @@ You can read the documentation for more details on API usage and use GitHub
 to <a href="https://github.com/{{ metadata['repo']['repo'] }}">browse the source</a> and [report issues][issues].{% endif %}
 
 ### Contributing
-For [contributing guidelines][contrib_guide], the [Python style guide][py_style], and more information on prerequisite steps to contribute, view the source code at <a href="https://github.com/{{ metadata['repo']['repo'] }}">{{ metadata['repo']['repo'] }}</a>.
+View the [contributing guidelines][contrib_guide], the [Python style guide][py_style]. More information on prerequisite steps to contribute may be available at the source code.
 
 [authentication]: https://cloud.google.com/docs/authentication/getting-started
 [enable_billing]:https://cloud.google.com/apis/docs/getting-started#enabling_billing
