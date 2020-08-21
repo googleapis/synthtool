@@ -90,6 +90,9 @@ class CommonTemplates:
             ]
         )
 
+        # ensure samples will generate
+        kwargs["metadata"]["samples"] = True
+
         # determine if in client lib and set custom root sample dir if specified, else None
         in_client_library = Path("samples").exists()
         sample_project_dir = kwargs["metadata"]["repo"].get("sample_project_dir")
