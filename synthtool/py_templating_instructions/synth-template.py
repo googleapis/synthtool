@@ -12,9 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# To use this code, either append the generation lines (22-25) to your
-# existing synth.py file, or duplicate this file and add it to your
-# repo.
+# Append the generation lines (21-26) to your existing synth.py file, or
+# duplicate this file and add it to your repo.
 
 import synthtool as s
 from synthtool import gcp
