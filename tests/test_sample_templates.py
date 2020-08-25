@@ -63,7 +63,7 @@ def test_samples_footer():
     assert "Google Cloud Client Library for Python" in result
     assert "Python style guide" in result
     assert (
-        '<a href="https://github.com/googleapis/python-storage">googleapis/python-storage</a>'
+        '<a href="https://github.com/googleapis/python-storage">browse the source</a>'
         in result
     )
 
