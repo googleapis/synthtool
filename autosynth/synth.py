@@ -437,7 +437,8 @@ def synthesize_loop_single_pr(
 
 
 def synthesize_inner_loop(
-    toolbox: SynthesizeLoopToolbox, synthesizer: AbstractSynthesizer,
+    toolbox: SynthesizeLoopToolbox,
+    synthesizer: AbstractSynthesizer,
 ):
     # Synthesize with the most recent version of all the sources.
     if not toolbox.synthesize_version_in_new_branch(
@@ -653,7 +654,10 @@ def _inner_main(temp_dir: str) -> int:
 
             # Prepare to call synthesize loop.
             synthesizer = Synthesizer(
-                metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
+                metadata_path,
+                args.extra_args,
+                args.deprecated_execution,
+                "synth.py",
             )
             x = SynthesizeLoopToolbox(
                 source_versions,
