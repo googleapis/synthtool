@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import jinja2
 
-from synthtool import _tracked_paths
+from synthtool import shell, _tracked_paths
 from synthtool.languages import node
 from synthtool.log import logger
 from synthtool.sources import git, templates
@@ -57,6 +57,11 @@ class CommonTemplates:
                 self.excludes.append("samples/README.md")
 
         t = templates.TemplateGroup(self._template_root / directory, self.excludes)
+
+        # TODO: migrate to python.py once old sample gen is deprecated
+        if directory == "python_samples":
+            t.env.globals["get_help"] = _get_help
+
         result = t.render(**kwargs)
         _tracked_paths.add(result)
 
@@ -115,9 +120,15 @@ class CommonTemplates:
         # override paths
         for sample_idx, sample in enumerate(samples_dict):
             override_path = samples_dict[sample_idx].get("override_path")
-            if (
-                override_path is not None
-            ):  # sample should be placed in an override README
+
+            if override_path is not None:
+                # add absolute path to metadata so `python foo.py --help` succeeds
+                if sample.get("file") is not None:
+                    path = os.path.join(
+                        sample_project_dir, override_path, sample.get("file")
+                    )
+                    sample["abs_path"] = Path(path).resolve()
+
                 cur_override_sample = override_paths_to_samples.get(override_path)
                 # Base case: No samples are yet planned to gen in this override dir
                 if cur_override_sample is None:
@@ -130,14 +141,16 @@ class CommonTemplates:
             # If override path none, will be generated in the default
             # folder: sample_project_dir
             else:
+                if sample.get("file") is not None:
+                    path = os.path.join(sample_project_dir, sample.get("file"))
+                    sample["abs_path"] = Path(path).resolve()
                 default_samples_dict.append(sample)
 
-        result = (
-            []
-        )  # List of paths to tempdirs which will be copied into sample folders
-        overridden_samples_kwargs = deepcopy(
-            kwargs
-        )  # deep copy is req. here to avoid kwargs being affected
+        # List of paths to tempdirs which will be copied into sample folders
+        result = []
+
+        # deep copy is req. here to avoid kwargs being affected
+        overridden_samples_kwargs = deepcopy(kwargs)
         for override_path in override_paths_to_samples:
             # Generate override sample docs
             result.append(
@@ -358,3 +371,8 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
         with open(metadata_file) as f:
             return json.load(f)
     return {}
+
+
+def _get_help(filename: str) -> str:
+    """Function used by sample readmegen"""
+    return shell.run(["python", filename, "--help"]).stdout
