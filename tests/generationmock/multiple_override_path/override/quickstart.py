@@ -14,6 +14,10 @@
 
 import argparse
 
+""" Test file to assert show_help functionality for py samples README generation.
+Expected output of generation should be 'python quickstart.py --help'
+"""
+
 
 def main(first_arg="first_arg"):
     print(f"first_arg {first_arg}")

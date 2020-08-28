@@ -373,6 +373,7 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
     return {}
 
 
+# Returns the output of `python foo.py --help`
 def _get_help(filename: str) -> str:
     """Function used by sample readmegen"""
     return shell.run(["python", filename, "--help"]).stdout
