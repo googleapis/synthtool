@@ -279,3 +279,44 @@ def test_synthesize_libraries_with_failures():
     assert gh.create_issue.call_count == 2
     gh.create_issue_comment.assert_not_called()
     gh.patch_issue.assert_not_called()
+
+
+def test_select_shard():
+    config = [
+        {"name": "test0", "repository": "googleapis/test0"},
+        {"name": "test2", "repository": "googleapis/test2"},
+        {"name": "test3", "repository": "googleapis/test3"},
+        {"name": "test5", "repository": "googleapis/test5"},
+        {"name": "test6", "repository": "googleapis/test6"},
+        {"name": "test1", "repository": "googleapis/test1"},
+        {"name": "test7", "repository": "googleapis/test7"},
+        {"name": "test8", "repository": "googleapis/test8"},
+        {"name": "test4", "repository": "googleapis/test4"},
+        {"name": "test9", "repository": "googleapis/test9"},
+    ]
+
+    assert [{"name": "test0", "repository": "googleapis/test0"}] == multi.select_shard(
+        config, "0/10"
+    )
+    assert [{"name": "test9", "repository": "googleapis/test9"}] == multi.select_shard(
+        config, "9/10"
+    )
+
+    assert [
+        {"name": "test0", "repository": "googleapis/test0"},
+        {"name": "test1", "repository": "googleapis/test1"},
+        {"name": "test2", "repository": "googleapis/test2"},
+    ] == multi.select_shard(config, "0/3")
+
+    assert [
+        {"name": "test3", "repository": "googleapis/test3"},
+        {"name": "test4", "repository": "googleapis/test4"},
+        {"name": "test5", "repository": "googleapis/test5"},
+    ] == multi.select_shard(config, "1/3")
+
+    assert [
+        {"name": "test6", "repository": "googleapis/test6"},
+        {"name": "test7", "repository": "googleapis/test7"},
+        {"name": "test8", "repository": "googleapis/test8"},
+        {"name": "test9", "repository": "googleapis/test9"},
+    ] == multi.select_shard(config, "2/3")
