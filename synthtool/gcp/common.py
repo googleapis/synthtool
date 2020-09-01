@@ -373,4 +373,3 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
         with open(metadata_file) as f:
             return json.load(f)
     return {}
-
