@@ -1,0 +1,16 @@
+# Ensure latest setuptools to avoid any package resources issues.
+setuptools
+
+nox
+requests
+pyyaml
+jinja2
+deprecation
+protobuf==3.13.0
+watchdog
+
+# some java processing requires xml handling
+lxml
+
+# Install sample-tester for generated samples
+sample-tester

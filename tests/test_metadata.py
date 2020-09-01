@@ -15,12 +15,13 @@
 import json
 import os
 import pathlib
-import pytest
-import re
 import shutil
 import subprocess
+import sys
 
-from synthtool import metadata
+import pytest
+
+from synthtool import _tracked_paths, metadata, transforms
 from synthtool.tmp import tmpdir
 
 
@@ -101,13 +102,13 @@ def test_write(tmpdir):
     assert "sha" in raw
     data = json.loads(raw)
     assert data
-    assert data["updateTime"] is not None
+    assert "updateTime" not in data
 
 
 class SourceTree:
     """Utility for quickly creating files in a sample source tree."""
 
-    def __init__(self, tmpdir):
+    def __init__(self, tmpdir: pathlib.Path):
         metadata.reset()
         self.tmpdir = tmpdir
         self.git = shutil.which("git")
@@ -133,6 +134,146 @@ def source_tree():
     os.chdir(tmp_dir)
     yield SourceTree(tmp_dir)
     os.chdir(cwd)
+
+
+def test_new_files_found(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+    source_tree.write("a")
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+
+    # Confirm add_new_files found the new files and ignored the old one.
+    new_file_paths = [path for path in metadata.get().generated_files]
+    assert ["code/b"] == new_file_paths
+
+
+def test_gitignored_files_ignored(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+        source_tree.write(".gitignore", "code/c\n")
+
+    # Confirm add_new_files found the new files and ignored one.
+    new_file_paths = [path for path in metadata.get().generated_files]
+    assert [".gitignore", "code/b"] == new_file_paths
+
+
+def test_old_file_removed(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+
+    metadata.reset()
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/c")
+
+    assert 1 == len(metadata.get().generated_files)
+    assert "code/c" == metadata.get().generated_files[0]
+
+    # Confirm remove_obsolete_files deletes b but not c.
+    assert not os.path.exists("code/b")
+    assert os.path.exists("code/c")
+
+
+def test_excluded_file_not_removed(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+    _tracked_paths.add(source_tree.tmpdir / "build")
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+
+    metadata.reset()
+    # Create a second source tree and copy it into the first.
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        # exclude code/c from being copied should mean it doesn't get deleted.
+        transforms.move(source_tree.tmpdir / "build", excludes=["code/c"])
+
+    # Confirm remove_obsolete_files deletes b but not c.
+    assert not os.path.exists("code/b")
+    assert os.path.exists("code/c")
+
+
+def test_nothing_happens_when_disabled(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+
+    metadata.reset()
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/c")
+        metadata.set_track_obsolete_files(False)
+
+    assert 0 == len(metadata.get().new_files)
+
+    # Confirm no files were deleted.
+    assert os.path.exists("code/b")
+    assert os.path.exists("code/c")
+
+
+def test_nothing_happens_when_exception(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/b")
+        source_tree.write("code/c")
+
+    metadata.reset()
+    try:
+        with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+            source_tree.write("code/c")
+            raise "Exception!"
+    except:  # noqa: E722
+        pass
+
+    assert 0 == len(metadata.get().new_files)
+
+    # Confirm no files were deleted.
+    assert os.path.exists("code/b")
+    assert os.path.exists("code/c")
+
+
+def test_old_file_ignored_by_git_not_removed(
+    source_tree, preserve_track_obsolete_file_flag
+):
+    metadata.set_track_obsolete_files(True)
+
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write(".bin")
+
+    metadata.reset()
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write(".gitignore", ".bin")
+
+    # Confirm remove_obsolete_files didn't remove the .bin file.
+    assert os.path.exists(".bin")
+
+
+def test_add_new_files_with_bad_file(source_tree, preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(True)
+
+    metadata.reset()
+    tmpdir = source_tree.tmpdir
+    dne = "does-not-exist"
+    source_tree.git_add(dne)
+
+    try:
+        os.symlink(tmpdir / dne, tmpdir / "badlink")
+    except OSError:
+        # On Windows, creating a symlink requires Admin priveleges, which
+        # should never be granted to test runners.
+        assert "win32" == sys.platform
+        return
+    # Confirm this doesn't throw an exception.
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        pass
+    # And a bad link does not exist and shouldn't be recorded as a new file.
+    assert 0 == len(metadata.get().new_files)
 
 
 def test_read_metadata(tmpdir):
@@ -161,7 +302,18 @@ def test_track_obsolete_files_defaults_to_false(preserve_track_obsolete_file_fla
     assert not metadata.should_track_obsolete_files()
 
 
-def test_append_git_log_to_metadata(source_tree):
+def test_set_track_obsolete_files(preserve_track_obsolete_file_flag):
+    metadata.set_track_obsolete_files(False)
+    assert not metadata.should_track_obsolete_files()
+    metadata.set_track_obsolete_files(True)
+    assert metadata.should_track_obsolete_files()
+
+
+def test_used_to_append_git_log_to_metadata(source_tree):
+    """Synthtool used to append the git log for each git source.  But nothing
+    consumes the log, and there's no design for anything to consume the log.
+    Plus, it cluttered up synth.metadata.
+    """
     with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
         # Create one commit that will be recorded in the metadata.
         source_tree.write("a")
@@ -195,14 +347,19 @@ def test_append_git_log_to_metadata(source_tree):
 
     # Read the metadata that we just wrote.
     mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
-    # Match 2 log lines.
-    assert re.match(
-        r"[0-9A-Fa-f]+\ncode/c\n+[0-9A-Fa-f]+\ncode/b\n+",
-        mdata.sources[0].git.log,
-        re.MULTILINE,
-    )
+    # The log should be empty.
+    assert "" == mdata.sources[1].git.log
     # Make sure the local path field is not recorded.
     assert not mdata.sources[0].git.local_path is None
+
+
+def test_cwd_git_source_in_metadata(source_tree):
+    # Instantiate a MetadataTrackerAndWriter to write the metadata.
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        pass
+    mdata = metadata._read_or_empty(source_tree.tmpdir / "synth.metadata")
+    cwd_source = mdata.sources[0].git
+    assert cwd_source.name == "."
 
 
 def test_reading_metadata_with_deprecated_fields_doesnt_crash(tmpdir):
@@ -244,3 +401,31 @@ def test_git_sources_are_sorted(source_tree: SourceTree):
         metadata.add_generator_source(name="a-generator", version="1", docker_image="x")
     m2 = metadata._read_or_empty(metadata_path)
     assert m1.sources == m2.sources
+
+
+def test_disable_writing_metadata(source_tree: SourceTree):
+    metadata_path: pathlib.Path = source_tree.tmpdir / "synth.metadata"
+    try:
+        with metadata.MetadataTrackerAndWriter(metadata_path):
+            metadata.add_generator_source(
+                name="a-generator", version="1", docker_image="x"
+            )
+            metadata.add_generator_source(
+                name="b-generator", version="2", docker_image="y"
+            )
+            metadata.enable_write_metadata(False)
+        assert not metadata_path.exists()
+    finally:
+        metadata.enable_write_metadata(True)
+
+
+def test_watch_dir_does_not_exist_yet(source_tree):
+    new_dir_path = source_tree.tmpdir / "blahblah"
+    metadata_path = new_dir_path / "synth.metadata"
+
+    assert not os.path.exists(new_dir_path)
+
+    with metadata.MetadataTrackerAndWriter(metadata_path):
+        pass
+
+    assert os.path.exists(new_dir_path)

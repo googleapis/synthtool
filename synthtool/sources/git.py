@@ -20,7 +20,9 @@ import subprocess
 from typing import Dict, Optional, Tuple
 
 import synthtool
-from synthtool import _tracked_paths, cache, log, metadata, shell
+import synthtool.preconfig
+from synthtool.log import logger
+from synthtool import _tracked_paths, cache, metadata, shell
 
 REPO_REGEX = (
     r"(((https:\/\/)|(git@))github.com(:|\/))?(?P<owner>[^\/]+)\/(?P<name>[^\/]+)"
@@ -65,7 +67,7 @@ def clone(
     preclone = get_preclone(url)
 
     if preclone:
-        log.debug(f"Using precloned repo {preclone}")
+        logger.debug(f"Using precloned repo {preclone}")
         dest = pathlib.Path(preclone)
     else:
         if dest is None:
@@ -77,10 +79,11 @@ def clone(
             shutil.rmtree(dest)
 
         if not dest.exists():
-            cmd = ["git", "clone", "--single-branch", url, dest]
-            shell.run(cmd)
+            cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
+            shell.run(cmd, check=True)
         else:
-            shell.run(["git", "pull"], cwd=str(dest))
+            shell.run(["git", "checkout", "master"], cwd=str(dest), check=True)
+            shell.run(["git", "pull"], cwd=str(dest), check=True)
         committish = committish or "master"
 
     if committish:

@@ -1,0 +1,154 @@
+commit e570163043b53638e1e2bee3530f99e26ffcd940
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:43:41 2020 -0700
+
+    changes without context
+    
+            autosynth cannot find the source of changes triggered by earlier changes in this
+            repository, or by version upgrades to tools such as linters.
+
+diff --git a/generated.txt b/generated.txt
+index f2ad6c7..4bcfe98 100644
+--- a/generated.txt
++++ b/generated.txt
+@@ -1 +1 @@
+-c
++d
+
+commit a23e3c7740b1a10b02b75c43de2f296d86528552
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:43:40 2020 -0700
+
+    merged PR
+
+diff --git a/generated.txt b/generated.txt
+index 7898192..f2ad6c7 100644
+--- a/generated.txt
++++ b/generated.txt
+@@ -1 +1 @@
+-a
++c
+
+commit 9f23c45dbbb98ce4e838f938deee19743dd663bf
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:43:39 2020 -0700
+
+    d
+
+diff --git a/synth.py b/synth.py
+index 87a045e..75134fb 100644
+--- a/synth.py
++++ b/synth.py
+@@ -6,7 +6,7 @@ import subprocess
+ # a different comment
+ 
+ with open("generated.txt", "wt") as f:
+-    f.write("c\n")
++    f.write("d\n")
+ metadata = { "updateTime": str(uuid.uuid4()),
+     "sources": [
+         {
+
+commit 45fa98150a8d95e6f0160146e81329bb790dae60
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:43:39 2020 -0700
+
+    c subject
+    
+    body line 1
+    body line 2
+
+diff --git a/synth.py b/synth.py
+index dd32b27..87a045e 100644
+--- a/synth.py
++++ b/synth.py
+@@ -6,7 +6,7 @@ import subprocess
+ # a different comment
+ 
+ with open("generated.txt", "wt") as f:
+-    f.write("b\n")
++    f.write("c\n")
+ metadata = { "updateTime": str(uuid.uuid4()),
+     "sources": [
+         {
+
+commit 5c0ceaa865322fe1545493cf39f63f3e5703fe05
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:43:39 2020 -0700
+
+    comment
+
+diff --git a/synth.py b/synth.py
+index 17c9866..dd32b27 100644
+--- a/synth.py
++++ b/synth.py
+@@ -3,7 +3,7 @@ import json
+ import uuid
+ import subprocess
+ 
+-# comment
++# a different comment
+ 
+ with open("generated.txt", "wt") as f:
+     f.write("b\n")
+
+commit 789daf62b48e249d86b5ec43c19ab7b570579d68
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:43:38 2020 -0700
+
+    b
+
+diff --git a/synth.py b/synth.py
+index dcdf3f9..17c9866 100644
+--- a/synth.py
++++ b/synth.py
+@@ -6,7 +6,7 @@ import subprocess
+ # comment
+ 
+ with open("generated.txt", "wt") as f:
+-    f.write("a\n")
++    f.write("b\n")
+ metadata = { "updateTime": str(uuid.uuid4()),
+     "sources": [
+         {
+
+commit 4e9fc46ea3d4469dd262c47c5267ac55a9d58965
+Author: Jeffrey Rennie <rennie@google.com>
+Date:   Wed Apr 22 12:43:38 2020 -0700
+
+    a
+
+diff --git a/generated.txt b/generated.txt
+new file mode 100644
+index 0000000..7898192
+--- /dev/null
++++ b/generated.txt
+@@ -0,0 +1 @@
++a
+diff --git a/synth.py b/synth.py
+new file mode 100644
+index 0000000..dcdf3f9
+--- /dev/null
++++ b/synth.py
+@@ -0,0 +1,21 @@
++import time
++import json
++import uuid
++import subprocess
++
++# comment
++
++with open("generated.txt", "wt") as f:
++    f.write("a\n")
++metadata = { "updateTime": str(uuid.uuid4()),
++    "sources": [
++        {
++        "git": {
++            "name": ".",
++            "remote": "https://github.com/googleapis/synthtool.git",
++            "sha": subprocess.run(["git", "log", "-1", "--pretty=%H"], universal_newlines=True, stdout=subprocess.PIPE).stdout.strip(),
++        }
++    }]
++}
++with open("synth.metadata", "wt") as f:
++    json.dump(metadata, f)

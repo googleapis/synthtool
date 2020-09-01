@@ -15,23 +15,36 @@
 import json
 import os
 import re
+import shutil
 import yaml
+from copy import deepcopy
 from pathlib import Path
-from typing import List, Dict
+from typing import Dict, List, Optional
+import jinja2
 
-from synthtool.languages import node
-from synthtool.sources import templates
-from synthtool import __main__
 from synthtool import _tracked_paths
-from synthtool import metadata
+from synthtool.languages import node
+from synthtool.log import logger
+from synthtool.sources import git, templates
 
-
-_TEMPLATES_DIR = Path(__file__).parent / "templates"
+PathOrStr = templates.PathOrStr
+TEMPLATES_URL: str = git.make_repo_clone_url("googleapis/synthtool")
+DEFAULT_TEMPLATES_PATH = "synthtool/gcp/templates"
+LOCAL_TEMPLATES: Optional[str] = os.environ.get("SYNTHTOOL_TEMPLATES")
 
 
 class CommonTemplates:
-    def __init__(self):
-        self._templates = templates.Templates(_TEMPLATES_DIR)
+    def __init__(self, template_path: Optional[Path] = None):
+        if template_path:
+            self._template_root = template_path
+        elif LOCAL_TEMPLATES:
+            logger.debug(f"Using local templates at {LOCAL_TEMPLATES}")
+            self._template_root = Path(LOCAL_TEMPLATES)
+        else:
+            templates_git = git.clone(TEMPLATES_URL)
+            self._template_root = templates_git / DEFAULT_TEMPLATES_PATH
+
+        self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
     def _generic_library(self, directory: str, **kwargs) -> Path:
@@ -43,20 +56,195 @@ class CommonTemplates:
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
                 self.excludes.append("samples/README.md")
 
-        t = templates.TemplateGroup(_TEMPLATES_DIR / directory, self.excludes)
+        t = templates.TemplateGroup(self._template_root / directory, self.excludes)
         result = t.render(**kwargs)
         _tracked_paths.add(result)
-        metadata.add_template_source(
-            name=directory, origin="synthtool.gcp", version=__main__.VERSION
-        )
+
         return result
+
+    def py_samples(self, **kwargs) -> List[Path]:
+        """
+        Handles generation of README.md templates for Python samples
+        - Determines whether generation is being done in a client library or in a samples
+        folder automatically
+        - Otherwise accepts manually set sample_project_dir through kwargs metadata
+        - Delegates generation of additional sample documents alternate/overridden folders
+        through py_samples_override()
+        """
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+
+        # load common repo meta information (metadata that's not language specific).
+        self._load_generic_metadata(kwargs["metadata"])
+
+        # temporary exclusion prior to old templates being migrated out
+        self.excludes.extend(
+            [
+                "README.rst",
+                "auth_api_key.tmpl.rst",
+                "auth.tmpl.rst",
+                "install_deps.tmpl.rst",
+                "install_portaudio.tmpl.rst",
+                "noxfile.py.j2",
+            ]
+        )
+
+        # ensure samples will generate
+        kwargs["metadata"]["samples"] = True
+
+        # determine if in client lib and set custom root sample dir if specified, else None
+        in_client_library = Path("samples").exists()
+        sample_project_dir = kwargs["metadata"]["repo"].get("sample_project_dir")
+
+        if sample_project_dir is None:  # Not found in metadata
+            if in_client_library:
+                sample_project_dir = "samples"
+            else:
+                sample_project_dir = "."
+        elif not Path(sample_project_dir).exists():
+            raise Exception(f"'{sample_project_dir}' does not exist")
+
+        override_paths_to_samples: Dict[
+            str, List[str]
+        ] = {}  # Dict of format { override_path : sample(s) }
+        samples_dict = deepcopy(kwargs["metadata"]["repo"].get("samples"))
+        default_samples_dict = []  # Dict which will generate in sample_project_dir
+
+        # Iterate through samples to store override_paths_to_samples for all existing
+        # override paths
+        for sample_idx, sample in enumerate(samples_dict):
+            override_path = samples_dict[sample_idx].get("override_path")
+            if (
+                override_path is not None
+            ):  # sample should be placed in an override README
+                cur_override_sample = override_paths_to_samples.get(override_path)
+                # Base case: No samples are yet planned to gen in this override dir
+                if cur_override_sample is None:
+                    override_paths_to_samples[override_path] = [sample]
+                # Else: Sample docs will be generated in README merged with other
+                # sample doc(s) already planned to generate in this dir
+                else:
+                    cur_override_sample.append(sample)
+                    override_paths_to_samples[override_path] = cur_override_sample
+            # If override path none, will be generated in the default
+            # folder: sample_project_dir
+            else:
+                default_samples_dict.append(sample)
+
+        result = (
+            []
+        )  # List of paths to tempdirs which will be copied into sample folders
+        overridden_samples_kwargs = deepcopy(
+            kwargs
+        )  # deep copy is req. here to avoid kwargs being affected
+        for override_path in override_paths_to_samples:
+            # Generate override sample docs
+            result.append(
+                self.py_samples_override(
+                    root=sample_project_dir,
+                    override_path=override_path,
+                    override_samples=override_paths_to_samples[override_path],
+                    **overridden_samples_kwargs,
+                )
+            )
+        kwargs["metadata"]["repo"]["samples"] = default_samples_dict
+
+        logger.debug(
+            f"Generating templates for samples directory '{sample_project_dir}'"
+        )
+        kwargs["subdir"] = sample_project_dir
+        # Generate default sample docs
+        result.append(self._generic_library("python_samples", **kwargs))
+
+        for path in result:
+            # .add() records the root of the paths and needs to be applied to each
+            _tracked_paths.add(path)
+
+        return result
+
+    def py_samples_override(
+        self, root, override_path, override_samples, **overridden_samples_kwargs
+    ) -> Path:
+        """
+        Handles additional generation of READMEs where "override_path"s
+        are set in one or more samples' metadata
+        """
+        overridden_samples_kwargs["metadata"]["repo"][
+            "sample_project_dir"
+        ] = override_path
+        # Set samples metadata to ONLY samples intended to generate
+        # under this directory (override_path)
+        overridden_samples_kwargs["metadata"]["repo"]["samples"] = override_samples
+        if root != ".":
+            override_path = Path(root) / override_path
+
+        logger.debug(f"Generating templates for override path '{override_path}'")
+
+        overridden_samples_kwargs["subdir"] = override_path
+        return self._generic_library("python_samples", **overridden_samples_kwargs)
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
+        # rename variable to accomodate existing synth.py files
+        if "system_test_dependencies" in kwargs:
+            kwargs["system_test_local_dependencies"] = kwargs[
+                "system_test_dependencies"
+            ]
+            logger.warning(
+                "Template argument 'system_test_dependencies' is deprecated."
+                "Use 'system_test_local_dependencies' or 'system_test_external_dependencies'"
+                "instead."
+            )
 
-        return self._generic_library("python_library", **kwargs)
+        # Set default Python versions for noxfile.py
+        if "default_python_version" not in kwargs:
+            kwargs["default_python_version"] = "3.8"
+        if "unit_test_python_versions" not in kwargs:
+            kwargs["unit_test_python_versions"] = ["3.6", "3.7", "3.8"]
+            if "microgenerator" not in kwargs:
+                kwargs["unit_test_python_versions"] = ["2.7", "3.5"] + kwargs[
+                    "unit_test_python_versions"
+                ]
+
+        if "system_test_python_versions" not in kwargs:
+            kwargs["system_test_python_versions"] = ["3.8"]
+            if "microgenerator" not in kwargs:
+                kwargs["system_test_python_versions"] = ["2.7"] + kwargs[
+                    "system_test_python_versions"
+                ]
+
+        # If cov_level is not given, set it to None.
+        if "cov_level" not in kwargs:
+            kwargs["cov_level"] = None
+
+        # Don't add samples templates if there are no samples
+        if "samples" not in kwargs:
+            self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
+
+        ret = self._generic_library("python_library", **kwargs)
+
+        # If split_system_tests is set to True, we disable the system
+        # test in the main presubmit build and create individual build
+        # configs for each python versions.
+        if kwargs.get("split_system_tests", False):
+            template_root = self._template_root / "py_library_split_systests"
+            # copy the main presubmit config
+            shutil.copy2(
+                template_root / ".kokoro/presubmit/presubmit.cfg",
+                ret / ".kokoro/presubmit/presubmit.cfg",
+            )
+            env = jinja2.Environment(loader=jinja2.FileSystemLoader(str(template_root)))
+            tmpl = env.get_template(".kokoro/presubmit/system.cfg")
+            for v in kwargs["system_test_python_versions"]:
+                nox_session = f"system-{v}"
+                dest = ret / f".kokoro/presubmit/system-{v}.cfg"
+                content = tmpl.render(nox_session=nox_session)
+                with open(dest, "w") as f:
+                    f.write(content)
+        return ret
 
     def java_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
@@ -74,6 +262,13 @@ class CommonTemplates:
 
         kwargs["metadata"] = node.template_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
+
+        # generate root-level `src/index.ts` to export multiple versions and its default clients
+        if "versions" in kwargs and "default_version" in kwargs:
+            node.generate_index_ts(
+                versions=kwargs["versions"], default_version=kwargs["default_version"]
+            )
+
         return self._generic_library("node_library", **kwargs)
 
     def php_library(self, **kwargs) -> Path:

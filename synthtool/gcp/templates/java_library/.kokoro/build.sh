@@ -20,21 +20,26 @@ scriptDir=$(realpath $(dirname "${BASH_SOURCE[0]}"))
 ## cd to the parent directory, i.e. the root of the git repo
 cd ${scriptDir}/..
 
+# include common functions
+source ${scriptDir}/common.sh
+
 # Print out Java version
 java -version
 echo ${JOB_TYPE}
 
-mvn install -B -V \
-  -DskipTests=true \
-  -Dclirr.skip=true \
-  -Denforcer.skip=true \
-  -Dmaven.javadoc.skip=true \
-  -Dgcloud.download.skip=true \
-  -T 1C
+# attempt to install 3 times with exponential backoff (starting with 10 seconds)
+retry_with_backoff 3 10 \
+  mvn install -B -V \
+    -DskipTests=true \
+    -Dclirr.skip=true \
+    -Denforcer.skip=true \
+    -Dmaven.javadoc.skip=true \
+    -Dgcloud.download.skip=true \
+    -T 1C
 
 # if GOOGLE_APPLICATION_CREDIENTIALS is specified as a relative path prepend Kokoro root directory onto it
 if [[ ! -z "${GOOGLE_APPLICATION_CREDENTIALS}" && "${GOOGLE_APPLICATION_CREDENTIALS}" != /* ]]; then
-    export GOOGLE_APPLICATION_CREDENTIALS=$(realpath ${KOKORO_ROOT}/src/${GOOGLE_APPLICATION_CREDENTIALS})
+    export GOOGLE_APPLICATION_CREDENTIALS=$(realpath ${KOKORO_GFILE_DIR}/${GOOGLE_APPLICATION_CREDENTIALS})
 fi
 
 RETURN_CODE=0
@@ -46,9 +51,7 @@ test)
     RETURN_CODE=$?
     ;;
 lint)
-    mvn \
-      -Penable-samples \
-      com.coveo:fmt-maven-plugin:check
+    mvn com.coveo:fmt-maven-plugin:check
     RETURN_CODE=$?
     ;;
 javadoc)

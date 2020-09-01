@@ -16,35 +16,16 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 {% endif %}
 ## Quickstart
 
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 ```xml
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
-{% else -%}
-<dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>libraries-bom</artifactId>
-      <version>{{ metadata['latest_bom_version'] }}</version>
-      <type>pom</type>
-      <scope>import</scope>
-    </dependency>
-  </dependencies>
-</dependencyManagement>
-<dependencies>
-  <dependency>
-    <groupId>{{ group_id }}</groupId>
-    <artifactId>{{ artifact_id }}</artifactId>
-  </dependency>
-</dependencies>
-{% endif -%}
 ```
 
-[//]: # ({x-version-update-start:{{ artifact_id }}:released})
-
 If you are using Maven without BOM, add this to your dependencies:
-
+{% else %}
+If you are using Maven, add this to your pom.xml file:
+{% endif %}
 ```xml
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
@@ -56,6 +37,8 @@ If you are using Maven without BOM, add this to your dependencies:
 </dependency>
 {% endif -%}
 ```
+
+[//]: # ({x-version-update-start:{{ artifact_id }}:released})
 
 If you are using Gradle, add this to your dependencies
 ```Groovy
@@ -131,17 +114,19 @@ To get help, follow the instructions in the [shared Troubleshooting document][tr
 
 ## Java Versions
 
-Java 7 or above is required for using this client.
+Java {{ metadata['min_java_version'] }} or above is required for using this client.
 
 ## Versioning
 
+{% if 'partials' in metadata and metadata['partials']['versioning'] -%}
+{{ metadata['partials']['versioning'] }}
+{% else %}
 This library follows [Semantic Versioning](http://semver.org/).
 
 {% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
 and the public API should not be considered stable.
-{% endif %}
-
+{% endif %}{% endif %}
 ## Contributing
 
 {% if 'partials' in metadata and metadata['partials']['contributing'] -%}
@@ -162,8 +147,8 @@ Apache 2.0 - See [LICENSE][license] for more information.
 ## CI Status
 
 Java Version | Status
------------- | ------
-Java 7 | [![Kokoro CI][kokoro-badge-image-1]][kokoro-badge-link-1]
+------------ | ------{% if metadata['min_java_version'] <= 7 %}
+Java 7 | [![Kokoro CI][kokoro-badge-image-1]][kokoro-badge-link-1]{% endif %}
 Java 8 | [![Kokoro CI][kokoro-badge-image-2]][kokoro-badge-link-2]
 Java 8 OSX | [![Kokoro CI][kokoro-badge-image-3]][kokoro-badge-link-3]
 Java 8 Windows | [![Kokoro CI][kokoro-badge-image-4]][kokoro-badge-link-4]

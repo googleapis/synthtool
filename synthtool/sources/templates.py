@@ -66,8 +66,8 @@ class Templates:
         self.source_path = Path(location)
         self.dir = tmp.tmpdir()
 
-    def render(self, template_name: str, **kwargs) -> Path:
-        return _render_to_path(self.env, template_name, self.dir, kwargs)
+    def render(self, template_name: str, subdir: PathOrStr = ".", **kwargs) -> Path:
+        return _render_to_path(self.env, template_name, self.dir / subdir, kwargs)
 
 
 class TemplateGroup:
@@ -76,11 +76,11 @@ class TemplateGroup:
         self.dir = tmp.tmpdir()
         self.excludes = excludes
 
-    def render(self, **kwargs) -> Path:
+    def render(self, subdir: PathOrStr = ".", **kwargs) -> Path:
         for template_name in self.env.list_templates():
             if template_name not in self.excludes:
                 print(template_name)
-                _render_to_path(self.env, template_name, self.dir, kwargs)
+                _render_to_path(self.env, template_name, self.dir / subdir, kwargs)
             else:
                 print(f"Skipping: {template_name}")
 
@@ -90,7 +90,7 @@ class TemplateGroup:
 def release_quality_badge(input: str) -> str:
     """Generates a markdown badge for displaying a "Release Quality'."""
     if not input:
-        log.error(f"ensure you pass a string 'quality' to release_quality_badge")
+        log.error("ensure you pass a string 'quality' to release_quality_badge")
         return ""
 
     release_quality = input.upper()

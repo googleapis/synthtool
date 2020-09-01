@@ -27,6 +27,7 @@ dependencies = [
     "PyYAML",
     "requests",
     "protobuf",
+    "watchdog",
 ]
 
 packages = setuptools.find_packages()

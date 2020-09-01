@@ -13,9 +13,14 @@
 # limitations under the License.
 
 import json
-from typing import Any, Dict
-from synthtool.sources import git
+from jinja2 import FileSystemLoader, Environment
+from pathlib import Path
+import re
+from synthtool import shell
 from synthtool.gcp import samples, snippets
+from synthtool.log import logger
+from synthtool.sources import git
+from typing import Any, Dict, List
 
 _REQUIRED_FIELDS = ["name", "repository"]
 
@@ -91,3 +96,101 @@ def get_publish_token(package_name: str):
         The name of the key to fetch the publish token.
     """
     return package_name.strip("@").replace("/", "-") + "-npm-token"
+
+
+def extract_clients(filePath: Path) -> List[str]:
+    """
+    parse the client name from index.ts file
+
+    Args:
+        filePath: the path of index.ts.
+    Returns:
+        Array of client name string extract from index.ts file.
+    """
+    with open(filePath, "r") as fh:
+        content = fh.read()
+    return re.findall(r"\{(.*Client)\}", content)
+
+
+def generate_index_ts(versions: List[str], default_version: str) -> None:
+    """
+    generate src/index.ts to export the client name and versions in the client library.
+
+    Args:
+      versions: the list of versions, like: ['v1', 'v1beta1', ...]
+      default_version: a stable version provided by API producer. It must exist in argument versions.
+    Return:
+      True/False: return true if successfully generate src/index.ts, vice versa.
+    """
+    # sanitizer the input arguments
+    if len(versions) < 1:
+        err_msg = (
+            "List of version can't be empty, it must contain default version at least."
+        )
+        logger.error(err_msg)
+        raise AttributeError(err_msg)
+    if default_version not in versions:
+        err_msg = f"Version {versions} must contain default version {default_version}."
+        logger.error(err_msg)
+        raise AttributeError(err_msg)
+
+    # compose default version's index.ts file path
+    versioned_index_ts_path = Path("src") / default_version / "index.ts"
+    clients = extract_clients(versioned_index_ts_path)
+    if not clients:
+        err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
+        logger.error(err_msg)
+        raise AttributeError(err_msg)
+
+    # compose template directory
+    template_path = (
+        Path(__file__).parent.parent / "gcp" / "templates" / "node_split_library"
+    )
+    template_loader = FileSystemLoader(searchpath=str(template_path))
+    template_env = Environment(loader=template_loader, keep_trailing_newline=True)
+    TEMPLATE_FILE = "index.ts.j2"
+    index_template = template_env.get_template(TEMPLATE_FILE)
+    # render index.ts content
+    output_text = index_template.render(
+        versions=versions, default_version=default_version, clients=clients
+    )
+    with open("src/index.ts", "w") as fh:
+        fh.write(output_text)
+    logger.info("successfully generate `src/index.ts`")
+
+
+def install(hide_output=False):
+    """
+    Installs all dependencies for the current Node.js library.
+    """
+    logger.debug("Installing dependencies...")
+    shell.run(["npm", "install"], hide_output=hide_output)
+
+
+def fix(hide_output=False):
+    """
+    Fixes the formatting in the current Node.js library.
+    Before running fix script, run prelint to install extra dependencies
+    for samples, but do not fail if it does not succeed.
+    """
+    logger.debug("Running prelint...")
+    shell.run(["npm", "run", "prelint"], check=False, hide_output=hide_output)
+    logger.debug("Running fix...")
+    shell.run(["npm", "run", "fix"], hide_output=hide_output)
+
+
+def compile_protos(hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax.
+    """
+    logger.debug("Compiling protos...")
+    shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+
+
+def postprocess_gapic_library(hide_output=False):
+    logger.debug("Post-processing GAPIC library...")
+    install(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
+    logger.debug("Post-processing completed")

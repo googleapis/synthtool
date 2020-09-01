@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
-import deprecation
+import fnmatch
 import locale
 import os
 import pathlib
@@ -21,21 +20,37 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from typing import List, Iterable, Dict
+import threading
+import time
+from typing import Dict, Iterable, List
 
 import google.protobuf.json_format
+import watchdog.events
+import watchdog.observers
 
-from synthtool import log
+from synthtool.log import logger
 from synthtool.protos import metadata_pb2
 
-
 _metadata = metadata_pb2.Metadata()
+
+
+def get_environment_bool(var_name: str) -> bool:
+    val = os.environ.get(var_name)
+    return False if not val or val.lower() == "false" else True
+
+
+_track_obsolete_files = get_environment_bool("SYNTHTOOL_TRACK_OBSOLETE_FILES")
+
+# The list of file patterns excluded during a copy() or move() operation.
+_excluded_patterns: List[str] = []
 
 
 def reset() -> None:
     """Clear all metadata so far."""
     global _metadata
     _metadata = metadata_pb2.Metadata()
+    global _excluded_patterns
+    _excluded_patterns = []
 
 
 def get():
@@ -45,6 +60,13 @@ def get():
 def add_git_source(**kwargs) -> None:
     """Adds a git source to the current metadata."""
     _metadata.sources.add(git=metadata_pb2.GitSource(**kwargs))
+
+
+def add_pattern_excluded_during_copy(glob_pattern: str) -> None:
+    """Adds a file excluded during copy.
+
+    Used to avoid deleting an obsolete file that is excluded."""
+    _excluded_patterns.append(glob_pattern)
 
 
 def add_generator_source(**kwargs) -> None:
@@ -62,38 +84,9 @@ def add_client_destination(**kwargs) -> None:
     _metadata.destinations.add(client=metadata_pb2.ClientDestination(**kwargs))
 
 
-def _add_new_files(files: Iterable[str]) -> None:
-    for filepath in sorted(files):
-        new_file = _metadata.new_files.add()
-        new_file.path = _git_slashes(filepath)
-
-
 def _git_slashes(path: str):
     # git speaks only forward slashes
     return path.replace("\\", "/") if sys.platform == "win32" else path
-
-
-def _get_new_files(newer_than: float) -> List[str]:
-    """Searchs current directory for new files and returns them in a list.
-
-    Parameters:
-        newer_than: any file modified after this timestamp (from time.time())
-            will be added to the metadata
-    """
-    new_files = []
-    for (root, dirs, files) in os.walk(os.getcwd()):
-        for filename in files:
-            filepath = os.path.join(root, filename)
-            try:
-                mtime = os.path.getmtime(filepath)
-            except FileNotFoundError:
-                log.warning(
-                    f"FileNotFoundError while getting modified time for {filepath}."
-                )
-                continue
-            if mtime >= newer_than:
-                new_files.append(os.path.relpath(filepath))
-    return new_files
 
 
 def _read_or_empty(path: str = "synth.metadata"):
@@ -108,16 +101,45 @@ def _read_or_empty(path: str = "synth.metadata"):
 
 def write(outfile: str = "synth.metadata") -> None:
     """Writes out the metadata to a file."""
-    _metadata.update_time.FromDatetime(datetime.datetime.utcnow())
     jsonified = google.protobuf.json_format.MessageToJson(_metadata)
 
     with open(outfile, "w") as fh:
         fh.write(jsonified)
 
-    log.debug(f"Wrote metadata to {outfile}.")
+    logger.debug(f"Wrote metadata to {outfile}.")
 
 
-@deprecation.deprecated(deprecated_in="2020.02.04")
+def _remove_obsolete_files(old_metadata):
+    """Remove obsolete files from the file system.
+
+    Call add_new_files() before this function or it will remove all generated
+    files.
+
+    Parameters:
+        old_metadata:  old metadata loaded from a call to read_or_empty().
+    """
+    old_files = set(old_metadata.generated_files)
+    new_files = set(_metadata.generated_files)
+    excluded_patterns = set([pattern for pattern in _excluded_patterns])
+    obsolete_files = old_files - new_files
+    for file_path in git_ignore(obsolete_files):
+        try:
+            matched_pattern = False
+            for pattern in excluded_patterns:
+                if fnmatch.fnmatch(file_path, pattern):
+                    matched_pattern = True
+                    break
+            if matched_pattern:
+                logger.info(
+                    f"Leaving obsolete file {file_path} because it matched excluded pattern {pattern} during copy."
+                )
+            else:
+                logger.info(f"Removing obsolete file {file_path}...")
+                os.unlink(file_path)
+        except FileNotFoundError:
+            pass  # Already deleted.  That's OK.
+
+
 def git_ignore(file_paths: Iterable[str]):
     """Returns a new list of the same files, with ignored files removed."""
     # Surprisingly, git check-ignore doesn't ignore .git directories, take those
@@ -155,14 +177,48 @@ def git_ignore(file_paths: Iterable[str]):
     ]
 
 
-@deprecation.deprecated(deprecated_in="2020.02.04")
-def set_track_obsolete_files(ignored=True):
-    pass
+def set_track_obsolete_files(track_obsolete_files=True):
+    """Instructs synthtool to track and remove obsolete files."""
+    global _track_obsolete_files
+    _track_obsolete_files = track_obsolete_files
 
 
-@deprecation.deprecated(deprecated_in="2020.02.04")
 def should_track_obsolete_files():
-    return False
+    return _track_obsolete_files
+
+
+class FileSystemEventHandler(watchdog.events.FileSystemEventHandler):
+    """Records all the files that were touched."""
+
+    def __init__(self, watch_dir: pathlib.Path):
+        super().__init__()
+        self._touched_file_paths: List[str] = list()
+        self._touched_lock = threading.Lock()
+        self._watch_dir = watch_dir
+
+    def on_any_event(self, event):
+        if event.is_directory:
+            return
+        if event.event_type in (
+            watchdog.events.EVENT_TYPE_MODIFIED,
+            watchdog.events.EVENT_TYPE_CREATED,
+        ):
+            touched_path = event.src_path
+        elif event.event_type == watchdog.events.EVENT_TYPE_MOVED:
+            touched_path = event.dest_path
+        else:
+            return
+        touched_path = pathlib.Path(touched_path).relative_to(self._watch_dir)
+        with self._touched_lock:
+            self._touched_file_paths.append(str(touched_path))
+
+    def get_touched_file_paths(self) -> List[str]:
+        # deduplicate and sort
+        with self._touched_lock:
+            paths = set(self._touched_file_paths)
+        result = list(paths)
+        result.sort()
+        return result
 
 
 class MetadataTrackerAndWriter:
@@ -173,43 +229,31 @@ class MetadataTrackerAndWriter:
 
     def __enter__(self):
         self.old_metadata = _read_or_empty(self.metadata_file_path)
+        _add_self_git_source()
+        watch_dir = pathlib.Path(self.metadata_file_path).parent
+        os.makedirs(watch_dir, exist_ok=True)
+        self.handler = FileSystemEventHandler(watch_dir)
+        self.observer = watchdog.observers.Observer()
+        self.observer.schedule(self.handler, str(watch_dir), recursive=True)
+        self.observer.start()
 
     def __exit__(self, type, value, traceback):
-        _append_git_logs(self.old_metadata, get())
-        _clear_local_paths(get())
-        _metadata.sources.sort(key=_source_key)
-        write(self.metadata_file_path)
-
-
-def _append_git_logs(old_metadata, new_metadata):
-    """Adds git logs to git sources in new_metadata.
-
-    Parameters:
-        old_metadata: instance of metadata_pb2.Metadata
-        old_metadata: instance of metadata_pb2.Metadata
-    """
-    old_map = _get_git_source_map(old_metadata)
-    new_map = _get_git_source_map(new_metadata)
-    git = shutil.which("git")
-    for name, git_source in new_map.items():
-        # Get the git history since the last run:
-        old_source = old_map.get(name, metadata_pb2.GitSource())
-        if not old_source.sha or not git_source.local_path:
-            continue
-        output = subprocess.run(
-            [
-                git,
-                "-C",
-                git_source.local_path,
-                "log",
-                "--pretty=%H%n%B",
-                "--no-decorate",
-                f"{old_source.sha}..HEAD",
-            ],
-            stdout=subprocess.PIPE,
-            universal_newlines=True,
-        ).stdout
-        git_source.log = output
+        if value:
+            pass  # An exception was raised.  Don't write metadata or clean up.
+        else:
+            if should_track_obsolete_files():
+                time.sleep(2)  # Finish collecting observations about modified files.
+                self.observer.stop()
+                self.observer.join()
+                for path in git_ignore(self.handler.get_touched_file_paths()):
+                    _metadata.generated_files.append(path)
+                _remove_obsolete_files(self.old_metadata)
+            else:
+                self.observer.stop()
+            _clear_local_paths(get())
+            _metadata.sources.sort(key=_source_key)
+            if _enable_write_metadata:
+                write(self.metadata_file_path)
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:
@@ -241,6 +285,44 @@ def _clear_local_paths(metadata):
             git_source.ClearField("local_path")
 
 
+def _add_self_git_source():
+    """Adds current working directory as a git source.
+
+    Returns:
+        The number of git sources added to metadata.
+    """
+    # Use the repository's root directory name as the name.
+    return _add_git_source_from_directory(".", os.getcwd())
+
+
+def _add_git_source_from_directory(name: str, dir_path: str) -> int:
+    """Adds the git repo containing the directory as a git source.
+
+    Returns:
+        The number of git sources added to metadata.
+    """
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "status"], universal_newlines=True
+    )
+    if completed_process.returncode:
+        logger.warning("%s is not directory in a git repo.", dir_path)
+        return 0
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "remote", "get-url", "origin"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    url = completed_process.stdout.strip()
+    completed_process = subprocess.run(
+        ["git", "-C", dir_path, "log", "--no-decorate", "-1", "--pretty=format:%H"],
+        stdout=subprocess.PIPE,
+        universal_newlines=True,
+    )
+    latest_sha = completed_process.stdout.strip()
+    add_git_source(name=name, remote=url, sha=latest_sha)
+    return 1
+
+
 def _source_key(source):
     """Creates a key to use to sort a list of sources.
 
@@ -266,3 +348,12 @@ def _source_key(source):
             source.template.origin,
             source.template.version,
         )
+
+
+_enable_write_metadata = True
+
+
+def enable_write_metadata(enable: bool = True) -> None:
+    """Control whether synthtool writes synth.metadata file."""
+    global _enable_write_metadata
+    _enable_write_metadata = enable

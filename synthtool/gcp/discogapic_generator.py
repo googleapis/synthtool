@@ -15,8 +15,8 @@
 from pathlib import Path
 
 from synthtool import _tracked_paths
-from synthtool import log
 from synthtool.gcp import artman
+from synthtool.log import logger
 from synthtool.sources import git
 
 DISCOVERY_ARTIFACT_MANAGER_URL: str = git.make_repo_clone_url(
@@ -90,7 +90,7 @@ class DiscoGAPICGenerator:
                 f"Unable to find configuration yaml file: {config_path}."
             )
 
-        log.debug(f"Running generator for {config_path}.")
+        logger.debug(f"Running generator for {config_path}.")
         output_root = artman.Artman().run(
             f"googleapis/artman:{artman.ARTMAN_VERSION}",
             self.discovery_artifact_manager,
@@ -109,11 +109,11 @@ class DiscoGAPICGenerator:
                 f"Unable to find generated output of artman: {genfiles}."
             )
 
-        log.success(f"Generated code into {genfiles}.")
+        logger.success(f"Generated code into {genfiles}.")
 
         _tracked_paths.add(genfiles)
         return genfiles
 
     def _clone_discovery_artifact_manager(self):
-        log.debug("Cloning discovery-artifact-manager.")
+        logger.debug("Cloning discovery-artifact-manager.")
         self.discovery_artifact_manager = git.clone(DISCOVERY_ARTIFACT_MANAGER_URL)

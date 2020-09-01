@@ -18,10 +18,9 @@ import xml.etree.ElementTree as ET
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
+from synthtool import cache, shell
 from synthtool.gcp import common, samples, snippets
-from synthtool import cache
-from synthtool import log
-from synthtool import shell
+from synthtool.log import logger
 from pathlib import Path
 from typing import Any, Optional, Dict, List
 
@@ -59,6 +58,7 @@ BAD_LICENSE = """/\\*
  \\* the License.
  \\*/
 """
+DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 7
 
 
 def format_code(
@@ -77,13 +77,13 @@ def format_code(
     files = list(glob.iglob(os.path.join(path, "**/*.java"), recursive=True))
 
     # Run the formatter as a jar file
-    log.info("Running java formatter on {} files".format(len(files)))
+    logger.info("Running java formatter on {} files".format(len(files)))
     for _ in range(times):
         shell.run(["java", "-jar", str(jar), "--replace"] + files)
 
 
 def _download_formatter(version: str, dest: Path) -> None:
-    log.info("Downloading java formatter")
+    logger.info("Downloading java formatter")
     url = JAR_DOWNLOAD_URL.format(version=version)
     response = requests.get(url)
     response.raise_for_status()
@@ -160,6 +160,7 @@ def _common_generation(
     package_pattern: str,
     suffix: str = "",
     destination_name: str = None,
+    cloud_api: bool = True,
 ):
     """Helper function to execution the common generation cleanup actions.
 
@@ -181,48 +182,34 @@ def _common_generation(
     if destination_name is None:
         destination_name = service
 
+    cloud_prefix = "cloud-" if cloud_api else ""
     package_name = package_pattern.format(service=service, version=version)
-    fix_proto_headers(library / f"proto-google-cloud-{service}-{version}{suffix}")
+    fix_proto_headers(
+        library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}"
+    )
     fix_grpc_headers(
-        library / f"grpc-google-cloud-{service}-{version}{suffix}", package_name
+        library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}", package_name
     )
 
     s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}{suffix}/src"],
-        f"google-cloud-{destination_name}/src",
+        [library / f"gapic-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+        f"google-{cloud_prefix}{destination_name}/src",
         required=True,
     )
     s.copy(
-        [library / f"grpc-google-cloud-{service}-{version}{suffix}/src"],
-        f"grpc-google-cloud-{destination_name}-{version}/src",
+        [library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+        f"grpc-google-{cloud_prefix}{destination_name}-{version}/src",
         required=True,
     )
     s.copy(
-        [library / f"proto-google-cloud-{service}-{version}{suffix}/src"],
-        f"proto-google-cloud-{destination_name}-{version}/src",
+        [library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+        f"proto-google-{cloud_prefix}{destination_name}-{version}/src",
         required=True,
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src"],
-        "samples/generated/src",
-        excludes=["**/*.manifest.yaml"],
-    )
-    s.copy(
-        [library / f"gapic-google-cloud-{service}-{version}{suffix}/samples/resources"],
-        "samples/generated/resources",
-    )
-    s.copy(
-        [
-            library
-            / f"gapic-google-cloud-{service}-{version}{suffix}/samples/src/**/*.manifest.yaml"
-        ],
-        f"samples/src/main/java/com/google/cloud/examples/{service}/{version}/{service}.manifest.yaml",
     )
 
-    format_code(f"google-cloud-{destination_name}/src")
-    format_code(f"grpc-google-cloud-{destination_name}-{version}/src")
-    format_code(f"proto-google-cloud-{destination_name}-{version}/src")
-    format_code("samples/src")
+    format_code(f"google-{cloud_prefix}{destination_name}/src")
+    format_code(f"grpc-google-{cloud_prefix}{destination_name}-{version}/src")
+    format_code(f"proto-google-{cloud_prefix}{destination_name}-{version}/src")
 
 
 def gapic_library(
@@ -284,6 +271,7 @@ def bazel_library(
     package_pattern: str = "com.google.cloud.{service}.{version}",
     gapic: gcp.GAPICBazel = None,
     destination_name: str = None,
+    cloud_api: bool = True,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via bazel.
@@ -309,19 +297,35 @@ def bazel_library(
 
     library = gapic.java_library(service=service, version=version, **kwargs)
 
+    cloud_prefix = "cloud-" if cloud_api else ""
     _common_generation(
         service=service,
         version=version,
-        library=library / f"google-cloud-{service}-{version}-java",
+        library=library / f"google-{cloud_prefix}{service}-{version}-java",
         package_pattern=package_pattern,
         suffix="-java",
         destination_name=destination_name,
+        cloud_api=cloud_api,
     )
 
     return library
 
 
-def common_templates(excludes: List[str] = [], **kwargs) -> None:
+def _merge_common_templates(
+    source_text: str, destination_text: str, file_path: Path
+) -> str:
+    # keep any existing pom.xml
+    if file_path.match("pom.xml"):
+        logger.debug(f"existing pom file found ({file_path}) - keeping the existing")
+        return destination_text
+
+    # by default return the newly generated content
+    return source_text
+
+
+def common_templates(
+    excludes: List[str] = [], template_path: Optional[Path] = None, **kwargs
+) -> None:
     """Generate common templates for a Java Library
 
     Fetches information about the repository from the .repo-metadata.json file,
@@ -350,7 +354,11 @@ def common_templates(excludes: List[str] = [], **kwargs) -> None:
     metadata["snippets"] = snippets.all_snippets(
         ["samples/**/src/main/java/**/*.java", "samples/**/pom.xml"]
     )
+    if repo_metadata and "min_java_version" in repo_metadata:
+        metadata["min_java_version"] = repo_metadata["min_java_version"]
+    else:
+        metadata["min_java_version"] = DEFAULT_MIN_SUPPORTED_JAVA_VERSION
 
     kwargs["metadata"] = metadata
-    templates = gcp.CommonTemplates().java_library(**kwargs)
-    s.copy([templates], excludes=excludes)
+    templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
+    s.copy([templates], excludes=excludes, merge=_merge_common_templates)

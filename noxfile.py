@@ -14,29 +14,29 @@
 
 import nox
 
-@nox.session(python='3.6')
+@nox.session(python=['3.6'])
 def generate_protos(session):
     session.install("grpcio-tools")
     session.run(
         "python", "-m", "grpc_tools.protoc", "-Isynthtool/protos", "--python_out=synthtool/protos", "synthtool/protos/metadata.proto", "synthtool/protos/preconfig.proto")
 
-@nox.session(python='3.6')
+@nox.session(python=['3.6', '3.8'])
 def blacken(session):
-    session.install('black')
-    session.run('black', 'synthtool', 'tests')
+    session.install('black==19.10b0')
+    session.run('black', 'synthtool', 'tests', 'autosynth', 'integration_tests')
 
 
-@nox.session(python='3.6')
+@nox.session(python=['3.6', '3.8'])
 def lint(session):
-    session.install('mypy', 'flake8', 'black')
+    session.install('mypy', 'flake8', 'black==19.10b0')
     session.run('pip', 'install', '-e', '.')
     session.run('black', '--check', 'synthtool', 'tests')
-    session.run('flake8', 'synthtool', 'tests')
-    session.run('mypy', 'synthtool')
+    session.run('flake8', 'synthtool', 'tests', 'autosynth', 'integration_tests')
+    session.run('mypy', 'synthtool', 'autosynth')
 
 
-@nox.session(python='3.6')
+@nox.session(python=['3.6', '3.8'])
 def test(session):
-    session.install('pytest', 'pytest-cov', 'requests_mock')
+    session.install('pytest', 'pytest-cov', 'requests_mock', 'watchdog')
     session.run('pip', 'install', '-e', '.')
-    session.run('pytest', '--cov-report', 'term-missing', '--cov', 'synthtool', 'tests', *session.posargs)
+    session.run('pytest', '--cov-report', 'term-missing', '--cov', 'autosynth', 'synthtool', 'tests', *session.posargs)

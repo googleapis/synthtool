@@ -12,9 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from unittest import TestCase
+from unittest.mock import patch
 import os
 from pathlib import Path
 from synthtool.languages import node
+import pathlib
+import filecmp
+import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -70,3 +75,127 @@ def test_no_samples():
     assert len(metadata["samples"]) == 0
 
     os.chdir(cwd)
+
+
+def test_extract_clients_no_file():
+    index_ts_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "no_exist_index.ts"
+    )
+
+    with pytest.raises(FileNotFoundError):
+        clients = node.extract_clients(index_ts_path)
+        assert not clients
+
+
+def test_extract_single_clients():
+    index_ts_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "single_index.ts"
+    )
+
+    clients = node.extract_clients(index_ts_path)
+
+    assert len(clients) == 1
+    assert clients[0] == "TextToSpeechClient"
+
+
+def test_extract_multiple_clients():
+    index_ts_path = pathlib.Path(
+        FIXTURES / "node_templates" / "index_samples" / "multiple_index.ts"
+    )
+
+    clients = node.extract_clients(index_ts_path)
+
+    assert len(clients) == 2
+    assert clients[0] == "StreamingVideoIntelligenceServiceClient"
+    assert clients[1] == "VideoIntelligenceServiceClient"
+
+
+def test_generate_index_ts():
+    cwd = os.getcwd()
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
+        node.generate_index_ts(["v1", "v1beta1"], "v1")
+        generated_index_path = pathlib.Path(
+            FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
+        )
+        sample_index_path = pathlib.Path(
+            FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
+        )
+        assert filecmp.cmp(generated_index_path, sample_index_path)
+    finally:
+        os.chdir(cwd)
+
+
+def test_generate_index_ts_empty_versions():
+    cwd = os.getcwd()
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
+
+        with pytest.raises(AttributeError) as err:
+            node.generate_index_ts([], "v1")
+            assert "can't be empty" in err.args
+    finally:
+        os.chdir(cwd)
+
+
+def test_generate_index_ts_invalid_default_version():
+    cwd = os.getcwd()
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
+        versions = ["v1beta1"]
+        default_version = "v1"
+
+        with pytest.raises(AttributeError) as err:
+            node.generate_index_ts(versions, default_version)
+            assert f"must contain default version {default_version}" in err.args
+    finally:
+        os.chdir(cwd)
+
+
+def test_generate_index_ts_no_clients():
+    cwd = os.getcwd()
+    try:
+        # use a non-nodejs template directory
+        os.chdir(FIXTURES / "node_templates" / "index_samples")
+        versions = ["v1", "v1beta1", "invalid_index"]
+        default_version = "invalid_index"
+
+        with pytest.raises(AttributeError) as err:
+            node.generate_index_ts(versions, default_version)
+            assert (
+                f"No client is exported in the default version's({default_version}) index.ts ."
+                in err.args
+            )
+    finally:
+        os.chdir(cwd)
+
+
+class TestPostprocess(TestCase):
+    @patch("synthtool.shell.run")
+    def test_install(self, shell_run_mock):
+        node.install()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm install" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_fix(self, shell_run_mock):
+        node.fix()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_compile_protos(self, shell_run_mock):
+        node.compile_protos()
+        calls = shell_run_mock.call_args_list
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_postprocess_gapic_library(self, shell_run_mock):
+        node.postprocess_gapic_library()
+        calls = shell_run_mock.call_args_list
+        assert any(["npm install" in " ".join(call[0][0]) for call in calls])
+        assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])

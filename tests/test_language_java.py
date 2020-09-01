@@ -15,11 +15,15 @@
 import os
 import shutil
 import tempfile
+import xml.etree.ElementTree as ET
+import yaml
 from pathlib import Path
 from synthtool.languages import java
 import requests_mock
+import pytest
 
 FIXTURES = Path(__file__).parent / "fixtures"
+TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
 
 SAMPLE_METADATA = """
 <metadata>
@@ -73,6 +77,19 @@ def test_latest_maven_version():
 
 
 def test_working_common_templates():
+    def assert_valid_xml(file):
+        try:
+            ET.parse(file)
+        except ET.ParseError:
+            pytest.fail(f"unable to parse XML: {file}")
+
+    def assert_valid_yaml(file):
+        with open(file, "r") as stream:
+            try:
+                yaml.safe_load(stream)
+            except yaml.YAMLError:
+                pytest.fail(f"unable to parse YAML: {file}")
+
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(
             FIXTURES / "java_templates" / "standard", Path(tempdir) / "standard"
@@ -82,7 +99,17 @@ def test_working_common_templates():
 
         try:
             # generate the common templates
-            java.common_templates()
+            java.common_templates(template_path=TEMPLATES_PATH)
             assert os.path.isfile("README.md")
+
+            # lint xml, yaml files
+            # use os.walk because glob ignores hidden directories
+            for (dirpath, _, filenames) in os.walk(tempdir):
+                for file in filenames:
+                    (_, ext) = os.path.splitext(file)
+                    if ext == ".xml":
+                        assert_valid_xml(os.path.join(dirpath, file))
+                    elif ext == ".yaml" or ext == ".yml":
+                        assert_valid_yaml(os.path.join(dirpath, file))
         finally:
             os.chdir(cwd)

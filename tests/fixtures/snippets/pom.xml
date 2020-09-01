@@ -24,6 +24,14 @@
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-monitoring</artifactId>
     </dependency>
+    <!-- [START_EXCLUDE] -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- [END_EXCLUDE] -->
   </dependencies>
   <!-- [END monitoring_install_with_bom] -->
 </project>

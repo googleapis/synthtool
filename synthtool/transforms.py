@@ -20,7 +20,8 @@ import re
 import sys
 
 from synthtool import _tracked_paths
-from synthtool import log
+from synthtool.log import logger
+from synthtool import metadata
 
 PathOrStr = Union[str, Path]
 ListOfPathsOrStrs = Iterable[Union[str, Path]]
@@ -138,6 +139,23 @@ def _copy_dir_to_existing_dir(
     return copied
 
 
+def dont_overwrite(patterns: ListOfPathsOrStrs,) -> Callable[[str, str, Path], str]:
+    """Returns a merge function that doesn't overwrite the specified files.
+
+    Pass the return value to move() or copy() to avoid overwriting existing
+    files.
+    """
+
+    def merge(source_text: str, destinaton_text: str, file_path: Path) -> str:
+        for pattern in patterns:
+            if file_path.match(str(pattern)):
+                logger.debug(f"Preserving existing contents of {file_path}.")
+                return destinaton_text
+        return source_text
+
+    return merge
+
+
 def move(
     sources: ListOfPathsOrStrs,
     destination: PathOrStr = None,
@@ -160,6 +178,9 @@ def move(
         True if any files were copied, False otherwise.
     """
     copied = False
+
+    for excluded_pattern in excludes or []:
+        metadata.add_pattern_excluded_during_copy(str(excluded_pattern))
 
     for source in _expand_paths(sources):
         if destination is None:
@@ -192,7 +213,7 @@ def move(
                 f"contain files?"
             )
         else:
-            log.warning(
+            logger.warning(
                 f"No files in sources {sources} were copied. Does the source "
                 f"contain files?"
             )
@@ -226,17 +247,17 @@ def replace(
     paths = _filter_files(_expand_paths(sources, "."))
 
     if not paths:
-        log.warning(f"No files were found in sources {sources} for replace()")
+        logger.warning(f"No files were found in sources {sources} for replace()")
 
     count_replaced = 0
     for path in paths:
         replaced = _replace_in_file(path, expr, after)
         count_replaced += replaced
         if replaced:
-            log.info(f"Replaced {before!r} in {path}.")
+            logger.info(f"Replaced {before!r} in {path}.")
 
     if not count_replaced:
-        log.warning(
+        logger.warning(
             f"No replacements made in {sources} for pattern {before}, maybe "
             "replacement is no longer needed?"
         )

@@ -56,7 +56,9 @@
     },
     {
       "packagePatterns": [
-        "^com.google.cloud:libraries-bom"
+        "^{{metadata['repo']['distribution_name']}}",
+        "^com.google.cloud:libraries-bom",
+        "^com.google.cloud.samples:shared-configuration"
       ],
       "semanticCommitType": "chore",
       "semanticCommitScope": "deps"
@@ -74,5 +76,6 @@
       "groupName": "jackson dependencies"
     }
   ],
-  "semanticCommits": true
+  "semanticCommits": true,
+  "masterIssue": true
 }
