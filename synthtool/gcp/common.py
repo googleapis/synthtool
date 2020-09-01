@@ -60,7 +60,9 @@ class CommonTemplates:
 
         # TODO: migrate to python.py once old sample gen is deprecated
         if directory == "python_samples":
-            t.env.globals["get_help"] = _get_help
+            t.env.globals["get_help"] = lambda filename: shell.run(
+                ["python", filename, "--help"]
+            ).stdout
 
         result = t.render(**kwargs)
         _tracked_paths.add(result)
