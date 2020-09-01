@@ -21,6 +21,8 @@ ROOT=$( dirname "$DIR" )
 cd $ROOT
 
 # Prevent it from overriding files.
+# We recommend that sample authors use their own service account files and cloud project.
+# In that case, they are supposed to prepare these files by themselves.
 if [[ -f "testing/test-env.sh" ]] || \
        [[ -f "testing/service-account.json" ]] || \
        [[ -f "testing/client-secrets.json" ]]; then
