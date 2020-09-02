@@ -17,6 +17,7 @@
               "file": "quickstart.py",
               "custom_content": "This is custom text for the sample",
               "runnable": "True",
+              "show_help": true,
               "override_path": "override"},
               {"name": "Hello World",
               "description": "Example beginner application",
