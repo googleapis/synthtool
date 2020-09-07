@@ -3,3 +3,4 @@ libraries:
 - name: all
   repository: googleapis/google-api-go-client
   branch-suffix: regen
+  pr-title: "feat(all): auto-regenerate discovery clients"
