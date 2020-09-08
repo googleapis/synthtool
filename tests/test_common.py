@@ -21,7 +21,8 @@ import tempfile
 import shutil
 
 MOCK = Path(__file__).parent / "generationmock"
-common = s.gcp.CommonTemplates()
+template_dir = Path(__file__).parent.parent / "synthtool/gcp/templates"
+common = s.gcp.CommonTemplates(template_path=template_dir)
 
 
 def test_converts_camel_to_title():
@@ -199,6 +200,7 @@ def test_py_samples_multiple_override_content():
             with open("README.md") as f:
                 result = f.read()
                 assert "Quickstart" in result
+                assert "first_arg" in result
             os.chdir(workdir / "another_override")
             with open("README.md") as f:
                 result = f.read()

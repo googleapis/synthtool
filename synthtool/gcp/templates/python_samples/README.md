@@ -31,6 +31,7 @@ To run this sample:
         python {{ metadata['repo']['samples'][sample]['file']}}
 
 {% endif %}
+{% if 'show_help' in metadata['repo']['samples'][sample] and metadata['repo']['samples'][sample]['show_help'] and 'abs_path' in metadata['repo']['samples'][sample] %}{{get_help(metadata['repo']['samples'][sample]['abs_path'])|indent}}{% endif %}
 {% if metadata['repo']['samples'][sample]['custom_content'] is defined %}{{ metadata['repo']['samples'][sample]['custom_content'] }}{% endif %}{% endfor %}{% endif %}
 
 ## Additional Information

@@ -1,5 +1,5 @@
-# Ensure latest setuptools to avoid any package resources issues.
-setuptools
+# Pin to less than 49.6.0 as a workaround for https://github.com/pypa/setuptools/issues/2353
+setuptools==50.3.0
 
 nox
 requests
