@@ -20,15 +20,17 @@ import functools
 import importlib
 import os
 import pathlib
-import requests
 import subprocess
 import sys
 import typing
+from typing import Any, List
+
+import requests
 import yaml
+from synthtool.report import make_report
 
 from autosynth import executor, github, synth
 from autosynth.log import logger
-from synthtool.report import make_report
 
 # Callable type to help dependency inject for testing
 Runner = typing.Callable[
@@ -334,10 +336,43 @@ def find_base_log_path() -> pathlib.Path:
     return cwd_path / "logs"
 
 
+def shard_list(alist: List[Any], shard_count: int) -> List[List[Any]]:
+    """Breaks the list up into roughly-equally sized shards.
+
+    Args:
+        alist: A list of things.
+        shard_count (int): The total number of shards.
+
+    Returns:
+        List[List[Any]]: The shards.
+    """
+    shard_size = len(alist) / shard_count
+    shard_start = 0.0
+    shards = []
+    for i in range(shard_count - 1):
+        shard_end = shard_start + shard_size
+        shards.append(alist[int(shard_start) : int(shard_end)])  # noqa: E203
+        shard_start = shard_end
+    shards.append(alist[int(shard_start) :])  # noqa: E203
+    return shards
+
+
+def select_shard(config, shard: str):
+    shard_number, shard_count = map(int, shard.split("/"))
+    logger.info(f"Selecting shard {shard_number} of {shard_count}.")
+    config.sort(key=lambda repo: repo["name"])
+    return shard_list(config, shard_count)[shard_number]
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config")
     parser.add_argument("--github-token", default=os.environ.get("GITHUB_TOKEN"))
+    parser.add_argument(
+        "--shard",
+        default=os.environ.get("MULTISYNTH_SHARD"),
+        help="From the list of repos, the shard number and shard count, separated by a forward slash.  Examples:\n0/10\n1/2",
+    )
     parser.add_argument("extra_args", nargs=argparse.REMAINDER)
 
     args = parser.parse_args()
@@ -345,6 +380,9 @@ def main():
     config = load_config(args.config)
     if config is None:
         sys.exit("No configuration could be loaded.")
+
+    if args.shard:
+        config = select_shard(config, args.shard)
 
     gh = github.GitHub(args.github_token)
 
@@ -357,7 +395,7 @@ def main():
     if num_failures > 0:
         logger.error(f"Failed to synthesize {num_failures} job(s).")
         failure_percent = 100 * num_failures / len(results)
-        if failure_percent < 10:
+        if failure_percent < 12:
             pass  # It's most likely an issue with a few APIs.
         else:
             sys.exit(1)  # Raise the attention of autosynth maintainers.

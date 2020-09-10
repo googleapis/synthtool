@@ -1,12 +1,12 @@
-# Ensure latest setuptools to avoid any package resources issues.
-setuptools
+# Pin to less than 49.6.0 as a workaround for https://github.com/pypa/setuptools/issues/2353
+setuptools==50.3.0
 
 nox
 requests
 pyyaml
 jinja2
 deprecation
-protobuf==3.12.4
+protobuf==3.13.0
 watchdog
 
 # some java processing requires xml handling
