@@ -322,20 +322,7 @@ def _merge_common_templates(
     # by default return the newly generated content
     return source_text
 
-
-def common_templates(
-    excludes: List[str] = [], template_path: Optional[Path] = None, **kwargs
-) -> None:
-    """Generate common templates for a Java Library
-
-    Fetches information about the repository from the .repo-metadata.json file,
-    information about the latest artifact versions and copies the files into
-    their expected location.
-
-    Args:
-        excludes (List[str], optional): List of template paths to ignore
-        **kwargs: Additional options for CommonTemplates.java_library()
-    """
+def _common_template_metadata() -> Dict[str, Any]:
     metadata = {}  # type: Dict[str, Any]
     repo_metadata = common._load_repo_metadata()
     if repo_metadata:
@@ -358,7 +345,34 @@ def common_templates(
         metadata["min_java_version"] = repo_metadata["min_java_version"]
     else:
         metadata["min_java_version"] = DEFAULT_MIN_SUPPORTED_JAVA_VERSION
+    
+    return metadata
 
-    kwargs["metadata"] = metadata
+
+def common_templates(
+    excludes: List[str] = [], template_path: Optional[Path] = None, **kwargs
+) -> None:
+    """Generate common templates for a Java Library
+
+    Fetches information about the repository from the .repo-metadata.json file,
+    information about the latest artifact versions and copies the files into
+    their expected location.
+
+    Args:
+        excludes (List[str], optional): List of template paths to ignore
+        **kwargs: Additional options for CommonTemplates.java_library()
+    """
+    kwargs["metadata"] = _common_template_metadata()
     templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
+
+    # README.md is now synthesized separately. This prevents synthtool from deleting the
+    # README as it's no longer generated here.
+    excludes.append("README.md")
+
     s.copy([templates], excludes=excludes, merge=_merge_common_templates)
+
+def custom_templates(files: List[str], **kwargs) -> None:
+    kwargs["metadata"] = _common_template_metadata()
+    for file in files:
+        template = gcp.CommonTemplates().render(file, **kwargs)
+        s.copy([template])

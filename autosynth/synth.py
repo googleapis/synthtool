@@ -554,6 +554,7 @@ def _inner_main(temp_dir: str) -> int:
         "--repository", default=os.environ.get("REPOSITORY"), required=True
     )
     parser.add_argument("--synth-path", default=os.environ.get("SYNTH_PATH"))
+    parser.add_argument("--synth-file-name", default=os.environ.get("SYNTH_FILE_NAME"))
     parser.add_argument("--metadata-path", default=os.environ.get("METADATA_PATH"))
     parser.add_argument("--base-log-dir", default="")
     parser.add_argument(
@@ -579,6 +580,7 @@ def _inner_main(temp_dir: str) -> int:
         f"the API or client library generator."
     )
     change_pusher: AbstractChangePusher = ChangePusher(args.repository, gh, branch)
+    synth_file_name = args.synth_file_name or "synth.py"
 
     # capture logs for later
     # The logs directory path will be rendered in Sponge and Fusion as the test name,
@@ -629,6 +631,7 @@ def _inner_main(temp_dir: str) -> int:
                 metadata_path,
                 args.extra_args,
                 deprecated_execution=args.deprecated_execution,
+                synth_py_path=synth_file_name,
             ).synthesize(synth_log_path / "sponge_log.log")
 
             if not has_changes():
@@ -655,7 +658,10 @@ def _inner_main(temp_dir: str) -> int:
 
             # Prepare to call synthesize loop.
             synthesizer = Synthesizer(
-                metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
+                metadata_path,
+                args.extra_args,
+                deprecated_execution=args.deprecated_execution,
+                synth_py_path=synth_file_name,
             )
             x = SynthesizeLoopToolbox(
                 source_versions,
