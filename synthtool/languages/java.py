@@ -372,6 +372,16 @@ def common_templates(
     s.copy([templates], excludes=excludes, merge=_merge_common_templates)
 
 def custom_templates(files: List[str], **kwargs) -> None:
+    """Generate custom template files
+
+    Fetches information about the repository from the .repo-metadata.json file,
+    information about the latest artifact versions and copies the files into
+    their expected location.
+
+    Args:
+        files (List[str], optional): List of template paths to include
+        **kwargs: Additional options for CommonTemplates.render()
+    """
     kwargs["metadata"] = _common_template_metadata()
     for file in files:
         template = gcp.CommonTemplates().render(file, **kwargs)
