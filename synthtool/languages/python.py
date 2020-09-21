@@ -70,7 +70,7 @@ def fix_pb2_grpc_headers(*, proto_root: str = "**/*_pb2_grpc.py") -> None:
 
 def _get_help(filename: str) -> str:
     """Function used by sample readmegen"""
-    return shell.run(["python", filename, "--help"]).stdout
+    return shell.run([sys.executable, filename, "--help"]).stdout
 
 
 def _get_sample_readme_metadata(sample_dir: Path) -> dict:
