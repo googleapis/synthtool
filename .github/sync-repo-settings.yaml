@@ -1,0 +1,16 @@
+rebaseMergeAllowed: true
+squashMergeAllowed: true
+mergeCommitAllowed: false
+branchProtectionRules:
+- pattern: master
+  requiredStatusCheckContexts:
+    - 'Kokoro CI'
+    - 'cla/google'
+  requiredApprovingReviewCount: 1
+  requiresCodeOwnerReviews: true
+  requiresStrictStatusChecks: true
+permissionRules:
+  - team: yoshi
+    permission: push
+  - team: yoshi-admins
+    permission: admin
