@@ -100,7 +100,7 @@ def test_working_common_templates():
         try:
             # generate the common templates
             java.common_templates(template_path=TEMPLATES_PATH)
-            assert os.path.isfile("README.md")
+            assert os.path.isfile("renovate.json")
 
             # lint xml, yaml files
             # use os.walk because glob ignores hidden directories

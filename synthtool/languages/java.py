@@ -322,6 +322,7 @@ def _merge_common_templates(
     # by default return the newly generated content
     return source_text
 
+
 def _common_template_metadata() -> Dict[str, Any]:
     metadata = {}  # type: Dict[str, Any]
     repo_metadata = common._load_repo_metadata()
@@ -345,7 +346,7 @@ def _common_template_metadata() -> Dict[str, Any]:
         metadata["min_java_version"] = repo_metadata["min_java_version"]
     else:
         metadata["min_java_version"] = DEFAULT_MIN_SUPPORTED_JAVA_VERSION
-    
+
     return metadata
 
 
@@ -370,6 +371,7 @@ def common_templates(
     excludes.append("README.md")
 
     s.copy([templates], excludes=excludes, merge=_merge_common_templates)
+
 
 def custom_templates(files: List[str], **kwargs) -> None:
     """Generate custom template files

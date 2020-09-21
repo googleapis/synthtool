@@ -374,11 +374,11 @@ def synthesize_loop(
     youngest = len(toolbox.versions) - 1
     has_changes = toolbox.synthesize_version_in_new_branch(synthesizer, youngest)
     if not has_changes:
-        if not toolbox.metadata_contains_generated_files(
-            toolbox.branch
-        ) and toolbox.metadata_contains_generated_files(
-            toolbox.sub_branch(youngest)
-        ) and not change_pusher.check_if_pr_already_exists(toolbox.branch):
+        if (
+            not toolbox.metadata_contains_generated_files(toolbox.branch)
+            and toolbox.metadata_contains_generated_files(toolbox.sub_branch(youngest))
+            and not change_pusher.check_if_pr_already_exists(toolbox.branch)
+        ):
             # Special case: the repo owner turned on obsolete file tracking.
             # Generate a one-time PR containing only metadata changes.
             executor.check_call(["git", "checkout", toolbox.branch])
