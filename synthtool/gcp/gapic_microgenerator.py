@@ -87,7 +87,7 @@ class GAPICMicrogenerator:
         else:
             googleapis = self._clone_googleapis_private()
 
-        # Sanity check: We should have a googleapis repo; if we do not,
+        # Confidence check: We should have a googleapis repo; if we do not,
         # something went wrong, and we should abort.
         if googleapis is None:
             raise RuntimeError(
@@ -119,7 +119,7 @@ class GAPICMicrogenerator:
         else:
             proto_path = Path("google/cloud") / service / version
 
-        # Sanity check: Do we have protos where we think we should?
+        # Confidence check: Do we have protos where we think we should?
         if not (googleapis / proto_path).exists():
             raise FileNotFoundError(
                 f"Unable to find directory for protos: {(googleapis / proto_path)}."
@@ -188,7 +188,7 @@ class GAPICMicrogenerator:
         logger.debug(f"Generating code for: {proto_path}.")
         shell.run(docker_run_args, hide_output=False)
 
-        # Sanity check: Does the output location have code in it?
+        # Confidence check: Does the output location have code in it?
         # If not, complain.
         if not tuple(output_dir.iterdir()):
             raise RuntimeError(
