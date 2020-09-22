@@ -553,8 +553,16 @@ def _inner_main(temp_dir: str) -> int:
     parser.add_argument(
         "--repository", default=os.environ.get("REPOSITORY"), required=True
     )
-    parser.add_argument("--synth-path", default=os.environ.get("SYNTH_PATH"))
-    parser.add_argument("--synth-file-name", default=os.environ.get("SYNTH_FILE_NAME"))
+    parser.add_argument(
+        "--synth-path",
+        default=os.environ.get("SYNTH_PATH"),
+        help="If specified, changes the directory from which synthtool is invoked.",
+    )
+    parser.add_argument(
+        "--synth-file-name",
+        default=os.environ.get("SYNTH_FILE_NAME"),
+        help="If specified, override the synth file name and may be a path to a file. Defaults to 'synth.py'.",
+    )
     parser.add_argument("--metadata-path", default=os.environ.get("METADATA_PATH"))
     parser.add_argument("--base-log-dir", default="")
     parser.add_argument(
