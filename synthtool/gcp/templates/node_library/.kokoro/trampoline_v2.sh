@@ -15,6 +15,9 @@
 
 # trampoline_v2.sh
 #
+# This script is for running CI builds. For Kokoro builds, we
+# set this script to `build_file` field in the Kokoro configuration.
+
 # This script does 3 things.
 #
 # 1. Prepare the Docker image for the test
@@ -22,15 +25,6 @@
 # 3. Upload the newly built Docker image
 #
 # in a way that is somewhat compatible with trampoline_v1.
-#
-# To run this script, first download few files from gcs to /dev/shm.
-# (/dev/shm is passed into the container as KOKORO_GFILE_DIR).
-#
-# gsutil cp gs://cloud-devrel-kokoro-resources/python-docs-samples/secrets_viewer_service_account.json /dev/shm
-# gsutil cp gs://cloud-devrel-kokoro-resources/python-docs-samples/automl_secrets.txt /dev/shm
-#
-# Then run the script.
-# .kokoro/trampoline_v2.sh
 #
 # These environment variables are required:
 # TRAMPOLINE_IMAGE: The docker image to use.
@@ -45,7 +39,11 @@
 #                       Defaults to /workspace.
 # Potentially there are some repo specific envvars in .trampolinerc in
 # the project root.
-
+#
+# Here is an example for running this script.
+#   TRAMPOLINE_IMAGE=gcr.io/cloud-devrel-kokoro-resources/node:10-user \
+#     TRAMPOLINE_BUILD_FILE=.kokoro/system-test.sh \
+#     .kokoro/trampoline_v2.sh
 
 set -euo pipefail
 

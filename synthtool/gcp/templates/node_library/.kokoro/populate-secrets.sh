@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This file is called in the early stage of `trampoline_v2.sh` to
+# populate secrets needed for the CI builds.
+
 set -eo pipefail
 
 function now { date +"%Y-%m-%d %H:%M:%S" | tr -d '\n' ;}
