@@ -20,6 +20,7 @@ from synthtool import shell
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
 from synthtool.sources import git
+from subprocess import CalledProcessError
 from typing import Any, Dict, List
 
 _REQUIRED_FIELDS = ["name", "repository"]
@@ -177,7 +178,11 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "prelint"], check=False, hide_output=hide_output)
     logger.debug("Running fix...")
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
-    shell.run(["git", "checkout", "samples"], hide_output=hide_output)
+    try:
+      shell.run(["git", "checkout", "samples"], hide_output=hide_output)
+    except CalledProcessError:
+      # Most likely a repo with no samples folder:
+      pass
 
 
 def compile_protos(hide_output=False):
