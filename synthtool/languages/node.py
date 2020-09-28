@@ -177,6 +177,7 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "prelint"], check=False, hide_output=hide_output)
     logger.debug("Running fix...")
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
+    shell.run(["git", "checkout", "samples"], hide_output=hide_output)
 
 
 def compile_protos(hide_output=False):
