@@ -91,7 +91,7 @@ class GAPICBazel:
             api_definitions_repo = self._clone_googleapis()
             api_definitions_repo_name = "googleapis"
 
-        # Sanity check: We should have a googleapis repo; if we do not,
+        # Confidence check: We should have a googleapis repo; if we do not,
         # something went wrong, and we should abort.
         if not api_definitions_repo:
             raise RuntimeError(
@@ -148,7 +148,7 @@ class GAPICBazel:
                 suffix = f"{'-'.join(parts)}-{language}"
             bazel_target = f"//{os.path.sep.join(parts)}:{suffix}"
 
-            # Sanity check: Do we have protos where we think we should?
+            # Confidence check: Do we have protos where we think we should?
             if not (api_definitions_repo / protos).exists():
                 raise FileNotFoundError(
                     f"Unable to find directory for protos: {(api_definitions_repo / protos)}."
@@ -223,7 +223,7 @@ class GAPICBazel:
 
         os.chdir(cwd)
 
-        # Sanity check: Does the output location have code in it?
+        # Confidence check: Does the output location have code in it?
         # If not, complain.
         if not tuple(output_dir.iterdir()):
             raise RuntimeError(

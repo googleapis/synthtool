@@ -374,9 +374,11 @@ def synthesize_loop(
     youngest = len(toolbox.versions) - 1
     has_changes = toolbox.synthesize_version_in_new_branch(synthesizer, youngest)
     if not has_changes:
-        if not toolbox.metadata_contains_generated_files(
-            toolbox.branch
-        ) and toolbox.metadata_contains_generated_files(toolbox.sub_branch(youngest)):
+        if (
+            not toolbox.metadata_contains_generated_files(toolbox.branch)
+            and toolbox.metadata_contains_generated_files(toolbox.sub_branch(youngest))
+            and not change_pusher.check_if_pr_already_exists(toolbox.branch)
+        ):
             # Special case: the repo owner turned on obsolete file tracking.
             # Generate a one-time PR containing only metadata changes.
             executor.check_call(["git", "checkout", toolbox.branch])
@@ -551,7 +553,16 @@ def _inner_main(temp_dir: str) -> int:
     parser.add_argument(
         "--repository", default=os.environ.get("REPOSITORY"), required=True
     )
-    parser.add_argument("--synth-path", default=os.environ.get("SYNTH_PATH"))
+    parser.add_argument(
+        "--synth-path",
+        default=os.environ.get("SYNTH_PATH"),
+        help="If specified, changes the directory from which synthtool is invoked.",
+    )
+    parser.add_argument(
+        "--synth-file-name",
+        default=os.environ.get("SYNTH_FILE_NAME"),
+        help="If specified, override the synth file name and may be a path to a file. Defaults to 'synth.py'.",
+    )
     parser.add_argument("--metadata-path", default=os.environ.get("METADATA_PATH"))
     parser.add_argument("--base-log-dir", default="")
     parser.add_argument(
@@ -577,6 +588,7 @@ def _inner_main(temp_dir: str) -> int:
         f"the API or client library generator."
     )
     change_pusher: AbstractChangePusher = ChangePusher(args.repository, gh, branch)
+    synth_file_name = args.synth_file_name or "synth.py"
 
     # capture logs for later
     # The logs directory path will be rendered in Sponge and Fusion as the test name,
@@ -627,6 +639,7 @@ def _inner_main(temp_dir: str) -> int:
                 metadata_path,
                 args.extra_args,
                 deprecated_execution=args.deprecated_execution,
+                synth_py_path=synth_file_name,
             ).synthesize(synth_log_path / "sponge_log.log")
 
             if not has_changes():
@@ -653,7 +666,10 @@ def _inner_main(temp_dir: str) -> int:
 
             # Prepare to call synthesize loop.
             synthesizer = Synthesizer(
-                metadata_path, args.extra_args, args.deprecated_execution, "synth.py",
+                metadata_path,
+                args.extra_args,
+                deprecated_execution=args.deprecated_execution,
+                synth_py_path=synth_file_name,
             )
             x = SynthesizeLoopToolbox(
                 source_versions,

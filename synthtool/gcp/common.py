@@ -296,7 +296,9 @@ class CommonTemplates:
         return self._generic_library("ruby_library", **kwargs)
 
     def render(self, template_name: str, **kwargs) -> Path:
-        return self._templates.render(template_name, **kwargs)
+        template = self._templates.render(template_name, **kwargs)
+        _tracked_paths.add(template)
+        return template
 
     def _load_generic_metadata(self, metadata: Dict):
         """
