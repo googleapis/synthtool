@@ -237,7 +237,6 @@ def test_copy_with_merge_file_permissions(expand_path_fixtures):
     _tracked_paths.add(template_directory)
     template = template_directory / "executable_file.sh"
 
-
     # ensure that the destination existing file already has incorrect correct
     # file permissions
     assert os.path.exists(destination_file)
