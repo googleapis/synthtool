@@ -15,6 +15,9 @@
 
 # trampoline_v2.sh
 #
+# If you want to make a change to this file, consider doing so at:
+# https://github.com/googlecloudplatform/docker-ci-helper
+#
 # This script is for running CI builds. For Kokoro builds, we
 # set this script to `build_file` field in the Kokoro configuration.
 
@@ -47,7 +50,7 @@
 
 set -euo pipefail
 
-TRAMPOLINE_VERSION="2.0.6"
+TRAMPOLINE_VERSION="2.0.7"
 
 if command -v tput >/dev/null && [[ -n "${TERM:-}" ]]; then
   readonly IO_COLOR_RED="$(tput setaf 1)"
