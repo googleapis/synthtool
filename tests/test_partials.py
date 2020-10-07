@@ -30,6 +30,7 @@ def test_readme_partials():
 
     os.chdir(cwd)
 
+
 def test_readme_partials_not_found():
     data = partials.load_partials(["non-existent.yaml"])
     assert len(data) == 0
