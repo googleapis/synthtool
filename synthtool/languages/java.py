@@ -19,7 +19,7 @@ import requests
 import synthtool as s
 import synthtool.gcp as gcp
 from synthtool import cache, shell
-from synthtool.gcp import common, samples, snippets
+from synthtool.gcp import common, partials, samples, snippets
 from synthtool.log import logger
 from pathlib import Path
 from typing import Any, Optional, Dict, List
@@ -385,6 +385,7 @@ def custom_templates(files: List[str], **kwargs) -> None:
         **kwargs: Additional options for CommonTemplates.render()
     """
     kwargs["metadata"] = _common_template_metadata()
+    kwargs["metadata"]["partials"] = partials.load_partials()
     for file in files:
         template = gcp.CommonTemplates().render(file, **kwargs)
         s.copy([template])
