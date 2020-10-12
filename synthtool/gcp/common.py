@@ -16,13 +16,13 @@ import json
 import os
 import re
 import shutil
-import yaml
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
 import jinja2
 
 from synthtool import shell, _tracked_paths
+from synthtool.gcp import partials
 from synthtool.languages import node
 from synthtool.log import logger
 from synthtool.sources import git, templates
@@ -304,7 +304,7 @@ class CommonTemplates:
         """
         loads additional meta information from .repo-metadata.json.
         """
-        self._load_partials(metadata)
+        metadata["partials"] = partials.load_partials()
 
         # Loads repo metadata information from the default location if it
         # hasn't already been set. Some callers may have already loaded repo
@@ -312,28 +312,6 @@ class CommonTemplates:
         # set the "repo" key.
         if "repo" not in metadata:
             metadata["repo"] = _load_repo_metadata()
-
-    def _load_partials(self, metadata: Dict):
-        """
-        hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
-        The following fields are currently supported:
-
-        body: custom body to include in the usage section of the document.
-        samples_body: an optional body to place below the table of contents
-          in samples/README.md.
-        introduction: a more thorough introduction than metadata["description"].
-        title: provide markdown to use as a custom title.
-        """
-        cwd_path = Path(os.getcwd())
-        partials_file = None
-        for file in [".readme-partials.yml", ".readme-partials.yaml"]:
-            if os.path.exists(cwd_path / file):
-                partials_file = cwd_path / file
-                break
-        if not partials_file:
-            return
-        with open(partials_file) as f:
-            metadata["partials"] = yaml.load(f, Loader=yaml.SafeLoader)
 
 
 def decamelize(value: str):
