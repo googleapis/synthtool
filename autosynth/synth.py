@@ -617,7 +617,7 @@ def _inner_main(temp_dir: str) -> int:
 
         metadata_path = os.path.join(args.metadata_path or "", "synth.metadata")
 
-        flags = autosynth.flags.parse_flags()
+        flags = autosynth.flags.parse_flags(synth_file_name)
         # Override flags specified in synth.py with flags specified in environment vars.
         for key in flags.keys():
             env_value = os.environ.get(key, "")
