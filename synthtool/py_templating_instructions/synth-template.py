@@ -1,4 +1,4 @@
- # Copyright 2020 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,4 +23,4 @@ from synthtool import gcp
 common = gcp.CommonTemplates()
 sample_files = common.py_samples(samples=True)
 for path in sample_files:
-    s.move(path, excludes=['noxfile.py'])
+    s.move(path, excludes=["noxfile.py"])
