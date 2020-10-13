@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# Copyright 2018 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -eo pipefail
+# Append the generation lines (21-26) to your existing synth.py file, or
+# duplicate this file and add it to your repo.
 
-export NPM_CONFIG_PREFIX=${HOME}/.npm-global
+import synthtool as s
+from synthtool import gcp
 
-# Start the releasetool reporter
-python3 -m pip install gcp-releasetool
-python3 -m releasetool publish-reporter-script > /tmp/publisher-script; source /tmp/publisher-script
-
-cd $(dirname $0)/..
-
-NPM_TOKEN=$(cat $KOKORO_GFILE_DIR/secret_manager/npm_publish_token)
-echo "//wombat-dressing-room.appspot.com/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-
-npm install
-npm publish --access=public --registry=https://wombat-dressing-room.appspot.com
+# The following code generates sample documentation according to the
+# kwargs provided in the accompanying .repo-metadata.json file
+common = gcp.CommonTemplates()
+sample_files = common.py_samples()
+for path in sample_files:
+    s.move(path, excludes=["noxfile.py"])

@@ -38,8 +38,6 @@ If you are using Maven, add this to your pom.xml file:
 {% endif -%}
 ```
 
-[//]: # ({x-version-update-start:{{ artifact_id }}:released})
-
 If you are using Gradle, add this to your dependencies
 ```Groovy
 compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
@@ -48,7 +46,6 @@ If you are using SBT, add this to your dependencies
 ```Scala
 libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['latest_version'] }}"
 ```
-[//]: # ({x-version-update-end})
 
 ## Authentication
 

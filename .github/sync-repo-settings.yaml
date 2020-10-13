@@ -14,3 +14,13 @@ permissionRules:
     permission: push
   - team: yoshi-admins
     permission: admin
+  - team: yoshi-java
+    permission: push
+  - team: yoshi-nodejs
+    permission: push
+  - team: yoshi-php
+    permission: push
+  - team: yoshi-python
+    permission: push
+  - team: yoshi-ruby
+    permission: push

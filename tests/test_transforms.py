@@ -34,6 +34,7 @@ def expand_path_fixtures(tmpdir):
         "dira/e.txt": "epsilon text",
         "dira/f.py": "eff python",
         "dirb/suba/g.py": "gamma python",
+        "executable_file.sh": "file that should be executable but is not",
     }
 
     for file_name, content in files.items():
@@ -64,7 +65,7 @@ def executable_fixtures(tmpdir):
     ["input", "expected"],
     [
         ("a.txt", ["a.txt"]),
-        ("*", ["a.txt", "b.py", "c.md", "dira", "dirb"]),
+        ("*", ["a.txt", "b.py", "c.md", "dira", "dirb", "executable_file.sh"]),
         ("*.py", ["b.py"]),
         ("**/*.py", ["b.py", normpath("dira/f.py"), normpath("dirb/suba/g.py")]),
         (
@@ -79,6 +80,7 @@ def executable_fixtures(tmpdir):
                 "dirb",
                 normpath("dirb/suba"),
                 normpath("dirb/suba/g.py"),
+                "executable_file.sh",
             ],
         ),
     ],
@@ -112,6 +114,7 @@ def test__filter_files(expand_path_fixtures):
         normpath("dira/e.txt"),
         normpath("dira/f.py"),
         normpath("dirb/suba/g.py"),
+        "executable_file.sh",
     ]
 
 
@@ -147,6 +150,7 @@ def test__move_to_dest(expand_path_fixtures):
             "dest/dirb",
             "dest/dirb/suba",
             "dest/dirb/suba/g.py",
+            "dest/executable_file.sh",
         ]
     ]
 
@@ -221,3 +225,31 @@ def test_required_move_not_found():
         assert False, "should have thrown error"
     except transforms.MissingSourceError:
         assert True
+
+
+def _noop_merge(source_text: str, destination_text: str, file_path: Path) -> str:
+    return source_text
+
+
+def test_copy_with_merge_file_permissions(expand_path_fixtures):
+    destination_file = expand_path_fixtures / "executable_file.sh"
+    template_directory = Path(__file__).parent / "fixtures"
+    _tracked_paths.add(template_directory)
+    template = template_directory / "executable_file.sh"
+
+    # ensure that the destination existing file already has incorrect correct
+    # file permissions
+    assert os.path.exists(destination_file)
+    assert os.stat(destination_file).st_mode != os.stat(template).st_mode
+
+    # Move to a different dir to make sure that move doesn't depend on the cwd
+    os.chdir(tempfile.gettempdir())
+    transforms.move(
+        sources=template_directory / "executable_file.sh",
+        destination=expand_path_fixtures / "executable_file.sh",
+        merge=_noop_merge,
+        required=True,
+    )
+
+    # ensure that the destination existing file now has the correct file permissions
+    assert os.stat(destination_file).st_mode == os.stat(template).st_mode

@@ -208,6 +208,8 @@ Template files can access any values provided, e.g.
     {% endif %}
     ```
 
+For more information on how to use Synthtool templating for Python Samples, view [/py_templating_instructions](./py_templating_instructions)
+
 You can learn more about Jinga templating in the
 [Template Designer Documentation](http://jinja.pocoo.org/docs/templates/).
 
