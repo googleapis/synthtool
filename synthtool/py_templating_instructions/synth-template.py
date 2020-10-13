@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
 # Append the generation lines (21-26) to your existing synth.py file, or
 # duplicate this file and add it to your repo.
 
@@ -21,6 +21,6 @@ from synthtool import gcp
 # The following code generates sample documentation according to the
 # kwargs provided in the accompanying .repo-metadata.json file
 common = gcp.CommonTemplates()
-sample_files = common.py_samples(samples=True)
+sample_files = common.py_samples()
 for path in sample_files:
     s.move(path, excludes=["noxfile.py"])
