@@ -107,7 +107,9 @@ def fix_proto_headers(proto_root: Path) -> None:
 
 def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
     s.replace(
-        [grpc_root / "src/**/*.java"], "^package (.*);", f"{GOOD_LICENSE}package \\1;",
+        [grpc_root / "src/**/*.java"],
+        "^package (.*);",
+        f"{GOOD_LICENSE}package \\1;",
     )
 
 
@@ -335,7 +337,8 @@ def _common_template_metadata() -> Dict[str, Any]:
         )
 
     metadata["latest_bom_version"] = latest_maven_version(
-        group_id="com.google.cloud", artifact_id="libraries-bom",
+        group_id="com.google.cloud",
+        artifact_id="libraries-bom",
     )
 
     metadata["samples"] = samples.all_samples(["samples/**/src/main/java/**/*.java"])

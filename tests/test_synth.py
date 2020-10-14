@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import datetime
+import json
 import os
 import pathlib
 import re
@@ -23,19 +25,18 @@ import unittest.mock
 from unittest.mock import call
 
 import pytest  # type:ignore
+from tests.util import make_working_repo
 
 import autosynth.abstract_source
 import autosynth.synth
 from autosynth import git
 from autosynth.change_pusher import (
     AbstractChangePusher,
-    SquashingChangePusher,
     AbstractPullRequest,
+    SquashingChangePusher,
 )
 from autosynth.synthesizer import AbstractSynthesizer
 from integration_tests import util
-import json
-import datetime
 
 
 class WriteFile:
@@ -144,7 +145,8 @@ class CompiledVersion(autosynth.abstract_source.AbstractSourceVersion):
 
 
 def compile_histories(
-    histories: typing.List[typing.List[typing.Any]], synthesizer: MockSynthesizer,
+    histories: typing.List[typing.List[typing.Any]],
+    synthesizer: MockSynthesizer,
 ) -> typing.Sequence[typing.Sequence[CompiledVersion]]:
     """Takes a list of mock source versions, and returns a list of source versions."""
     # Split the history so it looks like it came from two sources.
@@ -164,7 +166,10 @@ def test_synthesize_loop_with_empty_change_history():
             [], "test", temp_dir, "synth.metadata", ""
         )
         commit_count = autosynth.synth.synthesize_loop(
-            x, False, MockChangePusher(), MockSynthesizer,
+            x,
+            False,
+            MockChangePusher(),
+            MockSynthesizer,
         )
         assert 0 == commit_count
 
@@ -204,7 +209,10 @@ class SynthesizeLoopFixture:
             source_versions, "test", self.temp_dir, "synth.metadata", ""
         )
         return autosynth.synth.synthesize_loop(
-            x, multiple_prs, self.change_pusher, self.synthesizer,
+            x,
+            multiple_prs,
+            self.change_pusher,
+            self.synthesizer,
         )
 
 
@@ -318,7 +326,8 @@ def synthesize_loop_with_realistic_change_history(
     handle, git_log_path = tempfile.mkstemp(".log")
     with os.fdopen(handle, "w") as git_log:
         subprocess.run(
-            ["git", "log", "-p", "--no-decorate"], stdout=git_log,
+            ["git", "log", "-p", "--no-decorate"],
+            stdout=git_log,
         )
     golden_log_path = str(pathlib.Path(__file__).parent / "testdata" / golden_file)
     util.assert_git_logs_match(git_log_path, golden_log_path)
@@ -489,74 +498,6 @@ def test_synthesize_loop_always_pushes_something_when_latest_version_succeeds(
     synthesize_loop_fixture.change_pusher.push_changes.assert_called()
 
 
-def make_working_repo(working_dir: str):
-    """Create a local repo that resembles a real repo.
-
-    Specifically, it has a history of synth.py changes that actually change the
-    generated output.
-    """
-    subprocess.check_call(["git", "init"], cwd=working_dir)
-    subprocess.check_call(
-        [
-            "git",
-            "remote",
-            "add",
-            "origin",
-            "https://github.com/googleapis/nodejs-vision.git",
-        ]
-    )
-    working_path = pathlib.Path(working_dir)
-    # The simplest possible synth.py.  It generates one file with one line of text.
-    template = """import time
-import json
-import uuid
-import subprocess
-
-# comment
-
-with open("generated.txt", "wt") as f:
-    f.write("a\\n")
-metadata = { "updateTime": str(uuid.uuid4()),
-    "sources": [
-        {
-        "git": {
-            "name": ".",
-            "remote": "https://github.com/googleapis/synthtool.git",
-            "sha": subprocess.run(["git", "log", "-1", "--pretty=%H"], universal_newlines=True, stdout=subprocess.PIPE).stdout.strip(),
-        }
-    }]
-}
-with open("synth.metadata", "wt") as f:
-    json.dump(metadata, f)
-"""
-    # Write version a.
-    synth_py_path = working_path / "synth.py"
-    synth_py_path.write_text(template)
-    subprocess.check_call([sys.executable, str(synth_py_path)], cwd=working_dir)
-    subprocess.check_call(["git", "add", "-A"], cwd=working_dir)
-    subprocess.check_call(["git", "commit", "-m", "a"], cwd=working_dir)
-
-    # Write version b.
-    text = template.replace('"a\\n"', '"b\\n"')
-    synth_py_path.write_text(text)
-    subprocess.check_call(["git", "commit", "-am", "b"], cwd=working_dir)
-
-    # Write a version that has no effect on output.
-    text = text.replace("# comment", "# a different comment")
-    synth_py_path.write_text(text)
-    subprocess.check_call(["git", "commit", "-am", "comment"], cwd=working_dir)
-
-    # Write version c.
-    text = text.replace('"b\\n"', '"c\\n"')
-    synth_py_path.write_text(text)
-    subprocess.check_call(
-        ["git", "commit", "-am", "c subject\n\nbody line 1\nbody line 2"],
-        cwd=working_dir,
-    )
-
-    return text
-
-
 class SimpleSynthesizer(AbstractSynthesizer):
     """Invokes synth.py and does nothing more."""
 
@@ -675,66 +616,3 @@ def test_pull_request_interleaved_with_commit():
             / "testdata"
             / "test-pull-request-interleaved-with-commit.log"
         )
-
-
-def test_compose_pr_title_with_many_commits():
-    text = autosynth.synth._compose_pr_title(3, 3, "", "")
-    assert text == (
-        "[CHANGE ME] Re-generated to pick up changes "
-        "in the API or client library generator."
-    )
-
-
-def test_compose_pr_title_with_many_commits_and_source_name():
-    text = autosynth.synth._compose_pr_title(3, 3, "", "googleapis")
-    assert text == ("[CHANGE ME] Re-generated to pick up changes " "from googleapis.")
-
-
-def test_compose_pr_title_with_many_commits_and_synth_path():
-    text = autosynth.synth._compose_pr_title(3, 3, "automl", "")
-    assert text == (
-        "[CHANGE ME] Re-generated automl to pick up changes "
-        "in the API or client library generator."
-    )
-
-
-def test_compose_pr_title_with_many_commits_and_source_name_and_synth_path():
-    text = autosynth.synth._compose_pr_title(3, 3, "automl", "googleapis")
-    assert text == (
-        "[CHANGE ME] Re-generated automl to pick up changes " "from googleapis."
-    )
-
-
-@pytest.fixture(scope="module")
-def working_repo():
-    with tempfile.TemporaryDirectory() as working_dir, util.OsChdirContext(working_dir):
-        make_working_repo(working_dir)
-        yield working_dir
-
-
-def test_compose_pr_title_with_one_commit(working_repo):
-    text = autosynth.synth._compose_pr_title(1, 1, "", "")
-    assert text == "c subject"
-
-
-def test_compose_pr_title_with_two_commits(working_repo):
-    text = autosynth.synth._compose_pr_title(2, 1, "", "")
-    assert text == (
-        "[CHANGE ME] Re-generated to pick up changes "
-        "in the API or client library generator."
-    )
-
-
-def test_compose_pr_title_with_one_commit_and_synth_path(working_repo):
-    text = autosynth.synth._compose_pr_title(1, 1, "automl", "")
-    assert text == "[automl] c subject"
-
-
-def test_compose_pr_title_with_one_commit_and_source_name(working_repo):
-    text = autosynth.synth._compose_pr_title(1, 1, "", "googleapis")
-    assert text == "c subject"
-
-
-def test_compose_pr_title_with_one_commit_and_synth_path_and_source_name(working_repo):
-    text = autosynth.synth._compose_pr_title(1, 1, "automl", "googleapis")
-    assert text == "[automl] c subject"

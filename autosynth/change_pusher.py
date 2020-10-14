@@ -100,7 +100,10 @@ class ChangePusher(AbstractChangePusher):
             )
         else:
             pr = self._gh.create_pull_request(
-                self._repository, branch=branch, title=pr_title, body=new_body,
+                self._repository,
+                branch=branch,
+                title=pr_title,
+                body=new_body,
             )
 
             # args.synth_path (and api: * labels) only exist in monorepos
