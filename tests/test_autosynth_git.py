@@ -57,12 +57,8 @@ def _commit_file(path: pathlib.Path, content: str):
     with open(path, "wt") as f:
         f.write(content)
     subprocess.run(
-        ["git", "add", str(path)],
-        check=True,
-        cwd=path.parent,
+        ["git", "add", str(path)], check=True, cwd=path.parent,
     )
     subprocess.run(
-        ["git", "commit", "-F", str(path)],
-        check=True,
-        cwd=path.parent,
+        ["git", "commit", "-F", str(path)], check=True, cwd=path.parent,
     )

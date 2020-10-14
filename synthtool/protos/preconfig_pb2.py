@@ -110,9 +110,7 @@ _PRECONFIG = _descriptor.Descriptor(
         ),
     ],
     extensions=[],
-    nested_types=[
-        _PRECONFIG_PRECLONEDREPOSENTRY,
-    ],
+    nested_types=[_PRECONFIG_PRECLONEDREPOSENTRY,],
     enum_types=[],
     serialized_options=None,
     is_extendable=False,

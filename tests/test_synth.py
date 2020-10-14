@@ -145,8 +145,7 @@ class CompiledVersion(autosynth.abstract_source.AbstractSourceVersion):
 
 
 def compile_histories(
-    histories: typing.List[typing.List[typing.Any]],
-    synthesizer: MockSynthesizer,
+    histories: typing.List[typing.List[typing.Any]], synthesizer: MockSynthesizer,
 ) -> typing.Sequence[typing.Sequence[CompiledVersion]]:
     """Takes a list of mock source versions, and returns a list of source versions."""
     # Split the history so it looks like it came from two sources.
@@ -166,10 +165,7 @@ def test_synthesize_loop_with_empty_change_history():
             [], "test", temp_dir, "synth.metadata", ""
         )
         commit_count = autosynth.synth.synthesize_loop(
-            x,
-            False,
-            MockChangePusher(),
-            MockSynthesizer,
+            x, False, MockChangePusher(), MockSynthesizer,
         )
         assert 0 == commit_count
 
@@ -209,10 +205,7 @@ class SynthesizeLoopFixture:
             source_versions, "test", self.temp_dir, "synth.metadata", ""
         )
         return autosynth.synth.synthesize_loop(
-            x,
-            multiple_prs,
-            self.change_pusher,
-            self.synthesizer,
+            x, multiple_prs, self.change_pusher, self.synthesizer,
         )
 
 
@@ -326,8 +319,7 @@ def synthesize_loop_with_realistic_change_history(
     handle, git_log_path = tempfile.mkstemp(".log")
     with os.fdopen(handle, "w") as git_log:
         subprocess.run(
-            ["git", "log", "-p", "--no-decorate"],
-            stdout=git_log,
+            ["git", "log", "-p", "--no-decorate"], stdout=git_log,
         )
     golden_log_path = str(pathlib.Path(__file__).parent / "testdata" / golden_file)
     util.assert_git_logs_match(git_log_path, golden_log_path)
