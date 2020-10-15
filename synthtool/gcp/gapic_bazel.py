@@ -33,8 +33,7 @@ LOCAL_DISCOVERY_ARTIFACT_MANAGER: Optional[str] = os.environ.get(
 
 
 class GAPICBazel:
-    """A synthtool component that can produce libraries using bazel build.
-    """
+    """A synthtool component that can produce libraries using bazel build."""
 
     def __init__(self):
         self._ensure_dependencies_installed()
