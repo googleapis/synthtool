@@ -35,7 +35,7 @@ def list_repositories():
             "repository": "googleapis/google-api-ruby-client",
             "branch-suffix": "clean",
             "args": ["--clean"],
-            "pr-title": f"feat: Automated removal of obsolete clients",
+            "pr-title": "feat: Automated removal of obsolete clients",
         }
     )
 
