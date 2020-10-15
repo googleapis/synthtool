@@ -146,7 +146,8 @@ def _compose_comment(remote: str, sha: str, git_log: str) -> str:
 
 
 def enumerate_versions_for_source(
-    source: typing.Dict, temp_dir: pathlib.Path,
+    source: typing.Dict,
+    temp_dir: pathlib.Path,
 ) -> typing.List[autosynth.abstract_source.AbstractSourceVersion]:
     """Enumerates every commit after the most recent commit for provided git source.
 
@@ -171,7 +172,8 @@ def enumerate_versions_for_source(
 
 
 def enumerate_versions(
-    sources: typing.List[typing.Dict[str, typing.Dict]], temp_dir: pathlib.Path,
+    sources: typing.List[typing.Dict[str, typing.Dict]],
+    temp_dir: pathlib.Path,
 ) -> typing.List[typing.List[autosynth.abstract_source.AbstractSourceVersion]]:
     """Enumerates every commit after the most recent commit for applicable git sources.
 
