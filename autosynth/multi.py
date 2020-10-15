@@ -265,7 +265,7 @@ def load_config(
     """
     if os.path.exists(config):
         with open(config) as fh:
-            return yaml.load(fh)["libraries"]
+            return yaml.load(fh, Loader=yaml.FullLoader)["libraries"]
     else:
         try:
             provider = importlib.import_module(config)
