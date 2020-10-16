@@ -43,6 +43,18 @@ def list_repositories():
 
 
 def _client_dir(name: str, version: str) -> str:
+    """Determines the code directory name for a generated API client.
+
+    This effectively converts the API name and version to underscore case,
+    and matches the logic in the Ruby Apiary generator.
+
+    Arguments:
+        name {str} -- The name of the API being generated
+        version {str} -- The version of the API being generated
+
+    Returns:
+        str -- Directory name
+    """
     name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", name)
     name = re.sub(r"([a-z])([A-Z])", r"\1_\2", name)
     name = name.lower()
