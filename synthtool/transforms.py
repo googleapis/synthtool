@@ -90,6 +90,8 @@ def _merge_file(
 
         final_text = merge(source_text, dest_text, dest_path)
 
+        # use the source file's file permission mode
+        os.chmod(dest_path, os.stat(source_path).st_mode)
         if final_text != dest_text:
             dest_file.seek(0)
             dest_file.write(final_text)
