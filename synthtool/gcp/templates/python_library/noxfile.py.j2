@@ -78,12 +78,8 @@ def default(session):
     {% endif %}
     session.install("mock", "pytest", "pytest-cov" {% for d in unit_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
     session.install("-e", ".")
-    {% for dependency in unit_test_local_dependencies %}
-    session.install("-e", "{{dependency}}")
-    {% endfor %}
-    {% for dependency in unit_test_dependencies %}
-    session.install("-e", "{{dependency}}")
-    {% endfor %}
+    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
+    {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
 
     # Run py.test against the unit tests.
     session.run(
