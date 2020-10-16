@@ -77,8 +77,10 @@ def default(session):
     session.install("asyncmock", "pytest-asyncio")
     {% endif %}
     session.install("mock", "pytest", "pytest-cov")
-    session.install("-e", "."){% for dependency in unit_test_dependencies %}
-    session.install("{{dependency}}"){% endfor %}
+    session.install("-e", ".")
+    {% for dependency in unit_test_dependencies %}
+    session.install("{{dependency}}")
+    {% endfor %}
 
     # Run py.test against the unit tests.
     session.run(
