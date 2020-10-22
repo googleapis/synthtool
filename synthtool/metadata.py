@@ -230,6 +230,7 @@ class MetadataTrackerAndWriter:
 
     def __init__(self, metadata_file_path: str):
         self.metadata_file_path = metadata_file_path
+        self.generated_file_paths: List[str] = []
 
     def __enter__(self):
         self.old_tracker = MetadataTrackerAndWriter.get_live_tracker()
@@ -244,6 +245,10 @@ class MetadataTrackerAndWriter:
 
         Returns None if there is none in the current thread context."""
         return getattr(MetadataTrackerAndWriter._thread_local, "live_tracker", None)
+
+    def clear_tracking_history(self):
+        """Clears the tracking history of generated files."""
+        self.generated_file_paths = []
 
     def start_tracking(self):
         """Create a watchdog observer and start tracking file changes."""
@@ -265,7 +270,11 @@ class MetadataTrackerAndWriter:
             time.sleep(2)  # Finish collecting observations about modified files.
             observer.stop()
             observer.join()
+            self.generated_file_paths.extend(
+                git_ignore(self.handler.get_touched_file_paths())
+            )
             del self.observer
+            del self.handler
 
     def __exit__(self, type, value, traceback):
         self._thread_local.live_tracker = self.old_tracker
@@ -274,8 +283,7 @@ class MetadataTrackerAndWriter:
         else:
             if should_track_obsolete_files():
                 self.stop_tracking()
-                for path in git_ignore(self.handler.get_touched_file_paths()):
-                    _metadata.generated_files.append(path)
+                _metadata.generated_files.extend(self.generated_file_paths)
                 _remove_obsolete_files(self.old_metadata)
             else:
                 self.stop_tracking()
@@ -295,6 +303,7 @@ def start_tracking_generated_files():
         if not _track_obsolete_files:
             tracker.stop_tracking()
             _track_obsolete_files = True
+            tracker.clear_tracking_history()
         tracker.start_tracking()
     else:
         logger.error(

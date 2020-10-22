@@ -179,10 +179,30 @@ def test_start_and_stop_tracking(source_tree, preserve_track_obsolete_file_flag)
         source_tree.write("code/b")
         metadata.stop_tracking_generated_files()
         source_tree.write("code/c")
+        metadata.start_tracking_generated_files()
+        source_tree.write("code/d")
 
     # Confirm add_new_files found the new files and ignored the old one.
     new_file_paths = [path for path in metadata.get().generated_files]
-    assert ["code/b"] == new_file_paths
+    assert ["code/b", "code/d"] == new_file_paths
+
+
+def test_start_and_stop_tracking_with_default_on(
+    source_tree, preserve_track_obsolete_file_flag
+):
+    metadata.set_track_obsolete_files(True)
+    with metadata.MetadataTrackerAndWriter(source_tree.tmpdir / "synth.metadata"):
+        source_tree.write("code/a")
+        metadata.start_tracking_generated_files()
+        source_tree.write("code/b")
+        metadata.stop_tracking_generated_files()
+        source_tree.write("code/c")
+        metadata.start_tracking_generated_files()
+        source_tree.write("code/d")
+
+    # Confirm add_new_files found the new files and ignored the old one.
+    new_file_paths = [path for path in metadata.get().generated_files]
+    assert ["code/a", "code/b", "code/d"] == new_file_paths
 
 
 def test_start_and_stop_tracking_without_context(
