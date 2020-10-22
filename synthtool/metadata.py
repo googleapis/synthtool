@@ -224,36 +224,99 @@ class FileSystemEventHandler(watchdog.events.FileSystemEventHandler):
 class MetadataTrackerAndWriter:
     """Writes metadata file upon exiting scope."""
 
+    # _thread_local.live_tracker points to the MetadataTrackerAndWriter in the current
+    #  thread context.
+    _thread_local = threading.local()
+
     def __init__(self, metadata_file_path: str):
         self.metadata_file_path = metadata_file_path
 
     def __enter__(self):
+        self.old_tracker = MetadataTrackerAndWriter.get_live_tracker()
+        self._thread_local.live_tracker = self
         self.old_metadata = _read_or_empty(self.metadata_file_path)
         _add_self_git_source()
-        watch_dir = pathlib.Path(self.metadata_file_path).parent
-        os.makedirs(watch_dir, exist_ok=True)
-        self.handler = FileSystemEventHandler(watch_dir)
-        self.observer = watchdog.observers.Observer()
-        self.observer.schedule(self.handler, str(watch_dir), recursive=True)
-        self.observer.start()
+        self.start_tracking()
+
+    @staticmethod
+    def get_live_tracker():
+        """Gets the MetadataTrackerAndWriter in the current thread context.
+
+        Returns None if there is none in the current thread context."""
+        return getattr(MetadataTrackerAndWriter._thread_local, "live_tracker", None)
+
+    def start_tracking(self):
+        """Create a watchdog observer and start tracking file changes."""
+        observer = getattr(self, "observer", None)
+        if observer:
+            pass  # Already tracking.  Keep tracking.
+        else:
+            watch_dir = pathlib.Path(self.metadata_file_path).parent
+            os.makedirs(watch_dir, exist_ok=True)
+            self.handler = FileSystemEventHandler(watch_dir)
+            self.observer = watchdog.observers.Observer()
+            self.observer.schedule(self.handler, str(watch_dir), recursive=True)
+            self.observer.start()
+
+    def stop_tracking(self):
+        """Shut down existing watchdog observer.  Does nothing if not observing."""
+        observer = getattr(self, "observer", None)
+        if observer:
+            time.sleep(2)  # Finish collecting observations about modified files.
+            observer.stop()
+            observer.join()
+            del self.observer
 
     def __exit__(self, type, value, traceback):
+        self._thread_local.live_tracker = self.old_tracker
         if value:
             pass  # An exception was raised.  Don't write metadata or clean up.
         else:
             if should_track_obsolete_files():
-                time.sleep(2)  # Finish collecting observations about modified files.
-                self.observer.stop()
-                self.observer.join()
+                self.stop_tracking()
                 for path in git_ignore(self.handler.get_touched_file_paths()):
                     _metadata.generated_files.append(path)
                 _remove_obsolete_files(self.old_metadata)
             else:
-                self.observer.stop()
+                self.stop_tracking()
             _clear_local_paths(get())
             _metadata.sources.sort(key=_source_key)
             if _enable_write_metadata:
                 write(self.metadata_file_path)
+
+
+def start_tracking_generated_files():
+    """Starts tracking generated files by observing all file writes.
+
+    If tracking is already enabled, then has no effect."""
+    global _track_obsolete_files
+    tracker = MetadataTrackerAndWriter.get_live_tracker()
+    if tracker:
+        if not _track_obsolete_files:
+            tracker.stop_tracking()
+            _track_obsolete_files = True
+        tracker.start_tracking()
+    else:
+        logger.error(
+            "start_tracking_generated_files() called, but there's no "
+            + "MetadataTrackerAndWriter in the current thread context.\n"
+            + "This could happen if you invoked synth.py directly instead of invoking\n"
+            + "   python -m synthtool synth.py"
+        )
+
+
+def stop_tracking_generated_files():
+    """Stop tracking generated files."""
+    tracker = MetadataTrackerAndWriter.get_live_tracker()
+    if tracker:
+        tracker.stop_tracking()
+    else:
+        logger.error(
+            "stop_tracking_generated_files() called, but there's no "
+            + "MetadataTrackerAndWriter in the current thread context.\n"
+            + "This could happen if you invoked synth.py directly instead of invoking\n"
+            + "   python -m synthtool synth.py"
+        )
 
 
 def _get_git_source_map(metadata) -> Dict[str, object]:

@@ -18,10 +18,21 @@ import sys
 
 from synthtool.transforms import move, replace, dont_overwrite
 from synthtool.log import logger
+from synthtool.metadata import (
+    start_tracking_generated_files,
+    stop_tracking_generated_files,
+)
 
 copy = move
 
-__all__ = ["copy", "move", "replace", "dont_overwrite"]
+__all__ = [
+    "copy",
+    "move",
+    "replace",
+    "dont_overwrite",
+    "start_tracking_generated_files",
+    "stop_tracking_generated_files",
+]
 
 # Make sure that synthtool is being used instead of running the synth file
 # directly
