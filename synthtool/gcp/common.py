@@ -19,9 +19,10 @@ import shutil
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
+
 import jinja2
 
-from synthtool import shell, _tracked_paths
+from synthtool import _tracked_paths, metadata, shell
 from synthtool.gcp import partials
 from synthtool.languages import node
 from synthtool.log import logger
@@ -269,6 +270,7 @@ class CommonTemplates:
 
     def node_library(self, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
+        metadata.start_tracking_generated_files()
         #  .repo-metadata.json, or excluding README.md, we can remove this.
         if not os.path.exists("./.repo-metadata.json"):
             self.excludes.append("README.md")

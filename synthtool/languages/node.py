@@ -16,7 +16,7 @@ import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
 import re
-from synthtool import shell
+from synthtool import shell, metadata
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
 from synthtool.sources import git
@@ -190,7 +190,9 @@ def compile_protos(hide_output=False):
 
 def postprocess_gapic_library(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
+    metadata.stop_tracking_generated_files()
     install(hide_output=hide_output)
     fix(hide_output=hide_output)
+    metadata.start_tracking_generated_files()
     compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
