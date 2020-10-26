@@ -9,14 +9,16 @@ This tool helps to generate and layout cloud client libraries. Synthtool runs th
 
 ## Prerequisites
 
-1. **Python 3.6** Either install it from [python.org][python_downloads] or use
+1. **Linux**  This tool runs on Linux only.  No other platforms are supported.
+
+2. **Python 3.6** Either install it from [python.org][python_downloads] or use
 [pyenv][] to get 3.6.
 
-2. **Bazel**  can be downloaded from [bazel.build](https://bazel.build/).
+3. **Bazel**  can be downloaded from [bazel.build](https://bazel.build/).
 
-3. **Docker**  Some synth.py files require [Docker] to generate code.
+4. **Docker**  Some synth.py files require [Docker] to generate code.
 
-4. Clone this repository and install this library with pip:
+5. Clone this repository and install this library with pip:
 
     ```
     cd synthtool
