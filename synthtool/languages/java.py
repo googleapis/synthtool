@@ -199,7 +199,8 @@ def _common_generation(
     s.copy(
         [library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}/src"],
         f"grpc-google-{cloud_prefix}{destination_name}-{version}/src",
-        required=True,
+        # For REST-only clients, like java-compute, gRPC artifact does not exist
+        # required=True,
     )
     s.copy(
         [library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}/src"],
