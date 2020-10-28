@@ -1,8 +1,11 @@
 # build from the root of this repo:
-# docker build -t python-synthtool -f autosynth/docker/Dockerfile .
+# docker build -t python-synthtool -f dockerfiles/python/Dockerfile .
 FROM python:3.6.12-buster
 
 WORKDIR /
+
+# Upgrade the NPM version
+RUN npm install -g npm
 
 # Install bazel 3.0.0
 RUN mkdir -p /bazel
@@ -13,9 +16,6 @@ ENV PATH="/bazel:${PATH}"
 # Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install -r /synthtool/requirements.txt
-
-# Upgrade the NPM version
-RUN npm install -g npm
 
 # Copy synthtool.
 COPY synthtool /synthtool/synthtool
