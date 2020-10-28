@@ -1,11 +1,12 @@
 # build from the root of this repo:
-# docker build -t python-synthtool -f dockerfiles/python/Dockerfile .
+# docker build -t python-synthtool -f autosynth/docker/Dockerfile .
 FROM python:3.6.12-buster
 
 WORKDIR /
 
-# Upgrade the NPM version
-RUN npm install -g npm
+# Install nodejs.
+RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
+RUN apt-get install -y nodejs
 
 # Install bazel 3.0.0
 RUN mkdir -p /bazel
