@@ -1,5 +1,5 @@
 # build from the root of this repo:
-# docker build -t python-synthtool -f autosynth/docker/Dockerfile .
+# docker build -t gcr.io/cloud-devrel-kokoro-resources/synthtool -f autosynth/docker/Dockerfile .
 FROM python:3.6.12-buster
 
 WORKDIR /
@@ -22,4 +22,6 @@ RUN pip install -r /synthtool/requirements.txt
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 
+# Put synthtool in the PYTHONPATH so we can invoke it with `python -m autosynth`.
+ENV PYTHONPATH="/synthtool"
 
