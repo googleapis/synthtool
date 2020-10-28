@@ -18,10 +18,10 @@ ENV PATH="/bazel:${PATH}"
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install -r /synthtool/requirements.txt
 
+# Put synthtool in the PYTHONPATH so we can invoke it with `python -m autosynth`.
+ENV PYTHONPATH="/synthtool"
+
 # Copy synthtool.
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
-
-# Put synthtool in the PYTHONPATH so we can invoke it with `python -m autosynth`.
-ENV PYTHONPATH="/synthtool"
 
