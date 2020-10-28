@@ -18,6 +18,8 @@ set -eo pipefail
 docker run \
     --env AUTOSYNTH_MULTIPLE_COMMITS=${AUTOSYNTH_MULTIPLE_COMMITS} \
     --env AUTOSYNTH_MULTIPLE_PRS=${AUTOSYNTH_MULTIPLE_PRS} \
+    --env GITHUB_EMAIL=${GITHUB_EMAIL} \
+    --env GITHUB_USER=${GITHUB_USER} \
     --env KOKORO_ARTIFACTS_DIR=/kokoro/artifacts \
     --env KOKORO_KEYSTORE_DIR=/kokoro/keystore \
     --env MULTISYNTH_CONFIG=${MULTISYNTH_CONFIG} \
