@@ -18,6 +18,12 @@ ENV PATH="/bazel:${PATH}"
 RUN apt-get update
 RUN apt-get install zip
 
+# Install java
+RUN curl -L https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz -o java.tar.gz
+RUN gunzip java.tar.gz
+RUN tar xf java.tar
+ENV PATH="/jdk-15.0.1/bin:${PATH}"
+
 # Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install -r /synthtool/requirements.txt
