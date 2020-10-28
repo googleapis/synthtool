@@ -14,6 +14,10 @@ RUN curl -L https://github.com/bazelbuild/bazel/releases/download/3.0.0/bazel-3.
 RUN chmod +x /bazel/bazel
 ENV PATH="/bazel:${PATH}"
 
+# bazel requires zip.
+RUN apt-get update
+RUN apt-get install zip
+
 # Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install -r /synthtool/requirements.txt
