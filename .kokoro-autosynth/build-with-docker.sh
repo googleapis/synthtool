@@ -25,4 +25,4 @@ docker run \
     --env SYNTHTOOL_TRACK_OBSOLETE_FILES=${SYNTHTOOL_TRACK_OBSOLETE_FILES} \
     -v ${KOKORO_ARTIFACTS_DIR}:/kokoro/artifacts \
     -v ${KOKORO_KEYSTORE_DIR}:/kokoro/keystore \
-    -it autosynth /synthtool/autosynth/docker/autosynth.sh
+    -it synthtool /synthtool/autosynth/docker/autosynth.sh

@@ -1,5 +1,5 @@
 # build from the root of this repo:
-# docker build -t python-synthtool -f autosynth/docker/Dockerfile .
+# docker build -t synthtool -f autosynth/docker/Dockerfile .
 FROM python:3.6.12-buster
 
 WORKDIR /
