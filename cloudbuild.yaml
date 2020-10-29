@@ -1,0 +1,3 @@
+steps:
+    - name: 'gcr.io/cloud-builders/docker'
+      args: [ 'build', '-t', 'gcr.io/cloud-devrel-kokoro-resources/synthtool', '-f', 'autosynth/docker/Dockerfile', '.' ]
