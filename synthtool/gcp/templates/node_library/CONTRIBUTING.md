@@ -39,7 +39,7 @@ accept your pull requests.
 
 ## Running the tests
 
-1.  To run the tests locally, you will need a Google Cloud Project with a [service account](https://cloud.google.com/docs/authentication/production#cloud-console) and an [API key](https://cloud.google.com/docs/authentication/api-keys)
+1.  To run the tests locally, you will need a Google Cloud Project with a [service account](https://cloud.google.com/docs/authentication/production#cloud-console) and, for some tests, an [API key](https://cloud.google.com/docs/authentication/api-keys)
 
 1.  Set the required environment variables. 
 ```
