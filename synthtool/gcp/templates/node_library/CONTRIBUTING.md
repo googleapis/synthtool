@@ -42,12 +42,12 @@ accept your pull requests.
 1.  To run the tests locally, you will need a Google Cloud Project with a [service account](https://cloud.google.com/docs/authentication/production#cloud-console) and, for some tests, an [API key](https://cloud.google.com/docs/authentication/api-keys)
 
 1.  Set the required environment variables. 
-```
-export GCLOUD_TESTS_PROJECT_ID=YOUR_GCP_PROJECT_ID
-export GCLOUD_TESTS_KEY=PATH_TO_YOUR_SERVICE_ACCOUNT_KEY.json
-export GCLOUD_TESTS_PROJECT_NUMBER=YOUR_GCP_PROJECT_NUMBER
-export GCLOUD_TESTS_API_KEY=YOUR_API_KEY
-```
+    ```
+    export GCLOUD_TESTS_PROJECT_ID=YOUR_GCP_PROJECT_ID
+    export GCLOUD_TESTS_KEY=PATH_TO_YOUR_SERVICE_ACCOUNT_KEY.json
+    export GCLOUD_TESTS_PROJECT_NUMBER=YOUR_GCP_PROJECT_NUMBER
+    export GCLOUD_TESTS_API_KEY=YOUR_API_KEY
+    ```
 
 1.  [Prepare your environment for Node.js setup][setup].
 
