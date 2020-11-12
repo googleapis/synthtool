@@ -39,7 +39,7 @@ def test_split_system_tests():
         assert "RUN_SYSTEM_TESTS" in contents
         assert "false" in contents
 
-    assert os.path.exists(templated_files / ".kokoro/presubmit/system-3.8.cfg")
-    with open(templated_files / ".kokoro/presubmit/system-3.8.cfg", "r") as f:
+    assert os.path.exists(templated_files / ".kokoro/presubmit/system-3.9.cfg")
+    with open(templated_files / ".kokoro/presubmit/system-3.9.cfg", "r") as f:
         contents = f.read()
-        assert "system-3.8" in contents
+        assert "system-3.9" in contents
