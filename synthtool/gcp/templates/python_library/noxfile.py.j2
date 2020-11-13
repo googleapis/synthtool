@@ -74,7 +74,7 @@ def default(session):
     # Install all test dependencies, then install this package in-place.
 
     {%- if microgenerator %}
-    session.install("asyncmock", "pytest-asyncio")
+    session.install("asyncmock", "pytest-asyncio", "asynctest")
     {% endif %}
     session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
     session.install("-e", ".")
