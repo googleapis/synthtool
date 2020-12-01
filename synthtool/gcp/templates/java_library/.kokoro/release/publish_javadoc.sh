@@ -38,8 +38,8 @@ python3 -m pip install gcp-docuploader
 # compile all packages
 mvn clean install -B -q -DskipTests=true
 
-NAME={{ metadata['repo']['distribution_name'].split(':')|last }}
-VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
+export NAME={{ metadata['repo']['distribution_name'].split(':')|last }}
+export VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 
 # build the docs
 mvn site -B -q
@@ -58,6 +58,9 @@ python3 -m docuploader upload . \
   --staging-bucket ${STAGING_BUCKET}
 
 popd
+
+# V2 currently requires Java 8 ONLY.
+java -version
 
 # V2
 mvn clean site -B -q -Ddevsite.template="${KOKORO_GFILE_DIR}/java/"
