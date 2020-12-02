@@ -59,10 +59,8 @@ python3 -m docuploader upload . \
 
 popd
 
-# V2 currently requires Java 8 ONLY.
-java -version
+# V2 due to problems w/ the released javadoc plugin doclava, Java 8 is required.  Beware of accidental updates.
 
-# V2
 mvn clean site -B -q -Ddevsite.template="${KOKORO_GFILE_DIR}/java/"
 
 pushd target/devsite/reference
