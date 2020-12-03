@@ -80,13 +80,10 @@ def default(session):
         CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
     )
     {%- if microgenerator %}
-    session.install("asyncmock", "pytest-asyncio")
+    session.install("asyncmock", "pytest-asyncio", "-c", str(constraints_path))
     {% endif %}
-    session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
-    if constraints_path.exists():
-        session.install("-e", ".", "-c", str(constraints_path))
-    else:
-        session.install("-e", ".")
+    session.install("mock", "pytest", "pytest-cov"{% for d in unit_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", str(constraints_path))
+    session.install("-e", ".", "-c", str(constraints_path))
     {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
     {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
 
@@ -137,15 +134,12 @@ def system(session):
 
     # Install all test dependencies, then install this package into the
     # virtualenv's dist-packages.
-    session.install("mock", "pytest", "google-cloud-testutils", {% for d in system_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
+    session.install("mock", "pytest", "google-cloud-testutils"{% for d in system_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", str(constraints_path))
 
     {%- if system_test_local_dependencies %}
     session.install("-e", {% for d in system_test_local_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
     {%- endif %}
-    if constraints_path.exists():
-        session.install("-e", ".", "-c", str(constraints_path))
-    else:
-        session.install("-e", ".")
+    session.install("-e", ".", "-c", str(constraints_path))
 
 
     # Run py.test against the system tests.
