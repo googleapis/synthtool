@@ -76,14 +76,14 @@ def lint_setup_py(session):
 def default(session):
     # Install all test dependencies, then install this package in-place.
 
-    constraints_path = (
+    constraints_path = str(
         CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
     )
     {%- if microgenerator %}
-    session.install("asyncmock", "pytest-asyncio", "-c", str(constraints_path))
+    session.install("asyncmock", "pytest-asyncio", "-c", constraints_path)
     {% endif %}
-    session.install("mock", "pytest", "pytest-cov"{% for d in unit_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", str(constraints_path))
-    session.install("-e", ".", "-c", str(constraints_path))
+    session.install("mock", "pytest", "pytest-cov"{% for d in unit_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", constraints_path)
+    session.install("-e", ".", "-c", constraints_path)
     {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
     {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
 
@@ -110,7 +110,7 @@ def unit(session):
 @nox.session(python=SYSTEM_TEST_PYTHON_VERSIONS)
 def system(session):
     """Run the system test suite."""
-    constraints_path = (
+    constraints_path = str(
         CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
     )
     system_test_path = os.path.join("tests", "system.py")
@@ -134,12 +134,12 @@ def system(session):
 
     # Install all test dependencies, then install this package into the
     # virtualenv's dist-packages.
-    session.install("mock", "pytest", "google-cloud-testutils"{% for d in system_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", str(constraints_path))
+    session.install("mock", "pytest", "google-cloud-testutils"{% for d in system_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", constraints_path)
 
     {%- if system_test_local_dependencies %}
     session.install("-e", {% for d in system_test_local_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
     {%- endif %}
-    session.install("-e", ".", "-c", str(constraints_path))
+    session.install("-e", ".", "-c", constraints_path)
 
 
     # Run py.test against the system tests.
