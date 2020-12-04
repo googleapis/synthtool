@@ -23,6 +23,10 @@ curl -L https://github.com/bazelbuild/bazel/releases/download/3.0.0/bazel-3.0.0-
 chmod +x ~/bazel/bazel
 export PATH=~/bazel:"$PATH"
 
+# Install synthtool GAPIC Bazel dependencies
+sudo apt-get update
+sudo apt-get install -y --no-install-recommends zip unzip
+
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
