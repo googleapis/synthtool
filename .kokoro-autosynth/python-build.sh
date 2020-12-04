@@ -26,8 +26,8 @@ export PATH=~/bazel:"$PATH"
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
-# Add github to known hosts.
-ssh-keyscan github.com >> ~/.ssh/known_hosts
+# # Add github to known hosts.
+# ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 # Kokoro exposes this as a file, but the scripts expect just a plain variable.
 export GITHUB_TOKEN=$(cat ${KOKORO_KEYSTORE_DIR}/73713_yoshi-automation-github-key)
