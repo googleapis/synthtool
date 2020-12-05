@@ -28,7 +28,7 @@ sudo apt-get update
 sudo apt-get install -y --no-install-recommends zip unzip
 
 # Bazel expects python3 at /usr/bin/python
-sudo ln -s /usr/bin/python3 /usr/bin/python
+sudo ln -s /usr/bin/python3.8 /usr/bin/python
 
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
