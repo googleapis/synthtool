@@ -27,11 +27,11 @@ export PATH=~/bazel:"$PATH"
 sudo apt-get update
 sudo apt-get install -y --no-install-recommends zip unzip
 
+# Bazel expects python3 at /usr/bin/python
+sudo ln -s /usr/bin/python3 /usr/bin/python
+
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
-
-# # Add github to known hosts.
-# ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 # Kokoro exposes this as a file, but the scripts expect just a plain variable.
 export GITHUB_TOKEN=$(cat ${KOKORO_KEYSTORE_DIR}/73713_yoshi-automation-github-key)
