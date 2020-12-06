@@ -161,6 +161,7 @@ def _common_generation(
     suffix: str = "",
     destination_name: str = None,
     cloud_api: bool = True,
+    diregapic: bool = False,
 ):
     """Helper function to execution the common generation cleanup actions.
 
@@ -200,7 +201,7 @@ def _common_generation(
         [library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}/src"],
         f"grpc-google-{cloud_prefix}{destination_name}-{version}/src",
         # For REST-only clients, like java-compute, gRPC artifact does not exist
-        # required=True,
+        required=(not diregapic),
     )
     s.copy(
         [library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}/src"],
@@ -261,6 +262,7 @@ def gapic_library(
         library=library,
         package_pattern=package_pattern,
         destination_name=destination_name,
+        diregapic=kwargs.get("diregapic", False),
     )
 
     return library
@@ -307,6 +309,7 @@ def bazel_library(
         suffix="-java",
         destination_name=destination_name,
         cloud_api=cloud_api,
+        diregapic=kwargs.get("diregapic", False),
     )
 
     return library
