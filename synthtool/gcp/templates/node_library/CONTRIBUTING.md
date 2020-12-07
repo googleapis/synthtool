@@ -40,11 +40,11 @@ accept your pull requests.
 ### Before you begin
 
 1.  [Select or create a Cloud Platform project][projects].{% if metadata['repo']['requires_billing'] %}
-1.  [Enable billing for your project][billing].{% endif %}
-1.  {% if metadata['repo']['api_id'] %} [Enable the {{ metadata['repo']['name_pretty'] }} API][enable_api].
+1.  [Enable billing for your project][billing].{% endif %} {% if metadata['repo']['api_id'] %}
+1.  [Enable the {{ metadata['repo']['name_pretty'] }} API][enable_api]. {% endif %}
 1.  [Set up authentication with a service account][auth] so you can access the
     API from your local workstation.
-{% endif %}
+
 
 ## Running the tests
 
