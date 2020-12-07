@@ -37,6 +37,15 @@ accept your pull requests.
 1.  Title your pull request following [Conventional Commits](https://www.conventionalcommits.org/) styling.
 1.  Submit a pull request.
 
+### Before you begin
+
+1.  [Select or create a Cloud Platform project][projects].{% if metadata['repo']['requires_billing'] %}
+1.  [Enable billing for your project][billing].{% endif %}
+1.  {% if metadata['repo']['api_id'] %} [Enable the {{ metadata['repo']['name_pretty'] }} API][enable_api].
+1.  [Set up authentication with a service account][auth] so you can access the
+    API from your local workstation.
+{% endif %}
+
 ## Running the tests
 
 1.  [Prepare your environment for Node.js setup][setup].
@@ -55,7 +64,6 @@ accept your pull requests.
         npm run samples-test
 
         # Run all system tests.
-        gcloud auth application-default login
         npm run system-test
 
 1.  Lint (and maybe fix) any changes:
@@ -63,3 +71,7 @@ accept your pull requests.
         npm run fix
 
 [setup]: https://cloud.google.com/nodejs/docs/setup
+[projects]: https://console.cloud.google.com/project
+[billing]: https://support.google.com/cloud/answer/6293499#enable-billing
+{% if metadata['repo']['api_id'] %}[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
+[auth]: https://cloud.google.com/docs/authentication/getting-started
