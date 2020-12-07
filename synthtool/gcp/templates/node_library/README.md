@@ -163,3 +163,5 @@ See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/LICE
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 {% if metadata['repo']['api_id'] %}[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [auth]: https://cloud.google.com/docs/authentication/getting-started
+
+quick check
