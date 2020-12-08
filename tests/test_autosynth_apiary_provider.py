@@ -43,3 +43,14 @@ def test_list_all_libraries_admin_snowflakes(mock_list_files):
     apis = apiary.list_apis()
     assert len(apis) == 1
     assert apis["admin"] == ["directory_v1", "reports_v1"]
+
+
+@patch.object(GitHub, "list_files")
+@patch.dict(os.environ, {"GITHUB_TOKEN": "unused"})
+def test_list_all_libraries_skips_non_clients(mock_list_files):
+    mock_list_files.return_value = [
+        {"name": "synth-metadata.json"},
+        {"name": "foo.metadata"},
+    ]
+    apis = apiary.list_apis()
+    assert len(apis) == 0
