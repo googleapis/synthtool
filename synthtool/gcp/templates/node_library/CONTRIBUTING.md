@@ -60,7 +60,6 @@ accept your pull requests.
         npm test
 
         # Run sample integration tests.
-        gcloud auth application-default login
         npm run samples-test
 
         # Run all system tests.
