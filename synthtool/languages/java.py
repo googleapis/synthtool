@@ -161,6 +161,7 @@ def _common_generation(
     suffix: str = "",
     destination_name: str = None,
     cloud_api: bool = True,
+    diregapic: bool = False,
 ):
     """Helper function to execution the common generation cleanup actions.
 
@@ -199,7 +200,8 @@ def _common_generation(
     s.copy(
         [library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}/src"],
         f"grpc-google-{cloud_prefix}{destination_name}-{version}/src",
-        required=True,
+        # For REST-only clients, like java-compute, gRPC artifact does not exist
+        required=(not diregapic),
     )
     s.copy(
         [library / f"proto-google-{cloud_prefix}{service}-{version}{suffix}/src"],
@@ -219,6 +221,7 @@ def gapic_library(
     package_pattern: str = "com.google.cloud.{service}.{version}",
     gapic: gcp.GAPICGenerator = None,
     destination_name: str = None,
+    diregapic: bool = False,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via artman via Docker.
@@ -251,6 +254,7 @@ def gapic_library(
         config_path=config_pattern.format(service=service, version=version),
         artman_output_name="",
         include_samples=True,
+        diregapic=diregapic,
         **kwargs,
     )
 
@@ -260,6 +264,7 @@ def gapic_library(
         library=library,
         package_pattern=package_pattern,
         destination_name=destination_name,
+        diregapic=diregapic,
     )
 
     return library
@@ -272,6 +277,7 @@ def bazel_library(
     gapic: gcp.GAPICBazel = None,
     destination_name: str = None,
     cloud_api: bool = True,
+    diregapic: bool = False,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via bazel.
@@ -295,7 +301,9 @@ def bazel_library(
     if gapic is None:
         gapic = gcp.GAPICBazel()
 
-    library = gapic.java_library(service=service, version=version, **kwargs)
+    library = gapic.java_library(
+        service=service, version=version, diregapic=diregapic, **kwargs
+    )
 
     cloud_prefix = "cloud-" if cloud_api else ""
     _common_generation(
@@ -306,6 +314,7 @@ def bazel_library(
         suffix="-java",
         destination_name=destination_name,
         cloud_api=cloud_api,
+        diregapic=diregapic,
     )
 
     return library
