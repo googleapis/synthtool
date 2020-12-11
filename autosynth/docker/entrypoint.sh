@@ -15,6 +15,9 @@
 
 set -eo pipefail
 
+# Bring npm and node into PATH.
+source /root/.bashrc
+
 cd /synthtool
 
 # Disable buffering, so that the logs stream through.
