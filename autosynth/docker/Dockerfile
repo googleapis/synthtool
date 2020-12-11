@@ -4,11 +4,16 @@ FROM python:3.6.12-buster
 
 WORKDIR /
 
-# Install nodejs.
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
-RUN apt-get install -y nodejs
+######################## Install nodejs.
+# Use `nvm` to bootstrap the installation of node.js and npm.
+# To learn more: https://github.com/nvm-sh/nvm
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
 
-# Install bazel 3.0.0
+# Use the latest LTS version of nodejs.  This can change over time, but
+# should prevent the need to modify this file every year.
+RUN /bin/bash -c "source /root/.nvm/nvm.sh && nvm install --lts"
+
+####################### Install bazel 3.0.0
 RUN mkdir -p /bazel
 RUN curl -L https://github.com/bazelbuild/bazel/releases/download/3.0.0/bazel-3.0.0-linux-x86_64 -o /bazel/bazel
 RUN chmod +x /bazel/bazel
@@ -18,13 +23,13 @@ ENV PATH="/bazel:${PATH}"
 RUN apt-get update
 RUN apt-get install zip
 
-# Install java
+###################### Install java
 RUN curl -L https://download.java.net/java/GA/jdk15.0.1/51f4f36ad4ef43e39d0dfdbaf6549e32/9/GPL/openjdk-15.0.1_linux-x64_bin.tar.gz -o java.tar.gz
 RUN gunzip java.tar.gz
 RUN tar xf java.tar
 ENV PATH="/jdk-15.0.1/bin:${PATH}"
 
-# Install synthtool's requirements.
+###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install -r /synthtool/requirements.txt
 
