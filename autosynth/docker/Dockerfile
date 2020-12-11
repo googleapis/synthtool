@@ -11,7 +11,11 @@ RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | b
 
 # Use the latest LTS version of nodejs.  This can change over time, but
 # should prevent the need to modify this file every year.
-RUN /bin/bash -c "source /root/.nvm/nvm.sh && nvm install --lts"
+# The "npm config set unsafe-perm true" is necessary because npm will refuse to perform
+# some operations if the user is running as root.  The root user of a docker image
+# doesn't have root permissions on the machine, so it's safe to execute them.
+# I learned this from https://geedew.com/What-does-unsafe-perm-in-npm-actually-do/
+RUN /bin/bash -c "source /root/.nvm/nvm.sh && nvm install --lts && npm config set unsafe-perm true"
 
 ####################### Install bazel 3.0.0
 RUN mkdir -p /bazel
