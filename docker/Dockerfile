@@ -43,6 +43,7 @@ ENV PYTHONPATH="/synthtool"
 # Copy synthtool.
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
+COPY docker /synthtool/docker
 
 # By default, display instructions on how to run synthtool.
 CMD ["/bin/cat", "/synthtool/docker/README.txt"]
