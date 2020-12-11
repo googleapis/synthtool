@@ -1,5 +1,5 @@
 # build from the root of this repo:
-# docker build -t gcr.io/cloud-devrel-kokoro-resources/synthtool -f autosynth/docker/Dockerfile .
+# docker build -t gcr.io/cloud-devrel-kokoro-resources/synthtool -f docker/Dockerfile .
 FROM python:3.6.12-buster
 
 WORKDIR /
@@ -45,4 +45,4 @@ COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 
 # By default, display instructions on how to run synthtool.
-CMD ["/bin/cat", "/synthtool/autosynth/docker/README.txt"]
+CMD ["/bin/cat", "/synthtool/docker/README.txt"]

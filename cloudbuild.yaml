@@ -3,7 +3,7 @@ steps:
       args: [ 'build',
         '-t', 'gcr.io/cloud-devrel-kokoro-resources/synthtool:$SHORT_SHA',
         '-t', 'gcr.io/cloud-devrel-kokoro-resources/synthtool:latest', 
-        '-f', 'autosynth/docker/Dockerfile', '.' ]
+        '-f', 'docker/Dockerfile', '.' ]
     - name: 'gcr.io/cloud-builders/docker'
       args: ['push', 'gcr.io/cloud-devrel-kokoro-resources/synthtool:$SHORT_SHA']
     - name: 'gcr.io/cloud-builders/docker'

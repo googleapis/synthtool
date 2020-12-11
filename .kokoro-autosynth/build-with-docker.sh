@@ -27,4 +27,4 @@ docker run \
     --env SYNTHTOOL_TRACK_OBSOLETE_FILES=${SYNTHTOOL_TRACK_OBSOLETE_FILES} \
     -v ${KOKORO_ARTIFACTS_DIR}:/kokoro/artifacts \
     -v ${KOKORO_KEYSTORE_DIR}:/kokoro/keystore \
-    gcr.io/cloud-devrel-kokoro-resources/synthtool:latest /synthtool/autosynth/docker/entrypoint.sh
+    gcr.io/cloud-devrel-kokoro-resources/synthtool:latest /synthtool/docker/entrypoint.sh
