@@ -334,6 +334,10 @@ def find_base_log_path() -> pathlib.Path:
     The log path directory gets rendered in sponge and fusion, and sometimes long
     paths get cut off.  So try for a short path name.
     """
+    # When kokoro is running us it tells us exactly where to put the logs.
+    kokoro_artifacts_dir = os.environ.get("KOKORO_ARTIFACTS_DIR")
+    if kokoro_artifacts_dir:
+        return pathlib.Path(kokoro_artifacts_dir) / "logs"
     cwd_path = pathlib.Path(os.getcwd())
     # Search through parent directories for a directory called src, because that's the
     # root of the tree that kokoro scans when collecting logs.
