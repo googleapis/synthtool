@@ -27,9 +27,6 @@ export PYTHONUNBUFFERED=1
 mkdir -p ~/.ssh
 ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-# Kokoro exposes this as a file, but the scripts expect just a plain variable.
-export GITHUB_TOKEN=$(cat ${KOKORO_KEYSTORE_DIR}/73713_yoshi-automation-github-key)
-
 # Setup git credentials
 echo "https://${GITHUB_TOKEN}:@github.com" >> ~/.git-credentials
 git config --global credential.helper 'store --file ~/.git-credentials'

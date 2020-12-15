@@ -25,6 +25,8 @@ docker run \
     --env MULTISYNTH_CONFIG=${MULTISYNTH_CONFIG} \
     --env MULTISYNTH_SHARD=${MULTISYNTH_SHARD} \
     --env SYNTHTOOL_TRACK_OBSOLETE_FILES=${SYNTHTOOL_TRACK_OBSOLETE_FILES} \
+    `# Kokoro exposes this as a file, but the scripts expect just a plain variable.` \
+    --env GITHUB_TOKEN=$(cat ${KOKORO_KEYSTORE_DIR}/73713_yoshi-automation-github-key)
     -v ${KOKORO_ARTIFACTS_DIR}:/kokoro/artifacts \
     -v ${KOKORO_KEYSTORE_DIR}:/kokoro/keystore \
     gcr.io/cloud-devrel-kokoro-resources/synthtool:latest /synthtool/docker/entrypoint.sh
