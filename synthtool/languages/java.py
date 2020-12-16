@@ -15,6 +15,7 @@
 import glob
 import os
 import xml.etree.ElementTree as ET
+import re
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
@@ -398,3 +399,37 @@ def custom_templates(files: List[str], **kwargs) -> None:
     for file in files:
         template = gcp.CommonTemplates().render(file, **kwargs)
         s.copy([template])
+
+
+def remove_method(filename, signature):
+    lines = []
+    leading_regex = None
+    with open(filename, "r") as fp:
+        line = fp.readline()
+        while line:
+            # for each line, try to find the matching
+            regex = re.compile("(\s*)" + re.escape(signature) + ".*")
+            match = regex.match(line)
+            if match:
+                leading_regex = re.compile(match.group(1) + "}")
+                line = fp.readline()
+                continue
+
+            # not in a ignore block - preserve the line
+            if not leading_regex:
+                lines.append(line)
+                line = fp.readline()
+                continue
+
+            # detect the closing tag based on the leading spaces
+            match = leading_regex.match(line)
+            if match:
+                # block is closed, resume capturing content
+                leading_regex = None
+
+            line = fp.readline()
+
+    with open(filename, "w") as fp:
+        for line in lines:
+            # print(line)
+            fp.write(line)

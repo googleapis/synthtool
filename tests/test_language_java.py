@@ -113,3 +113,30 @@ def test_working_common_templates():
                         assert_valid_yaml(os.path.join(dirpath, file))
         finally:
             os.chdir(cwd)
+
+
+def test_remove_method():
+    with tempfile.TemporaryDirectory() as tempdir:
+        shutil.copyfile("tests/testdata/SampleClass.java", tempdir + "/SampleClass.java")
+
+        java.remove_method(
+            tempdir + "/SampleClass.java", "public static void foo()"
+        )
+        java.remove_method(
+            tempdir + "/SampleClass.java", "public void asdf()"
+        )
+        assert_matches_golden("tests/testdata/SampleClassGolden.java", tempdir + "/SampleClass.java")
+
+
+def assert_matches_golden(expected, actual):
+    matching_lines = 0
+    with open(actual, "rt") as fp:
+        with open(expected, "rt") as golden:
+            while True:
+                matching_lines += 1
+                log_line = fp.readline()
+                expected = golden.readline()
+                assert log_line == expected
+                if not log_line:
+                    break
+    assert matching_lines > 0
