@@ -401,14 +401,20 @@ def custom_templates(files: List[str], **kwargs) -> None:
         s.copy([template])
 
 
-def remove_method(filename, signature):
+def remove_method(filename: str, signature: str):
+    """Helper to remove an entire method.
+
+    Goes line-by-line to detect the start of the block. Determines
+    the end of the block by a closing brace at the same indentation
+    level. This requires the file to be correctly formatted.
+    """
     lines = []
     leading_regex = None
     with open(filename, "r") as fp:
         line = fp.readline()
         while line:
             # for each line, try to find the matching
-            regex = re.compile("(\s*)" + re.escape(signature) + ".*")
+            regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
             match = regex.match(line)
             if match:
                 leading_regex = re.compile(match.group(1) + "}")
