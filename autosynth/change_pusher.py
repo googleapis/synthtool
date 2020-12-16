@@ -102,7 +102,7 @@ class ChangePusher(AbstractChangePusher):
             pr = self._gh.create_pull_request(
                 self._repository,
                 branch=branch,
-                title=pr_title,
+                title=pr_title[0:250],
                 body=new_body,
             )
 
