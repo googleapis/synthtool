@@ -18,7 +18,7 @@ import re
 from autosynth import github
 from typing import Dict, List
 
-VERSION_REGEX = re.compile("(.*)\\.(v.*).json")
+VERSION_REGEX = re.compile("(.*)\\.(.*)\\.json")
 
 
 def list_apis() -> Dict[str, List[str]]:
