@@ -117,15 +117,15 @@ def test_working_common_templates():
 
 def test_remove_method():
     with tempfile.TemporaryDirectory() as tempdir:
-        shutil.copyfile("tests/testdata/SampleClass.java", tempdir + "/SampleClass.java")
+        shutil.copyfile(
+            "tests/testdata/SampleClass.java", tempdir + "/SampleClass.java"
+        )
 
-        java.remove_method(
-            tempdir + "/SampleClass.java", "public static void foo()"
+        java.remove_method(tempdir + "/SampleClass.java", "public static void foo()")
+        java.remove_method(tempdir + "/SampleClass.java", "public void asdf()")
+        assert_matches_golden(
+            "tests/testdata/SampleClassGolden.java", tempdir + "/SampleClass.java"
         )
-        java.remove_method(
-            tempdir + "/SampleClass.java", "public void asdf()"
-        )
-        assert_matches_golden("tests/testdata/SampleClassGolden.java", tempdir + "/SampleClass.java")
 
 
 def assert_matches_golden(expected, actual):
