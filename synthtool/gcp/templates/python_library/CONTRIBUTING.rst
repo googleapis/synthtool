@@ -21,7 +21,7 @@ In order to add a feature:
 - The feature must be documented in both the API and narrative
   documentation.
 
-- The feature must work fully on the following CPython versions:  2.7,
+- The feature must work fully on the following CPython versions:
   3.6, 3.7, 3.8 and 3.9 on both UNIX and Windows.
 
 - The feature must not add unnecessary dependencies (where
@@ -217,7 +217,6 @@ Supported versions can be found in our ``noxfile.py`` `config`_.
 
 .. _config: https://github.com/{{ metadata['repo']['repo'] }}/blob/master/noxfile.py
 
-Python 2.7 support is deprecated. All code changes should maintain Python 2.7 compatibility until January 1, 2020.
 
 We also explicitly decided to support Python 3 beginning with version
 3.6. Reasons for this include:
