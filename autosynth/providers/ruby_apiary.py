@@ -23,7 +23,7 @@ def list_repositories():
             "repository": "googleapis/google-api-ruby-client",
             "branch-suffix": f"{name}-{version}",
             "args": [name, version],
-            "metadata-path": f"generated/google/apis/{_client_dir(name, version)}",
+            "metadata-path": f"google-api-client/generated/google/apis/{_client_dir(name, version)}",
             "pr-title": f"feat: Automated regeneration of {name} {version} client",
         }
         for name, versions in apiary.list_apis().items() for version in versions
