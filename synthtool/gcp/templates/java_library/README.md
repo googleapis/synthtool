@@ -38,19 +38,20 @@ If you are using Maven, add this to your pom.xml file:
 {% endif -%}
 ```
 
-
-
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Gradle 5.x or later, add this to your dependencies
 ```Groovy
 implementation platform('com.google.cloud:libraries-bom:16.2.0')
 
 compile '{{ group_id }}:{{ artifact_id }}'
 ```
+{% endif -%}
 
 If you are using Gradle without BOM, add this to your dependencies
 ```Groovy
 compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
+
 If you are using SBT, add this to your dependencies
 ```Scala
 libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['latest_version'] }}"
