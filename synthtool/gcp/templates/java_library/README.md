@@ -41,7 +41,7 @@ If you are using Maven, add this to your pom.xml file:
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Gradle 5.x or later, add this to your dependencies
 ```Groovy
-implementation platform('com.google.cloud:libraries-bom:16.2.0')
+implementation platform('com.google.cloud:libraries-bom:metadata['latest_bom_version']')
 
 compile '{{ group_id }}:{{ artifact_id }}'
 ```
