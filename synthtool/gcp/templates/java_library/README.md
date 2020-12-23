@@ -38,7 +38,16 @@ If you are using Maven, add this to your pom.xml file:
 {% endif -%}
 ```
 
-If you are using Gradle, add this to your dependencies
+
+
+If you are using Gradle 5.x or later, add this to your dependencies
+```Groovy
+implementation platform('com.google.cloud:libraries-bom:16.2.0')
+
+compile '{{ group_id }}:{{ artifact_id }}'
+```
+
+If you are using Gradle without BOM, add this to your dependencies
 ```Groovy
 compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
