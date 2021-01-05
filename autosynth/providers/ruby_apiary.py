@@ -23,7 +23,7 @@ def list_repositories():
             "repository": "googleapis/google-api-ruby-client",
             "branch-suffix": f"{name}-{version}",
             "args": [name, version],
-            "metadata-path": f"google-api-client/generated/google/apis/{_client_dir(name, version)}",
+            "metadata-path": f"generated/{_gem_name(name, version)}",
             "pr-title": f"feat: Automated regeneration of {name} {version} client",
         }
         for name, versions in apiary.list_apis().items() for version in versions
@@ -42,8 +42,8 @@ def list_repositories():
     return repositories
 
 
-def _client_dir(name: str, version: str) -> str:
-    """Determines the code directory name for a generated API client.
+def _gem_name(name: str, version: str) -> str:
+    """Determines the gem name for a generated API client.
 
     This effectively converts the API name and version to underscore case,
     and matches the logic in the Ruby Apiary generator.
@@ -59,7 +59,7 @@ def _client_dir(name: str, version: str) -> str:
     name = re.sub(r"([a-z])([A-Z])", r"\1_\2", name)
     name = name.lower()
     version = version.replace(".", "_").lower()
-    return f"{name}_{version}"
+    return f"google-apis-{name}_{version}"
 
 
 if __name__ == "__main__":
