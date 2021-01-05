@@ -407,6 +407,11 @@ def remove_method(filename: str, signature: str):
     Goes line-by-line to detect the start of the block. Determines
     the end of the block by a closing brace at the same indentation
     level. This requires the file to be correctly formatted.
+
+    Args:
+        filename (str): Path to source file
+        signature (str): Full signature of the method to remove. Example:
+            `public void main(String[] args)`.
     """
     lines = []
     leading_regex = None
