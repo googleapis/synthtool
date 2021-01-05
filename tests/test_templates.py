@@ -21,7 +21,6 @@ from synthtool.sources import templates
 
 FIXTURES = Path(__file__).parent / "fixtures" / "node_templates" / "standard"
 NODE_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/node_library"
-RUBY_TEMPLATES = Path(__file__).parent.parent / "synthtool/gcp/templates/ruby_library"
 
 
 def test_render():
@@ -104,24 +103,6 @@ def test_hide_billing():
         "README.md", metadata={"repo": {"requires_billing": False}}
     ).read_text()
     assert "Enable billing for your project" not in result
-
-
-def test_ruby_authentication():
-    t = templates.Templates(RUBY_TEMPLATES)
-    # .repo-metadata.json in google-cloud-ruby package directories
-    repo_metadata = {
-        "distribution_name": "google-cloud-bigquery-data_transfer",
-        "module_name": "Bigquery::DataTransfer",
-        "module_name_credentials": "Bigquery::DataTransfer::V1",
-        "env_var_prefix": "DATA_TRANSFER",
-    }
-    metadata = {"repo": repo_metadata}
-    result = t.render("AUTHENTICATION.md", metadata=metadata).read_text()
-
-    assert 'require "google/cloud/bigquery/data_transfer"' in result
-    assert "Google::Cloud::Bigquery::DataTransfer.new" in result
-    assert "Google::Cloud::Bigquery::DataTransfer::V1::Credentials" in result
-    assert "DATA_TRANSFER_CREDENTIALS" in result
 
 
 def test_slugify():
