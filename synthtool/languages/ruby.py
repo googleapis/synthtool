@@ -14,86 +14,40 @@
 
 from pathlib import Path
 import re
-from typing import Iterable, Union
-
-import synthtool
-
-PathOrStr = Union[str, Path]
-ListOfPathsOrStrs = Iterable[PathOrStr]
 
 
-def merge_gemspec(src: str, dest: str, path: Path):
-    """Merge function for ruby gemspecs.
-
-    Preserves the gem version and homepage fields from the destination, and
-    copies the remaining fields from the newly generated source.
-
-    Args:
-        src: Source gemspec content from gapic
-        dest: Destination gemspec content
-        path: Destination gemspec path
-
-    Returns:
-        The merged gemspec content.
-    """
-    regex = re.compile(r'^\s+gem.version\s*=\s*"[\d\.]+"$', flags=re.MULTILINE)
-    match = regex.search(dest)
-    if match:
-        src = regex.sub(match.group(0), src, count=1)
-
-    regex = re.compile(r'^\s+gem.homepage\s*=\s*"[^"]+"$', flags=re.MULTILINE)
-    match = regex.search(dest)
-    if match:
-        src = regex.sub(match.group(0), src, count=1)
-
-    return src
-
-
-def update_gemspec(src: PathOrStr):
-    """Updates the required ruby version and google-style dependency.
-
-    Args:
-        src: Source gemspec
-    """
-    regex = 'required_ruby_version[\\s=]*"([~><=\\s\\d\\.]*)"'
-    synthtool.replace([src], regex, 'required_ruby_version = ">= 2.4"')
-    synthtool.replace([src], "rubocop", "google-style")
-    regex = '"google-style"[,\\s]*"[~><=\\s\\d\\.]*"'
-    synthtool.replace([src], regex, '"google-style", "~> 1.24.0"')
-
-
-def delete_method(sources: ListOfPathsOrStrs, method_name: str):
-    """Deletes a Ruby method, including the leading comment if any.
-
-    Args:
-        sources: Source file or list of files
-        method_name: Name of the method to delete
-    """
-    regex = f"\\n\\n(\\s+#[^\\n]*\\n)*\\n*(\\s+)def\\s+{method_name}[^\\n]+\\n+(\\2\\s\\s[^\\n]+\\n+)*\\2end\\n"
-    synthtool.replace(sources, regex, "\n")
+VERSION_SETTER_REGEX = re.compile(r'^\s+VERSION = "[\d\.]+"', flags=re.MULTILINE)
+COPYRIGHT_REGEX = re.compile(r"^# Copyright (\d{4}) Google LLC$", flags=re.MULTILINE)
 
 
 def global_merge(src: str, dest: str, path: Path):
     """Merge function for the Ruby microgenerator.
 
-    Preserves destination changelog and version.rb files, but allows new
-    source content through in all other cases.
+    This should be used for most merges of newly generated and existing files.
+    It does the following:
+    * Preserves destination CHANGELOG.md files (detected by name)
+    * Preserves destination version.rb files (detected by name and content)
+    * Preserves copyright year from destination Rakefile and *.rb files
 
     Args:
-        src: Source gemspec content from gapic
-        dest: Destination gemspec content
-        path: Destination gemspec path
+        src: Source file content from gapic
+        dest: Destination file content
+        path: Destination file path
 
     Returns:
-        The merged gemspec content.
+        The merged file content.
     """
     if path.name == "CHANGELOG.md":
         return dest
 
-    if path.name == "version.rb":
-        regex = re.compile(r'^\s+VERSION = "[\d\.]+"', flags=re.MULTILINE)
+    if path.name == "version.rb" and VERSION_SETTER_REGEX.search(dest):
+        return dest
 
-        if regex.search(dest):
-            return dest
+    if path.name.endswith(".rb") or path.name == "Rakefile":
+        m = re.search(COPYRIGHT_REGEX, dest)
+        if m:
+            return re.sub(
+                COPYRIGHT_REGEX, f"# Copyright {m.group(1)} Google LLC", src, 1
+            )
 
     return src

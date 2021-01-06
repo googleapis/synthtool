@@ -232,10 +232,14 @@ class MetadataTrackerAndWriter:
         _add_self_git_source()
         watch_dir = pathlib.Path(self.metadata_file_path).parent
         os.makedirs(watch_dir, exist_ok=True)
-        self.handler = FileSystemEventHandler(watch_dir)
-        self.observer = watchdog.observers.Observer()
-        self.observer.schedule(self.handler, str(watch_dir), recursive=True)
-        self.observer.start()
+        # Create an observer only if obsolete file tracking is enabled.
+        # This prevents inotify errors in synth jobs that may delete the watch
+        # dir. Such synth jobs should leave obsolete file tracking disabled.
+        if should_track_obsolete_files():
+            self.handler = FileSystemEventHandler(watch_dir)
+            self.observer = watchdog.observers.Observer()
+            self.observer.schedule(self.handler, str(watch_dir), recursive=True)
+            self.observer.start()
 
     def __exit__(self, type, value, traceback):
         if value:
@@ -248,8 +252,6 @@ class MetadataTrackerAndWriter:
                 for path in git_ignore(self.handler.get_touched_file_paths()):
                     _metadata.generated_files.append(path)
                 _remove_obsolete_files(self.old_metadata)
-            else:
-                self.observer.stop()
             _clear_local_paths(get())
             _metadata.sources.sort(key=_source_key)
             if _enable_write_metadata:
