@@ -47,6 +47,18 @@ def test_list_all_libraries_admin_snowflakes(mock_list_files):
 
 @patch.object(GitHub, "list_files")
 @patch.dict(os.environ, {"GITHUB_TOKEN": "unused"})
+def test_list_all_libraries_dotted_versions(mock_list_files):
+    mock_list_files.return_value = [
+        {"name": "adexchangebuyer.v1.2.json"},
+        {"name": "adexchangebuyer.v1.3.json"},
+    ]
+    apis = apiary.list_apis()
+    assert len(apis) == 1
+    assert apis["adexchangebuyer"] == ["v1.2", "v1.3"]
+
+
+@patch.object(GitHub, "list_files")
+@patch.dict(os.environ, {"GITHUB_TOKEN": "unused"})
 def test_list_all_libraries_skips_non_clients(mock_list_files):
     mock_list_files.return_value = [
         {"name": "synth-metadata.json"},
