@@ -408,6 +408,22 @@ def remove_method(filename: str, signature: str):
     the end of the block by a closing brace at the same indentation
     level. This requires the file to be correctly formatted.
 
+    Example: consider the following class:
+
+        class Example {
+            public void main(String[] args) {
+                System.out.println("Hello World");
+            }
+
+            public String foo() {
+                return "bar";
+            }
+        }
+    
+    To remove the `main` method above, use:
+    
+        remove_method('path/to/file', 'public void main(String[] args)')
+
     Args:
         filename (str): Path to source file
         signature (str): Full signature of the method to remove. Example:
