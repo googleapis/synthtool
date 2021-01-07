@@ -419,9 +419,9 @@ def remove_method(filename: str, signature: str):
                 return "bar";
             }
         }
-    
+
     To remove the `main` method above, use:
-    
+
         remove_method('path/to/file', 'public void main(String[] args)')
 
     Args:
