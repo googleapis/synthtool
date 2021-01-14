@@ -15,7 +15,89 @@
 import os
 from pathlib import Path
 
+import pytest
+
 from synthtool import gcp
+from synthtool.sources import templates
+
+
+PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_library"
+
+
+@pytest.mark.parametrize(
+    ["template_kwargs", "expected_text"],
+    [
+        ({}, ["import nox", 'session.install("-e", ".")']),
+        (
+            {"unit_test_local_dependencies": ["../testutils", "../unitutils"]},
+            [
+                'session.install("-e", "../testutils")',
+                'session.install("-e", "../unitutils")',
+            ],
+        ),
+        (
+            {"system_test_local_dependencies": ["../testutils", "../sysutils"]},
+            [
+                'session.install("-e", "../testutils")',
+                'session.install("-e", "../sysutils")',
+            ],
+        ),
+        (
+            {"unit_test_extras": ["abc", "def"]},
+            ['session.install("-e", ".[abc,def]")'],
+        ),
+        (
+            {"system_test_extras": ["abc", "def"]},
+            ['session.install("-e", ".[abc,def]")'],
+        ),
+        (
+            {"unit_test_extras_by_python": {"3.8": ["abc", "def"]}},
+            [
+                'if session.python == "3.8":\n        extras = "[abc,def]"',
+                'else:\n        extras = ""',
+                'session.install("-e", f".{extras}")',
+            ],
+        ),
+        (
+            {"system_test_extras_by_python": {"3.8": ["abc", "def"]}},
+            [
+                'if session.python == "3.8":\n        extras = "[abc,def]"',
+                'else:\n        extras = ""',
+                'session.install("-e", f".{extras}")',
+            ],
+        ),
+        (
+            {
+                "unit_test_extras": ["tuv", "wxyz"],
+                "unit_test_extras_by_python": {"3.8": ["abc", "def"]},
+            },
+            [
+                'if session.python == "3.8":\n        extras = "[abc,def]"',
+                'else:\n        extras = "[tuv,wxyz]"',
+                'session.install("-e", f".{extras}")',
+            ],
+        ),
+        (
+            {
+                "system_test_extras": ["tuv", "wxyz"],
+                "system_test_extras_by_python": {"3.8": ["abc", "def"]},
+            },
+            [
+                'if session.python == "3.8":\n        extras = "[abc,def]"',
+                'else:\n        extras = "[tuv,wxyz]"',
+                'session.install("-e", f".{extras}")',
+            ],
+        ),
+    ],
+)
+def test_library_noxfile(template_kwargs, expected_text):
+    t = templates.Templates(PYTHON_LIBRARY)
+    result = t.render("noxfile.py.j2", **template_kwargs,).read_text()
+    # Validate Python syntax.
+    result_code = compile(result, "noxfile.py", "exec")
+    assert result_code is not None
+    for expected in expected_text:
+        assert expected in result
 
 
 def test_python_library():
