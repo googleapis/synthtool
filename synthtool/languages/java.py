@@ -15,6 +15,7 @@
 import glob
 import os
 import xml.etree.ElementTree as ET
+import re
 import requests
 import synthtool as s
 import synthtool.gcp as gcp
@@ -398,3 +399,64 @@ def custom_templates(files: List[str], **kwargs) -> None:
     for file in files:
         template = gcp.CommonTemplates().render(file, **kwargs)
         s.copy([template])
+
+
+def remove_method(filename: str, signature: str):
+    """Helper to remove an entire method.
+
+    Goes line-by-line to detect the start of the block. Determines
+    the end of the block by a closing brace at the same indentation
+    level. This requires the file to be correctly formatted.
+
+    Example: consider the following class:
+
+        class Example {
+            public void main(String[] args) {
+                System.out.println("Hello World");
+            }
+
+            public String foo() {
+                return "bar";
+            }
+        }
+
+    To remove the `main` method above, use:
+
+        remove_method('path/to/file', 'public void main(String[] args)')
+
+    Args:
+        filename (str): Path to source file
+        signature (str): Full signature of the method to remove. Example:
+            `public void main(String[] args)`.
+    """
+    lines = []
+    leading_regex = None
+    with open(filename, "r") as fp:
+        line = fp.readline()
+        while line:
+            # for each line, try to find the matching
+            regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
+            match = regex.match(line)
+            if match:
+                leading_regex = re.compile(match.group(1) + "}")
+                line = fp.readline()
+                continue
+
+            # not in a ignore block - preserve the line
+            if not leading_regex:
+                lines.append(line)
+                line = fp.readline()
+                continue
+
+            # detect the closing tag based on the leading spaces
+            match = leading_regex.match(line)
+            if match:
+                # block is closed, resume capturing content
+                leading_regex = None
+
+            line = fp.readline()
+
+    with open(filename, "w") as fp:
+        for line in lines:
+            # print(line)
+            fp.write(line)
