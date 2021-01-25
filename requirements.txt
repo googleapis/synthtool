@@ -8,6 +8,7 @@ deprecation
 protobuf==3.14.0
 watchdog
 
+# https://github.com/googleapis/gapic-generator/issues/3334
 # temporarily install google-api-core for gapic-generator-python
 # Bazel should install this, but there is currently a bug
 # that causes the package to be skipped
