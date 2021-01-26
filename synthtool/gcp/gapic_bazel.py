@@ -182,6 +182,10 @@ class GAPICBazel:
         cwd = os.getcwd()
         os.chdir(str(api_definitions_repo))
 
+        # Log which version of bazel that we're using for easier debugging.
+        logger.debug("Which version of bazel will I run?")
+        shell.run(["bazel", "--version"], hide_output=False)
+
         bazel_run_args = [
             "bazel",
             "--max_idle_secs=240",
