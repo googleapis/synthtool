@@ -19,9 +19,10 @@ from typing import List, Sequence
 
 import click
 import pkg_resources
+import synthtool.gcp as gcp
 from synthtool.log import logger
 import synthtool.metadata
-from synthtool import preconfig
+from synthtool import preconfig, copy
 
 try:
     VERSION = pkg_resources.get_distribution("gcp-synthtool").version
@@ -56,6 +57,22 @@ def extra_args() -> List[str]:
 
 @click.command()
 @click.version_option(message="%(version)s", version=VERSION)
+@click.argument("command")
+@click.argument("language", default="node")
+@click.argument("extra_args", nargs=-1)
+def template(command: str, language: str, extra_args: Sequence[str]):
+    f"""Run templates for common repository files, e.g., CONTRIBUTING.md
+
+    {preconfig.PRECONFIG_HELP}
+    """
+    common_templates = gcp.CommonTemplates()
+    if language == "node":
+        templates = common_templates.node_library()
+        copy([templates])
+
+
+@click.command()
+@click.version_option(message="%(version)s", version=VERSION)
 @click.argument("synthfile", default="synth.py")
 @click.option(
     "--metadata",
@@ -67,35 +84,40 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
     f"""Synthesizes source code according to the instructions in synthfile arg.
 
     Optional environment variables:
-      SYNTHTOOL_ARTMAN_VERSION:  The version of artman to use.
-      SYNTHTOOL_GOOGLEAPIS:      Path to local clone of https://github.com/googleapis/googleapis
-      SYNTHTOOL_GENERATOR:       Path to local gapic-generator directory to use for generation.
+    SYNTHTOOL_ARTMAN_VERSION:  The version of artman to use.
+    SYNTHTOOL_GOOGLEAPIS:      Path to local clone of https://github.com/googleapis/googleapis
+    SYNTHTOOL_GENERATOR:       Path to local gapic-generator directory to use for generation.
                 By default, the latest version of gapic-generator will be used.
-      AUTOSYNTH_USE_SSH:         Access github repos via ssh instead of https.
-      {preconfig.PRECONFIG_ENVIRONMENT_VARIABLE}:  Path to a json file.
+    AUTOSYNTH_USE_SSH:         Access github repos via ssh instead of https.
+    {preconfig.PRECONFIG_ENVIRONMENT_VARIABLE}:  Path to a json file.
 
 
     {preconfig.PRECONFIG_HELP}
     """
-    _extra_args.extend(extra_args)
-
-    synth_file = os.path.abspath(synthfile)
-
-    if os.path.lexists(synth_file):
-        logger.debug(f"Executing {synth_file}.")
-        # https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly
-        spec = importlib.util.spec_from_file_location("synth", synth_file)
-        synth_module = importlib.util.module_from_spec(spec)
-
-        if spec.loader is None:
-            raise ImportError("Could not import synth.py")
-
-        with synthtool.metadata.MetadataTrackerAndWriter(metadata):
-            spec.loader.exec_module(synth_module)  # type: ignore
-
+    if synthfile == "template":
+        # If the first argument is given as "template", run template
+        # generation rather than the default synth.py:
+        template()
     else:
-        logger.exception(f"{synth_file} not found.")
-        sys.exit(1)
+        _extra_args.extend(extra_args)
+
+        synth_file = os.path.abspath(synthfile)
+
+        if os.path.lexists(synth_file):
+            logger.debug(f"Executing {synth_file}.")
+            # https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly
+            spec = importlib.util.spec_from_file_location("synth", synth_file)
+            synth_module = importlib.util.module_from_spec(spec)
+
+            if spec.loader is None:
+                raise ImportError("Could not import synth.py")
+
+            with synthtool.metadata.MetadataTrackerAndWriter(metadata):
+                spec.loader.exec_module(synth_module)  # type: ignore
+
+        else:
+            logger.exception(f"{synth_file} not found.")
+            sys.exit(1)
 
 
 if __name__ == "__main__":
