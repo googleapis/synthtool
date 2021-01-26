@@ -12,7 +12,7 @@ watchdog
 # temporarily install google-api-core for gapic-generator-python
 # Bazel should install this, but there is currently a bug
 # that causes the package to be skipped
-google-api-core<2.0.0
+google-api-core==1.25.1
 
 # some java processing requires xml handling
 lxml
