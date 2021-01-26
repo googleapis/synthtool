@@ -88,9 +88,21 @@ def default(session):
     session.install("asyncmock", "pytest-asyncio")
     {% endif %}
     session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
-    session.install("-e", ".")
-    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
+    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}")
+    {% endfor %}
     {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
+    {%- if unit_test_extras_by_python %}
+    {% for extras_python in unit_test_extras_by_python %}
+    {%- if not loop.first %}el{% endif %}if session.python == "{{extras_python}}":
+        extras = "[{{",".join(unit_test_extras_by_python[extras_python])}}]"
+    {% endfor %}else:
+        extras = "{%- if unit_test_extras %}[{{",".join(unit_test_extras)}}]{% endif %}"
+    session.install("-e", f".{extras}")
+    {% elif unit_test_extras %}
+    session.install("-e", ".[{{",".join(unit_test_extras)}}]")
+    {% else %}
+    session.install("-e", ".")
+    {% endif %}
 
     # Run py.test against the unit tests.
     session.run(
@@ -139,10 +151,21 @@ def system(session):
     session.install("mock", "pytest", "google-cloud-testutils", {% for d in system_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
 
     {%- if system_test_local_dependencies %}
-    session.install("-e", {% for d in system_test_local_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
+    {% for dependency in system_test_local_dependencies %}session.install("-e", "{{dependency}}")
+    {% endfor %}
     {%- endif %}
+    {%- if system_test_extras_by_python %}
+    {% for extras_python in system_test_extras_by_python %}
+    {%- if not loop.first %}el{% endif %}if session.python == "{{extras_python}}":
+        extras = "[{{",".join(system_test_extras_by_python[extras_python])}}]"
+    {% endfor %}else:
+        extras = "{%- if system_test_extras %}[{{",".join(system_test_extras)}}]{% endif %}"
+    session.install("-e", f".{extras}")
+    {% elif system_test_extras %}
+    session.install("-e", ".[{{",".join(system_test_extras)}}]")
+    {% else %}
     session.install("-e", ".")
-
+    {% endif %}
 
     # Run py.test against the system tests.
     if system_test_exists:
