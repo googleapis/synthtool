@@ -337,7 +337,7 @@ def _compose_pr_title(
 
 def git_branches_differ(branch_a: str, branch_b: str, metadata_path: str) -> bool:
     # Check to see if any files besides synth.metadata were added, modified, deleted.
-    diff_cmd = ["git", "diff", f"{branch_a}..{branch_b}"]
+    diff_cmd = ["git", "diff", "--binary", f"{branch_a}..{branch_b}"]
     diff_cmd.extend(["--", ".", f":(exclude){metadata_path}"])
     proc = executor.run(diff_cmd, stdout=subprocess.PIPE, universal_newlines=True)
     proc.check_returncode()
