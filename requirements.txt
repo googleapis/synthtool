@@ -1,3 +1,8 @@
+# https://github.com/googleapis/gapic-generator/issues/3334
+# temporarily install google-api-core for gapic-generator-python
+# Bazel should install this, but there is currently a bug
+# that causes the package to be skipped
+google-api-core==1.25.1
 setuptools==50.3.2
 
 nox
@@ -7,12 +12,6 @@ jinja2
 deprecation
 protobuf==3.14.0
 watchdog
-
-# https://github.com/googleapis/gapic-generator/issues/3334
-# temporarily install google-api-core for gapic-generator-python
-# Bazel should install this, but there is currently a bug
-# that causes the package to be skipped
-google-api-core==1.25.1
 
 # some java processing requires xml handling
 lxml
