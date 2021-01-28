@@ -49,6 +49,14 @@ export GITHUB_TOKEN=$(cat ${KOKORO_KEYSTORE_DIR}/73713_yoshi-automation-github-k
 echo "https://${GITHUB_TOKEN}:@github.com" >> ~/.git-credentials
 git config --global credential.helper 'store --file ~/.git-credentials'
 
+# https://github.com/googleapis/gapic-generator/issues/3334
+# temporarily install google-api-core for gapic-generator-python
+# Bazel should install this, but there is currently a bug
+# that causes the package to be skipped
+# This is installed outside the virtualenv because Bazel seems to
+# install packages into its own directory.
+python3 -m pip install google-api-core==1.25.1 protobuf==1.14.0
+
 python3 -m venv env
 source env/bin/activate
 python3 -m pip install --upgrade --quiet -r requirements.txt
