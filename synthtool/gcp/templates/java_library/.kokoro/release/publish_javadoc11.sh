@@ -19,6 +19,11 @@ if [[ -z "${CREDENTIALS}" ]]; then
   CREDENTIALS=${KOKORO_KEYSTORE_DIR}/73713_docuploader_service_account
 fi
 
+if [[ -z "${STAGING_BUCKET}" ]]; then
+  echo "Need to set STAGING_BUCKET environment variable"
+  exit 1
+fi
+
 if [[ -z "${STAGING_BUCKET_V2}" ]]; then
   echo "Need to set STAGING_BUCKET_V2 environment variable"
   exit 1
@@ -33,7 +38,7 @@ python3 -m pip install gcp-docuploader
 # compile all packages
 mvn clean install -B -q -DskipTests=true
 
-export NAME=google-cloud-memcache
+export NAME={{ metadata['repo']['distribution_name'].split(':')|last }}
 export VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 
 # V3 generates docfx yml from javadoc
