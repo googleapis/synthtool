@@ -20,7 +20,7 @@ import requests
 import synthtool as s
 import synthtool.gcp as gcp
 from synthtool import cache, shell
-from synthtool.gcp import common, partials, samples, snippets
+from synthtool.gcp import common, partials, pregenerated, samples, snippets
 from synthtool.log import logger
 from pathlib import Path
 from typing import Any, Optional, Dict, List
@@ -316,6 +316,46 @@ def bazel_library(
         destination_name=destination_name,
         cloud_api=cloud_api,
         diregapic=diregapic,
+    )
+
+    return library
+
+
+def pregenerated_library(
+    path: str,
+    service: str,
+    version: str,
+    destination_name: str = None,
+    cloud_api: bool = True,
+) -> Path:
+    """Generate a Java library using the gapic-generator via bazel.
+
+    Generates code into a temp directory, fixes missing header fields, and
+    copies into the expected locations.
+
+    Args:
+        path (str): Path in googleapis-gen to un-versioned generated code.
+        service (str): Name of the service.
+        version (str): Service API version.
+        destination_name (str, optional): Override the service name for the
+            destination of the output code. Defaults to the service name.
+        cloud_api (bool, optional): Whether or not this is a cloud API (for naming)
+
+    Returns:
+        The path to the temp directory containing the generated client.
+    """
+    generator = pregenerated.Pregenerated()
+    library = generator.generate(path)
+
+    cloud_prefix = "cloud-" if cloud_api else ""
+    _common_generation(
+        service=service,
+        version=version,
+        library=library / f"google-{cloud_prefix}{service}-{version}-java",
+        package_pattern="unused",
+        suffix="-java",
+        destination_name=destination_name,
+        cloud_api=cloud_api,
     )
 
     return library
