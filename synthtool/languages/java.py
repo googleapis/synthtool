@@ -306,11 +306,10 @@ def bazel_library(
         service=service, version=version, diregapic=diregapic, **kwargs
     )
 
-    cloud_prefix = "cloud-" if cloud_api else ""
     _common_generation(
         service=service,
         version=version,
-        library=library / f"google-{cloud_prefix}{service}-{version}-java",
+        library=library / f"google-cloud-{service}-{version}-java",
         package_pattern=package_pattern,
         suffix="-java",
         destination_name=destination_name,
