@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pathlib import Path
-from typing import Optional, Union
+from typing import Optional
 import os
 
 from synthtool.log import logger
