@@ -19,20 +19,20 @@ import os
 from synthtool.log import logger
 from synthtool.sources import git
 
-GOOGLEAPIS_GEN_URL: str = git.make_repo_clone_url("googleapis/googleapis-gen")
-LOCAL_GOOGLEAPIS_GEN: Optional[str] = os.environ.get("SYNTHTOOL_GOOGLEAPIS_GEN")
-
 
 class Pregenerated:
     """A synthtool component that copies pregenerated bazel code."""
 
     def __init__(self):
-        if LOCAL_GOOGLEAPIS_GEN:
-            self._googleapis_gen = Path(LOCAL_GOOGLEAPIS_GEN).expanduser()
+        local_clone = os.environ.get("SYNTHTOOL_GOOGLEAPIS_GEN")
+        if local_clone:
+            self._googleapis_gen = Path(local_clone).expanduser()
             logger.debug(f"Using local googleapis-gen at {self._googleapis_gen}")
         else:
             logger.debug("Cloning googleapis-gen.")
-            self._googleapis_gen = git.clone(GOOGLEAPIS_GEN_URL)
+            self._googleapis_gen = git.clone(
+                git.make_repo_clone_url("googleapis/googleapis-gen")
+            )
 
     def generate(self, path: str) -> Path:
         return self._googleapis_gen / path
