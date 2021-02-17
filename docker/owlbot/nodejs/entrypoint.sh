@@ -14,8 +14,8 @@
 # limitations under the License.
 
 set -e
-# Doesn't get sourced in root shell, for reasons I don't understand.
+# Doesn't get sourced in a login shell, according to bash's man page and confirmed
+# via experiment, so we have to source it manually.
 source "$HOME/.bashrc"
 set -x
-cd "$OWLBOT_WORKING_DIR"
 python owlbot.py
