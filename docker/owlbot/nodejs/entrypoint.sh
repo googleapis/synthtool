@@ -15,6 +15,5 @@
 
 set -e
 source /root/.nvm/nvm.sh
-export PYTHONPATH="/synthtool"
 set -x
 python owlbot.py
