@@ -189,7 +189,7 @@ def fix_hermetic(hide_output=False):
     shell.run(
         ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
         check=True,
-        hide_output=hide_output
+        hide_output=hide_output,
     )
     logger.debug("Running fix...")
     shell.run(
