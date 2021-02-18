@@ -187,11 +187,14 @@ def fix_hermetic(hide_output=False):
     """
     logger.debug("Copy eslint config")
     shell.run(
-        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."], hide_output=hide_output
+        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+        check=True,
+        hide_output=hide_output
     )
     logger.debug("Running fix...")
     shell.run(
         [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", "src"],
+        check=True,
         hide_output=hide_output,
     )
 
@@ -213,6 +216,7 @@ def compile_protos_hermetic(hide_output=False):
     logger.debug("Compiling protos...")
     shell.run(
         [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        check=True,
         hide_output=hide_output,
     )
 
