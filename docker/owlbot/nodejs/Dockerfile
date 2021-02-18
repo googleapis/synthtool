@@ -46,7 +46,7 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
-RUN cd /synthtool; npm init; npm i gts@3.1.0 google-gax@2.10.3
+RUN cd /synthtool; mkdir node_modules; npm i gts@3.1.0 google-gax@2.10.3
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
