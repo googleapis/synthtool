@@ -23,6 +23,7 @@ from synthtool.sources import git
 from typing import Any, Dict, List
 
 _REQUIRED_FIELDS = ["name", "repository"]
+_TOOLS_DIRECTORY = "/synthtool"
 
 
 def read_metadata():
@@ -179,6 +180,22 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
 
+def fix_hermetic(hide_output=False):
+    """
+    Fixes the formatting in the current Node.js library. It assumes that gts
+    is already installed in a well known location on disk:
+    """
+    logger.debug("Copy eslint config")
+    shell.run(
+        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."], hide_output=hide_output
+    )
+    logger.debug("Running fix...")
+    shell.run(
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", "src"],
+        hide_output=hide_output,
+    )
+
+
 def compile_protos(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
@@ -188,9 +205,28 @@ def compile_protos(hide_output=False):
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
+def compile_protos_hermetic(hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax.
+    """
+    logger.debug("Compiling protos...")
+    shell.run(
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        hide_output=hide_output,
+    )
+
+
 def postprocess_gapic_library(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
     install(hide_output=hide_output)
     fix(hide_output=hide_output)
     compile_protos(hide_output=hide_output)
+    logger.debug("Post-processing completed")
+
+
+def postprocess_gapic_library_hermetic(hide_output=False):
+    logger.debug("Post-processing GAPIC library...")
+    fix_hermetic(hide_output=hide_output)
+    compile_protos_hermetic(hide_output=hide_output)
     logger.debug("Post-processing completed")
