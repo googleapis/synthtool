@@ -51,7 +51,7 @@ COPY docker /synthtool/docker
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
 # * google-gax is used for compiling protos.
-RUN /bin/bash -c "source /root/.nvm/nvm.sh && mkdir node_modules && npm i gts@3.1.0 google-gax@2.10.3 typescript@3.9.9"
+RUN /bin/bash -c "source /root/.nvm/nvm.sh && cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@2.10.3 typescript@3.9.9"
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
