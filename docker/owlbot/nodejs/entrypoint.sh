@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -x
+set -e
+source /root/.nvm/nvm.sh
 export PYTHONPATH="/synthtool"
+set -x
 python owlbot.py
