@@ -16,6 +16,9 @@
 set -e
 # Doesn't get sourced in a login shell, according to bash's man page and confirmed
 # via experiment, so we have to source it manually.
+echo "ATTEMPT TO SOURCE .bashrc"
 source "/root/.bashrc"
+echo "FINISHED SOURCING"
 set -x
+echo "ATTEMPT TO RUN PYTHON"
 python owlbot.py
