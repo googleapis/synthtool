@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Version 0.1.1
+
 # build from the root of this repo:
 # docker build -t gcr.io/cloud-devrel-kokoro-resources/owlbot-nodejs -f docker/owlbot/nodejs/Dockerfile .
 FROM python:3.6.12-buster
@@ -46,6 +48,10 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
+# Install dependencies used for post processing:
+# * gts/typescript are used for linting.
+# * google-gax is used for compiling protos.
+RUN /bin/bash -c "source /root/.nvm/nvm.sh && cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@2.10.3 typescript@3.9.9"
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
