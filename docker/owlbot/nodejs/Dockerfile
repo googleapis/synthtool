@@ -52,6 +52,9 @@ COPY docker /synthtool/docker
 # * gts/typescript are used for linting.
 # * google-gax is used for compiling protos.
 RUN /bin/bash -c "source /root/.nvm/nvm.sh && mkdir node_modules && npm i gts@3.1.0 google-gax@2.10.3 typescript@3.9.9"
+# Move .bashrc to a location that will still exist when running
+# Cloud Build with "dir":
+RUN /bin/bash -c "cp $HOME/.bashrc /synthtool/.bashrc"
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
