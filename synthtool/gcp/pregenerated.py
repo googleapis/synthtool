@@ -14,6 +14,8 @@
 
 from pathlib import Path
 import os
+import shutil
+import tempfile
 
 from synthtool.log import logger
 from synthtool.sources import git
@@ -34,4 +36,10 @@ class Pregenerated:
             )
 
     def generate(self, path: str) -> Path:
-        return self._googleapis_gen / path
+        # shutil.copytree(dirs_exist_ok=True) does not exist until python 3.8
+        tempdir = Path(tempfile.mkdtemp()) / "code"
+
+        # make a copy of the code at the provided path because autosynth
+        # may not reset the source git repository
+        shutil.copytree(self._googleapis_gen / path, tempdir)
+        return tempdir
