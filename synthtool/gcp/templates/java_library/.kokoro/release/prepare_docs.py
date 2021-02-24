@@ -17,41 +17,31 @@ import yaml
 
 
 def prepare_toc(product_name):
-    toc_file = "target/docfx-yml/toc.yml"
-    with open(toc_file, 'r') as yml_input:
-        try:
-            toc = yaml.safe_load(yml_input)
+  toc_file = "target/docfx-yml/toc.yml"
+  with open(toc_file, 'r') as yml_input:
+    try:
+      toc = yaml.safe_load(yml_input)
 
-            # sort list of dict on dict key 'uid' value
-            toc.sort(key=lambda x: x.get('uid'))
+      # sort list of dict on dict key 'uid' value
+      toc.sort(key=lambda x: x.get('uid'))
 
-            # include index.md overview page
-            overview = [
-                {
-                    'name': 'Overview',
-                    'href': 'index.md'
-                }
-            ]
-            toc = overview + toc
+      # include index.md overview page
+      overview = [{'name': 'Overview', 'href': 'index.md'}]
+      toc = overview + toc
 
-            # include product level hierarchy
-            new_toc = [
-                {
-                    'name': product_name,
-                    'items': toc
-                }
-            ]
+      # include product level hierarchy
+      new_toc = [{'name': product_name, 'items': toc}]
 
-            with open(toc_file, 'w') as f:
-                # Add back necessary docfx comment YamlMime
-                f.write("### YamlMime:TableOfContent\n")
+      with open(toc_file, 'w') as f:
+        # Add back necessary docfx comment YamlMime
+        f.write("### YamlMime:TableOfContent\n")
 
-                yaml.dump(new_toc, f, default_flow_style=False, sort_keys=False)
+        yaml.dump(new_toc, f, default_flow_style=False, sort_keys=False)
 
-        except yaml.YAMLError as e:
-            print('Error parsing toc file', toc_file)
-            raise e
+    except yaml.YAMLError as e:
+      print('Error parsing toc file', toc_file)
+      raise e
 
 
 if __name__ == '__main__':
-    prepare_toc(sys.argv[1])
+  prepare_toc(sys.argv[1])
