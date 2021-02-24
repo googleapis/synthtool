@@ -27,9 +27,6 @@ fi
 # work from the git root directory
 pushd $(dirname "$0")/../../
 
-# install docuploader package
-python3 -m pip install gcp-docuploader
-
 # compile all packages
 mvn clean install -B -q -DskipTests=true
 
@@ -40,7 +37,18 @@ export VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 # generate yml
 mvn clean site -B -q -P docFX
 
+# copy README to new directory and rename index.md
+cp README.md target/docfx-yml/index.md
+
+# install yaml parser
+# make final updates to toc.yml
+python3 -m pip install pyyaml
+python3 .kokoro/release/prepare_docs.py ${NAME}
+
 pushd target/docfx-yml
+
+# install docuploader package
+python3 -m pip install gcp-docuploader
 
 # create metadata
 python3 -m docuploader create-metadata \
@@ -52,4 +60,4 @@ python3 -m docuploader create-metadata \
 python3 -m docuploader upload . \
  --credentials ${CREDENTIALS} \
  --staging-bucket ${STAGING_BUCKET_V2} \
- --destination-prefix docfx-
+ --destination-prefix docfx
