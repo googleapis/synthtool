@@ -25,31 +25,31 @@ mock_updated_toc = "tests/testdata/mock-java-updated-toc.yml"
 
 
 class PrepareDocsTest(unittest.TestCase):
+    def setUp(cls):
+        # assure mock and updated are not the same before
+        assert (
+            filecmp.cmp(mock_original_toc, mock_updated_toc, shallow=False)
+        ) is False
 
-  def setUp(self):
-    # assure mock and updated are not the same before
-    assert (filecmp.cmp(mock_original_toc, mock_updated_toc,
-                        shallow=False)) is False
+        # make a copy of the original since script will update original file
+        shutil.copyfile(mock_original_toc, mock_original_toc_copy)
+        prepare_toc(mock_original_toc, "google-cloud-testing")
 
-    # make a copy of the original since script will update original file
-    shutil.copyfile(mock_original_toc, mock_original_toc_copy)
-    prepare_toc(mock_original_toc, "google-cloud-testing")
+    def tearDown(cls):
+        # overwrite changes to original from copy
+        shutil.move(mock_original_toc_copy, mock_original_toc)
 
-  def tearDown(self):
-    # overwrite changes to original from copy
-    shutil.move(mock_original_toc_copy, mock_original_toc)
+    def test_original_is_updated(self):
+        assert (filecmp.cmp(mock_original_toc, mock_updated_toc, shallow=False)) is True
 
-  def test_original_is_updated(self):
-    assert (filecmp.cmp(mock_original_toc, mock_updated_toc,
-                        shallow=False)) is True
+    def test_original_not_copy(self):
+        assert (
+            filecmp.cmp(mock_original_toc, mock_original_toc_copy, shallow=False)
+        ) is False
 
-  def test_original_not_copy(self):
-    assert (filecmp.cmp(
-        mock_original_toc, mock_original_toc_copy, shallow=False)) is False
-
-  def test_original_valid_yaml(self):
-    with open(mock_original_toc, "r") as stream:
-      try:
-        yaml.safe_load(stream)
-      except yaml.YAMLError:
-        pytest.fail(f"unable to parse YAML: {mock_original_toc}")
+    def test_original_valid_yaml(self):
+        with open(mock_original_toc, "r") as stream:
+            try:
+                yaml.safe_load(stream)
+            except yaml.YAMLError:
+                pytest.fail(f"unable to parse YAML: {mock_original_toc}")
