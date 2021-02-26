@@ -43,7 +43,7 @@ cp README.md target/docfx-yml/index.md
 # install yaml parser
 # make final updates to toc.yml
 python3 -m pip install pyyaml
-python3 .kokoro/release/prepare_docs.py ${NAME}
+python3 .kokoro/release/prepare_docs.py target/docfx-yml/toc.yml ${NAME}
 
 pushd target/docfx-yml
 
