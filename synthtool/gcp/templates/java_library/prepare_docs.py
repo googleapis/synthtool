@@ -17,30 +17,30 @@ import yaml
 
 
 def prepare_toc(toc_file, product_name):
-  with open(toc_file, "r") as yml_input:
-    try:
-      toc = yaml.safe_load(yml_input)
+    with open(toc_file, "r") as yml_input:
+        try:
+            toc = yaml.safe_load(yml_input)
 
-      # sort list of dict on dict key 'uid' value
-      toc.sort(key=lambda x: x.get("uid"))
+            # sort list of dict on dict key 'uid' value
+            toc.sort(key=lambda x: x.get("uid"))
 
-      # include index.md overview page
-      overview = [{"name": "Overview", "href": "index.md"}]
-      toc = overview + toc
+            # include index.md overview page
+            overview = [{"name": "Overview", "href": "index.md"}]
+            toc = overview + toc
 
-      # include product level hierarchy
-      toc = [{"name": product_name, "items": toc}]
+            # include product level hierarchy
+            toc = [{"name": product_name, "items": toc}]
 
-      with open(toc_file, "w") as f:
-        # Add back necessary docfx comment YamlMime
-        f.write("### YamlMime:TableOfContent\n")
+            with open(toc_file, "w") as f:
+                # Add back necessary docfx comment YamlMime
+                f.write("### YamlMime:TableOfContent\n")
 
-        yaml.dump(toc, f, default_flow_style=False, sort_keys=False)
+                yaml.dump(toc, f, default_flow_style=False, sort_keys=False)
 
-    except yaml.YAMLError as e:
-      print("Error parsing toc file", toc_file)
-      raise e
+        except yaml.YAMLError as e:
+            print("Error parsing toc file", toc_file)
+            raise e
 
 
 if __name__ == "__main__":
-  prepare_toc(sys.argv[1], sys.argv[2])
+    prepare_toc(sys.argv[1], sys.argv[2])
