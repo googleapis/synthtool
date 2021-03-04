@@ -40,10 +40,10 @@ export VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 # generate yml
 mvn clean site -B -q -P docFX
 
-pushd target/docfx-yml
-
 # copy README to docfx-yml dir and rename index.md
-cp README.md index.md
+cp README.md target/docfx-yml/index.md
+
+pushd target/docfx-yml
 
 # create metadata
 python3 -m docuploader create-metadata \
