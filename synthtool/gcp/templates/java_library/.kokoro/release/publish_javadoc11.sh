@@ -42,6 +42,9 @@ mvn clean site -B -q -P docFX
 
 pushd target/docfx-yml
 
+# copy README to docfx-yml dir and rename index.md
+cp README.md index.md
+
 # create metadata
 python3 -m docuploader create-metadata \
  --name ${NAME} \
@@ -52,4 +55,4 @@ python3 -m docuploader create-metadata \
 python3 -m docuploader upload . \
  --credentials ${CREDENTIALS} \
  --staging-bucket ${STAGING_BUCKET_V2} \
- --destination-prefix docfx-
+ --destination-prefix docfx
