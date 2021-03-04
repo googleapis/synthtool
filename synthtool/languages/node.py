@@ -15,6 +15,7 @@
 import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
+import os
 import re
 from synthtool import shell
 from synthtool.gcp import samples, snippets
@@ -206,6 +207,18 @@ def compile_protos(hide_output=False):
     """
     logger.debug("Compiling protos...")
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+
+
+def detect_versions(path="./src") -> List[str]:
+    """
+    Detects the versions a library has, based on distinct folders
+    within path.
+    """
+    versions = []
+    for directory in os.listdir("./src"):
+        if os.path.isdir(os.path.join("./src", directory)):
+            versions.append(directory)
+    return versions
 
 
 def compile_protos_hermetic(hide_output=False):
