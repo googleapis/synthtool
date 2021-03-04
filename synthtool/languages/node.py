@@ -212,7 +212,14 @@ def compile_protos(hide_output=False):
 def detect_versions(path="./src") -> List[str]:
     """
     Detects the versions a library has, based on distinct folders
-    within path.
+    within path. This is based on the fact that our GAPIC libraries are
+    structured as follows:
+
+    src/v1
+    src/v1beta
+    src/v1alpha
+
+    With folder names mapping directly to versions.
     """
     versions = []
     for directory in os.listdir("./src"):
