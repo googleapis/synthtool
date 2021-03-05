@@ -4,6 +4,7 @@ steps:
       '-t', 'gcr.io/$PROJECT_ID/owlbot-java:$SHORT_SHA',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-java:latest',
       '-f', 'docker/owlbot/java/Dockerfile', '.' ]
+
   - name: gcr.io/gcp-runtimes/structure_test
     args:
       ["-i", "gcr.io/$PROJECT_ID/owlbot-java:$SHORT_SHA", "--config", "docker/owlbot/java/cloudbuild_test.yaml", "-v"]
