@@ -15,12 +15,16 @@
 
 set -e
 
-for file in `git diff-tree --no-commit-id -r $(git rev-parse HEAD) --name-only --diff-filter=M`
+last_commit_files=$(git diff-tree --no-commit-id -r $(git rev-parse HEAD) --name-only --diff-filter=M)
+current_modified_files=$(git diff --name-only HEAD)
+all_files=$(echo ${last_commit_files} ${current_modified_files} | sort -u)
+
+for file in ${all_files}
 do
   # if the header year changed in the last diff,
   # then restore the previous year
   old_copyright=$(git show HEAD~1:${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})")
-  new_copyright=$(git show HEAD:${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})")
+  new_copyright=$(cat ${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})")
   if [ ! -z "${old_copyright}" ] && [ ! -z "${new_copyright}" ] && [ "${old_copyright}" != "${new_copyright}" ]
   then
     echo "Restoring copyright in ${file} to '${old_copyright}'"
