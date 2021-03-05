@@ -15,19 +15,25 @@
 
 set -e
 
+# list the modified files in the current commit
 last_commit_files=$(git diff-tree --no-commit-id -r $(git rev-parse HEAD) --name-only --diff-filter=M)
+
+# list the modified, uncommited files
 current_modified_files=$(git diff --name-only HEAD)
+
+# join and deduplicate the list
 all_files=$(echo ${last_commit_files} ${current_modified_files} | sort -u)
 
 for file in ${all_files}
 do
-  # if the header year changed in the last diff,
-  # then restore the previous year
+  # look for the Copyright YYYY line within the first 10 lines
   old_copyright=$(git show HEAD~1:${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})")
   new_copyright=$(cat ${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})")
+  # if the header year changed in the last diff, then restore the previous year
   if [ ! -z "${old_copyright}" ] && [ ! -z "${new_copyright}" ] && [ "${old_copyright}" != "${new_copyright}" ]
   then
     echo "Restoring copyright in ${file} to '${old_copyright}'"
+    # replace the first instance of the old copyright header with the new
     sed -i "s/${new_copyright}/${old_copyright}/1" ${file}
   fi
 done
