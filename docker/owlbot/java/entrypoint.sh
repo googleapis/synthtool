@@ -13,13 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
+set -e
 
 # templates
-/java/write_templates.sh
+/scripts/write_templates.sh
 
-# fix license headers
-/java/fix_license_headers.sh
+# write or restore clirr-ignored-differences.xml
+/scripts/write_clirr_ignore.sh
+
+# restore license headers years
+/scripts/restore_license_headers.sh
 
 # ensure formatting on all .java files in the repository
-/java/format_source.sh
+/scripts/format_source.sh

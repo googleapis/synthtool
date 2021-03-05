@@ -17,7 +17,10 @@ FROM gcr.io/cloud-devrel-kokoro-resources/java8
 
 ARG JAVA_FORMAT_VERSION=1.7
 
-COPY docker/owlbot/java/scripts/*.sh /java/
+RUN apt-get install -y --no-install-recommends jq
+
+COPY docker/owlbot/java/scripts /scripts
+COPY docker/owlbot/java/templates /templates
 ADD https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/${JAVA_FORMAT_VERSION}/google-java-format-${JAVA_FORMAT_VERSION}-all-deps.jar /java/google-java-format.jar
 
 ###################### Install synthtool's requirements.
