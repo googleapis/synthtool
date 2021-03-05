@@ -20,6 +20,11 @@ echo "Generating templates..."
 /owlbot/bin/write_templates.sh
 echo "...done"
 
+# write or restore pom.xml files
+echo "Generating missing pom.xml..."
+/owlbot/bin/write_missing_pom_files.sh
+echo "...done"
+
 # write or restore clirr-ignored-differences.xml
 echo "Generating clirr-ignore-differences.xml..."
 /owlbot/bin/write_clirr_ignore.sh

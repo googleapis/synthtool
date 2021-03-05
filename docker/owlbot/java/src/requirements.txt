@@ -1,4 +1,4 @@
-attr
+attrs
 click==7.0
 jinja2
 lxml==4.4.1
