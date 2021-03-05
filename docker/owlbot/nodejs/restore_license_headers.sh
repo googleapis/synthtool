@@ -27,8 +27,8 @@ all_files=$(echo ${last_commit_files} ${current_modified_files} | sort -u)
 for file in ${all_files}
 do
   # look for the Copyright YYYY line within the first 10 lines
-  old_copyright=$(git show HEAD~1:${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})")
-  new_copyright=$(cat ${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})")
+  old_copyright=$(git show HEAD~1:${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})" || echo "")
+  new_copyright=$(cat ${file} | head -n 10 | egrep -o -e "Copyright ([[:digit:]]{4})" || echo "")
   # if the header year changed in the last diff, then restore the previous year
   if [ ! -z "${old_copyright}" ] && [ ! -z "${new_copyright}" ] && [ "${old_copyright}" != "${new_copyright}" ]
   then
