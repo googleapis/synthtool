@@ -4,7 +4,7 @@ steps:
       '-t', 'gcr.io/repo-automation-bots/owlbot-java:$SHORT_SHA',
       '-t', 'gcr.io/repo-automation-bots/owlbot-java:latest',
       '-f', 'docker/owlbot/java/Dockerfile', '.' ]
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/repo-automation-bots/owlbot-java:$SHORT_SHA']
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/repo-automation-bots/owlbot-java:latest']
+
+images:
+  - gcr.io/repo-automation-bots/owlbot-java:$SHORT_SHA
+  - gcr.io/repo-automation-bots/owlbot-java:latest
