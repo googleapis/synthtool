@@ -21,15 +21,12 @@ from pathlib import Path
 import click
 import jinja2
 
+
 @click.command()
 @click.option(
-    "--folder",
-    help="Path to folder of templates",
+    "--folder", help="Path to folder of templates",
 )
-@click.option(
-    "--file",
-    help="Path to template file"
-)
+@click.option("--file", help="Path to template file")
 @click.option(
     "--data",
     help="Path to JSON file with template values",
@@ -37,9 +34,7 @@ import jinja2
     required=True,
 )
 @click.option(
-    "--output",
-    help="Path to output",
-    default=".",
+    "--output", help="Path to output", default=".",
 )
 def main(folder: str, file: str, data: List[str], output: str):
     """Generate templates"""
@@ -49,15 +44,15 @@ def main(folder: str, file: str, data: List[str], output: str):
             variables = {**variables, **json.load(fp)}
 
     if folder is not None:
-      location = Path(folder)
-      filenames = glob.glob(f"{folder}/**/*.j2", recursive=True)
+        location = Path(folder)
+        filenames = glob.glob(f"{folder}/**/*.j2", recursive=True)
     elif file is not None:
-      location = Path(file).parent
-      filenames = [f"{file}.j2"]
+        location = Path(file).parent
+        filenames = [f"{file}.j2"]
     else:
-      raise Exception("Need to specify either folder or file")  
+        raise Exception("Need to specify either folder or file")
 
-    output_path = Path(output)           
+    output_path = Path(output)
 
     env = jinja2.Environment(
         loader=jinja2.FileSystemLoader(str(location)),
@@ -80,6 +75,7 @@ def main(folder: str, file: str, data: List[str], output: str):
         source_path = Path(template.filename)
         mode = source_path.stat().st_mode
         destination.chmod(mode)
+
 
 if __name__ == "__main__":
     main()

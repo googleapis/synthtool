@@ -15,19 +15,26 @@
 
 set -e
 
-templates_dir=$(realpath $(dirname "${BASH_SOURCE[0]}")/../templates)
+templates_dir=$(realpath $(dirname "${BASH_SOURCE[0]}")/../templates/clirr)
 is_release=$((git log -1 --pretty=%B | grep -e "chore.*release.*-SNAPSHOT") || echo "")
 
-for dir in `ls -d proto-*`
+# on a snapshot bump, clear all clirr-ignore-differences files
+if [ ! -z "${is_release}" ]
+then
+  find . -name 'clirr-ignored-differences.xml' | xargs rm
+fi
+
+# restore default clirr-ignored-differences.xml for protos if the file does not exist
+for dir in `ls -d proto-google-*`
 do
-  if [ ! -z "${is_release}" ] || [ ! -f "${dir}/clirr-ignored-differences.xml" ]
+  if [ ! -f "${dir}/clirr-ignored-differences.xml" ]
   then
     tmp_dir=$(mktemp -d -t ci-XXXXXXXXXX)
     pushd ${dir}
     pushd src/main/java
     find * -name *OrBuilder.java | xargs dirname | sort -u | jq -Rns ' (inputs | rtrimstr("\n") | split("\n") ) as $data | {proto_paths: $data}' > ${tmp_dir}/paths.json
     popd
-    python3 -m synthtool.gcp.templates --data=${tmp_dir}/paths.json --folder=${templates_dir}
+    python3 /owlbot/src/gen-template.py --data=${tmp_dir}/paths.json --folder=${templates_dir}
     popd
   fi
 done

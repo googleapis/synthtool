@@ -15,14 +15,7 @@
 
 set -e
 
-# templates
-/scripts/write_templates.sh
-
-# write or restore clirr-ignored-differences.xml
-/scripts/write_clirr_ignore.sh
-
-# restore license headers years
-/scripts/restore_license_headers.sh
-
-# ensure formatting on all .java files in the repository
-/scripts/format_source.sh
+if [ -f "owlbot.py" ]
+then
+  python3 -m synthtool "owlbot.py"
+fi

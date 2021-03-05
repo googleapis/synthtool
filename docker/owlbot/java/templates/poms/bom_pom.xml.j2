@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>{{main_module.group_id}}</groupId>
+  <artifactId>{{main_module.artifact_id}}-bom</artifactId>
+  <version>{{main_module.version}}</version><!-- {x-version-update:{{main_module.artifact_id}}:current} -->
+  <packaging>pom</packaging>
+  <parent>
+    <groupId>com.google.cloud</groupId>
+    <artifactId>google-cloud-shared-config</artifactId>
+    <version>0.10.0</version>
+  </parent>
+
+  <name>Google {{name}} BOM</name>
+  <url>https://github.com/{{repo}}</url>
+  <description>
+    BOM for {{name}}
+  </description>
+
+  <organization>
+    <name>Google LLC</name>
+  </organization>
+
+  <developers>
+    <developer>
+      <id>chingor13</id>
+      <name>Jeff Ching</name>
+      <email>chingor@google.com</email>
+      <organization>Google LLC</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+  </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/{{repo}}.git</connection>
+    <developerConnection>scm:git:git@github.com:{{repo}}.git</developerConnection>
+    <url>https://github.com/{{repo}}</url>
+  </scm>
+
+  <properties>
+    <maven.antrun.skip>true</maven.antrun.skip>
+  </properties>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <dependencyManagement>
+    <dependencies>{% for module in modules %}
+      <dependency>
+        <groupId>{{module.group_id}}</groupId>
+        <artifactId>{{module.artifact_id}}</artifactId>
+        <version>{{module.version}}</version><!-- {x-version-update:{{module.artifact_id}}:current} -->
+      </dependency>{% endfor %}
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

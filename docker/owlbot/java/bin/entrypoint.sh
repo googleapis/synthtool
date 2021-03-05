@@ -13,8 +13,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
+set -e
 
-# Find all the java files relative to the current directory and format them
-# using google-java-format
-find . -name '*.java' | xargs java -jar /java/google-java-format.jar --replace
+# templates
+echo "Generating templates..."
+/owlbot/bin/write_templates.sh
+echo "...done"
+
+# write or restore clirr-ignored-differences.xml
+echo "Generating clirr-ignore-differences.xml..."
+/owlbot/bin/write_clirr_ignore.sh
+echo "...done"
+
+# restore license headers years
+echo "Restoring copyright years..."
+/owlbot/bin/restore_license_headers.sh
+echo "...done"
+
+# ensure formatting on all .java files in the repository
+echo "Reformatting source..."
+/owlbot/bin/format_source.sh
+echo "...done"

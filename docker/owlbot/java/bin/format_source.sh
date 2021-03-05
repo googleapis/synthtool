@@ -13,9 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -ex
+set -e
 
-if [ -f "owlbot.py" ]
-then
-  python3 -m synthtool "owlbot.py"
-fi
+# Find all the java files relative to the current directory and format them
+# using google-java-format
+find . -name '*.java' | xargs java -jar /owlbot/google-java-format.jar --replace

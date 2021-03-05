@@ -19,9 +19,12 @@ ARG JAVA_FORMAT_VERSION=1.7
 
 RUN apt-get install -y --no-install-recommends jq
 
-COPY docker/owlbot/java/scripts /scripts
-COPY docker/owlbot/java/templates /templates
-ADD https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/${JAVA_FORMAT_VERSION}/google-java-format-${JAVA_FORMAT_VERSION}-all-deps.jar /java/google-java-format.jar
+COPY docker/owlbot/java/bin /owlbot/bin
+COPY docker/owlbot/java/src /owlbot/src
+RUN cd /owlbot/src && \
+    python3 -m pip install -r requirements.txt
+
+ADD https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/${JAVA_FORMAT_VERSION}/google-java-format-${JAVA_FORMAT_VERSION}-all-deps.jar /owlbot/google-java-format.jar
 
 ###################### Install synthtool's requirements.
 COPY . /synthtool/
@@ -31,10 +34,9 @@ RUN python3 -m pip install -e .
 
 # Tell synthtool to pull templates from this docker image instead of from
 # the live repo.
-ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
-
-COPY docker/owlbot/java/entrypoint.sh /synthtool/entrypoint.sh
+ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates" \
+    PYTHON_PATH="/owlbot/src"
 
 WORKDIR /workspace
 
-ENTRYPOINT [ "/synthtool/entrypoint.sh" ]
+CMD [ "/owlbot/bin/entrypoint.sh" ]
