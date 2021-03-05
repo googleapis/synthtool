@@ -33,6 +33,9 @@ COPY . /synthtool/
 WORKDIR /synthtool
 RUN python3 -m pip install -e .
 
+# Allow non-root users to run python
+RUN chmod +rx /root/ /root/.pyenv && chmod +r /owlbot/google-java-format.jar
+
 # Tell synthtool to pull templates from this docker image instead of from
 # the live repo.
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates" \
