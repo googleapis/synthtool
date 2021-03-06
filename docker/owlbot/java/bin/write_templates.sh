@@ -15,7 +15,7 @@
 
 set -e
 
-if [ -f "owlbot.py" ]
+if [ -f "synth.py" ]
 then
-  python3 -m synthtool "owlbot.py"
+  python3 /owlbot/src/convert-synthtool-templates.py --synth-file=synth.py
 fi
