@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # build from the root of this repo:
-FROM gcr.io/cloud-devrel-kokoro-resources/java8
+FROM gcr.io/cloud-devrel-public-resources/java8
 
 ARG JAVA_FORMAT_VERSION=1.7
 

@@ -20,7 +20,7 @@ commandTests:
   expectedError: ["(java|openjdk) version \"1.8.*\""]
 - name: "formatter"
   command: ["java", "-jar", "/owlbot/google-java-format.jar", "--version"]
-  expectedOutput: ["google-java-format: Version 1.7"]
+  expectedError: ["google-java-format: Version 1.7"]
 - name: "python"
   command: ["python", "--version"]
   expectedOutput: ["Python 3.6.1"]
