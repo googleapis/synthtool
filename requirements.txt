@@ -5,7 +5,7 @@ requests
 pyyaml
 jinja2
 deprecation
-protobuf==3.15.2
+protobuf==3.15.5
 watchdog
 
 # https://github.com/googleapis/gapic-generator/issues/3334
