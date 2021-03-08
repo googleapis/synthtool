@@ -26,7 +26,7 @@ echo "Generating missing pom.xml..."
 echo "...done"
 
 # write or restore clirr-ignored-differences.xml
-echo "Generating clirr-ignore-differences.xml..."
+echo "Generating clirr-ignored-differences.xml..."
 /owlbot/bin/write_clirr_ignore.sh
 echo "...done"
 
