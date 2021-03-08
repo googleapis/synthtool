@@ -22,7 +22,8 @@ root_directory = pathlib.Path(
 ).parent.parent
 print(root_directory)
 jinja_env = Environment(
-    loader=FileSystemLoader(str(root_directory / "templates" / "poms"))
+    loader=FileSystemLoader(str(root_directory / "templates" / "poms")),
+    keep_trailing_newline=True,
 )
 
 

@@ -16,29 +16,32 @@ import ast
 import click
 from synthtool.languages import java
 
+
 @click.command()
 @click.option(
-  "--synth-file",
-  help="Path to synth.py file",
-  default="synth.py",
+    "--synth-file", help="Path to synth.py file", default="synth.py",
 )
 def main(synth_file: str):
-  excludes = []
-  should_include_templates = False
-  with open(synth_file, 'r') as fp:
-    tree = ast.parse(fp.read())
+    excludes = []
+    should_include_templates = False
+    with open(synth_file, "r") as fp:
+        tree = ast.parse(fp.read())
 
-    # look for a call to java.common_templates() and extract the list of excludes
-    for node in ast.walk(tree):
-      if isinstance(node, ast.Call):
-        if node.func.value.id == "java" and node.func.attr == "common_templates":
-          should_include_templates = True
-          for keyword in node.keywords:
-            if keyword.arg == "excludes":
-              excludes = [element.s for element in keyword.value.elts]
+        # look for a call to java.common_templates() and extract the list of excludes
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Call):
+                if (
+                    node.func.value.id == "java"
+                    and node.func.attr == "common_templates"
+                ):
+                    should_include_templates = True
+                    for keyword in node.keywords:
+                        if keyword.arg == "excludes":
+                            excludes = [element.s for element in keyword.value.elts]
 
-  if should_include_templates:
-    java.common_templates(excludes=excludes)
+    if should_include_templates:
+        java.common_templates(excludes=excludes)
+
 
 if __name__ == "__main__":
     main()

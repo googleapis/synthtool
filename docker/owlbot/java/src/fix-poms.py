@@ -13,9 +13,12 @@
 # limitations under the License.
 
 import glob
+import inspect
+import itertools
 import json
+from lxml import etree
 import os
-from typing import Mapping
+from typing import List, Mapping
 from poms import module, templates
 
 
@@ -43,6 +46,176 @@ def load_versions(filename: str, default_group_id: str) -> Mapping[str, module.M
                 )
 
     return modules
+
+
+def _find_dependency_index(dependencies, group_id, artifact_id) -> int:
+    try:
+        return next(
+            i
+            for i, x in enumerate(dependencies.getchildren())
+            if _dependency_matches(x, group_id, artifact_id)
+        )
+    except StopIteration:
+        return -1
+
+
+def _dependency_matches(node, group_id, artifact_id) -> bool:
+    artifact_node = node.find("{http://maven.apache.org/POM/4.0.0}artifactId")
+    group_node = node.find("{http://maven.apache.org/POM/4.0.0}groupId")
+
+    if artifact_node is None or group_node is None:
+        return False
+
+    return artifact_node.text.startswith(artifact_id) and group_node.text.startswith(
+        group_id
+    )
+
+
+def update_cloud_pom(
+    filename: str, proto_modules: List[module.Module], grpc_modules: List[module.Module]
+):
+    tree = etree.parse(filename)
+    root = tree.getroot()
+    dependencies = root.find("{http://maven.apache.org/POM/4.0.0}dependencies")
+
+    existing_dependencies = [
+        m.find("{http://maven.apache.org/POM/4.0.0}artifactId").text
+        for m in dependencies
+        if m.find("{http://maven.apache.org/POM/4.0.0}artifactId") is not None
+    ]
+
+    try:
+        grpc_index = _find_dependency_index(
+            dependencies, "com.google.api.grpc", "grpc-"
+        )
+    except StopIteration:
+        grpc_index = _find_dependency_index(dependencies, "junit", "junit")
+    # insert grpc dependencies after junit
+    for m in grpc_modules:
+        if m.artifact_id not in existing_dependencies:
+            print(f"adding new test dependency {m.artifact_id}")
+            new_dependency = etree.Element(
+                "{http://maven.apache.org/POM/4.0.0}dependency"
+            )
+            new_dependency.tail = "\n    "
+            new_dependency.text = "\n      "
+            new_group = etree.Element("{http://maven.apache.org/POM/4.0.0}groupId")
+            new_group.text = m.group_id
+            new_group.tail = "\n      "
+            new_artifact = etree.Element(
+                "{http://maven.apache.org/POM/4.0.0}artifactId"
+            )
+            new_artifact.text = m.artifact_id
+            new_artifact.tail = "\n      "
+            new_scope = etree.Element("{http://maven.apache.org/POM/4.0.0}scope")
+            new_scope.text = "test"
+            new_scope.tail = "\n    "
+            new_dependency.append(new_group)
+            new_dependency.append(new_artifact)
+            new_dependency.append(new_scope)
+            dependencies.insert(grpc_index + 1, new_dependency)
+
+    try:
+        proto_index = _find_dependency_index(
+            dependencies, "com.google.api.grpc", "proto-"
+        )
+    except StopIteration:
+        print("after protobuf")
+        proto_index = _find_dependency_index(
+            dependencies, "com.google.protobuf", "protobuf-java"
+        )
+    # insert proto dependencies after protobuf-java
+    for m in proto_modules:
+        if m.artifact_id not in existing_dependencies:
+            print(f"adding new dependency {m.artifact_id}")
+            new_dependency = etree.Element(
+                "{http://maven.apache.org/POM/4.0.0}dependency"
+            )
+            new_dependency.tail = "\n    "
+            new_dependency.text = "\n      "
+            new_group = etree.Element("{http://maven.apache.org/POM/4.0.0}groupId")
+            new_group.text = m.group_id
+            new_group.tail = "\n      "
+            new_artifact = etree.Element(
+                "{http://maven.apache.org/POM/4.0.0}artifactId"
+            )
+            new_artifact.text = m.artifact_id
+            new_artifact.tail = "\n    "
+            new_dependency.append(new_group)
+            new_dependency.append(new_artifact)
+            dependencies.insert(proto_index + 1, new_dependency)
+
+    tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
+
+
+def update_parent_pom(filename: str, modules: List[module.Module]):
+    tree = etree.parse(filename)
+    root = tree.getroot()
+    existing = root.find("{http://maven.apache.org/POM/4.0.0}modules")
+
+    module_names = [m.artifact_id for m in modules]
+    extra_modules = [
+        m.text for i, m in enumerate(existing) if m.text not in module_names
+    ]
+
+    modules_to_write = module_names + extra_modules
+    num_modules = len(modules_to_write)
+
+    existing.clear()
+    existing.text = "\n    "
+    for index, m in enumerate(modules_to_write):
+        new_module = etree.Element("{http://maven.apache.org/POM/4.0.0}module")
+        new_module.text = m
+        if index == num_modules - 1:
+            new_module.tail = "\n  "
+        else:
+            new_module.tail = "\n    "
+        existing.append(new_module)
+
+    existing.tail = "\n\n  "
+
+    tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
+
+
+def update_bom_pom(filename: str, modules: List[module.Module]):
+    tree = etree.parse(filename)
+    root = tree.getroot()
+    existing = root.find(
+        "{http://maven.apache.org/POM/4.0.0}dependencyManagement"
+    ).find("{http://maven.apache.org/POM/4.0.0}dependencies")
+
+    num_modules = len(modules)
+
+    existing.clear()
+    existing.text = "\n      "
+    for index, m in enumerate(modules):
+        new_dependency = etree.Element("{http://maven.apache.org/POM/4.0.0}dependency")
+        new_dependency.tail = "\n      "
+        new_dependency.text = "\n        "
+        new_group = etree.Element("{http://maven.apache.org/POM/4.0.0}groupId")
+        new_group.text = m.group_id
+        new_group.tail = "\n        "
+        new_artifact = etree.Element("{http://maven.apache.org/POM/4.0.0}artifactId")
+        new_artifact.text = m.artifact_id
+        new_artifact.tail = "\n        "
+        new_version = etree.Element("{http://maven.apache.org/POM/4.0.0}version")
+        new_version.text = m.version
+        comment = etree.Comment(" {x-version-update:" + m.artifact_id + ":current} ")
+        comment.tail = "\n      "
+        new_dependency.append(new_group)
+        new_dependency.append(new_artifact)
+        new_dependency.append(new_version)
+        new_dependency.append(comment)
+
+        if index == num_modules - 1:
+            new_dependency.tail = "\n    "
+        else:
+            new_dependency.tail = "\n      "
+        existing.append(new_dependency)
+
+    existing.tail = "\n  "
+
+    tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
 
 def main():
@@ -122,10 +295,13 @@ def main():
         for module in existing_modules.values()
         if module.artifact_id.startswith("grpc-")
     ]
-    modules = [main_module] + proto_modules + grpc_modules
+    modules = [main_module] + grpc_modules + proto_modules
 
-    if not os.path.isfile(f"{artifact_id}/pom.xml"):
-        print(f"creating missing cloud pom.xml")
+    if os.path.isfile(f"{artifact_id}/pom.xml"):
+        print("updating modules in cloud pom.xml")
+        update_cloud_pom(f"{artifact_id}/pom.xml", proto_modules, grpc_modules)
+    else:
+        print("creating missing cloud pom.xml")
         templates.render(
             template_name="cloud_pom.xml.j2",
             output_name=f"{artifact_id}/pom.xml",
@@ -138,8 +314,11 @@ def main():
             grpc_modules=grpc_modules,
         )
 
-    if not os.path.isfile(f"{artifact_id}-bom/pom.xml"):
-        print(f"creating missing bom pom.xml")
+    if os.path.isfile(f"{artifact_id}-bom/pom.xml"):
+        print("updating modules in bom pom.xml")
+        update_bom_pom(f"{artifact_id}-bom/pom.xml", modules)
+    else:
+        print("creating missing bom pom.xml")
         templates.render(
             template_name="bom_pom.xml.j2",
             output_name=f"{artifact_id}-bom/pom.xml",
@@ -149,7 +328,10 @@ def main():
             main_module=main_module,
         )
 
-    if not os.path.isfile("pom.xml"):
+    if os.path.isfile("pom.xml"):
+        print("updating modules in parent pom.xml")
+        update_parent_pom("pom.xml", modules)
+    else:
         print("creating missing parent pom.xml")
         templates.render(
             template_name="parent_pom.xml.j2",
@@ -160,13 +342,13 @@ def main():
             name=name,
         )
 
-    if not os.path.isfile("versions.txt"):
+    if os.path.isfile("versions.txt"):
+        print("updating modules in versions.txt")
+    else:
         print("creating missing versions.txt")
-        templates.render(
-            template_name="versions.txt.j2",
-            output_name="./versions.txt",
-            modules=modules,
-        )
+    templates.render(
+        template_name="versions.txt.j2", output_name="./versions.txt", modules=modules,
+    )
 
 
 if __name__ == "__main__":
