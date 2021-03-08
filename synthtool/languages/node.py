@@ -193,7 +193,13 @@ def fix_hermetic(hide_output=False):
     )
     logger.debug("Running fix...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", "src"],
+        [
+            f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts",
+            "fix",
+            "src",
+            "test",
+            "system-test",
+        ],
         check=True,
         hide_output=hide_output,
     )
