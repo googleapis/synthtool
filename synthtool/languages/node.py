@@ -15,6 +15,7 @@
 import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
+import os
 import re
 from synthtool import shell
 from synthtool.gcp import samples, snippets
@@ -193,7 +194,13 @@ def fix_hermetic(hide_output=False):
     )
     logger.debug("Running fix...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix", "src"],
+        [
+            f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts",
+            "fix",
+            "src",
+            "test",
+            "system-test",
+        ],
         check=True,
         hide_output=hide_output,
     )
@@ -206,6 +213,25 @@ def compile_protos(hide_output=False):
     """
     logger.debug("Compiling protos...")
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+
+
+def detect_versions(path="./src") -> List[str]:
+    """
+    Detects the versions a library has, based on distinct folders
+    within path. This is based on the fact that our GAPIC libraries are
+    structured as follows:
+
+    src/v1
+    src/v1beta
+    src/v1alpha
+
+    With folder names mapping directly to versions.
+    """
+    versions = []
+    for directory in os.listdir("./src"):
+        if os.path.isdir(os.path.join("./src", directory)):
+            versions.append(directory)
+    return versions
 
 
 def compile_protos_hermetic(hide_output=False):
