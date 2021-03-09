@@ -17,6 +17,3 @@ set -e
 source /root/.nvm/nvm.sh
 set -x
 python owlbot.py
-
-# put back any modified license years
-/synthtool/docker/owlbot/nodejs/restore_license_headers.sh
