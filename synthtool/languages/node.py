@@ -17,11 +17,13 @@ from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
 import os
 import re
-from synthtool import shell
+from synthtool import _tracked_paths, gcp, shell, transforms
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
 from synthtool.sources import git
 from typing import Any, Dict, List
+import logging
+import shutil
 
 _REQUIRED_FIELDS = ["name", "repository"]
 _TOOLS_DIRECTORY = "/synthtool"
@@ -260,3 +262,55 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     fix_hermetic(hide_output=hide_output)
     compile_protos_hermetic(hide_output=hide_output)
     logger.debug("Post-processing completed")
+
+
+def owlbot_main():
+    """Copies files from staging and template directories into current working dir.
+
+    When there is no owlbot.py file, run this function instead.  Also, when an
+    owlbot.py file is necessary, the first statement of owlbot.py should probably
+    call this function.
+
+    Depends on owl-bot copying into a staging directory, so your .Owlbot.yaml should
+    look a lot like this:
+
+        docker:
+            image: gcr.io/repo-automation-bots/owlbot-nodejs:latest
+
+        deep-remove-regex:
+            - /owl-bot-staging
+
+        deep-copy-regex:
+            - source: /google/cloud/video/transcoder/(.*)/.*-nodejs/(.*)
+              dest: /owl-bot-staging/$1/$2
+    """
+    logging.basicConfig(level=logging.DEBUG)
+    staging = Path("owl-bot-staging")
+    s_copy = transforms.move
+    if staging.is_dir():
+        # Load the default version defined in .repo-metadata.json.
+        default_version = json.load(open(".repo-metadata.json", "rt"))[
+            "default_version"
+        ]
+        # Collect the subdirectories of the staging directory.
+        versions = [v.name for v in staging.iterdir() if v.is_dir()]
+        # Reorder the versions so the default version always comes last.
+        versions = [v for v in versions if v != default_version] + [default_version]
+
+        # Copy each version directory into the root.
+        for version in versions:
+            library = staging / version
+            _tracked_paths.add(library)
+            s_copy(library, excludes=["README.md", "package.json", "src/index.ts"])
+        # The staging directory should never be merged into the main branch.
+        shutil.rmtree(staging)
+
+    common_templates = gcp.CommonTemplates()
+    templates = common_templates.node_library(source_location="build/src")
+    s_copy(templates, excludes=[])
+
+    postprocess_gapic_library_hermetic()
+
+
+if __name__ == "__main__":
+    owlbot_main()
