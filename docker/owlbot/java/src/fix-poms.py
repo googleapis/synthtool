@@ -23,6 +23,8 @@ from poms import module, templates
 
 
 def load_versions(filename: str, default_group_id: str) -> Mapping[str, module.Module]:
+    if not os.path.isfile(filename):
+        return {}
     modules = {}
     with open(filename, "r") as fp:
         for line in fp:
