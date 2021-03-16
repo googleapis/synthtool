@@ -283,6 +283,9 @@ def owlbot_main():
         deep-copy-regex:
             - source: /google/cloud/video/transcoder/(.*)/.*-nodejs/(.*)
               dest: /owl-bot-staging/$1/$2
+
+    Also, this function requires a default_version in your .repo-metadata.json.  Ex:
+        "default_version": "v1",
     """
     logging.basicConfig(level=logging.DEBUG)
     staging = Path("owl-bot-staging")
