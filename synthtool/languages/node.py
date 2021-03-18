@@ -303,7 +303,9 @@ def owlbot_main():
         shutil.rmtree(staging)
 
     common_templates = gcp.CommonTemplates()
-    templates = common_templates.node_library(source_location="build/src")
+    templates = common_templates.node_library(
+        source_location="build/src", versions=versions, default_version=default_version
+    )
     s_copy(templates, excludes=[])
 
     postprocess_gapic_library_hermetic()
