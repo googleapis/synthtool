@@ -16,4 +16,9 @@
 set -e
 source /root/.nvm/nvm.sh
 set -x
-python owlbot.py
+
+if [ -f owlbot.py ]; then
+    python owlbot.py
+else
+    python -m synthtool.languages.node
+fi
