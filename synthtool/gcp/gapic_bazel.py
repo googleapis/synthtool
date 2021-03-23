@@ -47,6 +47,7 @@ class GAPICBazel:
         self._googleapis_private = None
         self._googleapis_discovery = None
         self._discovery_artifact_manager = None
+        self._clean_build = False
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(service, version, "python", **kwargs)
@@ -185,6 +186,10 @@ class GAPICBazel:
         # Log which version of bazel that we're using for easier debugging.
         logger.debug("Which version of bazel will I run?")
         shell.run(["bazel", "--version"], hide_output=False)
+
+        if self._clean_build:
+            logger.debug("Cleaning Bazel cache")
+            shell.run(["bazel", "clean", "--expunge", "--async"])
 
         bazel_run_args = [
             "bazel",
