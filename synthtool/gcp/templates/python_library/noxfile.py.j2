@@ -33,6 +33,21 @@ UNIT_TEST_PYTHON_VERSIONS=[{% for v in unit_test_python_versions %}"{{v}}"{% if 
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
 
+# 'docfx' is excluded since it only needs to run in 'docs-presubmit'
+nox.options.sessions = [
+    "unit",
+    "system",
+    "cover",
+    "lint",
+    "lint_setup_py",
+    "blacken",
+    "docs",
+]
+
+# Error if a python version is missing
+nox.options.error_on_missing_interpreters = True
+
+
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def lint(session):
     """Run linters.
@@ -82,15 +97,28 @@ def default(session):
     {%- if microgenerator %}
     session.install("asyncmock", "pytest-asyncio", "-c", constraints_path)
     {% endif %}
-    session.install("mock", "pytest", "pytest-cov"{% for d in unit_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", constraints_path)
+    session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %}, "-c", constraints_path)
+    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
+    {% endfor %}
+    {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path){% endfor %}
+    {%- if unit_test_extras_by_python %}
+    {% for extras_python in unit_test_extras_by_python %}
+    {%- if not loop.first %}el{% endif %}if session.python == "{{extras_python}}":
+        extras = "[{{",".join(unit_test_extras_by_python[extras_python])}}]"
+    {% endfor %}else:
+        extras = "{%- if unit_test_extras %}[{{",".join(unit_test_extras)}}]{% endif %}"
+    session.install("-e", f".{extras}", "-c", constraints_path)
+    {% elif unit_test_extras %}
+    session.install("-e", ".[{{",".join(unit_test_extras)}}]", "-c", constraints_path)
+    {% else %}
     session.install("-e", ".", "-c", constraints_path)
-    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
-    {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
+    {% endif %}
 
     # Run py.test against the unit tests.
     session.run(
         "py.test",
         "--quiet",
+        f"--junitxml=unit_{session.python}_sponge_log.xml",
         "--cov=google/cloud",
         "--cov=tests/unit",
         "--cov-append",
@@ -122,6 +150,9 @@ def system(session):
     # Sanity check: Only run tests if the environment variable is set.
     if not os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", ""):
         session.skip("Credentials must be set via environment variable")
+    # Install pyopenssl for mTLS testing.
+    if os.environ.get("GOOGLE_API_USE_CLIENT_CERTIFICATE", "false") == "true":
+        session.install("pyopenssl")
 
     system_test_exists = os.path.exists(system_test_path)
     system_test_folder_exists = os.path.exists(system_test_folder_path)
@@ -137,16 +168,39 @@ def system(session):
     session.install("mock", "pytest", "google-cloud-testutils"{% for d in system_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", constraints_path)
 
     {%- if system_test_local_dependencies %}
-    session.install("-e", {% for d in system_test_local_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
+    {% for dependency in system_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
+    {% endfor %}
     {%- endif %}
+    {%- if system_test_extras_by_python %}
+    {% for extras_python in system_test_extras_by_python %}
+    {%- if not loop.first %}el{% endif %}if session.python == "{{extras_python}}":
+        extras = "[{{",".join(system_test_extras_by_python[extras_python])}}]"
+    {% endfor %}else:
+        extras = "{%- if system_test_extras %}[{{",".join(system_test_extras)}}]{% endif %}"
+    session.install("-e", f".{extras}", "-c", constraints_path)
+    {% elif system_test_extras %}
+    session.install("-e", ".[{{",".join(system_test_extras)}}]", "-c", constraints_path)
+    {% else %}
     session.install("-e", ".", "-c", constraints_path)
-
+    {% endif %}
 
     # Run py.test against the system tests.
     if system_test_exists:
-        session.run("py.test", "--quiet", system_test_path, *session.posargs)
+        session.run(
+            "py.test",
+            "--quiet",
+            f"--junitxml=system_{session.python}_sponge_log.xml",
+            system_test_path,
+            *session.posargs
+        )
     if system_test_folder_exists:
-        session.run("py.test", "--quiet", system_test_folder_path, *session.posargs)
+        session.run(
+            "py.test",
+            "--quiet",
+            f"--junitxml=system_{session.python}_sponge_log.xml",
+            system_test_folder_path,
+            *session.posargs
+        )
 
 {% if samples_test %}
 @nox.session(python=["2.7", "3.7"])

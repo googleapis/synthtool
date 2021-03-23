@@ -224,17 +224,28 @@ def move(
 
 
 def _replace_in_file(path, expr, replacement):
-    with path.open("r+") as fh:
-        content = fh.read()
-        content, count = expr.subn(replacement, content)
+    try:
+        with path.open("r+") as fh:
+            return _replace_in_file_handle(fh, expr, replacement)
+    except UnicodeDecodeError:
+        pass  # It's a binary file.  Try again with a binary regular expression.
+    flags = expr.flags & ~re.UNICODE
+    expr = re.compile(expr.pattern.encode(), flags)
+    with path.open("rb+") as fh:
+        return _replace_in_file_handle(fh, expr, replacement.encode())
 
-        # Don't bother writing the file if we didn't change
-        # anything.
-        if count:
-            fh.seek(0)
-            fh.write(content)
-            fh.truncate()
-        return count
+
+def _replace_in_file_handle(fh, expr, replacement):
+    content = fh.read()
+    content, count = expr.subn(replacement, content)
+
+    # Don't bother writing the file if we didn't change
+    # anything.
+    if count:
+        fh.seek(0)
+        fh.write(content)
+        fh.truncate()
+    return count
 
 
 def replace(

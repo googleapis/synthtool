@@ -124,7 +124,7 @@ def synthesize_library(
         logger.error(f"Synthesis failed for {library['name']}")
     return {
         "name": library["name"],
-        "output": output.decode("utf-8"),
+        "output": output.decode("utf-8", errors="ignore"),
         "error": error,
         "skipped": skipped,
     }
@@ -166,6 +166,13 @@ def _file_or_comment_on_issue(
     output_to_report = output[-10000:]
     sponge_log_url = _get_sponge_log_url(repository)
     message = f"""\
+Please investigate and fix this issue within 5 business days.  While it remains broken,
+this library cannot be updated with changes to the {name} API, and the library grows
+stale.
+
+See https://github.com/googleapis/synthtool/blob/master/autosynth/TroubleShooting.md
+for trouble shooting tips.
+
 Here's the output from running `synth.py`:
 
 ```

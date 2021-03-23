@@ -8,3 +8,8 @@ synthtool/gcp/templates/php_library/           @googleapis/yoshi-php
 synthtool/gcp/templates/python_library/        @googleapis/yoshi-python
 synthtool/gcp/templates/python_samples/        @googleapis/yoshi-python
 synthtool/gcp/templates/ruby_library/          @googleapis/yoshi-ruby
+
+# Also assign tests specific to language teams
+synthtool/tests/test_language_java.py          @googleapis/yoshi-java
+synthtool/tests/test_python_library.py         @googleapis/yoshi-python
+synthtool/tests/test_ruby.py                   @googleapis/yoshi-ruby

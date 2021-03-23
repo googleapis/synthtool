@@ -15,14 +15,18 @@
 import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
+import os
 import re
-from synthtool import shell
+from synthtool import _tracked_paths, gcp, shell, transforms
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
 from synthtool.sources import git
 from typing import Any, Dict, List
+import logging
+import shutil
 
 _REQUIRED_FIELDS = ["name", "repository"]
+_TOOLS_DIRECTORY = "/synthtool"
 
 
 def read_metadata():
@@ -179,6 +183,25 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
 
+def fix_hermetic(hide_output=False):
+    """
+    Fixes the formatting in the current Node.js library. It assumes that gts
+    is already installed in a well known location on disk:
+    """
+    logger.debug("Copy eslint config")
+    shell.run(
+        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+        check=True,
+        hide_output=hide_output,
+    )
+    logger.debug("Running fix...")
+    shell.run(
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix"],
+        check=False,
+        hide_output=hide_output,
+    )
+
+
 def compile_protos(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
@@ -188,9 +211,105 @@ def compile_protos(hide_output=False):
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
+def detect_versions(path="./src") -> List[str]:
+    """
+    Detects the versions a library has, based on distinct folders
+    within path. This is based on the fact that our GAPIC libraries are
+    structured as follows:
+
+    src/v1
+    src/v1beta
+    src/v1alpha
+
+    With folder names mapping directly to versions.
+    """
+    versions = []
+    for directory in os.listdir("./src"):
+        if os.path.isdir(os.path.join("./src", directory)):
+            versions.append(directory)
+    return versions
+
+
+def compile_protos_hermetic(hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax.
+    """
+    logger.debug("Compiling protos...")
+    shell.run(
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        check=True,
+        hide_output=hide_output,
+    )
+
+
 def postprocess_gapic_library(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
     install(hide_output=hide_output)
     fix(hide_output=hide_output)
     compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
+
+
+def postprocess_gapic_library_hermetic(hide_output=False):
+    logger.debug("Post-processing GAPIC library...")
+    fix_hermetic(hide_output=hide_output)
+    compile_protos_hermetic(hide_output=hide_output)
+    logger.debug("Post-processing completed")
+
+
+def owlbot_main():
+    """Copies files from staging and template directories into current working dir.
+
+    When there is no owlbot.py file, run this function instead.  Also, when an
+    owlbot.py file is necessary, the first statement of owlbot.py should probably
+    call this function.
+
+    Depends on owl-bot copying into a staging directory, so your .Owlbot.yaml should
+    look a lot like this:
+
+        docker:
+            image: gcr.io/repo-automation-bots/owlbot-nodejs:latest
+
+        deep-remove-regex:
+            - /owl-bot-staging
+
+        deep-copy-regex:
+            - source: /google/cloud/video/transcoder/(.*)/.*-nodejs/(.*)
+              dest: /owl-bot-staging/$1/$2
+
+    Also, this function requires a default_version in your .repo-metadata.json.  Ex:
+        "default_version": "v1",
+    """
+    logging.basicConfig(level=logging.DEBUG)
+    staging = Path("owl-bot-staging")
+    s_copy = transforms.move
+    if staging.is_dir():
+        # Load the default version defined in .repo-metadata.json.
+        default_version = json.load(open(".repo-metadata.json", "rt"))[
+            "default_version"
+        ]
+        # Collect the subdirectories of the staging directory.
+        versions = [v.name for v in staging.iterdir() if v.is_dir()]
+        # Reorder the versions so the default version always comes last.
+        versions = [v for v in versions if v != default_version] + [default_version]
+
+        # Copy each version directory into the root.
+        for version in versions:
+            library = staging / version
+            _tracked_paths.add(library)
+            s_copy(library, excludes=["README.md", "package.json", "src/index.ts"])
+        # The staging directory should never be merged into the main branch.
+        shutil.rmtree(staging)
+
+    common_templates = gcp.CommonTemplates()
+    templates = common_templates.node_library(
+        source_location="build/src", versions=versions, default_version=default_version
+    )
+    s_copy(templates, excludes=[])
+
+    postprocess_gapic_library_hermetic()
+
+
+if __name__ == "__main__":
+    owlbot_main()
