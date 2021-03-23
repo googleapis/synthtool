@@ -97,7 +97,7 @@ def default(session):
     {%- if microgenerator %}
     session.install("asyncmock", "pytest-asyncio", "-c", constraints_path)
     {% endif %}
-    session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %}, "-c", constraints_path)
+    session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}",{% endfor %} "-c", constraints_path)
     {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
     {% endfor %}
     {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path){% endfor %}
