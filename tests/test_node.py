@@ -20,6 +20,8 @@ from synthtool.languages import node
 import pathlib
 import filecmp
 import pytest
+import tempfile
+import shutil
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -199,3 +201,35 @@ class TestPostprocess(TestCase):
         assert any(["npm install" in " ".join(call[0][0]) for call in calls])
         assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
         assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
+
+
+# postprocess_gapic_library_hermetic() must be mocked because it depends on node modules
+# present in the docker image but absent while running unit tests.
+@patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
+def test_owlbot_main(hermetic_mock):
+    temp_dir = Path(tempfile.mkdtemp())
+    shutil.copytree(FIXTURES / "nodejs-dlp", temp_dir / "nodejs-dlp")
+    cwd = os.getcwd()
+    try:
+        os.chdir(temp_dir / "nodejs-dlp")
+        # just confirm it doesn't throw an exception.
+        node.owlbot_main(
+            Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
+        )
+    finally:
+        os.chdir(cwd)
+
+
+@patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
+def test_owlbot_main_with_staging(hermetic_mock):
+    temp_dir = Path(tempfile.mkdtemp())
+    shutil.copytree(FIXTURES / "nodejs-dlp-with-staging", temp_dir / "nodejs-dlp")
+    cwd = os.getcwd()
+    try:
+        os.chdir(temp_dir / "nodejs-dlp")
+        # just confirm it doesn't throw an exception.
+        node.owlbot_main(
+            Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
+        )
+    finally:
+        os.chdir(cwd)
