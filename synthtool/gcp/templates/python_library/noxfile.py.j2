@@ -18,6 +18,7 @@
 
 from __future__ import absolute_import
 import os
+import pathlib
 import shutil
 
 import nox
@@ -29,6 +30,8 @@ BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
 DEFAULT_PYTHON_VERSION="{{ default_python_version }}"
 SYSTEM_TEST_PYTHON_VERSIONS=[{% for v in system_test_python_versions %}"{{v}}"{% if not loop.last %},{% endif %}{% endfor %}]
 UNIT_TEST_PYTHON_VERSIONS=[{% for v in unit_test_python_versions %}"{{v}}"{% if not loop.last %},{% endif %}{% endfor %}]
+
+CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
 
 # 'docfx' is excluded since it only needs to run in 'docs-presubmit'
 nox.options.sessions = [
@@ -88,24 +91,27 @@ def lint_setup_py(session):
 def default(session):
     # Install all test dependencies, then install this package in-place.
 
+    constraints_path = str(
+        CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
+    )
     {%- if microgenerator %}
-    session.install("asyncmock", "pytest-asyncio")
+    session.install("asyncmock", "pytest-asyncio", "-c", constraints_path)
     {% endif %}
-    session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
-    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}")
+    session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}",{% endfor %} "-c", constraints_path)
+    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
     {% endfor %}
-    {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}"){% endfor %}
+    {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path){% endfor %}
     {%- if unit_test_extras_by_python %}
     {% for extras_python in unit_test_extras_by_python %}
     {%- if not loop.first %}el{% endif %}if session.python == "{{extras_python}}":
         extras = "[{{",".join(unit_test_extras_by_python[extras_python])}}]"
     {% endfor %}else:
         extras = "{%- if unit_test_extras %}[{{",".join(unit_test_extras)}}]{% endif %}"
-    session.install("-e", f".{extras}")
+    session.install("-e", f".{extras}", "-c", constraints_path)
     {% elif unit_test_extras %}
-    session.install("-e", ".[{{",".join(unit_test_extras)}}]")
+    session.install("-e", ".[{{",".join(unit_test_extras)}}]", "-c", constraints_path)
     {% else %}
-    session.install("-e", ".")
+    session.install("-e", ".", "-c", constraints_path)
     {% endif %}
 
     # Run py.test against the unit tests.
@@ -132,6 +138,9 @@ def unit(session):
 @nox.session(python=SYSTEM_TEST_PYTHON_VERSIONS)
 def system(session):
     """Run the system test suite."""
+    constraints_path = str(
+        CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
+    )
     system_test_path = os.path.join("tests", "system.py")
     system_test_folder_path = os.path.join("tests", "system")
 
@@ -156,10 +165,10 @@ def system(session):
 
     # Install all test dependencies, then install this package into the
     # virtualenv's dist-packages.
-    session.install("mock", "pytest", "google-cloud-testutils", {% for d in system_test_external_dependencies %}"{{d}}"{% if not loop.last %},{% endif %}{% endfor %})
+    session.install("mock", "pytest", "google-cloud-testutils"{% for d in system_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", constraints_path)
 
     {%- if system_test_local_dependencies %}
-    {% for dependency in system_test_local_dependencies %}session.install("-e", "{{dependency}}")
+    {% for dependency in system_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
     {% endfor %}
     {%- endif %}
     {%- if system_test_extras_by_python %}
@@ -168,11 +177,11 @@ def system(session):
         extras = "[{{",".join(system_test_extras_by_python[extras_python])}}]"
     {% endfor %}else:
         extras = "{%- if system_test_extras %}[{{",".join(system_test_extras)}}]{% endif %}"
-    session.install("-e", f".{extras}")
+    session.install("-e", f".{extras}", "-c", constraints_path)
     {% elif system_test_extras %}
-    session.install("-e", ".[{{",".join(system_test_extras)}}]")
+    session.install("-e", ".[{{",".join(system_test_extras)}}]", "-c", constraints_path)
     {% else %}
-    session.install("-e", ".")
+    session.install("-e", ".", "-c", constraints_path)
     {% endif %}
 
     # Run py.test against the system tests.
