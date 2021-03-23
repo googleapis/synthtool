@@ -20,7 +20,6 @@
 //  usage: node listTriggers.js my-project
 
 function main(projectId) {
-  // [START dlp_list_triggers]
   // Imports the Google Cloud Data Loss Prevention library
   const DLP = require('@google-cloud/dlp');
 
@@ -61,7 +60,6 @@ function main(projectId) {
   }
 
   listTriggers();
-  // [END dlp_list_trigger]
 }
 
 main(...process.argv.slice(2));
