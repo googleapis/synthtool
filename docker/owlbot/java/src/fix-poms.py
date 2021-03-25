@@ -184,11 +184,19 @@ def update_parent_pom(filename: str, modules: List[module.Module]):
         "{http://maven.apache.org/POM/4.0.0}dependencyManagement"
     ).find("{http://maven.apache.org/POM/4.0.0}dependencies")
 
+    existing_dependencies = [
+        m.find("{http://maven.apache.org/POM/4.0.0}artifactId").text
+        for m in dependencies
+        if m.find("{http://maven.apache.org/POM/4.0.0}artifactId") is not None
+    ]
+    insert_index = 1
+
     num_modules = len(modules)
 
-    dependencies.clear()
-    dependencies.text = "\n      "
     for index, m in enumerate(modules):
+        if m.artifact_id in existing_dependencies:
+            continue
+
         new_dependency = etree.Element("{http://maven.apache.org/POM/4.0.0}dependency")
         new_dependency.tail = "\n      "
         new_dependency.text = "\n        "
@@ -206,14 +214,9 @@ def update_parent_pom(filename: str, modules: List[module.Module]):
         new_dependency.append(new_artifact)
         new_dependency.append(new_version)
         new_dependency.append(comment)
+        new_dependency.tail = "\n      "
+        dependencies.insert(1, new_dependency)
 
-        if index == num_modules - 1:
-            new_dependency.tail = "\n    "
-        else:
-            new_dependency.tail = "\n      "
-        dependencies.append(new_dependency)
-
-    dependencies.tail = "\n  "
     # END: update versions in dependencyManagement
 
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
