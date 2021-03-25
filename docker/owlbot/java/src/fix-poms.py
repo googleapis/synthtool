@@ -153,6 +153,8 @@ def update_cloud_pom(
 def update_parent_pom(filename: str, modules: List[module.Module]):
     tree = etree.parse(filename)
     root = tree.getroot()
+
+    # BEGIN: update modules
     existing = root.find("{http://maven.apache.org/POM/4.0.0}modules")
 
     module_names = [m.artifact_id for m in modules]
@@ -175,6 +177,44 @@ def update_parent_pom(filename: str, modules: List[module.Module]):
         existing.append(new_module)
 
     existing.tail = "\n\n  "
+    # END: update modules
+
+    # BEGIN: update versions in dependencyManagement
+    dependencies = root.find(
+        "{http://maven.apache.org/POM/4.0.0}dependencyManagement"
+    ).find("{http://maven.apache.org/POM/4.0.0}dependencies")
+
+    num_modules = len(modules)
+
+    dependencies.clear()
+    dependencies.text = "\n      "
+    for index, m in enumerate(modules):
+        new_dependency = etree.Element("{http://maven.apache.org/POM/4.0.0}dependency")
+        new_dependency.tail = "\n      "
+        new_dependency.text = "\n        "
+        new_group = etree.Element("{http://maven.apache.org/POM/4.0.0}groupId")
+        new_group.text = m.group_id
+        new_group.tail = "\n        "
+        new_artifact = etree.Element("{http://maven.apache.org/POM/4.0.0}artifactId")
+        new_artifact.text = m.artifact_id
+        new_artifact.tail = "\n        "
+        new_version = etree.Element("{http://maven.apache.org/POM/4.0.0}version")
+        new_version.text = m.version
+        comment = etree.Comment(" {x-version-update:" + m.artifact_id + ":current} ")
+        comment.tail = "\n      "
+        new_dependency.append(new_group)
+        new_dependency.append(new_artifact)
+        new_dependency.append(new_version)
+        new_dependency.append(comment)
+
+        if index == num_modules - 1:
+            new_dependency.tail = "\n    "
+        else:
+            new_dependency.tail = "\n      "
+        dependencies.append(new_dependency)
+
+    dependencies.tail = "\n  "
+    # END: update versions in dependencyManagement
 
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
