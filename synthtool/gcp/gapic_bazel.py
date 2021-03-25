@@ -193,7 +193,6 @@ class GAPICBazel:
             logger.debug("Cleaning Bazel cache")
             shell.run(["bazel", "clean", "--expunge", "--async"])
 
-
         # Log which version of bazel that we're using for easier debugging.
         logger.debug("Which version of bazel will I run?")
         shell.run(["bazel", "--version"], hide_output=False)
