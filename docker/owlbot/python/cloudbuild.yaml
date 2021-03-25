@@ -1,0 +1,10 @@
+steps:
+    - name: 'gcr.io/cloud-builders/docker'
+      args: [ 'build',
+        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA',
+        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest',
+        '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['push', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA']
+    - name: 'gcr.io/cloud-builders/docker'
+      args: ['push', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest']
