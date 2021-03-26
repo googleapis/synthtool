@@ -147,7 +147,7 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         s.copy([result], excludes=excludes)
 
 
-def owlbot_main(template_path: Optional[Path] = None):
+def owlbot_main():
     """Copies files from staging and template directories into current working dir.
 
     When there is no owlbot.py file, run this function instead.  Also, when an
@@ -159,8 +159,6 @@ def owlbot_main(template_path: Optional[Path] = None):
 
     # the microgenerator has a good coveragerc file
     excludes = [".coveragerc"]
-    s.move(
-        templated_files, excludes=excludes
-    )
+    s.move(templated_files, excludes=excludes)
 
     s.shell.run(["nox", "-s", "blacken"], hide_output=False)
