@@ -24,3 +24,11 @@ This image is built via Cloud Build. From the root of this repository, run:
 ```bash
 gcloud builds submit --config=docker/owlbot/java/cloudbuild.yaml
 ```
+
+### Rebuilding Golden Test Fixtures
+
+To rebuild the golden test fixtures:
+
+1. Delete the `golden` directory.
+2. Copy the `input` directory recursively to `golden`
+3. [Run the latest owlbot image](#running-locally) against the `golden` directory.
