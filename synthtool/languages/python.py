@@ -145,3 +145,24 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         result = t.render(subdir=sample_project_dir, **sample_readme_metadata)
         _tracked_paths.add(result)
         s.copy([result], excludes=excludes)
+
+
+def owlbot_main():
+    """Copies files from staging and template directories into current working dir.
+
+    When there is no owlbot.py file, run this function instead.  Also, when an
+    owlbot.py file is necessary, the first statement of owlbot.py should probably
+    call this function.
+    """
+
+    templated_files = CommonTemplates().py_library(cov_level=99, microgenerator=True)
+
+    # the microgenerator has a good coveragerc file
+    excludes = [".coveragerc"]
+    s.move(templated_files, excludes=excludes)
+
+    s.shell.run(["nox", "-s", "blacken"], hide_output=False)
+
+
+if __name__ == "__main__":
+    owlbot_main()
