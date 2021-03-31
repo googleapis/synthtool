@@ -1,5 +1,5 @@
 attrs
-click==7.0
+click==7.1.2
 jinja2
 lxml==4.6.3
-typing==3.7.4.1
+typing==3.7.4.3
