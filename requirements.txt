@@ -1,11 +1,11 @@
-setuptools==54.1.2
+setuptools==54.2.0
 
 nox
 requests
 pyyaml
 jinja2
 deprecation
-protobuf==3.15.5
+protobuf==3.15.6
 watchdog
 
 # https://github.com/googleapis/gapic-generator/issues/3334

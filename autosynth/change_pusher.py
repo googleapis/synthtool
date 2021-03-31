@@ -201,7 +201,7 @@ This PR was generated using Autosynth. :rainbow:
 
 {build_log_text}
 
-{REGENERATE_CHECKBOX_TEXT.replace('[x]', '[ ]')}
+{REGENERATE_CHECKBOX_TEXT.replace('[x]', '[ ]')} (May take up to 24 hours.)
 
 {trailers}
 """.strip()
