@@ -30,6 +30,11 @@ echo "Generating clirr-ignored-differences.xml..."
 /owlbot/bin/write_clirr_ignore.sh
 echo "...done"
 
+# fix license headers
+echo "Fixing missing license headers..."
+/owlbot/bin/fix_license_headers.sh
+echo "...done"
+
 # TODO: re-enable this once we resolve thrashing
 # restore license headers years
 # echo "Restoring copyright years..."
