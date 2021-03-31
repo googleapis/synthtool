@@ -95,6 +95,7 @@ HEADER_REGEX = re.compile("\\* Copyright \\d{4} Google LLC")
 
 
 def _file_has_header(path: Path) -> bool:
+    """Return true if the file already contains a license header."""
     with open(path, "rt") as fp:
         for line in fp:
             if HEADER_REGEX.search(line):
@@ -102,8 +103,8 @@ def _file_has_header(path: Path) -> bool:
     return False
 
 
-# return a subset of files that do not already have a header
 def _filter_no_header(paths: Iterable[Path]) -> Iterable[Path]:
+    """Return a subset of files that do not already have a header."""
     for path in paths:
         anchor = Path(path.anchor)
         remainder = str(path.relative_to(path.anchor))
@@ -113,6 +114,7 @@ def _filter_no_header(paths: Iterable[Path]) -> Iterable[Path]:
 
 
 def fix_proto_headers(proto_root: Path) -> None:
+    """Helper to ensure that generated proto classes have appropriate license headers."""
     s.replace(
         _filter_no_header([proto_root / "src/**/*.java"]),
         PROTOBUF_HEADER,
@@ -127,8 +129,7 @@ def fix_proto_headers(proto_root: Path) -> None:
 
 
 def fix_grpc_headers(grpc_root: Path, package_name: str = "unused") -> None:
-    for file in _filter_no_header([grpc_root / "src/**/*.java"]):
-        print(file)
+    """Helper to ensure that generated grpc stub classes have appropriate license headers."""
     s.replace(
         _filter_no_header([grpc_root / "src/**/*.java"]),
         "^package (.*);",
