@@ -162,3 +162,7 @@ def owlbot_main():
     s.move(templated_files, excludes=excludes)
 
     s.shell.run(["nox", "-s", "blacken"], hide_output=False)
+
+
+if __name__ == "__main__":
+    owlbot_main()
