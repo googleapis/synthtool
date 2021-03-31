@@ -61,13 +61,9 @@ class GAPICBazel:
         return self._generate_code(service, version, "csharp", False, **kwargs)
 
     def php_library(
-        self,
-        service: str,
-        version: str,
-        clean_build: bool = False,
-        **kwargs) -> Path:
-        return self._generate_code(
-            service, version, "php", clean_build, **kwargs)
+        self, service: str, version: str, clean_build: bool = False, **kwargs
+    ) -> Path:
+        return self._generate_code(service, version, "php", clean_build, **kwargs)
 
     def java_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(
