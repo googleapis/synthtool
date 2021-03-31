@@ -1,0 +1,15 @@
+{
+  "name": "foo",
+  "name_pretty": "Example API",
+  "product_documentation": "https://cloud.google.com/foo/",
+  "api_description": "is an example API",
+  "client_documentation": "https://googleapis.dev/java/google-cloud-foo/latest/index.html",
+  "release_level": "beta",
+  "transport": "grpc",
+  "language": "java",
+  "repo": "googleapis/java-foo",
+  "repo_short": "java-foo",
+  "distribution_name": "com.google.cloud:google-cloud-foo",
+  "api_id": "foo.googleapis.com",
+  "requires_billing": true
+}
