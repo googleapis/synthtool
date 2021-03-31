@@ -32,3 +32,11 @@ steps:
     args: ["diff", "-rw", "input", "golden"]
     dir: docker/owlbot/java/tests/new-client
     waitFor: ["new-client-run"]
+  - name: "gcr.io/$PROJECT_ID/owlbot-java:$SHORT_SHA"
+    dir: docker/owlbot/java/tests/new-version/input
+    id: "new-version-run"
+    waitFor: ["build"]      
+  - name: "bash"
+    args: ["diff", "-rw", "input", "golden"]
+    dir: docker/owlbot/java/tests/new-version
+    waitFor: ["new-version-run"]
