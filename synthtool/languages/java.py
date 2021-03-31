@@ -114,7 +114,12 @@ def _filter_no_header(paths: Iterable[Path]) -> Iterable[Path]:
 
 
 def fix_proto_headers(proto_root: Path) -> None:
-    """Helper to ensure that generated proto classes have appropriate license headers."""
+    """Helper to ensure that generated proto classes have appropriate license headers.
+    
+    If the file does not already contain a license header, inject one at the top of the file.
+    Some resource name classes may contain malformed license headers. In those cases, replace
+    those with our standard license header.
+    """
     s.replace(
         _filter_no_header([proto_root / "src/**/*.java"]),
         PROTOBUF_HEADER,
@@ -129,7 +134,10 @@ def fix_proto_headers(proto_root: Path) -> None:
 
 
 def fix_grpc_headers(grpc_root: Path, package_name: str = "unused") -> None:
-    """Helper to ensure that generated grpc stub classes have appropriate license headers."""
+    """Helper to ensure that generated grpc stub classes have appropriate license headers.
+    
+    If the file does not already contain a license header, inject one at the top of the file.
+    """
     s.replace(
         _filter_no_header([grpc_root / "src/**/*.java"]),
         "^package (.*);",
