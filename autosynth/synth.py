@@ -26,8 +26,11 @@ import autosynth
 import autosynth.flags
 import synthtool.sources.git as synthtool_git
 from autosynth import executor, git, git_source, github
-from autosynth.change_pusher import (AbstractChangePusher, ChangePusher,
-                                     SquashingChangePusher)
+from autosynth.change_pusher import (
+    AbstractChangePusher,
+    ChangePusher,
+    SquashingChangePusher,
+)
 from autosynth.log import logger
 from autosynth.synthesizer import AbstractSynthesizer, Synthesizer
 from autosynth.synth_toolbox import (
@@ -129,8 +132,7 @@ def synthesize_loop_single_pr(
 
 
 def synthesize_inner_loop(
-    toolbox: SynthesizeLoopToolbox,
-    synthesizer: AbstractSynthesizer,
+    toolbox: SynthesizeLoopToolbox, synthesizer: AbstractSynthesizer,
 ):
     # Synthesize with the most recent version of all the sources.
     if not toolbox.synthesize_version_in_new_branch(
