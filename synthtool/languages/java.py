@@ -23,12 +23,11 @@ from synthtool import cache, shell
 from synthtool.gcp import common, partials, pregenerated, samples, snippets
 from synthtool.log import logger
 from pathlib import Path
-from typing import Any, Optional, Dict, List
+from typing import Any, Optional, Dict, Iterable, List
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
-GOOD_LICENSE = """
-/*
+GOOD_LICENSE = """/*
  * Copyright 2020 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -92,9 +91,37 @@ def _download_formatter(version: str, dest: Path) -> None:
         fh.write(response.content)
 
 
+HEADER_REGEX = re.compile("\\* Copyright \\d{4} Google LLC")
+
+
+def _file_has_header(path: Path) -> bool:
+    """Return true if the file already contains a license header."""
+    with open(path, "rt") as fp:
+        for line in fp:
+            if HEADER_REGEX.search(line):
+                return True
+    return False
+
+
+def _filter_no_header(paths: Iterable[Path]) -> Iterable[Path]:
+    """Return a subset of files that do not already have a header."""
+    for path in paths:
+        anchor = Path(path.anchor)
+        remainder = str(path.relative_to(path.anchor))
+        for file in anchor.glob(remainder):
+            if not _file_has_header(file):
+                yield file
+
+
 def fix_proto_headers(proto_root: Path) -> None:
+    """Helper to ensure that generated proto classes have appropriate license headers.
+
+    If the file does not already contain a license header, inject one at the top of the file.
+    Some resource name classes may contain malformed license headers. In those cases, replace
+    those with our standard license header.
+    """
     s.replace(
-        [proto_root / "src/**/*.java"],
+        _filter_no_header([proto_root / "src/**/*.java"]),
         PROTOBUF_HEADER,
         f"{GOOD_LICENSE}{PROTOBUF_HEADER}",
     )
@@ -106,9 +133,15 @@ def fix_proto_headers(proto_root: Path) -> None:
     )
 
 
-def fix_grpc_headers(grpc_root: Path, package_name: str) -> None:
+def fix_grpc_headers(grpc_root: Path, package_name: str = "unused") -> None:
+    """Helper to ensure that generated grpc stub classes have appropriate license headers.
+
+    If the file does not already contain a license header, inject one at the top of the file.
+    """
     s.replace(
-        [grpc_root / "src/**/*.java"], "^package (.*);", f"{GOOD_LICENSE}package \\1;",
+        _filter_no_header([grpc_root / "src/**/*.java"]),
+        "^package (.*);",
+        f"{GOOD_LICENSE}package \\1;",
     )
 
 
