@@ -26,7 +26,8 @@ def list_repositories():
             "metadata-path": f"generated/{_gem_name(name, version)}",
             "pr-title": f"feat: Automated regeneration of {name} {version} client",
         }
-        for name, versions in apiary.list_apis().items() for version in versions
+        for name, versions in apiary.list_apis().items()
+        for version in versions
     ]
 
     repositories.append(

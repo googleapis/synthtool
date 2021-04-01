@@ -49,33 +49,36 @@ class GAPICBazel:
         self._discovery_artifact_manager = None
 
     def py_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "python", **kwargs)
+        return self._generate_code(service, version, "python", False, **kwargs)
 
     def go_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "go", **kwargs)
+        return self._generate_code(service, version, "go", False, **kwargs)
 
     def node_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "nodejs", **kwargs)
+        return self._generate_code(service, version, "nodejs", False, **kwargs)
 
     def csharp_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "csharp", **kwargs)
+        return self._generate_code(service, version, "csharp", False, **kwargs)
 
-    def php_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "php", **kwargs)
+    def php_library(
+        self, service: str, version: str, clean_build: bool = False, **kwargs
+    ) -> Path:
+        return self._generate_code(service, version, "php", clean_build, **kwargs)
 
     def java_library(self, service: str, version: str, **kwargs) -> Path:
         return self._generate_code(
-            service, version, "java", tar_strip_components=0, **kwargs
+            service, version, "java", False, tar_strip_components=0, **kwargs
         )
 
     def ruby_library(self, service: str, version: str, **kwargs) -> Path:
-        return self._generate_code(service, version, "ruby", **kwargs)
+        return self._generate_code(service, version, "ruby", False, **kwargs)
 
     def _generate_code(
         self,
         service: str,
         version: str,
         language: str,
+        clean_build: bool = False,
         *,
         private: bool = False,
         discogapic: bool = False,
@@ -181,6 +184,10 @@ class GAPICBazel:
         # Let's build some stuff now.
         cwd = os.getcwd()
         os.chdir(str(api_definitions_repo))
+
+        if clean_build:
+            logger.debug("Cleaning Bazel cache")
+            shell.run(["bazel", "clean", "--expunge", "--async"])
 
         # Log which version of bazel that we're using for easier debugging.
         logger.debug("Which version of bazel will I run?")

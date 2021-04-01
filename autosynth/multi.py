@@ -147,9 +147,7 @@ def _close_issue(gh, repository: str, existing_issue: dict):
         comment="Autosynth passed, closing! :green_heart:",
     )
     gh.patch_issue(
-        repository,
-        issue_number=existing_issue["number"],
-        state="closed",
+        repository, issue_number=existing_issue["number"], state="closed",
     )
 
 
@@ -193,10 +191,7 @@ Google internal developers can see the full log [here]({sponge_log_url}).
             labels.append(api_label)
 
         issue = gh.create_issue(
-            repository,
-            title=issue_title,
-            body=issue_details,
-            labels=labels,
+            repository, title=issue_title, body=issue_details, labels=labels,
         )
         logger.info(f"Opened issue: {issue['url']}")
 
@@ -207,9 +202,7 @@ Google internal developers can see the full log [here]({sponge_log_url}).
         )
 
         gh.create_issue_comment(
-            repository,
-            issue_number=existing_issue["number"],
-            comment=comment_body,
+            repository, issue_number=existing_issue["number"], comment=comment_body,
         )
         logger.info(f"Updated issue: {existing_issue['url']}")
 
