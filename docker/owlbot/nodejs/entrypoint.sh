@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
-source /root/.nvm/nvm.sh
-set -x
+set -ex
 
 if [ -f owlbot.py ]; then
     python owlbot.py
