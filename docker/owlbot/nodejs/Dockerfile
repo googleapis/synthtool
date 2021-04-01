@@ -20,18 +20,9 @@ FROM python:3.9.2-buster
 
 WORKDIR /
 
-######################## Install nodejs.
-# Use `nvm` to bootstrap the installation of node.js and npm.
-# To learn more: https://github.com/nvm-sh/nvm
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-
-# Use the latest LTS version of nodejs.  This can change over time, but
-# should prevent the need to modify this file every year.
-# The "npm config set unsafe-perm true" is necessary because npm will refuse to perform
-# some operations if the user is running as root.  The root user of a docker image
-# doesn't have root permissions on the machine, so it's safe to execute them.
-# I learned this from https://geedew.com/What-does-unsafe-perm-in-npm-actually-do/
-RUN /bin/bash -c "source /root/.nvm/nvm.sh && nvm install --lts && npm config set unsafe-perm true"
+###################### Install nodejs.
+RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
+RUN apt-get install -y nodejs
 
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
@@ -48,10 +39,17 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
+
+# Update permissions so non-root users won't see errors.
+RUN find /synthtool -exec chmod a+r {} \;
+RUN find /synthtool -type d -exec chmod a+x {} \;
+
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
 # * google-gax is used for compiling protos.
-RUN /bin/bash -c "source /root/.nvm/nvm.sh && cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@2.10.3 typescript@3.9.9"
+RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@2.10.3 typescript@3.9.9 \
+    chalk@4.0.0 escodegen@2.0.0 espree@7.1.0 estraverse@5.1.0 glob@7.1.6 jsdoc@3.6.3 \
+    minimist@1.2.0 semver@7.1.2 tmp@0.2.1 uglify-js@3.7.7
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]

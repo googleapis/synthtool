@@ -36,5 +36,9 @@ COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
 
+# Update permissions so non-root users won't see errors.
+RUN find /synthtool -exec chmod a+r {} \;
+RUN find /synthtool -type d -exec chmod a+x {} \;
+
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/python/entrypoint.sh" ]
