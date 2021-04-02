@@ -128,6 +128,66 @@ def test_remove_method():
         )
 
 
+def test_fix_proto_license():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooProto.java", temppath / "src/FooProto.java"
+        )
+
+        java.fix_proto_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooProtoGolden.java", temppath / "src/FooProto.java"
+        )
+
+
+def test_fix_proto_license_idempotent():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooProto.java", temppath / "src/FooProto.java"
+        )
+
+        # run the header fix twice
+        java.fix_proto_headers(temppath)
+        java.fix_proto_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooProtoGolden.java", temppath / "src/FooProto.java"
+        )
+
+
+def test_fix_grpc_license():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooGrpc.java", temppath / "src/FooGrpc.java"
+        )
+
+        java.fix_grpc_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooGrpcGolden.java", temppath / "src/FooGrpc.java"
+        )
+
+
+def test_fix_grpc_license_idempotent():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooGrpc.java", temppath / "src/FooGrpc.java"
+        )
+
+        # run the header fix twice
+        java.fix_grpc_headers(temppath)
+        java.fix_grpc_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooGrpcGolden.java", temppath / "src/FooGrpc.java"
+        )
+
+
 def assert_matches_golden(expected, actual):
     matching_lines = 0
     with open(actual, "rt") as fp:
@@ -136,7 +196,7 @@ def assert_matches_golden(expected, actual):
                 matching_lines += 1
                 log_line = fp.readline()
                 expected = golden.readline()
-                assert log_line == expected
+                assert repr(log_line) == repr(expected)
                 if not log_line:
                     break
     assert matching_lines > 0
