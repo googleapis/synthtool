@@ -283,36 +283,46 @@ def owlbot_main(template_path: Optional[Path] = None):
     """
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
-    default_version = json.load(open(".repo-metadata.json", "rt"))["default_version"]
+    default_version = json.load(open(".repo-metadata.json", "rt")).get("default_version", None)
+    templates_only = json.load(open(".repo-metadata.json", "rt")).get("templates_only", None)
     staging = Path("owl-bot-staging")
     s_copy = transforms.move
-    if staging.is_dir():
-        # Collect the subdirectories of the staging directory.
-        versions = [v.name for v in staging.iterdir() if v.is_dir()]
-        # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
-
-        # Copy each version directory into the root.
-        for version in versions:
-            library = staging / version
-            _tracked_paths.add(library)
-            s_copy([library], excludes=["README.md", "package.json", "src/index.ts"])
-        # The staging directory should never be merged into the main branch.
-        shutil.rmtree(staging)
+    if templates_only:
+        # Some Node.js libraries use OwlBut purely for post-processing, see
+        # https://github.com/googleapis/nodejs-local-auth
+        common_templates = gcp.CommonTemplates(template_path)
+        templates = common_templates.node_library(
+            source_location="build/src"
+        )
+        s_copy([templates], excludes=[])
     else:
-        # Collect the subdirectories of the src directory.
-        src = Path("src")
-        versions = [v.name for v in src.iterdir() if v.is_dir()]
-        # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        if staging.is_dir():
+            # Collect the subdirectories of the staging directory.
+            versions = [v.name for v in staging.iterdir() if v.is_dir()]
+            # Reorder the versions so the default version always comes last.
+            versions = [v for v in versions if v != default_version] + [default_version]
 
-    common_templates = gcp.CommonTemplates(template_path)
-    templates = common_templates.node_library(
-        source_location="build/src", versions=versions, default_version=default_version
-    )
-    s_copy([templates], excludes=[])
+            # Copy each version directory into the root.
+            for version in versions:
+                library = staging / version
+                _tracked_paths.add(library)
+                s_copy([library], excludes=["README.md", "package.json", "src/index.ts"])
+            # The staging directory should never be merged into the main branch.
+            shutil.rmtree(staging)
+        else:
+            # Collect the subdirectories of the src directory.
+            src = Path("src")
+            versions = [v.name for v in src.iterdir() if v.is_dir()]
+            # Reorder the versions so the default version always comes last.
+            versions = [v for v in versions if v != default_version] + [default_version]
 
-    postprocess_gapic_library_hermetic()
+        common_templates = gcp.CommonTemplates(template_path)
+        templates = common_templates.node_library(
+            source_location="build/src", versions=versions, default_version=default_version
+        )
+        s_copy([templates], excludes=[])
+
+        postprocess_gapic_library_hermetic()
 
 
 if __name__ == "__main__":
