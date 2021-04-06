@@ -22,7 +22,7 @@ from typing import Dict, List, Optional
 import jinja2
 
 from synthtool import shell, _tracked_paths
-from synthtool.gcp import partials
+from synthtool.gcp import partials, deprecation_warning
 from synthtool.languages import node
 from synthtool.log import logger
 from synthtool.sources import git, templates
@@ -305,6 +305,7 @@ class CommonTemplates:
         loads additional meta information from .repo-metadata.json.
         """
         metadata["partials"] = partials.load_partials()
+        metadata["deprecation-warning"] = deprecation_warning.load_warning()
 
         # Loads repo metadata information from the default location if it
         # hasn't already been set. Some callers may have already loaded repo

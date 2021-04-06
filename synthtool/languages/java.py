@@ -20,7 +20,7 @@ import requests
 import synthtool as s
 import synthtool.gcp as gcp
 from synthtool import cache, shell
-from synthtool.gcp import common, partials, pregenerated, samples, snippets
+from synthtool.gcp import common, partials, pregenerated, samples, snippets, deprecation_warning
 from synthtool.log import logger
 from pathlib import Path
 from typing import Any, Optional, Dict, Iterable, List
@@ -468,6 +468,7 @@ def custom_templates(files: List[str], **kwargs) -> None:
     """
     kwargs["metadata"] = _common_template_metadata()
     kwargs["metadata"]["partials"] = partials.load_partials()
+    kwargs["metadata"]["deprecation-warning"] = deprecation_warning.load_warning()
     for file in files:
         template = gcp.CommonTemplates().render(file, **kwargs)
         s.copy([template])
