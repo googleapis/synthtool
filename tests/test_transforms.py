@@ -23,6 +23,7 @@ import pytest
 
 from synthtool import transforms
 from synthtool import _tracked_paths
+import pathlib
 
 
 @pytest.fixture()
@@ -202,6 +203,20 @@ def test_simple_replace(expand_path_fixtures):
     count_replaced = transforms.replace(["a.txt", "b.py"], "b..a", "GA")
     assert 1 == count_replaced
     assert "alpha text" == open("a.txt", "rt").read()
+    assert "GA python" == open("b.py", "rt").read()
+
+
+def test_replace_one(expand_path_fixtures):
+    # Lots of synth.py files pass a single string as the first argument.
+    count_replaced = transforms.replace("b.py", "b..a", "GA")
+    assert 1 == count_replaced
+    assert "GA python" == open("b.py", "rt").read()
+
+
+def test_replace_one_path(expand_path_fixtures):
+    # Lots of synth.py files pass a single Path as the first argument.
+    count_replaced = transforms.replace(pathlib.Path("b.py"), "b..a", "GA")
+    assert 1 == count_replaced
     assert "GA python" == open("b.py", "rt").read()
 
 
