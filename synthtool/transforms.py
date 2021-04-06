@@ -56,7 +56,7 @@ def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[
                 remainder = str(path.relative_to(path.anchor))
                 yield from anchor.glob(remainder)
             else:
-                yield path
+                yield from root.glob(str(path))
         else:
             yield from (
                 p

@@ -208,14 +208,14 @@ def test_simple_replace(expand_path_fixtures):
 
 def test_replace_one(expand_path_fixtures):
     # Lots of synth.py files pass a single string as the first argument.
-    count_replaced = transforms.replace("b.py", "b..a", "GA")
+    count_replaced = transforms.replace("*.py", "b..a", "GA")
     assert 1 == count_replaced
     assert "GA python" == open("b.py", "rt").read()
 
 
 def test_replace_one_path(expand_path_fixtures):
     # Lots of synth.py files pass a single Path as the first argument.
-    count_replaced = transforms.replace(pathlib.Path("b.py"), "b..a", "GA")
+    count_replaced = transforms.replace(pathlib.Path("*.py"), "b..a", "GA")
     assert 1 == count_replaced
     assert "GA python" == open("b.py", "rt").read()
 
