@@ -15,7 +15,7 @@
 # Version 0.2.0
 
 # build from the root of this repo:
-# docker build -t gcr.io/cloud-devrel-kokoro-resources/owlbot-nodejs -f docker/owlbot/nodejs/Dockerfile .
+# docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python/Dockerfile .
 FROM python:3.6.13-buster
 
 WORKDIR /

@@ -16,12 +16,25 @@
 
 import sys
 
-from synthtool.transforms import move, replace, dont_overwrite
+from synthtool.transforms import (
+    move,
+    replace,
+    dont_overwrite,
+    get_staging_dirs,
+    remove_staging_dirs,
+)
 from synthtool.log import logger
 
 copy = move
 
-__all__ = ["copy", "move", "replace", "dont_overwrite"]
+__all__ = [
+    "copy",
+    "move",
+    "replace",
+    "dont_overwrite",
+    "get_staging_dirs",
+    "remove_staging_dirs",
+]
 
 # Make sure that synthtool is being used instead of running the synth file
 # directly
