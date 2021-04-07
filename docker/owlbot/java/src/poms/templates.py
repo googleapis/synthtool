@@ -20,7 +20,6 @@ from typing import List
 root_directory = pathlib.Path(
     os.path.realpath(os.path.dirname(os.path.realpath(__file__)))
 ).parent.parent
-print(root_directory)
 jinja_env = Environment(
     loader=FileSystemLoader(str(root_directory / "templates" / "poms")),
     keep_trailing_newline=True,

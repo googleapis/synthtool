@@ -15,13 +15,10 @@
 
 set -e
 
-# create initial .gitignore if it does not yet exist
-if [ ! -f ".gitignore" ]
+
+if [ -f synth.py ]
 then
-  cp /owlbot/templates/gitignore ./.gitignore
+  python3 /owlbot/src/convert-synth.py
 fi
 
-if [ -f "owlbot.py" ]
-then
-  python3 -m synthtool owlbot.py
-fi
+python3 -m black owlbot.py

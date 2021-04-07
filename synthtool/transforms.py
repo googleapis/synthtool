@@ -14,7 +14,7 @@
 
 from pathlib import Path
 import shutil
-from typing import Callable, Iterable, Union, List
+from typing import Callable, Iterable, Union, List, Optional
 import os
 import re
 import sys
@@ -277,7 +277,7 @@ def replace(
     return count_replaced
 
 
-def get_staging_dirs(default_version: str) -> List[Path]:
+def get_staging_dirs(default_version: Optional[str] = None) -> List[Path]:
     """Returns the list of directories, one per version, copied from
     https://github.com/googleapis/googleapis-gen.
 
@@ -293,7 +293,9 @@ def get_staging_dirs(default_version: str) -> List[Path]:
         # Collect the subdirectories of the staging directory.
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        versions = [v for v in versions if v != default_version]
+        if default_version is not None:
+            versions += [default_version]
         dirs = [staging / v for v in versions]
         for dir in dirs:
             _tracked_paths.add(dir)

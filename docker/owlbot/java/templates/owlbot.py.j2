@@ -1,4 +1,3 @@
-#!/bin/bash
 # Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,15 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+import synthtool as s
+{% if should_include_templates %}from synthtool.languages import java{% endif %}
 
-# create initial .gitignore if it does not yet exist
-if [ ! -f ".gitignore" ]
-then
-  cp /owlbot/templates/gitignore ./.gitignore
-fi
 
-if [ -f "owlbot.py" ]
-then
-  python3 -m synthtool owlbot.py
-fi
+for library in s.get_staging_dirs():
+    # put any special-case replacements here
+    s.move(library)
+
+s.remove_staging_dirs()
+{% if should_include_templates %}java.common_templates({% if template_excludes %}excludes={{ template_excludes }}{% endif %}){% endif %}

@@ -15,6 +15,9 @@
 
 set -e
 
+# convert to owlbot
+/owlbot/bin/convert_to_owlbot.sh
+
 # templates
 echo "Generating templates..."
 /owlbot/bin/write_templates.sh
