@@ -18,6 +18,3 @@ set -e
 # Find all the java files relative to the current directory and format them
 # using google-java-format
 find . -name '*.java' | xargs java -jar /owlbot/google-java-format.jar --replace
-
-# Fix windows newlines
-find . -name '*.java' | xargs dos2unix
