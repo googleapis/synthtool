@@ -21,4 +21,7 @@ then
   python3 /owlbot/src/convert-synth.py
 fi
 
-python3 -m black owlbot.py
+if [ -f owlbot.py ]
+then
+  python3 -m black owlbot.py
+fi
