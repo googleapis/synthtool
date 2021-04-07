@@ -24,6 +24,7 @@ from synthtool.sources import git
 from typing import Any, Dict, List, Optional
 import logging
 import shutil
+import pathlib
 
 _REQUIRED_FIELDS = ["name", "repository"]
 _TOOLS_DIRECTORY = "/synthtool"
@@ -256,6 +257,20 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     fix_hermetic(hide_output=hide_output)
     compile_protos_hermetic(hide_output=hide_output)
     logger.debug("Post-processing completed")
+
+
+def collect_versions_from_src(default_version: str) -> List[str]:
+    """Collects the subdirectories of src; the default version is the
+    final item in the returned list.
+    """
+    parent_dir = pathlib.Path("src")
+    if not parent_dir.is_dir():
+        return []
+    # Collect the subdirectories of the directory.
+    versions = [v.name for v in parent_dir.iterdir() if v.is_dir()]
+    # Reorder the versions so the default version always comes last.
+    versions = [v for v in versions if v != default_version] + [default_version]
+    return versions
 
 
 def owlbot_main(template_path: Optional[Path] = None):
