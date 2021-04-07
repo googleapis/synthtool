@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from copy import deepcopy
 import json
 import os
+from pathlib import Path
 import re
 import shutil
-from copy import deepcopy
-from pathlib import Path
 from typing import Dict, List, Optional
-import jinja2
 
+import jinja2
 from synthtool import shell, _tracked_paths
 from synthtool.gcp import partials, deprecation_warning
 from synthtool.languages import node

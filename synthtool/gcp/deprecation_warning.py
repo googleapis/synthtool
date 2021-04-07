@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import os
-import yaml
 from pathlib import Path
 from typing import Dict, List
 
+import yaml
+
 # these are the default locations to look up
-_DEFAULT_WARNING_FILES = [".readme-deprecation-warning.yml", ".readme-deprecation-warning.yaml"]
+_DEFAULT_WARNING_FILES = [".readme-deprecation-warning.yml",
+                          ".readme-deprecation-warning.yaml"]
 
 
 def load_warning(files: List[str] = _DEFAULT_WARNING_FILES) -> Dict:

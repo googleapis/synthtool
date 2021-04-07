@@ -13,14 +13,15 @@
 # limitations under the License.
 
 import os
+from pathlib import Path
 import shutil
 import tempfile
 import xml.etree.ElementTree as ET
-import yaml
-from pathlib import Path
-from synthtool.languages import java
-import requests_mock
+
 import pytest
+import requests_mock
+from synthtool.languages import java
+import yaml
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
