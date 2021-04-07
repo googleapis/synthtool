@@ -10,6 +10,11 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 
 - [Product Documentation][product-docs]
 - [Client Library Documentation][javadocs]
+
+{% if 'deprecation-warning' in metadata and metadata['deprecation-warning']['warning'] -%}
+{{ metadata['deprecation-warning']['warning'] }}
+{% endif %}
+
 {% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
