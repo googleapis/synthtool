@@ -468,7 +468,7 @@ def custom_templates(files: List[str], **kwargs) -> None:
     """
     kwargs["metadata"] = _common_template_metadata()
     kwargs["metadata"]["partials"] = partials.load_partials()
-
+    kwargs["metadata"]["deprecation-warning"] = deprecation_warning.load_warning()
     for file in files:
         template = gcp.CommonTemplates().render(file, **kwargs)
         s.copy([template])
