@@ -26,7 +26,7 @@ def test_readme_deprecation_warning():
 
   data = deprecation_warning.load_warning()
   # should have populated introduction from partial.
-  assert "objects to users via direct download" in data["introduction"]
+  assert "objects to users via direct download" in data["warning"]
 
   os.chdir(cwd)
 
