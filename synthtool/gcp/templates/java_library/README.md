@@ -11,7 +11,7 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 - [Product Documentation][product-docs]
 - [Client Library Documentation][javadocs]
 
-% if 'partials' in metadata and metadata['partials']['deprecation_warning'] -%}
+{% if 'partials' in metadata and metadata['partials']['deprecation_warning'] -%}
 {{ metadata['partials']['deprecation_warning'] }}
 {% endif %}
 
