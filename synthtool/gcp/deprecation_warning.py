@@ -19,24 +19,26 @@ from typing import Dict, List
 import yaml
 
 # these are the default locations to look up
-_DEFAULT_WARNING_FILES = [".readme-deprecation-warning.yml",
-                          ".readme-deprecation-warning.yaml"]
+_DEFAULT_WARNING_FILES = [
+    ".readme-deprecation-warning.yml",
+    ".readme-deprecation-warning.yaml",
+]
 
 
 def load_warning(files: List[str] = _DEFAULT_WARNING_FILES) -> Dict:
-  """
+    """
   hand-crafted artisanal markdown can be provided in a .readme-deprecation-warning.yml.
   The following fields are currently supported:
 
   warning: custom warning with deprecation notice and redirect link to alternate library
   """
-  cwd_path = Path(os.getcwd())
-  warning_file = None
-  for file in files:
-    if os.path.exists(cwd_path / file):
-      warning_file = cwd_path / file
-      break
-  if not warning_file:
-    return {}
-  with open(warning_file) as f:
-    return yaml.load(f, Loader=yaml.SafeLoader)
+    cwd_path = Path(os.getcwd())
+    warning_file = None
+    for file in files:
+        if os.path.exists(cwd_path / file):
+            warning_file = cwd_path / file
+            break
+    if not warning_file:
+        return {}
+    with open(warning_file) as f:
+        return yaml.load(f, Loader=yaml.SafeLoader)

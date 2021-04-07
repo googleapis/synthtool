@@ -21,16 +21,16 @@ FIXTURES = Path(__file__).parent / "fixtures" / "node_templates" / "standard"
 
 
 def test_readme_deprecation_warning():
-  cwd = os.getcwd()
-  os.chdir(FIXTURES)
+    cwd = os.getcwd()
+    os.chdir(FIXTURES)
 
-  data = deprecation_warning.load_warning()
-  # should have populated introduction from deprecation warning.
-  assert "## This is a test warning" in data["warning"]
+    data = deprecation_warning.load_warning()
+    # should have populated introduction from deprecation warning.
+    assert "## This is a test warning" in data["warning"]
 
-  os.chdir(cwd)
+    os.chdir(cwd)
 
 
 def test_readme_deprecation_warning_not_found():
-  data = deprecation_warning.load_warning(["non-existent.yaml"])
-  assert len(data) == 0
+    data = deprecation_warning.load_warning(["non-existent.yaml"])
+    assert len(data) == 0
