@@ -279,9 +279,15 @@ class CommonTemplates:
         kwargs["metadata"] = node.template_metadata()
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
 
-        ignore_src_index = ["yes" for f in self.excludes if fnmatch.fnmatch("src/index.ts", f)]
+        ignore_src_index = [
+            "yes" for f in self.excludes if fnmatch.fnmatch("src/index.ts", f)
+        ]
         # generate root-level `src/index.ts` to export multiple versions and its default clients
-        if "versions" in kwargs and "default_version" in kwargs and not ignore_src_index:
+        if (
+            "versions" in kwargs
+            and "default_version" in kwargs
+            and not ignore_src_index
+        ):
             node.generate_index_ts(
                 versions=kwargs["versions"], default_version=kwargs["default_version"]
             )
