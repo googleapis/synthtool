@@ -23,3 +23,5 @@ export {v2, DlpServiceClient};
 export default {v2, DlpServiceClient};
 import * as protos from '../protos/protos';
 export {protos}
+
+// This file originated in the staging directory.
