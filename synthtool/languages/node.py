@@ -269,7 +269,26 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing completed")
 
 
-def owlbot_main(template_path: Optional[Path] = None):
+class Ignores:
+    """Defines which files to exclude while copying from staging directory and
+    templates during owlbot_main.
+
+    Modify in place to change.  Example:
+      ignores = Ignores
+      ignores.staging = ["README.md"]
+      ignores.templates += ["index.ts"]
+      owlbot_main(ignores=ignores)
+    """
+
+    def __init__(self):
+        self.staging: List[str] = ["README.md", "package.json", "src/index.ts"]
+        self.templates: List[str] = []
+
+
+def owlbot_main(
+    template_path: Optional[Path] = None,
+    ignores: Optional[Ignores] = None
+):
     """Copies files from staging and template directories into current working dir.
 
     When there is no owlbot.py file, run this function instead.  Also, when an
@@ -292,6 +311,9 @@ def owlbot_main(template_path: Optional[Path] = None):
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
+    if not ignores:
+        ignores = Ignores()
+
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
     default_version = json.load(open(".repo-metadata.json", "rt"))["default_version"]
@@ -307,7 +329,7 @@ def owlbot_main(template_path: Optional[Path] = None):
         for version in versions:
             library = staging / version
             _tracked_paths.add(library)
-            s_copy([library], excludes=["README.md", "package.json", "src/index.ts"])
+            s_copy([library], excludes=ignores.staging)
         # The staging directory should never be merged into the main branch.
         shutil.rmtree(staging)
     else:
@@ -321,7 +343,7 @@ def owlbot_main(template_path: Optional[Path] = None):
     templates = common_templates.node_library(
         source_location="build/src", versions=versions, default_version=default_version
     )
-    s_copy([templates], excludes=[])
+    s_copy([templates], excludes=ignores.templates)
 
     postprocess_gapic_library_hermetic()
 
