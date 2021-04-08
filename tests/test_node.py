@@ -233,3 +233,22 @@ def test_owlbot_main_with_staging(hermetic_mock):
         )
     finally:
         os.chdir(cwd)
+
+
+def test_detect_versions_src():
+    temp_dir = Path(tempfile.mkdtemp())
+    src_dir = temp_dir / "src"
+    for v in ("v1", "v2", "v3"):
+        os.makedirs(src_dir / v)
+    cwd = os.getcwd()
+    try:
+        os.chdir(temp_dir)
+        versions = node.detect_versions()
+        versions.sort()
+        assert ["v1", "v2", "v3"] == versions
+    finally:
+        os.chdir(cwd)
+
+
+
+
