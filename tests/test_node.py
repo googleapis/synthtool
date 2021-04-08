@@ -250,5 +250,13 @@ def test_detect_versions_src():
         os.chdir(cwd)
 
 
+def test_detect_versions_staging():
+    temp_dir = Path(tempfile.mkdtemp())
+    staging_dir = temp_dir / "owl-bot-staging"
+    for v in ("v1", "v2", "v3"):
+        os.makedirs(staging_dir / v)
 
+    versions = node.detect_versions(staging_dir)
+    versions.sort()
+    assert ["v1", "v2", "v3"] == versions
 
