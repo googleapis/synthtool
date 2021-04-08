@@ -65,7 +65,7 @@ def load_keyword_value(tree: ast.Module, keyword: ast.keyword) -> Union[str, Non
         return keyword.value.value
 
     logger.warning("couldn't handle keyword value")
-    logger.debug(ast.dup(keyword))
+    logger.debug(ast.dump(keyword))
     return None
 
 
