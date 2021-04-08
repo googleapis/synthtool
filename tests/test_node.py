@@ -243,7 +243,7 @@ def test_owlbot_main_with_staging(hermetic_mock, nodejs_dlp):
 
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
 def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_dlp):
-    node.owlbot_main(TEMPLATES, ignore_templates=["src/index.ts"])
+    node.owlbot_main(TEMPLATES, ignore_staging=["README.md", "package.json"], ignore_templates=["src/index.ts"])
     # confirm index.ts wasn't overwritten by template-generated index.ts.
     staging_text = open(FIXTURES / "nodejs-dlp-with-staging" / "owl-bot-staging" / "v2" / "src" / "index.ts", "rt").read()
     text = open("./src/index.ts", "rt").read()

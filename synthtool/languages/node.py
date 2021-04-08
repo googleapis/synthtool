@@ -344,6 +344,7 @@ def owlbot_main(
         versions = [v for v in versions if v != default_version] + [default_version]
 
     common_templates = gcp.CommonTemplates(template_path)
+    common_templates.excludes.extend(ignore_templates)
     templates = common_templates.node_library(
         source_location="build/src", versions=versions, default_version=default_version
     )
