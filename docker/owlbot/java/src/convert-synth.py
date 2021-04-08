@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# This script attempts to migrate simple synth.py files into owlbot
+# configuration files - `owlbot.py` and `.github/.OwlBot.yaml`. It
+# accomplishes this by trying to parse the `synth.py` file and detect
+# the proto path and artifact names to use.
+
 import ast
 import os
 import pathlib
@@ -21,6 +26,7 @@ import click
 from jinja2 import Environment, FileSystemLoader
 
 
+# setup Jinja template path for tempated owlbot.py and .github/.OwlBot.yaml
 root_directory = pathlib.Path(
     os.path.realpath(os.path.dirname(os.path.realpath(__file__)))
 ).parent
@@ -31,11 +37,28 @@ jinja_env = Environment(
 
 
 def load_keyword_value(tree: ast.Module, keyword: ast.keyword) -> Union[str, None]:
+    """Given a keyword argument AST node, try to grab the value.
+
+    If the value is a variable reference, try and find a basic assignment statement.
+    If the value is an f-string, return the f-string pattern.
+    If the value is a string constant, return the value.
+
+    Args:
+        tree (ast.Module): The parsed source tree. Used for variable lookup.
+        keyword (ast.keyword): The keyword node argument from a method call.
+
+    Returns:
+        The detected value as described above or None if we cannot parse the value.
+    """
+    # Handle f-strings
     if isinstance(keyword.value, ast.JoinedStr):
-        # value is a f-string
         return join_string(keyword.value)
+    
+    # Handle a simple variable reference
     if isinstance(keyword.value, ast.Name) and isinstance(keyword.value.ctx, ast.Load):
         return load_variable(tree, keyword.value.id)
+    
+    # Handle a string constant
     if isinstance(keyword.value, ast.NameConstant):
         return keyword.value.value
 
@@ -45,6 +68,19 @@ def load_keyword_value(tree: ast.Module, keyword: ast.keyword) -> Union[str, Non
 
 
 def load_variable(tree: ast.Module, variable_name: str) -> Union[str, None]:
+    """Given a variable name and the full AST tree, try to find a simple assignment
+    statement that sets that variable.
+
+    This only detects simple assignment statements like:
+    `variable_name = 'some constant value'`.
+
+    Args:
+        tree (ast.Module): The parsed source tree.
+        variable_name (str): The name of the variable to lookup.
+    
+    Returns:
+        The assigned variable value if detected, otherwise None.
+    """
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign) and node.targets[0].id == variable_name:
             if isinstance(node.value, ast.Str):
@@ -59,7 +95,15 @@ def load_variable(tree: ast.Module, variable_name: str) -> Union[str, None]:
 
 
 def join_string(joined_string: ast.JoinedStr) -> str:
-    print(ast.dump(joined_string))
+    """Helper to rebuild a parsed f-string AST node into the source f-string pattern.
+    
+    Args:
+        joined_string (ast.JoinedStr): The AST node that represents an f-string. It
+            contains a list of raw strings and formatted value AST nodes.
+
+    Returns:
+        The rejoined f-string value. Example: "prefix/{var_name}/postfix"
+    """
     joined = ""
     for value in joined_string.values:
         if isinstance(value, ast.Str):
@@ -69,7 +113,17 @@ def join_string(joined_string: ast.JoinedStr) -> str:
     return joined
 
 
-def render(template_name: str, output_name: str, **kwargs):
+def render(template_name: str, output_name: str, **kwargs) -> None:
+    """Helper to generate a file from a template.
+
+    Args:
+        template_name (str): The name of the template file.
+        output_name (str): The name of the output file. Can be an
+            absolute or relative path.
+    
+    Returns:
+        None
+    """
     template = jinja_env.get_template(template_name)
     t = template.stream(kwargs)
     directory = os.path.dirname(output_name)
@@ -90,6 +144,7 @@ def main(synth_file: str):
     bazel_target = None
     destination_name = None
     cloud_api = True
+    found_replacement = False
     with open(synth_file, "r") as fp:
         tree = ast.parse(fp.read())
 
@@ -107,7 +162,7 @@ def main(synth_file: str):
                                 element.s for element in keyword.value.elts
                             ]
 
-                # look for a call to java.bazel_library() to build
+                # look for a call to java.bazel_library() to extra key attributes
                 if node.func.value.id == "java" and node.func.attr == "bazel_library":
                     for keyword in node.keywords:
                         if keyword.arg == "service":
@@ -121,6 +176,7 @@ def main(synth_file: str):
                         if keyword.arg == "cloud_api":
                             cloud_api = load_keyword_value(tree, keyword)
 
+                # look for a call to java.pregenerated_library() to extra key attributes
                 if (
                     node.func.value.id == "java"
                     and node.func.attr == "pregenerated_library"
@@ -134,6 +190,15 @@ def main(synth_file: str):
                             destination_name = load_keyword_value(tree, keyword)
                         if keyword.arg == "cloud_api":
                             cloud_api = load_keyword_value(tree, keyword)
+
+                # look for a call to synthtool.replace()
+                if node.func.attr == "replace":
+                    found_replacement = True
+
+    # If the synth.py includes replacements, don't try to migrate
+    if found_replacement:
+        print(f"{synth_file} includes replacements -- aborting")
+        return
 
     if proto_path:
         proto_path = proto_path.split("{version}")[0].rstrip("/")
