@@ -233,3 +233,53 @@ def test_owlbot_main_with_staging(hermetic_mock):
         )
     finally:
         os.chdir(cwd)
+
+
+def test_detect_versions_src():
+    temp_dir = Path(tempfile.mkdtemp())
+    src_dir = temp_dir / "src"
+    for v in ("v1", "v2", "v3"):
+        os.makedirs(src_dir / v)
+    cwd = os.getcwd()
+    try:
+        os.chdir(temp_dir)
+        versions = node.detect_versions()
+        assert ["v1", "v2", "v3"] == versions
+    finally:
+        os.chdir(cwd)
+
+
+def test_detect_versions_staging():
+    temp_dir = Path(tempfile.mkdtemp())
+    staging_dir = temp_dir / "owl-bot-staging"
+    for v in ("v1", "v2", "v3"):
+        os.makedirs(staging_dir / v)
+
+    versions = node.detect_versions(staging_dir)
+    assert ["v1", "v2", "v3"] == versions
+
+
+def test_detect_versions_dir_not_found():
+    temp_dir = Path(tempfile.mkdtemp())
+
+    versions = node.detect_versions(temp_dir / "does-not-exist")
+    assert [] == versions
+
+
+def test_detect_versions_with_default():
+    temp_dir = Path(tempfile.mkdtemp())
+    src_dir = temp_dir / "src"
+    vs = ("v1", "v2", "v3")
+    for v in vs:
+        os.makedirs(src_dir / v)
+    cwd = os.getcwd()
+    try:
+        os.chdir(temp_dir)
+        versions = node.detect_versions(default_version="v1")
+        assert ["v2", "v3", "v1"] == versions
+        versions = node.detect_versions(default_version="v2")
+        assert ["v1", "v3", "v2"] == versions
+        versions = node.detect_versions(default_version="v3")
+        assert ["v1", "v2", "v3"] == versions
+    finally:
+        os.chdir(cwd)
