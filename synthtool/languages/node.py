@@ -269,8 +269,8 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing completed")
 
 
-default_ignore_staging = ["README.md", "package.json", "src/index.ts"]
-default_ignore_templates = []
+default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
+default_templates_excludes = []
 
 
 def _noop(library: Path) -> None:
@@ -279,8 +279,8 @@ def _noop(library: Path) -> None:
 
 def owlbot_main(
     template_path: Optional[Path] = None,
-    ignore_staging: Optional[List[str]] = None,
-    ignore_templates: Optional[List[str]] = None,
+    staging_excludes: Optional[List[str]] = None,
+    templates_excludes: Optional[List[str]] = None,
     patch_staging: Callable[[Path], None] = _noop,
 ) -> None:
     """Copies files from staging and template directories into current working dir.
@@ -312,10 +312,10 @@ def owlbot_main(
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
-    if ignore_staging is None:
-        ignore_staging = default_ignore_staging
-    if ignore_templates is None:
-        ignore_templates = default_ignore_templates
+    if staging_excludes is None:
+        staging_excludes = default_staging_excludes
+    if templates_excludes is None:
+        templates_excludes = default_templates_excludes
 
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
@@ -333,7 +333,7 @@ def owlbot_main(
             library = staging / version
             _tracked_paths.add(library)
             patch_staging(library)
-            s_copy([library], excludes=ignore_staging)
+            s_copy([library], excludes=staging_excludes)
         # The staging directory should never be merged into the main branch.
         shutil.rmtree(staging)
     else:
@@ -344,11 +344,11 @@ def owlbot_main(
         versions = [v for v in versions if v != default_version] + [default_version]
 
     common_templates = gcp.CommonTemplates(template_path)
-    common_templates.excludes.extend(ignore_templates)
+    common_templates.excludes.extend(templates_excludes)
     templates = common_templates.node_library(
         source_location="build/src", versions=versions, default_version=default_version
     )
-    s_copy([templates], excludes=ignore_templates)
+    s_copy([templates], excludes=templates_excludes)
 
     postprocess_gapic_library_hermetic()
 

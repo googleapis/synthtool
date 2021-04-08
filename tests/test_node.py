@@ -260,8 +260,8 @@ def test_owlbot_main_with_staging(hermetic_mock, nodejs_dlp):
 def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_dlp):
     node.owlbot_main(
         TEMPLATES,
-        ignore_staging=["README.md", "package.json"],
-        ignore_templates=["src/index.ts"],
+        staging_excludes=["README.md", "package.json"],
+        templates_excludes=["src/index.ts"],
     )
     # confirm index.ts was overwritten by staging index.ts.
     staging_text = open(
@@ -282,7 +282,7 @@ def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_dlp):
     original_text = open(
         FIXTURES / "nodejs-dlp-with-staging" / "src" / "index.ts", "rt"
     ).read()
-    node.owlbot_main(TEMPLATES, ignore_templates=["src/index.ts"])
+    node.owlbot_main(TEMPLATES, templates_excludes=["src/index.ts"])
     # confirm index.ts was overwritten by staging index.ts.
     text = open("./src/index.ts", "rt").read()
     assert original_text == text
@@ -295,8 +295,8 @@ def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_dlp):
 
     node.owlbot_main(
         TEMPLATES,
-        ignore_staging=["README.md", "package.json"],
-        ignore_templates=["src/index.ts"],
+        staging_excludes=["README.md", "package.json"],
+        templates_excludes=["src/index.ts"],
         patch_staging=patch,
     )
     # confirm index.ts was overwritten by staging index.ts.
