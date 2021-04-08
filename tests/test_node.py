@@ -12,16 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import filecmp
+import os
+import pathlib
+import shutil
+import tempfile
+from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
-import os
-from pathlib import Path
-from synthtool.languages import node
-import pathlib
-import filecmp
+
 import pytest
-import tempfile
-import shutil
+
+import synthtool as s
+from synthtool.languages import node
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
@@ -234,10 +237,20 @@ def nodejs_dlp():
 
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
 def test_owlbot_main_with_staging(hermetic_mock, nodejs_dlp):
-    original_text = open(FIXTURES / "nodejs-dlp-with-staging" / "src" / "index.ts", "rt").read()
+    original_text = open(
+        FIXTURES / "nodejs-dlp-with-staging" / "src" / "index.ts", "rt"
+    ).read()
     node.owlbot_main(TEMPLATES)
     # confirm index.ts was overwritten by template-generated index.ts.
-    staging_text = open(FIXTURES / "nodejs-dlp-with-staging" / "owl-bot-staging" / "v2" / "src" / "index.ts", "rt").read()
+    staging_text = open(
+        FIXTURES
+        / "nodejs-dlp-with-staging"
+        / "owl-bot-staging"
+        / "v2"
+        / "src"
+        / "index.ts",
+        "rt",
+    ).read()
     text = open("./src/index.ts", "rt").read()
     assert staging_text != text
     assert original_text != text
@@ -245,20 +258,61 @@ def test_owlbot_main_with_staging(hermetic_mock, nodejs_dlp):
 
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
 def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_dlp):
-    node.owlbot_main(TEMPLATES, ignore_staging=["README.md", "package.json"], ignore_templates=["src/index.ts"])
+    node.owlbot_main(
+        TEMPLATES,
+        ignore_staging=["README.md", "package.json"],
+        ignore_templates=["src/index.ts"],
+    )
     # confirm index.ts was overwritten by staging index.ts.
-    staging_text = open(FIXTURES / "nodejs-dlp-with-staging" / "owl-bot-staging" / "v2" / "src" / "index.ts", "rt").read()
+    staging_text = open(
+        FIXTURES
+        / "nodejs-dlp-with-staging"
+        / "owl-bot-staging"
+        / "v2"
+        / "src"
+        / "index.ts",
+        "rt",
+    ).read()
     text = open("./src/index.ts", "rt").read()
     assert staging_text == text
 
 
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
 def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_dlp):
-    original_text = open(FIXTURES / "nodejs-dlp-with-staging" / "src" / "index.ts", "rt").read()
+    original_text = open(
+        FIXTURES / "nodejs-dlp-with-staging" / "src" / "index.ts", "rt"
+    ).read()
     node.owlbot_main(TEMPLATES, ignore_templates=["src/index.ts"])
     # confirm index.ts was overwritten by staging index.ts.
     text = open("./src/index.ts", "rt").read()
     assert original_text == text
+
+
+@patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
+def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_dlp):
+    def patch(library: Path):
+        s.replace(library / "src" / "index.ts", "import", "export")
+
+    node.owlbot_main(
+        TEMPLATES,
+        ignore_staging=["README.md", "package.json"],
+        ignore_templates=["src/index.ts"],
+        patch_staging=patch,
+    )
+    # confirm index.ts was overwritten by staging index.ts.
+    staging_text = open(
+        FIXTURES
+        / "nodejs-dlp-with-staging"
+        / "owl-bot-staging"
+        / "v2"
+        / "src"
+        / "index.ts",
+        "rt",
+    ).read()
+    text = open("./src/index.ts", "rt").read()
+    assert "import * as v2" in staging_text
+    assert "export * as v2" not in staging_text
+    assert "export * as v2" in text
 
 
 def test_detect_versions_src():
