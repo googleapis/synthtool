@@ -269,20 +269,8 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing completed")
 
 
-class Ignores:
-    """Defines which files to exclude while copying from staging directory and
-    templates during owlbot_main.
-
-    Modify in place to change.  Example:
-      ignores = Ignores
-      ignores.staging = ["README.md"]
-      ignores.templates += ["index.ts"]
-      owlbot_main(ignores=ignores)
-    """
-
-    def __init__(self):
-        self.staging: List[str] = ["README.md", "package.json", "src/index.ts"]
-        self.templates: List[str] = []
+default_ignore_staging = ["README.md", "package.json", "src/index.ts"]
+default_ignore_templates = []
 
 
 def _noop(library: Path) -> None:
@@ -291,7 +279,8 @@ def _noop(library: Path) -> None:
 
 def owlbot_main(
     template_path: Optional[Path] = None,
-    ignores: Optional[Ignores] = None,
+    ignore_staging: Optional[List[str]] = None,
+    ignore_templates: Optional[List[str]] = None,
     patch_staging: Callable[[Path], None] = _noop,
 ) -> None:
     """Copies files from staging and template directories into current working dir.
@@ -323,8 +312,10 @@ def owlbot_main(
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
-    if not ignores:
-        ignores = Ignores()
+    if ignore_staging is None:
+        ignore_staging = default_ignore_staging
+    if ignore_templates is None:
+        ignore_templates = default_ignore_templates
 
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
@@ -342,7 +333,7 @@ def owlbot_main(
             library = staging / version
             _tracked_paths.add(library)
             patch_staging(library)
-            s_copy([library], excludes=ignores.staging)
+            s_copy([library], excludes=ignore_staging)
         # The staging directory should never be merged into the main branch.
         shutil.rmtree(staging)
     else:
@@ -356,7 +347,7 @@ def owlbot_main(
     templates = common_templates.node_library(
         source_location="build/src", versions=versions, default_version=default_version
     )
-    s_copy([templates], excludes=ignores.templates)
+    s_copy([templates], excludes=ignore_templates)
 
     postprocess_gapic_library_hermetic()
 
