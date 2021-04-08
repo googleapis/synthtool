@@ -21,7 +21,9 @@ import ast
 import os
 import pathlib
 from typing import Union
+from synthtool import logger
 
+import black
 import click
 from jinja2 import Environment, FileSystemLoader
 
@@ -62,8 +64,8 @@ def load_keyword_value(tree: ast.Module, keyword: ast.keyword) -> Union[str, Non
     if isinstance(keyword.value, ast.NameConstant):
         return keyword.value.value
 
-    print("couldn't handle keyword value")
-    print(ast.dump(keyword))
+    logger.warning("couldn't handle keyword value")
+    logger.debug(ast.dup(keyword))
     return None
 
 
@@ -90,7 +92,7 @@ def load_variable(tree: ast.Module, variable_name: str) -> Union[str, None]:
                 print(ast.dump(node.value))
                 return None
 
-    print("couldn't find variable assignment")
+    logger.warning(f"couldn't find variable assignment for {variable_name}")
     return None
 
 
@@ -137,6 +139,10 @@ def render(template_name: str, output_name: str, **kwargs) -> None:
     "--synth-file", help="Path to synth.py file", default="synth.py",
 )
 def main(synth_file: str):
+    if not os.path.isfile(synth_file):
+        logger.error(f"failed to find: {synth_file}")
+        return
+
     template_excludes = []
     should_include_templates = False
     service = None
@@ -197,7 +203,7 @@ def main(synth_file: str):
 
     # If the synth.py includes replacements, don't try to migrate
     if found_replacement:
-        print(f"{synth_file} includes replacements -- aborting")
+        logger.error(f"{synth_file} includes replacements -- aborting")
         return
 
     if proto_path:
@@ -205,7 +211,8 @@ def main(synth_file: str):
     elif bazel_target:
         proto_path = bazel_target.split("{version}")[0].rstrip("/").lstrip("/")
     else:
-        proto_path = f"google/cloud/{service}"
+        proto_path = "google/cloud/{service}"
+    proto_path = proto_path.format(service=service)
 
     artifact_name = "google-"
     if cloud_api:
@@ -215,18 +222,33 @@ def main(synth_file: str):
     else:
         artifact_name += service
 
+    logger.info("writing .github.OwlBot.yaml")
+    logger.debug(f"proto_path: {proto_path}")
+    logger.debug(f"artifact_name: {artifact_name}")
     render(
         template_name="owlbot.yaml.j2",
         output_name=".github/.OwlBot.yaml",
         proto_path=proto_path,
         artifact_name=artifact_name,
     )
+    logger.info("writing owlbot.py")
+    logger.debug(f"should_include_templates: {should_include_templates}")
+    logger.debug(f"template_excludes: {template_excludes}")
     render(
         template_name="owlbot.py.j2",
         output_name="./owlbot.py",
         should_include_templates=should_include_templates,
         template_excludes=template_excludes,
     )
+    logger.info("reformatting owlbot.py")
+    black.reformat_one(
+        src=pathlib.Path("./owlbot.py"),
+        fast=True,
+        write_back=black.WriteBack.YES,
+        mode=black.FileMode(),
+        report=black.Report(),
+    )
+    logger.info(f"removing {synth_file}")
     os.remove(synth_file)
 
 

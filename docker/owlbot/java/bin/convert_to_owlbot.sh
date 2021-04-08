@@ -18,10 +18,12 @@ set -e
 
 if [ -f synth.py ]
 then
+  # convert synth.py to owlbot.py + .github/.OwlBot.yaml
   python3 /owlbot/src/convert-synth.py
 fi
 
 if [ -f owlbot.py ]
 then
+  # if owlbot.py exists, ensure the formatting is correct
   python3 -m black owlbot.py
 fi
