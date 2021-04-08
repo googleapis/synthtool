@@ -270,7 +270,7 @@ def postprocess_gapic_library_hermetic(hide_output=False):
 
 
 default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
-default_templates_excludes = []
+default_templates_excludes: List[str] = []
 
 
 def _noop(library: Path) -> None:
