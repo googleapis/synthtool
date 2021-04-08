@@ -24,6 +24,7 @@ import tempfile
 import shutil
 
 FIXTURES = Path(__file__).parent / "fixtures"
+TEMPLATES = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
 
 
 def test_quickstart_metadata_with_snippet():
@@ -213,26 +214,32 @@ def test_owlbot_main(hermetic_mock):
     try:
         os.chdir(temp_dir / "nodejs-dlp")
         # just confirm it doesn't throw an exception.
-        node.owlbot_main(
-            Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
-        )
+        node.owlbot_main(TEMPLATES)
     finally:
         os.chdir(cwd)
 
 
-@patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
-def test_owlbot_main_with_staging(hermetic_mock):
+@pytest.fixture
+def nodejs_dlp():
+    """chdir to a copy of nodejs-dlp-with-staging."""
     temp_dir = Path(tempfile.mkdtemp())
     shutil.copytree(FIXTURES / "nodejs-dlp-with-staging", temp_dir / "nodejs-dlp")
     cwd = os.getcwd()
     try:
         os.chdir(temp_dir / "nodejs-dlp")
-        # just confirm it doesn't throw an exception.
-        node.owlbot_main(
-            Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
-        )
+        yield temp_dir / "nodejs-dlp"
     finally:
         os.chdir(cwd)
+
+
+@patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
+def test_owlbot_main_with_staging(hermetic_mock, nodejs_dlp):
+    # just confirm it doesn't throw an exception.
+    node.owlbot_main(TEMPLATES)
+    # confirm index.ts was overwritten by template-generated index.ts.
+    staging_text = open(FIXTURES / "nodejs-dlp-with-staging" / "owl-bot-staging" / "v2" / "src" / "index.ts", "rt").read()
+    text = open("./src/index.ts", "rt").read()
+    assert staging_text != text
 
 
 def test_detect_versions_src():
