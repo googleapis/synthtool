@@ -287,7 +287,8 @@ def owlbot_main(
 
     Args:
         template_path: path to template directory; omit except in tests.
-        ignores: paths to ignore when copying files from staging and from templates.
+        staging_excludes: paths to ignore when copying from the staging directory
+        templates_excludes: paths to ignore when copying generated templates
         patch_staging: callback function runs on each staging directory before
           copying it into repo root.  Add your regular expression substitution code
           here.
