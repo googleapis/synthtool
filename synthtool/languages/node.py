@@ -21,7 +21,7 @@ from synthtool import _tracked_paths, gcp, shell, transforms
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
 from synthtool.sources import git
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
 
@@ -285,11 +285,23 @@ class Ignores:
         self.templates: List[str] = []
 
 
+def _noop(library: Path) -> None:
+    pass
+
+
 def owlbot_main(
     template_path: Optional[Path] = None,
-    ignores: Optional[Ignores] = None
-):
+    ignores: Optional[Ignores] = None,
+    patch_staging: Callable[[Path], None] = _noop,
+) -> None:
     """Copies files from staging and template directories into current working dir.
+
+    Args:
+        template_path: path to template directory; omit except in tests.
+        ignores: paths to ignore when copying files from staging and from templates.
+        patch_staging: callback function runs on each staging directory before
+          copying it into repo root.  Add your regular expression substitution code
+          here.
 
     When there is no owlbot.py file, run this function instead.  Also, when an
     owlbot.py file is necessary, the first statement of owlbot.py should probably
@@ -329,6 +341,7 @@ def owlbot_main(
         for version in versions:
             library = staging / version
             _tracked_paths.add(library)
+            patch_staging(library)
             s_copy([library], excludes=ignores.staging)
         # The staging directory should never be merged into the main branch.
         shutil.rmtree(staging)
