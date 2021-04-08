@@ -260,3 +260,9 @@ def test_detect_versions_staging():
     versions.sort()
     assert ["v1", "v2", "v3"] == versions
 
+
+def test_detect_versions_dir_not_found():
+    temp_dir = Path(tempfile.mkdtemp())
+
+    versions = node.detect_versions(temp_dir / "does-not-exist")
+    assert [] == versions

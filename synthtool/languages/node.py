@@ -224,9 +224,10 @@ def detect_versions(path="./src") -> List[str]:
     With folder names mapping directly to versions.
     """
     versions = []
-    for directory in os.listdir(path):
-        if os.path.isdir(os.path.join(path, directory)):
-            versions.append(directory)
+    if os.path.isdir(path):
+        for directory in os.listdir(path):
+            if os.path.isdir(os.path.join(path, directory)):
+                versions.append(directory)
     return versions
 
 
