@@ -10,9 +10,15 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 
 - [Product Documentation][product-docs]
 - [Client Library Documentation][javadocs]
+
+{% if 'partials' in metadata and metadata['partials']['deprecation_warning'] -%}
+{{ metadata['partials']['deprecation_warning'] }}
+{% else -%}
 {% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
+{% endif %}
+
 {% endif %}
 ## Quickstart
 

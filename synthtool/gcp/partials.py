@@ -31,6 +31,8 @@ def load_partials(files: List[str] = _DEFAULT_PARTIAL_FILES) -> Dict:
         in samples/README.md.
     introduction: a more thorough introduction than metadata["description"].
     title: provide markdown to use as a custom title.
+    deprecation_warning: a warning to indicate that the library has been
+        deprecated and a pointer to an alternate option
     """
     cwd_path = Path(os.getcwd())
     partials_file = None
