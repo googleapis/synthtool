@@ -25,3 +25,5 @@ export {v2, DlpServiceClient};
 export default {v2, DlpServiceClient};
 import * as protos from '../protos/protos';
 export {protos};
+
+// This is the original index.ts found in nodejs-dlp-with-staging/src.
