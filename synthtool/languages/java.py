@@ -397,7 +397,7 @@ def _merge_common_templates(
     source_text: str, destination_text: str, file_path: Path
 ) -> str:
     # keep any existing pom.xml
-    if file_path.match("pom.xml"):
+    if (file_path.match("pom.xml") or file_path.match("sync-repo-settings.yaml")):
         logger.debug(f"existing pom file found ({file_path}) - keeping the existing")
         return destination_text
 
