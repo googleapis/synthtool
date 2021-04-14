@@ -268,3 +268,17 @@ def test_copy_with_merge_file_permissions(expand_path_fixtures):
 
     # ensure that the destination existing file now has the correct file permissions
     assert os.stat(destination_file).st_mode == os.stat(template).st_mode
+
+
+@pytest.fixture(scope="function")
+def change_test_dir():
+    cur = os.curdir
+    os.chdir(Path(__file__).parent / "fixtures/staging_dirs")
+    yield
+    os.chdir(cur)
+
+
+def test_get_staging_dirs(change_test_dir):
+    assert [path.name for path in transforms.get_staging_dirs("v1")] == ["v2", "v1"]
+    assert [path.name for path in transforms.get_staging_dirs("v2")] == ["v1", "v2"]
+    assert [path.name for path in transforms.get_staging_dirs()] == ["v1", "v2"]
