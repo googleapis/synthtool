@@ -283,7 +283,7 @@ def get_staging_dirs(default_version: Optional[str] = None) -> List[Path]:
 
     Args:
       default_version: the default version of the API. The directory for this version
-        will be the last item in the returned list.
+        will be the last item in the returned list if specified.
 
     Returns: the empty list if no file were copied.
     """
