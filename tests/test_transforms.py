@@ -273,7 +273,7 @@ def test_copy_with_merge_file_permissions(expand_path_fixtures):
 @pytest.fixture(scope="function")
 def change_test_dir():
     cur = os.curdir
-    os.chdir(Path("tests/fixtures/staging_dirs"))
+    os.chdir(Path(__file__).parent / "fixtures/staging_dirs")
     yield
     os.chdir(cur)
 
