@@ -23,6 +23,7 @@ import pytest
 
 from synthtool import transforms
 from synthtool import _tracked_paths
+import pathlib
 
 
 @pytest.fixture()
@@ -205,6 +206,20 @@ def test_simple_replace(expand_path_fixtures):
     assert "GA python" == open("b.py", "rt").read()
 
 
+def test_replace_one(expand_path_fixtures):
+    # Lots of synth.py files pass a single string as the first argument.
+    count_replaced = transforms.replace("*.py", "b..a", "GA")
+    assert 1 == count_replaced
+    assert "GA python" == open("b.py", "rt").read()
+
+
+def test_replace_one_path(expand_path_fixtures):
+    # Lots of synth.py files pass a single Path as the first argument.
+    count_replaced = transforms.replace(pathlib.Path("*.py"), "b..a", "GA")
+    assert 1 == count_replaced
+    assert "GA python" == open("b.py", "rt").read()
+
+
 def test_multi_replace(expand_path_fixtures):
     count_replaced = transforms.replace(["a.txt", "b.py"], r"(\w+)a", r"\1z")
     assert 2 == count_replaced
@@ -253,3 +268,17 @@ def test_copy_with_merge_file_permissions(expand_path_fixtures):
 
     # ensure that the destination existing file now has the correct file permissions
     assert os.stat(destination_file).st_mode == os.stat(template).st_mode
+
+
+@pytest.fixture(scope="function")
+def change_test_dir():
+    cur = os.curdir
+    os.chdir(Path(__file__).parent / "fixtures/staging_dirs")
+    yield
+    os.chdir(cur)
+
+
+def test_get_staging_dirs(change_test_dir):
+    assert [path.name for path in transforms.get_staging_dirs("v1")] == ["v2", "v1"]
+    assert [path.name for path in transforms.get_staging_dirs("v2")] == ["v1", "v2"]
+    assert [path.name for path in transforms.get_staging_dirs()] == ["v1", "v2"]

@@ -14,7 +14,7 @@
 
 from pathlib import Path
 import shutil
-from typing import Callable, Iterable, Union
+from typing import Callable, Iterable, Union, List, Optional
 import os
 import re
 import sys
@@ -56,7 +56,7 @@ def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[
                 remainder = str(path.relative_to(path.anchor))
                 yield from anchor.glob(remainder)
             else:
-                yield path
+                yield from root.glob(str(path))
         else:
             yield from (
                 p
@@ -275,3 +275,37 @@ def replace(
             "replacement is no longer needed?"
         )
     return count_replaced
+
+
+def get_staging_dirs(default_version: Optional[str] = None) -> List[Path]:
+    """Returns the list of directories, one per version, copied from
+    https://github.com/googleapis/googleapis-gen.
+
+    Args:
+      default_version: the default version of the API. The directory for this version
+        will be the last item in the returned list if specified.
+
+    Returns: the empty list if no file were copied.
+    """
+
+    staging = Path("owl-bot-staging")
+    if staging.is_dir():
+        # Collect the subdirectories of the staging directory.
+        versions = [v.name for v in staging.iterdir() if v.is_dir()]
+        # Reorder the versions so the default version always comes last.
+        versions = [v for v in versions if v != default_version]
+        if default_version is not None:
+            versions += [default_version]
+        dirs = [staging / v for v in versions]
+        for dir in dirs:
+            _tracked_paths.add(dir)
+        return dirs
+    else:
+        return []
+
+
+def remove_staging_dirs():
+    """Removes all the staging directories."""
+    staging = Path("owl-bot-staging")
+    if staging.is_dir():
+        shutil.rmtree(staging)
