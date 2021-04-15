@@ -28,5 +28,5 @@ fi
 
 if [ -f "owlbot.py" ]
 then
-  python3 -m synthtool owlbot.py
+  python3 owlbot.py
 fi
