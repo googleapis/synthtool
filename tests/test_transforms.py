@@ -281,4 +281,4 @@ def change_test_dir():
 def test_get_staging_dirs(change_test_dir):
     assert [path.name for path in transforms.get_staging_dirs("v1")] == ["v2", "v1"]
     assert [path.name for path in transforms.get_staging_dirs("v2")] == ["v1", "v2"]
-    assert [path.name for path in transforms.get_staging_dirs()] == ["v1", "v2"]
+    assert [path.name for path in transforms.get_staging_dirs()].sort() == ["v1", "v2"]
