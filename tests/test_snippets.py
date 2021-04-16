@@ -136,3 +136,19 @@ def test_non_existent_file():
     assert len(all_snippets) == 0
 
     os.chdir(cwd)
+
+
+def test_reused_tag():
+    cwd = os.getcwd()
+    os.chdir(FIXTURES)
+
+    all_snippets = snippets.all_snippets_from_file("snippets/reused.js")
+    assert len(all_snippets) == 1
+    assert (
+        all_snippets["snippet_1"]
+        == """var line1 = 1;
+var line3 = 3;
+"""
+    )
+
+    os.chdir(cwd)
