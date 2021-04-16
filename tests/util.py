@@ -11,9 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import contextlib
 import subprocess
+import os
 import pathlib
 import sys
+import typing
 
 
 def make_working_repo(working_dir: str):
@@ -82,3 +86,13 @@ with open("synth.metadata", "wt") as f:
     )
 
     return text
+
+
+@contextlib.contextmanager
+def chdir(path: typing.Union[pathlib.Path, str]):
+    old_cwd = os.getcwd()
+    os.chdir(str(path))
+    try:
+        yield
+    finally:
+        os.chdir(old_cwd)
