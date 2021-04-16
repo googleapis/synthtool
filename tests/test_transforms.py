@@ -267,7 +267,7 @@ def test_copy_with_merge_file_permissions(expand_path_fixtures):
         assert os.stat(destination_file).st_mode == os.stat(template).st_mode
 
 
-def test_get_staging_dirs(change_test_dir):
+def test_get_staging_dirs():
     with util.chdir(Path(__file__).parent / "fixtures/staging_dirs"):
         assert [path.name for path in transforms.get_staging_dirs("v1")] == ["v2", "v1"]
         assert [path.name for path in transforms.get_staging_dirs("v2")] == ["v1", "v2"]
