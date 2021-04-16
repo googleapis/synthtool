@@ -16,7 +16,9 @@ import contextlib
 import subprocess
 import os
 import pathlib
+import shutil
 import sys
+import tempfile
 import typing
 
 
@@ -93,6 +95,14 @@ def chdir(path: typing.Union[pathlib.Path, str]):
     old_cwd = os.getcwd()
     os.chdir(str(path))
     try:
-        yield
+        yield pathlib.Path(path)
     finally:
         os.chdir(old_cwd)
+
+
+@contextlib.contextmanager
+def copied_fixtures_dir(source: pathlib.Path):
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(source, pathlib.Path(tempdir) / "workspace")
+        with chdir(workdir):
+            yield workdir

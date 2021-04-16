@@ -183,9 +183,7 @@ class TestPostprocess(TestCase):
 # present in the docker image but absent while running unit tests.
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
 def test_owlbot_main(hermetic_mock):
-    temp_dir = Path(tempfile.mkdtemp())
-    shutil.copytree(FIXTURES / "nodejs-dlp", temp_dir / "nodejs-dlp")
-    with util.chdir(temp_dir / "nodejs-dlp"):
+    with util.copied_fixtures_dir(FIXTURES / "nodejs-dlp"):
         # just confirm it doesn't throw an exception.
         node.owlbot_main(TEMPLATES)
 
@@ -193,14 +191,8 @@ def test_owlbot_main(hermetic_mock):
 @pytest.fixture
 def nodejs_dlp():
     """chdir to a copy of nodejs-dlp-with-staging."""
-    temp_dir = Path(tempfile.mkdtemp())
-    shutil.copytree(FIXTURES / "nodejs-dlp-with-staging", temp_dir / "nodejs-dlp")
-    cwd = os.getcwd()
-    try:
-        os.chdir(temp_dir / "nodejs-dlp")
-        yield temp_dir / "nodejs-dlp"
-    finally:
-        os.chdir(cwd)
+    with util.copied_fixtures_dir(FIXTURES / "nodejs-dlp-with-staging") as workdir:
+        yield workdir
 
 
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
