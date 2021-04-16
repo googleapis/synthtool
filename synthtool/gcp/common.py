@@ -20,6 +20,7 @@ import fnmatch
 from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
+import requests
 import jinja2
 
 from synthtool import shell, _tracked_paths
@@ -58,6 +59,11 @@ class CommonTemplates:
                 self.excludes.append("samples/README.md")
 
         t = templates.TemplateGroup(self._template_root / directory, self.excludes)
+
+        if "repository" in kwargs["metadata"] and "repo" in kwargs["metadata"]:
+            kwargs["metadata"]["repo"]["default_branch"] = _get_default_branch_name(
+                kwargs["metadata"]["repository"]
+            )
 
         # TODO: migrate to python.py once old sample gen is deprecated
         if directory == "python_samples":
@@ -361,3 +367,10 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
         with open(metadata_file) as f:
             return json.load(f)
     return {}
+
+
+def _get_default_branch_name(repository_name: str) -> str:
+    github_req = requests.get(f"https://api.github.com/repos/{repository_name}")
+    github_req.raise_for_status()
+
+    return github_req.json()["default_branch"]
