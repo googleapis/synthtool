@@ -55,9 +55,7 @@ def test_get_default_branch():
 def test_py_samples_clientlib():
     path_to_gen = MOCK / "client_library"
     with util.copied_fixtures_dir(path_to_gen) as workdir:
-        sample_files = common.py_samples(
-            unit_cov_level=97, cov_level=99, samples=True
-        )
+        sample_files = common.py_samples(unit_cov_level=97, cov_level=99, samples=True)
         s.move(sample_files, excludes=["noxfile.py"])
         assert os.path.isfile(workdir / "samples" / "README.md")
 
@@ -65,9 +63,7 @@ def test_py_samples_clientlib():
 def test_py_samples_custom_path():
     path_to_gen = MOCK / "custom_path"
     with util.copied_fixtures_dir(path_to_gen) as workdir:
-        sample_files = common.py_samples(
-            unit_cov_level=97, cov_level=99, samples=True
-        )
+        sample_files = common.py_samples(unit_cov_level=97, cov_level=99, samples=True)
         s.move(sample_files, excludes=["noxfile.py"])
         assert os.path.isfile(workdir / "custom_samples_folder" / "README.md")
 
@@ -87,9 +83,7 @@ def test_py_samples_custom_path_DNE():
 def test_py_samples_samples_folder():
     path_to_gen = MOCK / "samples_folder"
     with util.copied_fixtures_dir(path_to_gen) as workdir:
-        sample_files = common.py_samples(
-            unit_cov_level=97, cov_level=99, samples=True
-        )
+        sample_files = common.py_samples(unit_cov_level=97, cov_level=99, samples=True)
         s.move(sample_files, excludes=["noxfile.py"])
         assert os.path.isfile(workdir / "README.md")
 
@@ -97,9 +91,7 @@ def test_py_samples_samples_folder():
 def test_py_samples_override():
     path_to_gen = MOCK / "override_path"
     with util.copied_fixtures_dir(path_to_gen) as workdir:
-        sample_files = common.py_samples(
-            unit_cov_level=97, cov_level=99, samples=True
-        )
+        sample_files = common.py_samples(unit_cov_level=97, cov_level=99, samples=True)
         for path in sample_files:
             s.move(path, excludes=["noxfile.py"])
         assert os.path.isfile(workdir / "README.md")
@@ -109,9 +101,7 @@ def test_py_samples_override():
 def test_py_samples_override_content():
     path_to_gen = MOCK / "override_path"
     with util.copied_fixtures_dir(path_to_gen) as workdir:
-        sample_files = common.py_samples(
-            unit_cov_level=97, cov_level=99, samples=True
-        )
+        sample_files = common.py_samples(unit_cov_level=97, cov_level=99, samples=True)
         for path in sample_files:
             s.move(path, excludes=["noxfile.py"])
         os.chdir(workdir)
@@ -129,9 +119,7 @@ def test_py_samples_override_content():
 def test_py_samples_multiple_override():
     path_to_gen = MOCK / "multiple_override_path"
     with util.copied_fixtures_dir(path_to_gen) as workdir:
-        sample_files = common.py_samples(
-            unit_cov_level=97, cov_level=99, samples=True
-        )
+        sample_files = common.py_samples(unit_cov_level=97, cov_level=99, samples=True)
         for path in sample_files:
             s.move(path, excludes=["noxfile.py"])
         assert os.path.isfile(workdir / "README.md")
@@ -147,9 +135,7 @@ def test_py_samples_multiple_override():
 def test_py_samples_multiple_override_content():
     path_to_gen = MOCK / "multiple_override_path"
     with util.copied_fixtures_dir(path_to_gen) as workdir:
-        sample_files = common.py_samples(
-            unit_cov_level=97, cov_level=99, samples=True
-        )
+        sample_files = common.py_samples(unit_cov_level=97, cov_level=99, samples=True)
         for path in sample_files:
             s.move(path, excludes=["noxfile.py"])
         os.chdir(workdir / "override")
