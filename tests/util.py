@@ -92,6 +92,14 @@ with open("synth.metadata", "wt") as f:
 
 @contextlib.contextmanager
 def chdir(path: typing.Union[pathlib.Path, str]):
+    """Context Manager to change the current working directory and restore the
+    previous working directory after completing the context.
+
+    Args:
+        path (pathlib.Path, str) - The new current working directory.
+    Yields:
+        pathlib.Path - The new current working directory.
+    """
     old_cwd = os.getcwd()
     os.chdir(str(path))
     try:
@@ -102,6 +110,15 @@ def chdir(path: typing.Union[pathlib.Path, str]):
 
 @contextlib.contextmanager
 def copied_fixtures_dir(source: pathlib.Path):
+    """Context Manager to copy from a fixtures directory into a new temporary directory
+    and change the current working directory to that copy. Restores the original
+    current working directory after completing the context.
+
+    Args:
+        source (pathlib.Path) - The directory to copy.
+    Yields:
+        pathlib.Path - The temporary directory with the copied contents.
+    """
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(source, pathlib.Path(tempdir) / "workspace")
         with chdir(workdir):
