@@ -15,25 +15,22 @@
 import os
 from pathlib import Path
 from synthtool.gcp import samples
+from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_load_node_samples():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES / "node_templates" / "standard")
+    with util.chdir(FIXTURES / "node_templates" / "standard"):
+        all_samples = samples.all_samples(["samples/*.js"])
 
-    all_samples = samples.all_samples(["samples/*.js"])
+        # should have loaded samples.
+        assert all_samples[3]["title"] == "Requester Pays"
+        assert all_samples[3]["file"] == "samples/requesterPays.js"
+        assert len(all_samples) == 4
 
-    # should have loaded samples.
-    assert all_samples[3]["title"] == "Requester Pays"
-    assert all_samples[3]["file"] == "samples/requesterPays.js"
-    assert len(all_samples) == 4
-
-    # should have included additional meta-information provided.
-    assert all_samples[0]["title"] == "Metadata Example 1"
-    assert all_samples[0]["usage"] == "node hello-world.js"
-    assert all_samples[1]["title"] == "Metadata Example 2"
-    assert all_samples[1]["usage"] == "node goodnight-moon.js"
-
-    os.chdir(cwd)
+        # should have included additional meta-information provided.
+        assert all_samples[0]["title"] == "Metadata Example 1"
+        assert all_samples[0]["usage"] == "node hello-world.js"
+        assert all_samples[1]["title"] == "Metadata Example 2"
+        assert all_samples[1]["usage"] == "node goodnight-moon.js"

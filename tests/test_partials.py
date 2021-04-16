@@ -16,19 +16,16 @@ import os
 from pathlib import Path
 
 from synthtool.gcp import partials
+from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures" / "node_templates" / "standard"
 
 
 def test_readme_partials():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
-
-    data = partials.load_partials()
-    # should have populated introduction from partial.
-    assert "objects to users via direct download" in data["introduction"]
-
-    os.chdir(cwd)
+    with util.chdir(FIXTURES):
+        data = partials.load_partials()
+        # should have populated introduction from partial.
+        assert "objects to users via direct download" in data["introduction"]
 
 
 def test_readme_partials_not_found():

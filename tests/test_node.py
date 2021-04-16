@@ -25,62 +25,51 @@ import pytest
 
 import synthtool as s
 from synthtool.languages import node
+from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
 
 
 def test_quickstart_metadata_with_snippet():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES / "node_templates" / "standard")
+    with util.chdir(FIXTURES / "node_templates" / "standard"):
+        metadata = node.template_metadata()
 
-    metadata = node.template_metadata()
+        # should have loaded the special quickstart sample (ignoring header).
+        assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
+        assert "limitations under the License" not in metadata["quickstart"]
 
-    # should have loaded the special quickstart sample (ignoring header).
-    assert "ID of the Cloud Bigtable instance" in metadata["quickstart"]
-    assert "limitations under the License" not in metadata["quickstart"]
+        assert isinstance(metadata["samples"], list)
 
-    assert isinstance(metadata["samples"], list)
-
-    # should have a link to the quickstart in the samples
-    sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))
-    assert "samples/quickstart.js" in sample_names
-
-    os.chdir(cwd)
+        # should have a link to the quickstart in the samples
+        sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))
+        assert "samples/quickstart.js" in sample_names
 
 
 def test_quickstart_metadata_without_snippet():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES / "node_templates" / "no_quickstart_snippet")
+    with util.chdir(FIXTURES / "node_templates" / "no_quickstart_snippet"):
+        metadata = node.template_metadata()
 
-    metadata = node.template_metadata()
+        # should not have populated the quickstart for the README
+        assert not metadata["quickstart"]
 
-    # should not have populated the quickstart for the README
-    assert not metadata["quickstart"]
+        assert isinstance(metadata["samples"], list)
 
-    assert isinstance(metadata["samples"], list)
-
-    # should not have a link to the quickstart in the samples
-    sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))
-    assert "samples/quickstart.js" not in sample_names
-
-    os.chdir(cwd)
+        # should not have a link to the quickstart in the samples
+        sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))
+        assert "samples/quickstart.js" not in sample_names
 
 
 def test_no_samples():
-    cwd = os.getcwd()
     # use a non-nodejs template directory
-    os.chdir(FIXTURES)
+    with util.chdir(FIXTURES):
+        metadata = node.template_metadata()
 
-    metadata = node.template_metadata()
+        # should not have populated the quickstart for the README
+        assert not metadata["quickstart"]
 
-    # should not have populated the quickstart for the README
-    assert not metadata["quickstart"]
-
-    assert isinstance(metadata["samples"], list)
-    assert len(metadata["samples"]) == 0
-
-    os.chdir(cwd)
+        assert isinstance(metadata["samples"], list)
+        assert len(metadata["samples"]) == 0
 
 
 def test_extract_clients_no_file():
@@ -117,10 +106,8 @@ def test_extract_multiple_clients():
 
 
 def test_generate_index_ts():
-    cwd = os.getcwd()
-    try:
-        # use a non-nodejs template directory
-        os.chdir(FIXTURES / "node_templates" / "index_samples")
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
         node.generate_index_ts(["v1", "v1beta1"], "v1")
         generated_index_path = pathlib.Path(
             FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
@@ -129,43 +116,30 @@ def test_generate_index_ts():
             FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
         )
         assert filecmp.cmp(generated_index_path, sample_index_path)
-    finally:
-        os.chdir(cwd)
 
 
 def test_generate_index_ts_empty_versions():
-    cwd = os.getcwd()
-    try:
-        # use a non-nodejs template directory
-        os.chdir(FIXTURES / "node_templates" / "index_samples")
-
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
         with pytest.raises(AttributeError) as err:
             node.generate_index_ts([], "v1")
             assert "can't be empty" in err.args
-    finally:
-        os.chdir(cwd)
 
 
 def test_generate_index_ts_invalid_default_version():
-    cwd = os.getcwd()
-    try:
-        # use a non-nodejs template directory
-        os.chdir(FIXTURES / "node_templates" / "index_samples")
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
         versions = ["v1beta1"]
         default_version = "v1"
 
         with pytest.raises(AttributeError) as err:
             node.generate_index_ts(versions, default_version)
             assert f"must contain default version {default_version}" in err.args
-    finally:
-        os.chdir(cwd)
 
 
 def test_generate_index_ts_no_clients():
-    cwd = os.getcwd()
-    try:
-        # use a non-nodejs template directory
-        os.chdir(FIXTURES / "node_templates" / "index_samples")
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
         versions = ["v1", "v1beta1", "invalid_index"]
         default_version = "invalid_index"
 
@@ -175,8 +149,6 @@ def test_generate_index_ts_no_clients():
                 f"No client is exported in the default version's({default_version}) index.ts ."
                 in err.args
             )
-    finally:
-        os.chdir(cwd)
 
 
 class TestPostprocess(TestCase):
@@ -213,13 +185,9 @@ class TestPostprocess(TestCase):
 def test_owlbot_main(hermetic_mock):
     temp_dir = Path(tempfile.mkdtemp())
     shutil.copytree(FIXTURES / "nodejs-dlp", temp_dir / "nodejs-dlp")
-    cwd = os.getcwd()
-    try:
-        os.chdir(temp_dir / "nodejs-dlp")
+    with util.chdir(temp_dir / "nodejs-dlp"):
         # just confirm it doesn't throw an exception.
         node.owlbot_main(TEMPLATES)
-    finally:
-        os.chdir(cwd)
 
 
 @pytest.fixture
@@ -320,13 +288,10 @@ def test_detect_versions_src():
     src_dir = temp_dir / "src"
     for v in ("v1", "v2", "v3"):
         os.makedirs(src_dir / v)
-    cwd = os.getcwd()
-    try:
-        os.chdir(temp_dir)
+
+    with util.chdir(temp_dir):
         versions = node.detect_versions()
         assert ["v1", "v2", "v3"] == versions
-    finally:
-        os.chdir(cwd)
 
 
 def test_detect_versions_staging():
@@ -352,14 +317,11 @@ def test_detect_versions_with_default():
     vs = ("v1", "v2", "v3")
     for v in vs:
         os.makedirs(src_dir / v)
-    cwd = os.getcwd()
-    try:
-        os.chdir(temp_dir)
+
+    with util.chdir(temp_dir):
         versions = node.detect_versions(default_version="v1")
         assert ["v2", "v3", "v1"] == versions
         versions = node.detect_versions(default_version="v2")
         assert ["v1", "v3", "v2"] == versions
         versions = node.detect_versions(default_version="v3")
         assert ["v1", "v2", "v3"] == versions
-    finally:
-        os.chdir(cwd)

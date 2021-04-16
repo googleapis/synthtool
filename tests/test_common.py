@@ -20,6 +20,7 @@ import requests_mock
 import synthtool as s
 import tempfile
 import shutil
+from . import util
 
 
 MOCK = Path(__file__).parent / "generationmock"
@@ -55,34 +56,24 @@ def test_py_samples_clientlib():
     path_to_gen = MOCK / "client_library"
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(path_to_gen, Path(tempdir) / "client_library")
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
             s.move(sample_files, excludes=["noxfile.py"])
             assert os.path.isfile(workdir / "samples" / "README.md")
-        finally:
-            os.chdir(cwd)
 
 
 def test_py_samples_custom_path():
     path_to_gen = MOCK / "custom_path"
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(path_to_gen, Path(tempdir) / "custom_path")
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
             s.move(sample_files, excludes=["noxfile.py"])
             assert os.path.isfile(workdir / "custom_samples_folder" / "README.md")
-        finally:
-            os.chdir(cwd)
 
 
 def test_py_samples_custom_path_DNE():
@@ -90,10 +81,7 @@ def test_py_samples_custom_path_DNE():
         workdir = shutil.copytree(
             MOCK / "custom_path_DNE", Path(tempdir) / "custom_path_DNE"
         )
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             with raises(Exception) as e:
                 os.chdir(workdir / "custom_path_DNE")
                 sample_files = common.py_samples(
@@ -101,35 +89,25 @@ def test_py_samples_custom_path_DNE():
                 )
                 s.move(sample_files, excludes=["noxfile.py"])
                 assert "'nonexistent_folder' does not exist" in str(e.value)
-        finally:
-            os.chdir(cwd)
 
 
 def test_py_samples_samples_folder():
     path_to_gen = MOCK / "samples_folder"
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(path_to_gen, Path(tempdir) / "samples_folder")
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
             s.move(sample_files, excludes=["noxfile.py"])
             assert os.path.isfile(workdir / "README.md")
-        finally:
-            os.chdir(cwd)
 
 
 def test_py_samples_override():
     path_to_gen = MOCK / "override_path"
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(path_to_gen, Path(tempdir) / "override_path")
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
@@ -137,18 +115,13 @@ def test_py_samples_override():
                 s.move(path, excludes=["noxfile.py"])
             assert os.path.isfile(workdir / "README.md")
             assert os.path.isfile(workdir / "override" / "README.md")
-        finally:
-            os.chdir(cwd)
 
 
 def test_py_samples_override_content():
     path_to_gen = MOCK / "override_path"
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(path_to_gen, Path(tempdir) / "override_path")
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
@@ -164,18 +137,13 @@ def test_py_samples_override_content():
                 result = f.read()
                 assert "Hello World" not in result
                 assert "Quickstart" in result
-        finally:
-            os.chdir(cwd)
 
 
 def test_py_samples_multiple_override():
     path_to_gen = MOCK / "multiple_override_path"
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(path_to_gen, Path(tempdir) / "multiple_override_path")
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
@@ -189,18 +157,13 @@ def test_py_samples_multiple_override():
                 result = f.read()
                 assert "Hello World" in result
                 assert "Hello Synthtool" in result
-        finally:
-            os.chdir(cwd)
 
 
 def test_py_samples_multiple_override_content():
     path_to_gen = MOCK / "multiple_override_path"
     with tempfile.TemporaryDirectory() as tempdir:
         workdir = shutil.copytree(path_to_gen, Path(tempdir) / "multiple_override_path")
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             sample_files = common.py_samples(
                 unit_cov_level=97, cov_level=99, samples=True
             )
@@ -220,5 +183,3 @@ def test_py_samples_multiple_override_content():
             with open("README.md") as f:
                 result = f.read()
                 assert "Last Example" in result
-        finally:
-            os.chdir(cwd)

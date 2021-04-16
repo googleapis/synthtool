@@ -21,6 +21,7 @@ from pathlib import Path
 from synthtool.languages import java
 import requests_mock
 import pytest
+from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
@@ -94,10 +95,7 @@ def test_working_common_templates():
         workdir = shutil.copytree(
             FIXTURES / "java_templates" / "standard", Path(tempdir) / "standard"
         )
-        cwd = os.getcwd()
-        os.chdir(workdir)
-
-        try:
+        with util.chdir(workdir):
             # generate the common templates
             java.common_templates(template_path=TEMPLATES_PATH)
             assert os.path.isfile("renovate.json")
@@ -111,8 +109,6 @@ def test_working_common_templates():
                         assert_valid_xml(os.path.join(dirpath, file))
                     elif ext == ".yaml" or ext == ".yml":
                         assert_valid_yaml(os.path.join(dirpath, file))
-        finally:
-            os.chdir(cwd)
 
 
 def test_remove_method():
