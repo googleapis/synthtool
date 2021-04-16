@@ -25,7 +25,7 @@
 {% endif %}
 
 A comprehensive list of changes in each version may be found in
-[the CHANGELOG](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/CHANGELOG.md).
+[the CHANGELOG](https://github.com/{{ metadata['repo']['repo'] }}/blob/{{metadata['repo']['default_branch']}}/CHANGELOG.md).
 
 {% if metadata['repo']['client_documentation'] %}* [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]{% endif %}
 {% if metadata['repo']['product_documentation'] %}* [{{ metadata['repo']['name_pretty'] }} Documentation][product-docs]{% endif %}
@@ -75,11 +75,11 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 {% if metadata['samples']|length %}
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory. Each sample's `README.md` has instructions for running its sample.
+Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/{{ metadata['repo']['default_branch'] }}/samples) directory. Each sample's `README.md` has instructions for running its sample.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }},samples/README.md) |
+{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/{{ metadata['repo']['default_branch'] }}/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }},samples/README.md) |
 {% endfor %}
 {% endif %}
 {% if metadata['repo']['client_documentation'] %}
@@ -141,7 +141,7 @@ More Information: [Google Cloud Platform Launch Stages][launch_stages]
 
 ## Contributing
 
-Contributions welcome! See the [Contributing Guide](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/CONTRIBUTING.md).
+Contributions welcome! See the [Contributing Guide](https://github.com/{{ metadata['repo']['repo'] }}/blob/{{ metadata['repo']['default_branch'] }}/CONTRIBUTING.md).
 
 Please note that this `README.md`, the `samples/README.md`,
 and a variety of configuration files in this repository (including `.nycrc` and `tsconfig.json`)
@@ -153,7 +153,7 @@ to its template in this
 
 Apache Version 2.0
 
-See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/master/LICENSE)
+See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/{{ metadata['repo']['default_branch'] }}/LICENSE)
 
 {% if metadata['repo']['client_documentation'] %}[client-docs]: {{ metadata['repo']['client_documentation'] }}{% endif %}
 {% if metadata['repo']['product_documentation'] %}[product-docs]: {{ metadata['repo']['product_documentation'] }}{% endif %}
