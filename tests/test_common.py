@@ -18,8 +18,6 @@ from pytest import raises
 import os
 import requests_mock
 import synthtool as s
-import tempfile
-import shutil
 from . import util
 
 

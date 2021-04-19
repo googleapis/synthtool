@@ -15,7 +15,6 @@
 import filecmp
 import os
 import pathlib
-import shutil
 import tempfile
 from pathlib import Path
 from unittest import TestCase

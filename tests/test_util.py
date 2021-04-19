@@ -40,7 +40,7 @@ def test_chdir_restores_on_error():
     cwd = os.getcwd()
     try:
         with util.chdir(TEST_PATH):
-            raise "foo"
-    except:
+            raise RuntimeError("foo")
+    except RuntimeError:
         pass
     assert os.getcwd() == cwd
