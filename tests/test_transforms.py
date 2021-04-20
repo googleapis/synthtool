@@ -23,6 +23,7 @@ import pytest
 
 from synthtool import transforms
 from synthtool import _tracked_paths
+from . import util
 import pathlib
 
 
@@ -165,15 +166,11 @@ def test__dont_overwrite():
         Path(dirb).joinpath("README.md").write_text("chickens")
         Path(dirb).joinpath("code.py").write_text("# chickens")
 
-        cwd = os.getcwd()
-        os.chdir(dirb)
-        try:
+        with util.chdir(dirb):
             _tracked_paths.add(dira)
             transforms.move(
                 [Path(dira).joinpath("*")], merge=transforms.dont_overwrite(["*.md"])
             )
-        finally:
-            os.chdir(cwd)
 
         # Should not have been overwritten.
         assert "chickens" == Path(dirb).joinpath("README.md").read_text()
@@ -189,14 +186,14 @@ def test__move_to_dest_subdir(expand_path_fixtures):
     dest = Path(str(expand_path_fixtures / normpath("dest/dira")))
 
     # Move to a different dir to make sure that move doesn't depend on the cwd
-    os.chdir(tempfile.gettempdir())
-    transforms.move(tmp_path / "dira", dest, excludes=["f.py"])
+    with util.chdir(tempfile.gettempdir()):
+        transforms.move(tmp_path / "dira", dest, excludes=["f.py"])
 
-    os.chdir(str(tmp_path))
-    files = sorted([str(x) for x in transforms._expand_paths("**/*", root="dest")])
+    with util.chdir(str(tmp_path)):
+        files = sorted([str(x) for x in transforms._expand_paths("**/*", root="dest")])
 
-    # Assert destination does not contain dira/f.py (excluded)
-    assert files == [normpath("dest/dira"), normpath("dest/dira/e.txt")]
+        # Assert destination does not contain dira/f.py (excluded)
+        assert files == [normpath("dest/dira"), normpath("dest/dira/e.txt")]
 
 
 def test_simple_replace(expand_path_fixtures):
@@ -258,27 +255,20 @@ def test_copy_with_merge_file_permissions(expand_path_fixtures):
     assert os.stat(destination_file).st_mode != os.stat(template).st_mode
 
     # Move to a different dir to make sure that move doesn't depend on the cwd
-    os.chdir(tempfile.gettempdir())
-    transforms.move(
-        sources=template_directory / "executable_file.sh",
-        destination=expand_path_fixtures / "executable_file.sh",
-        merge=_noop_merge,
-        required=True,
-    )
+    with util.chdir(tempfile.gettempdir()):
+        transforms.move(
+            sources=template_directory / "executable_file.sh",
+            destination=expand_path_fixtures / "executable_file.sh",
+            merge=_noop_merge,
+            required=True,
+        )
 
-    # ensure that the destination existing file now has the correct file permissions
-    assert os.stat(destination_file).st_mode == os.stat(template).st_mode
-
-
-@pytest.fixture(scope="function")
-def change_test_dir():
-    cur = os.curdir
-    os.chdir(Path(__file__).parent / "fixtures/staging_dirs")
-    yield
-    os.chdir(cur)
+        # ensure that the destination existing file now has the correct file permissions
+        assert os.stat(destination_file).st_mode == os.stat(template).st_mode
 
 
-def test_get_staging_dirs(change_test_dir):
-    assert [path.name for path in transforms.get_staging_dirs("v1")] == ["v2", "v1"]
-    assert [path.name for path in transforms.get_staging_dirs("v2")] == ["v1", "v2"]
-    assert [path.name for path in transforms.get_staging_dirs()] == ["v1", "v2"]
+def test_get_staging_dirs():
+    with util.chdir(Path(__file__).parent / "fixtures/staging_dirs"):
+        assert [path.name for path in transforms.get_staging_dirs("v1")] == ["v2", "v1"]
+        assert [path.name for path in transforms.get_staging_dirs("v2")] == ["v1", "v2"]
+        assert [path.name for path in transforms.get_staging_dirs()] == ["v1", "v2"]
