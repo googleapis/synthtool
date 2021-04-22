@@ -25,3 +25,8 @@ if [ -f "synth.py" ]
 then
   python3 /owlbot/src/convert-synthtool-templates.py --synth-file=synth.py
 fi
+
+if [ -f "owlbot.py" ]
+then
+  python3 owlbot.py
+fi

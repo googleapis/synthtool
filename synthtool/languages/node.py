@@ -21,7 +21,7 @@ from synthtool import _tracked_paths, gcp, shell, transforms
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
 from synthtool.sources import git
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
 
@@ -269,8 +269,29 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing completed")
 
 
-def owlbot_main(template_path: Optional[Path] = None):
+default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
+default_templates_excludes: List[str] = []
+
+
+def _noop(library: Path) -> None:
+    pass
+
+
+def owlbot_main(
+    template_path: Optional[Path] = None,
+    staging_excludes: Optional[List[str]] = None,
+    templates_excludes: Optional[List[str]] = None,
+    patch_staging: Callable[[Path], None] = _noop,
+) -> None:
     """Copies files from staging and template directories into current working dir.
+
+    Args:
+        template_path: path to template directory; omit except in tests.
+        staging_excludes: paths to ignore when copying from the staging directory
+        templates_excludes: paths to ignore when copying generated templates
+        patch_staging: callback function runs on each staging directory before
+          copying it into repo root.  Add your regular expression substitution code
+          here.
 
     When there is no owlbot.py file, run this function instead.  Also, when an
     owlbot.py file is necessary, the first statement of owlbot.py should probably
@@ -292,6 +313,11 @@ def owlbot_main(template_path: Optional[Path] = None):
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
+    if staging_excludes is None:
+        staging_excludes = default_staging_excludes
+    if templates_excludes is None:
+        templates_excludes = default_templates_excludes
+
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
     default_version = json.load(open(".repo-metadata.json", "rt"))["default_version"]
@@ -307,7 +333,8 @@ def owlbot_main(template_path: Optional[Path] = None):
         for version in versions:
             library = staging / version
             _tracked_paths.add(library)
-            s_copy([library], excludes=["README.md", "package.json", "src/index.ts"])
+            patch_staging(library)
+            s_copy([library], excludes=staging_excludes)
         # The staging directory should never be merged into the main branch.
         shutil.rmtree(staging)
     else:
@@ -318,10 +345,11 @@ def owlbot_main(template_path: Optional[Path] = None):
         versions = [v for v in versions if v != default_version] + [default_version]
 
     common_templates = gcp.CommonTemplates(template_path)
+    common_templates.excludes.extend(templates_excludes)
     templates = common_templates.node_library(
         source_location="build/src", versions=versions, default_version=default_version
     )
-    s_copy([templates], excludes=[])
+    s_copy([templates], excludes=templates_excludes)
 
     postprocess_gapic_library_hermetic()
 
