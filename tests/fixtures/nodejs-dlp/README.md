@@ -6,10 +6,6 @@
 
 [![release level](https://img.shields.io/badge/release%20level-general%20availability%20%28GA%29-brightgreen.svg?style=flat)](https://cloud.google.com/terms/launch-stages)
 [![npm version](https://img.shields.io/npm/v/@google-cloud/dlp.svg)](https://www.npmjs.org/package/@google-cloud/dlp)
-[![codecov](https://img.shields.io/codecov/c/github/googleapis/nodejs-dlp/master.svg?style=flat)](https://codecov.io/gh/googleapis/nodejs-dlp)
-
-
-
 
 The [Data Loss Prevention API](https://cloud.google.com/dlp/docs/) provides programmatic access to a
 powerful detection engine for personally identifiable information and other privacy-sensitive
