@@ -1,0 +1,9 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [ 'build',
+      '-t', 'gcr.io/$PROJECT_ID/owlbot-python:$SHORT_SHA',
+      '-t', 'gcr.io/$PROJECT_ID/owlbot-python:latest',
+      '-f', 'docker/owlbot/python/Dockerfile', '.' ]
+images:
+  - 'gcr.io/$PROJECT_ID/owlbot-python:$SHORT_SHA'
+  - 'gcr.io/$PROJECT_ID/owlbot-python:latest'

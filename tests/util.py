@@ -11,9 +11,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import contextlib
 import subprocess
+import os
 import pathlib
+import shutil
 import sys
+import tempfile
+import typing
 
 
 def make_working_repo(working_dir: str):
@@ -82,3 +88,38 @@ with open("synth.metadata", "wt") as f:
     )
 
     return text
+
+
+@contextlib.contextmanager
+def chdir(path: typing.Union[pathlib.Path, str]):
+    """Context Manager to change the current working directory and restore the
+    previous working directory after completing the context.
+
+    Args:
+        path (pathlib.Path, str) - The new current working directory.
+    Yields:
+        pathlib.Path - The new current working directory.
+    """
+    old_cwd = os.getcwd()
+    os.chdir(str(path))
+    try:
+        yield pathlib.Path(path)
+    finally:
+        os.chdir(old_cwd)
+
+
+@contextlib.contextmanager
+def copied_fixtures_dir(source: pathlib.Path):
+    """Context Manager to copy from a fixtures directory into a new temporary directory
+    and change the current working directory to that copy. Restores the original
+    current working directory after completing the context.
+
+    Args:
+        source (pathlib.Path) - The directory to copy.
+    Yields:
+        pathlib.Path - The temporary directory with the copied contents.
+    """
+    with tempfile.TemporaryDirectory() as tempdir:
+        workdir = shutil.copytree(source, pathlib.Path(tempdir) / "workspace")
+        with chdir(workdir):
+            yield workdir

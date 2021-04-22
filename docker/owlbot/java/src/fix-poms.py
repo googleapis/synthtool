@@ -286,8 +286,8 @@ def main():
         existing_modules[parent_artifact_id] = module.Module(
             group_id=group_id,
             artifact_id=parent_artifact_id,
-            version="0.0.1-SNAPSHOT",
-            release_version="0.0.0",
+            version=main_module.version,
+            release_version=main_module.release_version,
         )
     parent_module = existing_modules[parent_artifact_id]
 

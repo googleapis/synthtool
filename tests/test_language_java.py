@@ -21,6 +21,7 @@ from pathlib import Path
 from synthtool.languages import java
 import requests_mock
 import pytest
+from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
@@ -90,29 +91,20 @@ def test_working_common_templates():
             except yaml.YAMLError:
                 pytest.fail(f"unable to parse YAML: {file}")
 
-    with tempfile.TemporaryDirectory() as tempdir:
-        workdir = shutil.copytree(
-            FIXTURES / "java_templates" / "standard", Path(tempdir) / "standard"
-        )
-        cwd = os.getcwd()
-        os.chdir(workdir)
+    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "standard") as workdir:
+        # generate the common templates
+        java.common_templates(template_path=TEMPLATES_PATH)
+        assert os.path.isfile("renovate.json")
 
-        try:
-            # generate the common templates
-            java.common_templates(template_path=TEMPLATES_PATH)
-            assert os.path.isfile("renovate.json")
-
-            # lint xml, yaml files
-            # use os.walk because glob ignores hidden directories
-            for (dirpath, _, filenames) in os.walk(tempdir):
-                for file in filenames:
-                    (_, ext) = os.path.splitext(file)
-                    if ext == ".xml":
-                        assert_valid_xml(os.path.join(dirpath, file))
-                    elif ext == ".yaml" or ext == ".yml":
-                        assert_valid_yaml(os.path.join(dirpath, file))
-        finally:
-            os.chdir(cwd)
+        # lint xml, yaml files
+        # use os.walk because glob ignores hidden directories
+        for (dirpath, _, filenames) in os.walk(workdir):
+            for file in filenames:
+                (_, ext) = os.path.splitext(file)
+                if ext == ".xml":
+                    assert_valid_xml(os.path.join(dirpath, file))
+                elif ext == ".yaml" or ext == ".yml":
+                    assert_valid_yaml(os.path.join(dirpath, file))
 
 
 def test_remove_method():
@@ -128,6 +120,66 @@ def test_remove_method():
         )
 
 
+def test_fix_proto_license():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooProto.java", temppath / "src/FooProto.java"
+        )
+
+        java.fix_proto_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooProtoGolden.java", temppath / "src/FooProto.java"
+        )
+
+
+def test_fix_proto_license_idempotent():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooProto.java", temppath / "src/FooProto.java"
+        )
+
+        # run the header fix twice
+        java.fix_proto_headers(temppath)
+        java.fix_proto_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooProtoGolden.java", temppath / "src/FooProto.java"
+        )
+
+
+def test_fix_grpc_license():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooGrpc.java", temppath / "src/FooGrpc.java"
+        )
+
+        java.fix_grpc_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooGrpcGolden.java", temppath / "src/FooGrpc.java"
+        )
+
+
+def test_fix_grpc_license_idempotent():
+    with tempfile.TemporaryDirectory() as tempdir:
+        temppath = Path(tempdir).resolve()
+        os.mkdir(temppath / "src")
+        shutil.copyfile(
+            "tests/testdata/src/foo/FooGrpc.java", temppath / "src/FooGrpc.java"
+        )
+
+        # run the header fix twice
+        java.fix_grpc_headers(temppath)
+        java.fix_grpc_headers(temppath)
+        assert_matches_golden(
+            "tests/testdata/FooGrpcGolden.java", temppath / "src/FooGrpc.java"
+        )
+
+
 def assert_matches_golden(expected, actual):
     matching_lines = 0
     with open(actual, "rt") as fp:
@@ -136,7 +188,7 @@ def assert_matches_golden(expected, actual):
                 matching_lines += 1
                 log_line = fp.readline()
                 expected = golden.readline()
-                assert log_line == expected
+                assert repr(log_line) == repr(expected)
                 if not log_line:
                     break
     assert matching_lines > 0

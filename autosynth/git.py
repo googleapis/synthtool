@@ -145,7 +145,9 @@ def patch_merge(
     """
     with open(patch_file_path, "wb+") as patch_file:
         executor.check_call(
-            ["git", "diff", "--binary", "HEAD", branch_name], stdout=patch_file, cwd=git_repo_dir
+            ["git", "diff", "--binary", "HEAD", branch_name],
+            stdout=patch_file,
+            cwd=git_repo_dir,
         )
     if os.stat(patch_file_path).st_size:
         executor.check_call(["git", "apply", patch_file_path], cwd=git_repo_dir)

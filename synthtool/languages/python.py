@@ -14,15 +14,15 @@
 
 import re
 import sys
-import yaml
 from pathlib import Path
 from typing import Any, Dict
 
+import yaml
+
 import synthtool as s
-from synthtool import log, shell, _tracked_paths
+from synthtool import _tracked_paths, log, shell
 from synthtool.gcp.common import CommonTemplates
 from synthtool.sources import templates
-
 
 PathOrStr = templates.PathOrStr
 
