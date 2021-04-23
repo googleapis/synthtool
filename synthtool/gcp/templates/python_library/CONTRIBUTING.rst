@@ -160,7 +160,7 @@ Running System Tests
   auth settings and change some configuration in your project to
   run all the tests.
 
-- System tests will be run against an actual project. You should use local credentials from gcloud when possible. See [Best practices for application authentication](https://cloud.google.com/docs/authentication/best-practices-applications#local_development_and_testing_with_the). Some tests require a service account. For those tests see [Authenticating as a service account](https://cloud.google.com/docs/authentication/production).
+- System tests will be run against an actual project. You should use local credentials from gcloud when possible. See `Best practices for application authentication <https://cloud.google.com/docs/authentication/best-practices-applications#local_development_and_testing_with_the>`__. Some tests require a service account. For those tests see `Authenticating as a service account <https://cloud.google.com/docs/authentication/production>`__.
 
 *************
 Test Coverage
