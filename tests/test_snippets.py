@@ -12,32 +12,30 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 from pathlib import Path
 from synthtool.gcp import snippets
+from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
 def test_load_snippets():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
+    with util.chdir(FIXTURES):
+        all_snippets = snippets.all_snippets(["snippets/*.java", "snippets/*.xml"])
+        assert len(all_snippets) == 2
 
-    all_snippets = snippets.all_snippets(["snippets/*.java", "snippets/*.xml"])
-    assert len(all_snippets) == 2
-
-    assert (
-        all_snippets["monitoring_quickstart"]
-        == """
+        assert (
+            all_snippets["monitoring_quickstart"]
+            == """
 public class MonitoringQuickstartSample {
     // do something
 }
 
 """
-    )
-    assert (
-        all_snippets["monitoring_install_with_bom"]
-        == """<dependencyManagement>
+        )
+        assert (
+            all_snippets["monitoring_install_with_bom"]
+            == """<dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>com.google.cloud</groupId>
@@ -56,99 +54,77 @@ public class MonitoringQuickstartSample {
   </dependency>
 </dependencies>
 """
-    )
-
-    os.chdir(cwd)
+        )
 
 
 def test_interleaving_snippets():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
+    with util.chdir(FIXTURES):
+        all_snippets = snippets.all_snippets_from_file("snippets/interleaved.js")
+        assert len(all_snippets) == 2
 
-    all_snippets = snippets.all_snippets_from_file("snippets/interleaved.js")
-    assert len(all_snippets) == 2
-
-    assert (
-        all_snippets["interleave_snippet_1"]
-        == """var line1 = 1;
+        assert (
+            all_snippets["interleave_snippet_1"]
+            == """var line1 = 1;
 var line2 = 2;
 """
-    )
+        )
 
-    assert (
-        all_snippets["interleave_snippet_2"]
-        == """var line2 = 2;
+        assert (
+            all_snippets["interleave_snippet_2"]
+            == """var line2 = 2;
 var line3 = 3;
 """
-    )
-
-    os.chdir(cwd)
+        )
 
 
 def test_interleaving_snippets_with_exclude():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
+    with util.chdir(FIXTURES):
+        all_snippets = snippets.all_snippets_from_file(
+            "snippets/interleaved_with_exclude.js"
+        )
+        assert len(all_snippets) == 1
 
-    all_snippets = snippets.all_snippets_from_file(
-        "snippets/interleaved_with_exclude.js"
-    )
-    assert len(all_snippets) == 1
-
-    assert (
-        all_snippets["snippet_1"]
-        == """var line1 = 1;
+        assert (
+            all_snippets["snippet_1"]
+            == """var line1 = 1;
 var line3 = 3;
 """
-    )
-
-    os.chdir(cwd)
+        )
 
 
 def test_nested_snippets():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
+    with util.chdir(FIXTURES):
+        all_snippets = snippets.all_snippets_from_file("snippets/nested.js")
+        assert len(all_snippets) == 2
 
-    all_snippets = snippets.all_snippets_from_file("snippets/nested.js")
-    assert len(all_snippets) == 2
-
-    assert (
-        all_snippets["nested_snippet_1"]
-        == """var line1 = 1;
+        assert (
+            all_snippets["nested_snippet_1"]
+            == """var line1 = 1;
 var line2 = 2;
 var line3 = 3;
 """
-    )
+        )
 
-    assert (
-        all_snippets["nested_snippet_2"]
-        == """var line2 = 2;
+        assert (
+            all_snippets["nested_snippet_2"]
+            == """var line2 = 2;
 """
-    )
-
-    os.chdir(cwd)
+        )
 
 
 def test_non_existent_file():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
-
-    all_snippets = snippets.all_snippets_from_file("snippets/non-existent-file.foo")
-    assert len(all_snippets) == 0
-
-    os.chdir(cwd)
+    with util.chdir(FIXTURES):
+        all_snippets = snippets.all_snippets_from_file("snippets/non-existent-file.foo")
+        assert len(all_snippets) == 0
 
 
 def test_reused_tag():
-    cwd = os.getcwd()
-    os.chdir(FIXTURES)
-
-    all_snippets = snippets.all_snippets_from_file("snippets/reused.js")
-    assert len(all_snippets) == 1
-    assert (
-        all_snippets["snippet_1"]
-        == """var line1 = 1;
+    with util.chdir(FIXTURES):
+        all_snippets = snippets.all_snippets_from_file("snippets/reused.js")
+        assert len(all_snippets) == 1
+        assert (
+            all_snippets["snippet_1"]
+            == """var line1 = 1;
 var line3 = 3;
 """
-    )
-
-    os.chdir(cwd)
+        )
