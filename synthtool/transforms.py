@@ -279,7 +279,8 @@ def replace(
 
 def get_staging_dirs(default_version: Optional[str] = None) -> List[Path]:
     """Returns the list of directories, one per version, copied from
-    https://github.com/googleapis/googleapis-gen.
+    https://github.com/googleapis/googleapis-gen. Will return in lexical sorting
+    order with the exception of the default_version which will be last (if specified).
 
     Args:
       default_version: the default version of the API. The directory for this version
@@ -294,6 +295,7 @@ def get_staging_dirs(default_version: Optional[str] = None) -> List[Path]:
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
         versions = [v for v in versions if v != default_version]
+        versions.sort()
         if default_version is not None:
             versions += [default_version]
         dirs = [staging / v for v in versions]

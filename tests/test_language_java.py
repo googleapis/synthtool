@@ -21,6 +21,7 @@ from pathlib import Path
 from synthtool.languages import java
 import requests_mock
 import pytest
+from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
@@ -90,29 +91,20 @@ def test_working_common_templates():
             except yaml.YAMLError:
                 pytest.fail(f"unable to parse YAML: {file}")
 
-    with tempfile.TemporaryDirectory() as tempdir:
-        workdir = shutil.copytree(
-            FIXTURES / "java_templates" / "standard", Path(tempdir) / "standard"
-        )
-        cwd = os.getcwd()
-        os.chdir(workdir)
+    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "standard") as workdir:
+        # generate the common templates
+        java.common_templates(template_path=TEMPLATES_PATH)
+        assert os.path.isfile("renovate.json")
 
-        try:
-            # generate the common templates
-            java.common_templates(template_path=TEMPLATES_PATH)
-            assert os.path.isfile("renovate.json")
-
-            # lint xml, yaml files
-            # use os.walk because glob ignores hidden directories
-            for (dirpath, _, filenames) in os.walk(tempdir):
-                for file in filenames:
-                    (_, ext) = os.path.splitext(file)
-                    if ext == ".xml":
-                        assert_valid_xml(os.path.join(dirpath, file))
-                    elif ext == ".yaml" or ext == ".yml":
-                        assert_valid_yaml(os.path.join(dirpath, file))
-        finally:
-            os.chdir(cwd)
+        # lint xml, yaml files
+        # use os.walk because glob ignores hidden directories
+        for (dirpath, _, filenames) in os.walk(workdir):
+            for file in filenames:
+                (_, ext) = os.path.splitext(file)
+                if ext == ".xml":
+                    assert_valid_xml(os.path.join(dirpath, file))
+                elif ext == ".yaml" or ext == ".yml":
+                    assert_valid_yaml(os.path.join(dirpath, file))
 
 
 def test_remove_method():
