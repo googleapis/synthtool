@@ -397,7 +397,11 @@ def _merge_common_templates(
     source_text: str, destination_text: str, file_path: Path
 ) -> str:
     # keep any existing pom.xml
-    if file_path.match("pom.xml") or file_path.match("sync-repo-settings.yaml"):
+    if (
+        file_path.match("pom.xml")
+        or file_path.match("sync-repo-settings.yaml")
+        or file_path.match("release-please.yml")
+    ):
         logger.debug(f"existing pom file found ({file_path}) - keeping the existing")
         return destination_text
 
@@ -417,7 +421,8 @@ def _common_template_metadata() -> Dict[str, Any]:
         )
 
     metadata["latest_bom_version"] = latest_maven_version(
-        group_id="com.google.cloud", artifact_id="libraries-bom",
+        group_id="com.google.cloud",
+        artifact_id="libraries-bom",
     )
 
     metadata["samples"] = samples.all_samples(["samples/**/src/main/java/**/*.java"])
