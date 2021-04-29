@@ -181,13 +181,17 @@ def test_fix_grpc_license_idempotent():
 
 
 def test_release_please_handle_releases():
-    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "release-please-update") as workdir:
+    with util.copied_fixtures_dir(
+        FIXTURES / "java_templates" / "release-please-update"
+    ) as workdir:
         # generate the common templates
         java.common_templates(template_path=TEMPLATES_PATH)
 
         assert os.path.isfile(".github/release-please.yml")
         with open(".github/release-please.yml") as fp:
-            assert fp.read() == """branches:
+            assert (
+                fp.read()
+                == """branches:
 - branch: 1.127.12-sp
   bumpMinorPreMajor: true
   handleGHRelease: true
@@ -196,6 +200,7 @@ bumpMinorPreMajor: true
 handleGHRelease: true
 releaseType: java-yoshi
 """
+            )
 
 
 def assert_matches_golden(expected, actual):
