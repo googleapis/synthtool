@@ -18,7 +18,7 @@ set -eo pipefail
 cd synthtool
 
 # Upgrade the NPM version
-sudo npm install -g npm
+npm install -g npm
 
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
