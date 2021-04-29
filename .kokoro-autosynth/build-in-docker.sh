@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright 2020 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,32 +15,15 @@
 
 set -eo pipefail
 
-cd ${KOKORO_ARTIFACTS_DIR}/github/synthtool
-
-# Upgrade the NPM version
-sudo npm install -g npm
-
-# Install bazel 3.0.0
-mkdir -p ~/bazel
-curl -L https://github.com/bazelbuild/bazel/releases/download/3.0.0/bazel-3.0.0-linux-x86_64 -o ~/bazel/bazel
-chmod +x ~/bazel/bazel
-export PATH=~/bazel:"$PATH"
-
-# Kokoro currently uses 3.6.1, but upgrade to 3.6.9 as virtualenv creation
-# is broken in 3.6.1 with virtualenv>=20.0.0
-cd /home/kbuilder/.pyenv/plugins/python-build/../.. && git pull && cd -
-pyenv install 3.6.9
-pyenv global 3.6.9
-
-# use python installed by pyenv and use python3.6 specific set of dependencies
-echo "build --extra_toolchains=@gapic_generator_python//:pyenv3_toolchain --define=gapic_gen_python=3.6" > $HOME/.bazelrc
-echo "test --extra_toolchains=@gapic_generator_python//:pyenv3_toolchain --define=gapic_gen_python=3.6" >> $HOME/.bazelrc
+# Use synthtool templates at this commit hash
+export SYNTHTOOL_TEMPLATES="`pwd`/synthtool/gcp/templates"
 
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
 
 # Add github to known hosts.
-ssh-keyscan github.com >> ~/.ssh/known_hosts
+mkdir "$HOME/.ssh"
+ssh-keyscan github.com >> "$HOME/.ssh/known_hosts"
 
 # Kokoro exposes this as a file, but the scripts expect just a plain variable.
 export GITHUB_TOKEN=$(cat ${KOKORO_KEYSTORE_DIR}/73713_yoshi-automation-github-key)
