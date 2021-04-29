@@ -400,6 +400,10 @@ def _merge_release_please(destination_text: str):
         return destination_text
 
     config["handleGHRelease"] = True
+
+    if "branches" in config:
+        for branch in config["branches"]:
+            branch["handleGHRelease"] = True
     return yaml.dump(config)
 
 
