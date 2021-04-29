@@ -17,8 +17,10 @@ set -eo pipefail
 
 cd synthtool
 
-# Upgrade the NPM version
-npm install -g npm
+# Install NPM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+nvm install node
+nvm install-latest-npm
 
 # Disable buffering, so that the logs stream through.
 export PYTHONUNBUFFERED=1
