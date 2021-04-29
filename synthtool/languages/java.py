@@ -17,6 +17,7 @@ import os
 import xml.etree.ElementTree as ET
 import re
 import requests
+import yaml
 import synthtool as s
 import synthtool.gcp as gcp
 from synthtool import cache, shell
@@ -393,17 +394,25 @@ def pregenerated_library(
     return library
 
 
+def _merge_release_please(destination_text: str):
+    config = yaml.safe_load(destination_text)
+    if "handleGHRelease" in config:
+        return destination_text
+
+    config["handleGHRelease"] = True
+    return yaml.dump(config)
+
+
 def _merge_common_templates(
     source_text: str, destination_text: str, file_path: Path
 ) -> str:
     # keep any existing pom.xml
-    if (
-        file_path.match("pom.xml")
-        or file_path.match("sync-repo-settings.yaml")
-        or file_path.match("release-please.yml")
-    ):
+    if file_path.match("pom.xml") or file_path.match("sync-repo-settings.yaml"):
         logger.debug(f"existing pom file found ({file_path}) - keeping the existing")
         return destination_text
+
+    if file_path.match("release-please.yml"):
+        return _merge_release_please(destination_text)
 
     # by default return the newly generated content
     return source_text
