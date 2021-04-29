@@ -17,7 +17,7 @@ set -eo pipefail
 
 # Use synthtool templates at this commit hash
 # TODO: remove me
-export SYNTHTOOL_TEMPLATES="$HOME/synthtool/gcp/templates"
+export SYNTHTOOL_TEMPLATES="`pwd`/synthtool/gcp/templates"
 ls $SYNTHTOOL_TEMPLATES
 
 # Install NPM
