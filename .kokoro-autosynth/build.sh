@@ -15,7 +15,7 @@
 
 set -eo pipefail
 
-cd github/synthtool
+cd synthtool
 
 # Upgrade the NPM version
 sudo npm install -g npm
