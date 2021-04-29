@@ -16,9 +16,7 @@
 set -eo pipefail
 
 # Use synthtool templates at this commit hash
-# TODO: remove me
 export SYNTHTOOL_TEMPLATES="`pwd`/synthtool/gcp/templates"
-ls $SYNTHTOOL_TEMPLATES
 
 # Install NPM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
