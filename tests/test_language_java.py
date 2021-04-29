@@ -183,7 +183,7 @@ def test_fix_grpc_license_idempotent():
 def test_release_please_handle_releases():
     with util.copied_fixtures_dir(
         FIXTURES / "java_templates" / "release-please-update"
-    ) as workdir:
+    ):
         # generate the common templates
         java.common_templates(template_path=TEMPLATES_PATH)
 
