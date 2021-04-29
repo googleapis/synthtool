@@ -19,6 +19,7 @@ cd synthtool
 
 # Install NPM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+export NVM_DIR="$HOME/.nvm"
 nvm install node
 nvm install-latest-npm
 
