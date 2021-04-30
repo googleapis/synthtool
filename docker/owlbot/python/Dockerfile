@@ -16,7 +16,7 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python/Dockerfile .
-FROM python:3.6.13-buster
+FROM python:3.8.9-buster
 
 WORKDIR /
 
