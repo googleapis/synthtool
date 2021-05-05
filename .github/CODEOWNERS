@@ -13,3 +13,8 @@ synthtool/gcp/templates/ruby_library/          @googleapis/yoshi-ruby
 synthtool/tests/test_language_java.py          @googleapis/yoshi-java
 synthtool/tests/test_python_library.py         @googleapis/yoshi-python
 synthtool/tests/test_ruby.py                   @googleapis/yoshi-ruby
+
+# Assign owlbot images to language teams
+docker/owlbot/java                             @googleapis/yoshi-java
+docker/owlbot/nodejs                           @googleapis/yoshi-nodejs
+docker/owlbot/python                           @googleapis/yoshi-python

@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - $default-branch
+      - {{metadata['repo']['default_branch']}}
   pull_request:
 name: ci
 jobs:
