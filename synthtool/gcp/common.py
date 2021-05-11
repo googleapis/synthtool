@@ -370,7 +370,6 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
 
 
 def _get_default_branch_name(repository_name: str) -> str:
-    github_req = requests.get(f"https://api.github.com/repos/{repository_name}")
-    github_req.raise_for_status()
-
-    return github_req.json()["default_branch"]
+    # This default should be switched to "main" once we've migrated
+    # the majority of our repositories:
+    return os.getenv("DEFAULT_BRANCH", "master")
