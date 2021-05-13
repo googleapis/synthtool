@@ -29,6 +29,8 @@ export PATH=~/bazel:"$PATH"
 # Kokoro currently uses 3.6.1, but upgrade to 3.6.9 as virtualenv creation
 # is broken in 3.6.1 with virtualenv>=20.0.0
 cd /home/kbuilder/.pyenv/plugins/python-build/../.. && git pull && cd -
+# See b/187701234
+git checkout 783870759566a77d09b426e0305bc0993a522765
 pyenv install 3.6.9
 pyenv global 3.6.9
 
