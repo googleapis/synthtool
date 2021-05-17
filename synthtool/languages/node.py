@@ -277,6 +277,17 @@ def _noop(library: Path) -> None:
     pass
 
 
+def default_version_last(versions: List[str]) -> List[str]:
+    """Returns a new list with the default version last.
+
+    Reads the contents of .repo-metadata.json to determine the default version.
+    """
+    if not versions:
+        return []
+    default_version = json.load(open(".repo-metadata.json", "rt"))["default_version"]
+    return [v for v in versions if v != default_version] + [default_version]
+
+
 def owlbot_main(
     template_path: Optional[Path] = None,
     staging_excludes: Optional[List[str]] = None,
@@ -320,14 +331,12 @@ def owlbot_main(
 
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
-    default_version = json.load(open(".repo-metadata.json", "rt"))["default_version"]
     staging = Path("owl-bot-staging")
     s_copy = transforms.move
     if staging.is_dir():
         # Collect the subdirectories of the staging directory.
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
-        # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        versions = default_version_last(versions)
 
         # Copy each version directory into the root.
         for version in versions:
@@ -341,14 +350,17 @@ def owlbot_main(
         # Collect the subdirectories of the src directory.
         src = Path("src")
         versions = [v.name for v in src.iterdir() if v.is_dir()]
-        # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        versions = default_version_last(versions)
 
     common_templates = gcp.CommonTemplates(template_path)
     common_templates.excludes.extend(templates_excludes)
-    templates = common_templates.node_library(
-        source_location="build/src", versions=versions, default_version=default_version
-    )
+
+    if versions:
+        templates = common_templates.node_library(
+            source_location="build/src", versions=versions, default_version=versions[-1]
+        )
+    else:
+        templates = common_templates.node_library(source_location="build/src")
     s_copy([templates], excludes=templates_excludes)
 
     postprocess_gapic_library_hermetic()
