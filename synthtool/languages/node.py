@@ -320,14 +320,20 @@ def owlbot_main(
 
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
-    default_version = json.load(open(".repo-metadata.json", "rt"))["default_version"]
+    default_version = json.load(open(".repo-metadata.json", "rt")).get(
+        "default_version"
+    )
     staging = Path("owl-bot-staging")
     s_copy = transforms.move
-    if staging.is_dir():
+    if default_version is None:
+        logger.info("No default version found in .repo-metadata.json.  Ok.")
+    elif staging.is_dir():
+        logger.info(f"Copying files from staging directory ${staging}.")
         # Collect the subdirectories of the staging directory.
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
         versions = [v for v in versions if v != default_version] + [default_version]
+        logger.info(f"Collected versions ${versions} from ${staging}")
 
         # Copy each version directory into the root.
         for version in versions:
@@ -343,12 +349,19 @@ def owlbot_main(
         versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
         versions = [v for v in versions if v != default_version] + [default_version]
+        logger.info(f"Collected versions ${versions} from ${src}")
 
     common_templates = gcp.CommonTemplates(template_path)
     common_templates.excludes.extend(templates_excludes)
-    templates = common_templates.node_library(
-        source_location="build/src", versions=versions, default_version=default_version
-    )
+    if default_version:
+        templates = common_templates.node_library(
+            source_location="build/src",
+            versions=versions,
+            default_version=default_version,
+        )
+    else:
+        templates = common_templates.node_library(source_location="build/src")
+
     s_copy([templates], excludes=templates_excludes)
 
     postprocess_gapic_library_hermetic()
