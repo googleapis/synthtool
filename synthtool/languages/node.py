@@ -359,12 +359,11 @@ def owlbot_main(
             versions=versions,
             default_version=default_version,
         )
+        s_copy([templates], excludes=templates_excludes)
+        postprocess_gapic_library_hermetic()
     else:
         templates = common_templates.node_library(source_location="build/src")
-
-    s_copy([templates], excludes=templates_excludes)
-
-    postprocess_gapic_library_hermetic()
+        s_copy([templates], excludes=templates_excludes)
 
 
 if __name__ == "__main__":
