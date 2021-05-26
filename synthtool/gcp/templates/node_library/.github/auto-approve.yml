@@ -1,0 +1,12 @@
+rules:
+- author: "release-please[bot]"
+  title: "^chore: release"
+  changedFiles:
+  - "package\\.json$"
+  - "CHANGELOG\\.md$"
+  maxFiles: 3
+- author: "gcf-owl-bot[bot]"
+  title: "^chore"
+  changedFiles:
+  - "^\\.OwlBot\\.lock\\.yaml$"
+  maxFiles: 1
