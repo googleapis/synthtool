@@ -129,23 +129,24 @@ def update_cloud_pom(
     # insert proto dependencies after protobuf-java
     for m in proto_modules:
         if m.artifact_id not in existing_dependencies:
-            print(f"adding new dependency {m.artifact_id}")
-            new_dependency = etree.Element(
-                "{http://maven.apache.org/POM/4.0.0}dependency"
-            )
-            new_dependency.tail = "\n    "
-            new_dependency.text = "\n      "
-            new_group = etree.Element("{http://maven.apache.org/POM/4.0.0}groupId")
-            new_group.text = m.group_id
-            new_group.tail = "\n      "
-            new_artifact = etree.Element(
-                "{http://maven.apache.org/POM/4.0.0}artifactId"
-            )
-            new_artifact.text = m.artifact_id
-            new_artifact.tail = "\n    "
-            new_dependency.append(new_group)
-            new_dependency.append(new_artifact)
-            dependencies.insert(proto_index + 1, new_dependency)
+            if "v1" in m.artifact_id or "v2" in m.artifact_id:
+                print(f"adding new dependency {m.artifact_id}")
+                new_dependency = etree.Element(
+                    "{http://maven.apache.org/POM/4.0.0}dependency"
+                )
+                new_dependency.tail = "\n    "
+                new_dependency.text = "\n      "
+                new_group = etree.Element("{http://maven.apache.org/POM/4.0.0}groupId")
+                new_group.text = m.group_id
+                new_group.tail = "\n      "
+                new_artifact = etree.Element(
+                    "{http://maven.apache.org/POM/4.0.0}artifactId"
+                )
+                new_artifact.text = m.artifact_id
+                new_artifact.tail = "\n    "
+                new_dependency.append(new_group)
+                new_dependency.append(new_artifact)
+                dependencies.insert(proto_index + 1, new_dependency)
 
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
