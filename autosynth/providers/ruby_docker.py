@@ -1,4 +1,4 @@
-# Copyright 2018 Google LLC
+# Copyright 2021 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ def list_repositories():
     subdirs = [subdir for subdir in subdirs if not subdir.startswith(".")]
     # Only subdirs that have synth.py files.
     subdirs = [
-        subdir for subdir in subdirs if _check_bazel_synth(gh, repo, subdir)
+        subdir for subdir in subdirs if _check_docker_synth(gh, repo, subdir)
     ]
 
     return [
@@ -45,10 +45,10 @@ def list_repositories():
     ]
 
 
-def _check_bazel_synth(gh, repo: str, subdir: str) -> bool:
+def _check_docker_synth(gh, repo: str, subdir: str) -> bool:
     try:
         contents = gh.get_contents(repo, f"{subdir}/synth.py").decode("utf-8")
-        return "gcp.GAPICBazel" in contents
+        return "gcp.GAPICMicrogenerator" in contents
     except requests.exceptions.HTTPError:
         return False
 

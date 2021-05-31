@@ -138,6 +138,9 @@ def generate_index_ts(versions: List[str], default_version: str) -> None:
         logger.error(err_msg)
         raise AttributeError(err_msg)
 
+    # To make sure the output is always deterministic.
+    versions = sorted(versions)
+
     # compose default version's index.ts file path
     versioned_index_ts_path = Path("src") / default_version / "index.ts"
     clients = extract_clients(versioned_index_ts_path)
