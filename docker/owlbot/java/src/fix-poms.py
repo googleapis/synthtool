@@ -18,6 +18,7 @@ import itertools
 import json
 from lxml import etree
 import os
+import re
 from typing import List, Mapping
 from poms import module, templates
 
@@ -129,7 +130,7 @@ def update_cloud_pom(
     # insert proto dependencies after protobuf-java
     for m in proto_modules:
         if m.artifact_id not in existing_dependencies:
-            if "v1" in m.artifact_id or "v2" in m.artifact_id:
+            if re.match(r"proto-.*-v\d+.*", m.artifact_id):
                 print(f"adding new dependency {m.artifact_id}")
                 new_dependency = etree.Element(
                     "{http://maven.apache.org/POM/4.0.0}dependency"
