@@ -287,8 +287,8 @@ def get_staging_dirs(
     Args:
       default_version (str): the default version of the API. The directory for this version
         will be the last item in the returned list if specified.
-      sub_directory (str): if a `sub_directory` is provided, only the directories within the 
-        specified `sub_directory` will be returned.  
+      sub_directory (str): if a `sub_directory` is provided, only the directories within the
+        specified `sub_directory` will be returned.
 
     Returns: the empty list if no file were copied.
     """
