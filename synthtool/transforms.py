@@ -294,7 +294,7 @@ def get_staging_dirs(
     """
 
     staging = Path("owl-bot-staging")
-    
+
     if sub_directory:
         staging /= sub_directory
 

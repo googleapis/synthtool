@@ -269,10 +269,41 @@ def test_copy_with_merge_file_permissions(expand_path_fixtures):
 
 def test_get_staging_dirs():
     with util.chdir(Path(__file__).parent / "fixtures/staging_dirs"):
-        assert [path.name for path in transforms.get_staging_dirs("v1")] == ["firestore_admin", "firestore_database", "v2", "v1"]
-        assert [path.name for path in transforms.get_staging_dirs("v2")] == ["firestore_admin", "firestore_database", "v1", "v2"]
-        assert [path.name for path in transforms.get_staging_dirs()] == ["firestore_admin", "firestore_database", "v1", "v2"]
-        assert [path.name for path in transforms.get_staging_dirs("v3", sub_directory="firestore_admin")] == ["v4", "v3"]
-        assert [path.name for path in transforms.get_staging_dirs(sub_directory="firestore_admin")] == ["v3", "v4"]
-        assert [path.name for path in transforms.get_staging_dirs("v5", sub_directory="firestore_database")] == ["v6", "v5"]
-        assert [path.name for path in transforms.get_staging_dirs(sub_directory="firestore_database")] == ["v5", "v6"]
+        assert [path.name for path in transforms.get_staging_dirs("v1")] == [
+            "firestore_admin",
+            "firestore_database",
+            "v2",
+            "v1",
+        ]
+        assert [path.name for path in transforms.get_staging_dirs("v2")] == [
+            "firestore_admin",
+            "firestore_database",
+            "v1",
+            "v2",
+        ]
+        assert [path.name for path in transforms.get_staging_dirs()] == [
+            "firestore_admin",
+            "firestore_database",
+            "v1",
+            "v2",
+        ]
+        assert [
+            path.name
+            for path in transforms.get_staging_dirs(
+                "v3", sub_directory="firestore_admin"
+            )
+        ] == ["v4", "v3"]
+        assert [
+            path.name
+            for path in transforms.get_staging_dirs(sub_directory="firestore_admin")
+        ] == ["v3", "v4"]
+        assert [
+            path.name
+            for path in transforms.get_staging_dirs(
+                "v5", sub_directory="firestore_database"
+            )
+        ] == ["v6", "v5"]
+        assert [
+            path.name
+            for path in transforms.get_staging_dirs(sub_directory="firestore_database")
+        ] == ["v5", "v6"]
