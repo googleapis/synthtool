@@ -277,19 +277,27 @@ def replace(
     return count_replaced
 
 
-def get_staging_dirs(default_version: Optional[str] = None) -> List[Path]:
+def get_staging_dirs(
+    default_version: Optional[str] = None, sub_directory: Optional[str] = None
+) -> List[Path]:
     """Returns the list of directories, one per version, copied from
     https://github.com/googleapis/googleapis-gen. Will return in lexical sorting
     order with the exception of the default_version which will be last (if specified).
 
     Args:
-      default_version: the default version of the API. The directory for this version
+      default_version (str): the default version of the API. The directory for this version
         will be the last item in the returned list if specified.
+      sub_directory (str): if a `sub_directory` is provided, only the directories within the 
+        specified `sub_directory` will be returned.  
 
     Returns: the empty list if no file were copied.
     """
 
     staging = Path("owl-bot-staging")
+    
+    if sub_directory:
+        staging /= sub_directory
+
     if staging.is_dir():
         # Collect the subdirectories of the staging directory.
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
