@@ -5,8 +5,3 @@ rules:
   - "package\\.json$"
   - "CHANGELOG\\.md$"
   maxFiles: 3
-- author: "gcf-owl-bot[bot]"
-  title: "^chore"
-  changedFiles:
-  - "^\\.OwlBot\\.lock\\.yaml$"
-  maxFiles: 1
