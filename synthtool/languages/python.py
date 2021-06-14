@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List, Optional
 
 import yaml
 
@@ -91,6 +92,36 @@ def _get_sample_readme_metadata(sample_dir: Path) -> dict:
             sample["abs_path"] = Path(sample_dir / (sample["file"])).resolve()
 
     return sample_metadata
+
+
+def detect_versions(
+    path: str = "./src", default_version: Optional[str] = None
+) -> List[str]:
+    """
+    Detects the versions a library has, based on distinct folders
+    within path. This is based on the fact that our GAPIC libraries are
+    structured as follows:
+
+    src/v1
+    src/v1beta
+    src/v1alpha
+
+    With folder names mapping directly to versions.
+
+    Returns: a list of the subdirectories; for the example above:
+      ['v1', 'v1alpha', 'v1beta']
+      If specified, the default_version is guaranteed to be listed last.
+      Otherwise, the list is sorted alphabetically.
+    """
+    versions = []
+    if os.path.isdir(path):
+        for directory in os.listdir(path):
+            if os.path.isdir(os.path.join(path, directory)):
+                versions.append(directory)
+    versions.sort()
+    if default_version is not None:
+        versions = [v for v in versions if v != default_version] + [default_version]
+    return versions
 
 
 def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
