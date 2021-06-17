@@ -16,10 +16,9 @@ from synthtool.gcp.common import decamelize, _get_default_branch_name
 from pathlib import Path
 from pytest import raises
 import os
-import requests_mock
 import synthtool as s
 from . import util
-
+from unittest import mock
 
 MOCK = Path(__file__).parent / "generationmock"
 template_dir = Path(__file__).parent.parent / "synthtool/gcp/templates"
@@ -43,10 +42,7 @@ def test_handles_empty_string():
 
 
 def test_get_default_branch():
-    with requests_mock.Mocker() as m:
-        m.get(
-            "https://api.github.com/repos/repo_name", text='{"default_branch": "main"}',
-        )
+    with mock.patch.dict(os.environ, {"DEFAULT_BRANCH": "main"}):
         assert _get_default_branch_name("repo_name") == "main"
 
 

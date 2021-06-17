@@ -201,7 +201,7 @@ class GAPICBazel:
         ]
 
         logger.debug(f"Generating code for: {bazel_target}.")
-        shell.run(bazel_run_args)
+        shell.run(bazel_run_args, hide_output=False)
 
         # We've got tar file!
         # its location: bazel-bin/google/cloud/language/v1/language-v1-nodejs.tar.gz
