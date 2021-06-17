@@ -22,6 +22,7 @@ RUN apt-get install -y --no-install-recommends jq
 COPY docker/owlbot/java/bin /owlbot/bin
 COPY docker/owlbot/java/src /owlbot/src
 COPY docker/owlbot/java/templates /owlbot/templates
+COPY post-processor-changes.txt /post-processor-changes.txt
 RUN cd /owlbot/src && \
     python3 -m pip install -r requirements.txt
 
