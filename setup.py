@@ -19,7 +19,7 @@ description = ''
 version = '2020.02.04'
 release_status = 'Development Status :: 3 - Alpha'
 dependencies = [
-    "click >=7.0.0, <8.0.0",
+    "click>=7.0.0, <8.0.2",
     "colorlog",
     "deprecation",
     "jinja2",
