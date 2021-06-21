@@ -39,6 +39,7 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
+COPY post-processor-changes.txt /post-processor-changes.txt
 
 # Update permissions so non-root users won't see errors.
 RUN find /synthtool -exec chmod a+r {} \;
@@ -47,7 +48,7 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
 # * google-gax is used for compiling protos.
-RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@2.10.3 typescript@3.9.9 \
+RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@2.12.0 typescript@3.9.9 \
     chalk@4.0.0 escodegen@2.0.0 espree@7.1.0 estraverse@5.1.0 glob@7.1.6 jsdoc@3.6.3 \
     minimist@1.2.0 semver@7.1.2 tmp@0.2.1 uglify-js@3.7.7
 
