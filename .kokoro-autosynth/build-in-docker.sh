@@ -28,7 +28,7 @@ ssh-keyscan github.com >> "$HOME/.ssh/known_hosts"
 # Kokoro exposes this as a file, but the scripts expect just a plain variable.
 export GITHUB_TOKEN=$(cat ${KOKORO_KEYSTORE_DIR}/73713_yoshi-automation-github-key)
 
-# Install npm to facilitate installtion of a code formatter for PHP: https://github.com/prettier/plugin-php
+# Install npm to facilitate installation of a code formatter for PHP: https://github.com/prettier/plugin-php
 # Use `nvm` to bootstrap the installation of node.js and npm.
 # To learn more: https://github.com/nvm-sh/nvm
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
