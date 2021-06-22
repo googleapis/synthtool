@@ -224,12 +224,8 @@ Supported versions can be found in our ``noxfile.py`` `config`_.
 .. _config: https://github.com/{{ metadata['repo']['repo'] }}/blob/master/noxfile.py
 
 
-{% for v in unit_test_python_versions -%}
-  {% if loop.first -%}
-We also explicitly decided to support Python 3 beginning with version
-{{ v -}}. Reasons for this include:
-  {%- endif -%}
-{% endfor %}
+We also explicitly decided to support Python 3 beginning with version {{ unit_test_python_versions | first }}.
+Reasons for this include:
 
 -  Encouraging use of newest versions of Python 3
 -  Taking the lead of `prominent`_ open-source `projects`_
