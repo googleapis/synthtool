@@ -22,7 +22,12 @@ In order to add a feature:
   documentation.
 
 - The feature must work fully on the following CPython versions:
-  3.6, 3.7, 3.8 and 3.9 on both UNIX and Windows.
+  {% for v in unit_test_python_versions -%}
+    {% if not loop.first -%}
+      {% if not loop.last -%}, {% else %} and {% endif %}
+    {%- endif %}
+    {{-  v -}}
+  {%- endfor %} on both UNIX and Windows.
 
 - The feature must not add unnecessary dependencies (where
   "unnecessary" is of course subjective, but new dependencies should
@@ -68,14 +73,17 @@ Using ``nox``
 We use `nox <https://nox.readthedocs.io/en/latest/>`__ to instrument our tests.
 
 - To test your changes, run unit tests with ``nox``::
-
-    $ nox -s unit-3.8
-    $ ...
+{% for v in unit_test_python_versions %}
+    $ nox -s unit-{{ v }}
+{%- endfor %}
 
 - Args to pytest can be passed through the nox command separated by a `--`. For
   example, to run a single test::
-
-    $ nox -s unit-3.8 -- -k <name of test>
+{% for v in unit_test_python_versions %}
+{%- if loop.last %}
+    $ nox -s unit-{{ v }} -- -k <name of test>
+{%- endif -%}
+{% endfor %}
 
   .. note::
 
@@ -142,15 +150,23 @@ Running System Tests
 - To run system tests, you can execute::
 
    # Run all system tests
-   $ nox -s system-3.8
+{%- for system_test_version in system_test_python_versions %}
+   $ nox -s system-{{ system_test_version }}
+{%- if loop.last %}
 
    # Run a single system test
-   $ nox -s system-3.8 -- -k <name of test>
-
+   $ nox -s system-{{ system_test_version }} -- -k <name of test>
+{% endif -%}
+{% endfor %}
 
   .. note::
 
-      System tests are only configured to run under Python 3.8.
+      System tests are only configured to run under Python 
+      {%- for v in system_test_python_versions -%}
+        {% if not loop.first -%}
+          {% if not loop.last %},{% else %} and{% endif -%}
+        {% endif %} {{ v -}}
+      {% endfor -%}.
       For expediency, we do not run them in older versions of Python 3.
 
   This alone will not run the tests. You'll need to change some local
@@ -199,24 +215,24 @@ Supported Python Versions
 
 We support:
 
--  `Python 3.6`_
--  `Python 3.7`_
--  `Python 3.8`_
--  `Python 3.9`_
-
-.. _Python 3.6: https://docs.python.org/3.6/
-.. _Python 3.7: https://docs.python.org/3.7/
-.. _Python 3.8: https://docs.python.org/3.8/
-.. _Python 3.9: https://docs.python.org/3.9/
-
+{% for v in unit_test_python_versions -%}
+-  `Python {{ v -}}`_
+{% endfor %}
+{% for v in unit_test_python_versions -%}
+.. _Python {{ v -}}: https://docs.python.org/{{- v -}}/
+{% endfor %}
 
 Supported versions can be found in our ``noxfile.py`` `config`_.
 
 .. _config: https://github.com/{{ metadata['repo']['repo'] }}/blob/master/noxfile.py
 
 
+{% for v in unit_test_python_versions -%}
+  {% if loop.first -%}
 We also explicitly decided to support Python 3 beginning with version
-3.6. Reasons for this include:
+{{ v -}}. Reasons for this include:
+  {%- endif -%}
+{% endfor %}
 
 -  Encouraging use of newest versions of Python 3
 -  Taking the lead of `prominent`_ open-source `projects`_
