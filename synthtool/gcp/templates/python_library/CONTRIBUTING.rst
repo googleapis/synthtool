@@ -79,11 +79,9 @@ We use `nox <https://nox.readthedocs.io/en/latest/>`__ to instrument our tests.
 
 - Args to pytest can be passed through the nox command separated by a `--`. For
   example, to run a single test::
-{% for v in unit_test_python_versions %}
-  {%- if loop.last %}
-    $ nox -s unit-{{ v }} -- -k <name of test>
-  {%- endif -%}
-{% endfor %}
+
+    $ nox -s unit-{{ unit_test_python_versions | last }} -- -k <name of test>
+
 
   .. note::
 
@@ -152,12 +150,10 @@ Running System Tests
    # Run all system tests
 {%- for system_test_version in system_test_python_versions %}
    $ nox -s system-{{ system_test_version }}
-  {%- if loop.last %}
+{%- endfor %}
 
    # Run a single system test
-   $ nox -s system-{{ system_test_version }} -- -k <name of test>
-  {%- endif %}
-{%- endfor %}
+   $ nox -s system-{{ system_test_python_versions | last}} -- -k <name of test>
 
 
   .. note::
