@@ -73,9 +73,7 @@ Using ``nox``
 We use `nox <https://nox.readthedocs.io/en/latest/>`__ to instrument our tests.
 
 - To test your changes, run unit tests with ``nox``::
-{% for v in unit_test_python_versions %}
-    $ nox -s unit-{{ v }}
-{%- endfor %}
+    $ nox -s unit
 
 - Args to pytest can be passed through the nox command separated by a `--`. For
   example, to run a single test::
@@ -148,9 +146,7 @@ Running System Tests
 - To run system tests, you can execute::
 
    # Run all system tests
-{%- for system_test_version in system_test_python_versions %}
-   $ nox -s system-{{ system_test_version }}
-{%- endfor %}
+   $ nox -s system
 
    # Run a single system test
    $ nox -s system-{{ system_test_python_versions | last}} -- -k <name of test>
