@@ -35,6 +35,7 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 COPY synthtool /synthtool/synthtool
 COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
+COPY post-processor-changes.txt /post-processor-changes.txt
 
 # Update permissions so non-root users won't see errors.
 RUN find /synthtool -exec chmod a+r {} \;
