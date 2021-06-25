@@ -45,6 +45,9 @@ nvm install --lts
 node --version
 npm --version
 
+# Upgrade the NPM version
+sudo npm install -g npm
+
 # Setup git credentials
 echo "https://${GITHUB_TOKEN}:@github.com" >> ~/.git-credentials
 git config --global credential.helper 'store --file ~/.git-credentials'
