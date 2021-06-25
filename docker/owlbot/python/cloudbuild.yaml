@@ -4,7 +4,7 @@ steps:
     entrypoint: '/bin/sh'
     args:
       - '-c'
-      - 'git log -1 --format="%s%n%n%b%nSource-Link: https://github.com/googleapis/synthtool/commit/%H" > post-processor-changes.txt'
+      - 'git log -1 --format="%s%n%nSource-Link: https://github.com/googleapis/synthtool/commit/%H" | sed -e "s/([^()]*)$//g" > post-processor-changes.txt'
   - name: 'gcr.io/cloud-builders/docker'
     args: [ 'build',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-python:$SHORT_SHA',
