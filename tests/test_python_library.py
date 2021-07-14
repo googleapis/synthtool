@@ -108,7 +108,6 @@ def test_python_library():
         templated_files = common.py_library()
 
         assert os.path.exists(templated_files / ".kokoro/docs/docs-presubmit.cfg")
-        assert os.path.exists(templated_files / ".kokoro/docker/docs/fetch_gpg_keys.sh")
 
 
 def test_split_system_tests():
