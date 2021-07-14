@@ -465,9 +465,11 @@ def common_templates(
     kwargs["metadata"] = _common_template_metadata()
     templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
 
-    # README.md is now synthesized separately. This prevents synthtool from deleting the
-    # README as it's no longer generated here.
-    excludes.append("README.md")
+    # skip README generation on Kokoro (autosynth)
+    if os.environ.get("KOKORO_ROOT") is not None:
+        # README.md is now synthesized separately. This prevents synthtool from deleting the
+        # README as it's no longer generated here.
+        excludes.append("README.md")
 
     s.copy([templates], excludes=excludes, merge=_merge_common_templates)
 
