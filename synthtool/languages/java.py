@@ -256,7 +256,7 @@ def _common_generation(
     )
 
     if preserve_gapic:
-        format_code(f"gapic-google-{cloud_prefix}{destination_name}/src")
+        format_code(f"gapic-google-{cloud_prefix}{destination_name}-{version}/src")
     else:
         format_code(f"google-{cloud_prefix}{destination_name}/src")
     format_code(f"grpc-google-{cloud_prefix}{destination_name}-{version}/src")
