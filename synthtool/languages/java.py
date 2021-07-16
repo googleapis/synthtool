@@ -197,6 +197,7 @@ def _common_generation(
     destination_name: str = None,
     cloud_api: bool = True,
     diregapic: bool = False,
+    preserve_gapic: bool = False,
 ):
     """Helper function to execution the common generation cleanup actions.
 
@@ -213,6 +214,8 @@ def _common_generation(
             artman output differs from bazel's output directory. Defaults to "".
         destination_name (str, optional): Override the service name for the
             destination of the output code. Defaults to the service name.
+        preserve_gapic (bool, optional): Whether to preserve the gapic directory
+            prefix. Default False.
     """
 
     if destination_name is None:
@@ -227,11 +230,19 @@ def _common_generation(
         library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}", package_name
     )
 
-    s.copy(
-        [library / f"gapic-google-{cloud_prefix}{service}-{version}{suffix}/src"],
-        f"google-{cloud_prefix}{destination_name}/src",
-        required=True,
-    )
+    if preserve_gapic:
+        s.copy(
+            [library / f"gapic-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+            f"gapic-google-{cloud_prefix}{destination_name}-{version}/src",
+            required=True,
+        )
+    else:
+        s.copy(
+            [library / f"gapic-google-{cloud_prefix}{service}-{version}{suffix}/src"],
+            f"google-{cloud_prefix}{destination_name}/src",
+            required=True,
+        )
+
     s.copy(
         [library / f"grpc-google-{cloud_prefix}{service}-{version}{suffix}/src"],
         f"grpc-google-{cloud_prefix}{destination_name}-{version}/src",
@@ -244,7 +255,10 @@ def _common_generation(
         required=True,
     )
 
-    format_code(f"google-{cloud_prefix}{destination_name}/src")
+    if preserve_gapic:
+        format_code(f"gapic-google-{cloud_prefix}{destination_name}/src")
+    else:
+        format_code(f"google-{cloud_prefix}{destination_name}/src")
     format_code(f"grpc-google-{cloud_prefix}{destination_name}-{version}/src")
     format_code(f"proto-google-{cloud_prefix}{destination_name}-{version}/src")
 
@@ -257,6 +271,7 @@ def gapic_library(
     gapic: gcp.GAPICGenerator = None,
     destination_name: str = None,
     diregapic: bool = False,
+    preserve_gapic: bool = False,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via artman via Docker.
@@ -274,12 +289,13 @@ def gapic_library(
         gapic (GAPICGenerator, optional): Generator instance.
         destination_name (str, optional): Override the service name for the
             destination of the output code. Defaults to the service name.
+        preserve_gapic (bool, optional): Whether to preserve the gapic directory
+            prefix. Default False.
         **kwargs: Additional options for gapic.java_library()
 
     Returns:
         The path to the temp directory containing the generated client.
     """
-
     if gapic is None:
         gapic = gcp.GAPICGenerator()
 
@@ -300,6 +316,7 @@ def gapic_library(
         package_pattern=package_pattern,
         destination_name=destination_name,
         diregapic=diregapic,
+        preserve_gapic=preserve_gapic,
     )
 
     return library
@@ -313,6 +330,7 @@ def bazel_library(
     destination_name: str = None,
     cloud_api: bool = True,
     diregapic: bool = False,
+    preserve_gapic: bool = False,
     **kwargs,
 ) -> Path:
     """Generate a Java library using the gapic-generator via bazel.
@@ -328,6 +346,8 @@ def bazel_library(
         gapic (GAPICBazel, optional): Generator instance.
         destination_name (str, optional): Override the service name for the
             destination of the output code. Defaults to the service name.
+        preserve_gapic (bool, optional): Whether to preserve the gapic directory
+            prefix. Default False.
         **kwargs: Additional options for gapic.java_library()
 
     Returns:
@@ -349,6 +369,7 @@ def bazel_library(
         destination_name=destination_name,
         cloud_api=cloud_api,
         diregapic=diregapic,
+        preserve_gapic=preserve_gapic
     )
 
     return library
