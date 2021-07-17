@@ -369,7 +369,7 @@ def bazel_library(
         destination_name=destination_name,
         cloud_api=cloud_api,
         diregapic=diregapic,
-        preserve_gapic=preserve_gapic
+        preserve_gapic=preserve_gapic,
     )
 
     return library
