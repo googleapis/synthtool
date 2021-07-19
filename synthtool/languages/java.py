@@ -551,3 +551,72 @@ def remove_method(filename: str, signature: str):
         for line in lines:
             # print(line)
             fp.write(line)
+
+def copy_and_rename_method(filename: str, signature: str, before: str, after: str):
+    """Helper to make a copy an entire method and rename it.
+
+    Goes line-by-line to detect the start of the block. Determines
+    the end of the block by a closing brace at the same indentation
+    level. This requires the file to be correctly formatted.
+
+    Example: consider the following class:
+
+        class Example {
+            public void main(String[] args) {
+                System.out.println("Hello World");
+            }
+
+            public String foo() {
+                return "bar";
+            }
+        }
+
+    To remove the `main` method above, use:
+
+        remove_method('path/to/file', 'public void main(String[] args)', 'main', 'foo1')
+
+    Args:
+        filename (str): Path to source file
+        signature (str): Full signature of the method to remove. Example:
+            `public void main(String[] args)`.
+        before (str): name of the method to be copied
+        after (str): new name of the copied method
+    """
+    lines = []
+    method = []
+    leading_regex = None
+    with open(filename, "r") as fp:
+        line = fp.readline()
+        while line:
+            # for each line, try to find the matching
+            regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
+            match = regex.match(line)
+            if match:
+                leading_regex = re.compile(match.group(1) + "}")
+                lines.append(line)
+                method.append(line.replace(before, after))
+                line = fp.readline()
+                continue
+
+            lines.append(line)
+            # not in a ignore block - preserve the line
+            if leading_regex:
+                method.append(line)
+            else:
+                line = fp.readline()
+                continue
+
+            # detect the closing tag based on the leading spaces
+            match = leading_regex.match(line)
+            if match:
+                # block is closed, resume capturing content
+                leading_regex = None
+                lines.append('\n')
+                lines.extend(method)
+
+            line = fp.readline()
+
+    with open(filename, "w") as fp:
+        for line in lines:
+            # print(line)
+            fp.write(line)
