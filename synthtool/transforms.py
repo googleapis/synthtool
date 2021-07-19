@@ -141,9 +141,7 @@ def _copy_dir_to_existing_dir(
     return copied
 
 
-def dont_overwrite(
-    patterns: ListOfPathsOrStrs,
-) -> Callable[[str, str, Path], str]:
+def dont_overwrite(patterns: ListOfPathsOrStrs,) -> Callable[[str, str, Path], str]:
     """Returns a merge function that doesn't overwrite the specified files.
 
     Pass the return value to move() or copy() to avoid overwriting existing
