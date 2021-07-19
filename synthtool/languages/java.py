@@ -434,7 +434,8 @@ def _common_template_metadata() -> Dict[str, Any]:
         )
 
     metadata["latest_bom_version"] = latest_maven_version(
-        group_id="com.google.cloud", artifact_id="libraries-bom",
+        group_id="com.google.cloud",
+        artifact_id="libraries-bom",
     )
 
     metadata["samples"] = samples.all_samples(["samples/**/src/main/java/**/*.java"])
@@ -552,6 +553,7 @@ def remove_method(filename: str, signature: str):
             # print(line)
             fp.write(line)
 
+
 def copy_and_rename_method(filename: str, signature: str, before: str, after: str):
     """Helper to make a copy an entire method and rename it.
 
@@ -611,7 +613,7 @@ def copy_and_rename_method(filename: str, signature: str, before: str, after: st
             if match:
                 # block is closed, resume capturing content
                 leading_regex = None
-                lines.append('\n')
+                lines.append("\n")
                 lines.extend(method)
 
             line = fp.readline()
