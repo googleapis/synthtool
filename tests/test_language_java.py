@@ -137,6 +137,40 @@ def test_copy_and_rename_method():
         )
 
 
+def test_deprecate_method():
+    with tempfile.TemporaryDirectory() as tempdir:
+        shutil.copyfile(
+            "tests/testdata/SampleClass.java", tempdir + "/SampleClass.java"
+        )
+        DEPRECATION_WARNING = """    /*
+        * @deprecated This method will be removed in the next major version.
+        * Use {{@link #{new_method}()}} instead
+        */
+        @Deprecated
+        """
+        java.copy_and_rename_method(
+            tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar"
+        )
+        java.deprecate_method(
+            tempdir + "/SampleClass.java",
+            "public static void foobar()",
+            DEPRECATION_WARNING.format(new_method="foo"),
+        )
+        java.copy_and_rename_method(
+            tempdir + "/SampleClass.java", "public void asdf()", "asdf", "xyz"
+        )
+        java.deprecate_method(
+            tempdir + "/SampleClass.java",
+            "public void xyz()",
+            DEPRECATION_WARNING.format(new_method="asdf"),
+        )
+        java.format_code(tempdir)
+        assert_matches_golden(
+            "tests/testdata/SampleDeprecateMethodGolden.java",
+            tempdir + "/SampleClass.java",
+        )
+
+
 def test_fix_proto_license():
     with tempfile.TemporaryDirectory() as tempdir:
         temppath = Path(tempdir).resolve()
