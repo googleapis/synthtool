@@ -125,8 +125,8 @@ def test_copy_and_rename_method():
             "tests/testdata/SampleClass.java", tempdir + "/SampleClass.java"
         )
 
-        java.remove_method(tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar")
-        java.remove_method(tempdir + "/SampleClass.java", "public void asdf()", "asdf", "xyz")
+        java.copy_and_rename_method(tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar")
+        java.copy_and_rename_method(tempdir + "/SampleClass.java", "public void asdf()", "asdf", "xyz")
         assert_matches_golden(
             "tests/testdata/SampleCopyMethodGolden.java", tempdir + "/SampleClass.java"
         )
