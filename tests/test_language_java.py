@@ -144,7 +144,7 @@ def test_deprecate_method():
         )
         DEPRECATION_WARNING = """  /*
    * @deprecated This method will be removed in the next major version.
-   * Use {@link #{new_method}()} instead
+   * Use {{@link #{new_method}()}} instead
    */
    """
         java.copy_and_rename_method(
