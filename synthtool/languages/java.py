@@ -434,7 +434,8 @@ def _common_template_metadata() -> Dict[str, Any]:
         )
 
     metadata["latest_bom_version"] = latest_maven_version(
-        group_id="com.google.cloud", artifact_id="libraries-bom",
+        group_id="com.google.cloud",
+        artifact_id="libraries-bom",
     )
 
     metadata["samples"] = samples.all_samples(["samples/**/src/main/java/**/*.java"])
@@ -572,9 +573,9 @@ def copy_and_rename_method(filename: str, signature: str, before: str, after: st
             }
         }
 
-    To remove the `main` method above, use:
+    To copy and rename the `main` method above, use:
 
-        remove_method('path/to/file', 'public void main(String[] args)', 'main', 'foo1')
+        copy_and_rename_method('path/to/file', 'public void main(String[] args)', 'main', 'foo1')
 
     Args:
         filename (str): Path to source file
@@ -624,35 +625,32 @@ def copy_and_rename_method(filename: str, signature: str, before: str, after: st
 
 
 def deprecate_method(filename: str, signature: str, alternative: str):
-    """Helper to make a copy an entire method and rename it.
+    """Helper to deprecate a method.
 
-    Goes line-by-line to detect the start of the block. Determines
-    the end of the block by a closing brace at the same indentation
-    level. This requires the file to be correctly formatted.
+        Goes line-by-line to detect the start of the block.
+        Then adds the deprecation comment before the method signature.
 
-    Example: consider the following class:
+        Example: consider the following class:
 
-        class Example {
-            public void main(String[] args) {
-                System.out.println("Hello World");
+            class Example {
+                public void main(String[] args) {
+                    System.out.println("Hello World");
+                }
+
+                public String foo() {
+                    return "bar";
+                }
             }
 
-            public String foo() {
-                return "bar";
-            }
-        }
+        To deprecate the `main` method above, use:
 
-    To remove the `main` method above, use:
-
-        remove_method('path/to/file', 'public void main(String[] args)', 'main', 'foo1')
+        DEPRECATION_WARNING = "This method is deprecated. Use {@link #{new_method}()} instead.
+        deprecate_method('path/to/file', 'public void main(String[] args)', DEPRECATION_WARNING.format(new_method="foo"))
 
     Args:
         filename (str): Path to source file
         signature (str): Full signature of the method to remove. Example:
-            `public void main(String[] args)`.
-        before (str): name of the method to be copied
-        after (str): new name of the copied method
-    """
+            `public void main(String[] args)`."""
     lines = []
     with open(filename, "r") as fp:
         line = fp.readline()

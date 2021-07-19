@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,15 +32,6 @@ class ExampleClass {
 
   public static class InnerClass {
     public void asdf() {
-      System.out.println("qwer");
-    }
-
-    /*
-     * @deprecated This method will be removed in the next major version.
-     * Use {@link #asdf()} instead
-     */
-    @Deprecated
-    public void xyz() {
       System.out.println("qwer");
     }
   }
