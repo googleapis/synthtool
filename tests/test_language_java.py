@@ -164,7 +164,6 @@ def test_deprecate_method():
             "public void xyz()",
             DEPRECATION_WARNING.format(new_method="asdf"),
         )
-        java.format_code(tempdir)
         assert_matches_golden(
             "tests/testdata/SampleDeprecateMethodGolden.java",
             tempdir + "/SampleClass.java",
