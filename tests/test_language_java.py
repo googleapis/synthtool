@@ -119,17 +119,23 @@ def test_remove_method():
             "tests/testdata/SampleClassGolden.java", tempdir + "/SampleClass.java"
         )
 
+
 def test_copy_and_rename_method():
     with tempfile.TemporaryDirectory() as tempdir:
         shutil.copyfile(
             "tests/testdata/SampleClass.java", tempdir + "/SampleClass.java"
         )
 
-        java.copy_and_rename_method(tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar")
-        java.copy_and_rename_method(tempdir + "/SampleClass.java", "public void asdf()", "asdf", "xyz")
+        java.copy_and_rename_method(
+            tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar"
+        )
+        java.copy_and_rename_method(
+            tempdir + "/SampleClass.java", "public void asdf()", "asdf", "xyz"
+        )
         assert_matches_golden(
             "tests/testdata/SampleCopyMethodGolden.java", tempdir + "/SampleClass.java"
         )
+
 
 def test_fix_proto_license():
     with tempfile.TemporaryDirectory() as tempdir:
