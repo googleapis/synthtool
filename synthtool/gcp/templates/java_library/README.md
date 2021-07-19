@@ -1,6 +1,7 @@
 {% set group_id = metadata['repo']['distribution_name'].split(':')|first -%}
 {% set artifact_id = metadata['repo']['distribution_name'].split(':')|last -%}
 {% set repo_short = metadata['repo']['repo'].split('/')|last -%}
+
 # Google {{ metadata['repo']['name_pretty'] }} Client for Java
 
 Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
@@ -16,10 +17,12 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
+
 ## Quickstart
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
+
 ```xml
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
 ```
@@ -28,6 +31,7 @@ If you are using Maven without BOM, add this to your dependencies:
 {% else %}
 If you are using Maven, add this to your pom.xml file:
 {% endif %}
+
 ```xml
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
@@ -42,6 +46,7 @@ If you are using Maven, add this to your pom.xml file:
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Gradle 5.x or later, add this to your dependencies
+
 ```Groovy
 implementation platform('com.google.cloud:libraries-bom:{{metadata['latest_bom_version']}}')
 
@@ -50,11 +55,13 @@ compile '{{ group_id }}:{{ artifact_id }}'
 {% endif -%}
 
 If you are using Gradle without BOM, add this to your dependencies
+
 ```Groovy
 compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
 
 If you are using SBT, add this to your dependencies
+
 ```Scala
 libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['latest_version'] }}"
 ```
@@ -62,6 +69,10 @@ libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['la
 ## Authentication
 
 See the [Authentication][authentication] section in the base directory's README.
+
+## Authorization
+
+A GCP account credentials that are used in API calls should be granted [Authorization Scopes](https://developers.google.com/identity/protocols/oauth2/scopes) to call these APIs. You can also review existing [predefined IAM roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles) that can be granted to GCP account which is used for authentication.
 
 ## Getting Started
 
@@ -175,6 +186,7 @@ This library follows [Semantic Versioning](http://semver.org/).
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
 and the public API should not be considered stable.
 {% endif %}{% endif %}
+
 ## Contributing
 
 {% if 'partials' in metadata and metadata['partials']['contributing'] -%}
@@ -188,6 +200,7 @@ Please note that this project is released with a Contributor Code of Conduct. By
 this project you agree to abide by its terms. See [Code of Conduct][code-of-conduct] for more
 information.
 {% endif %}
+
 ## License
 
 Apache 2.0 - See [LICENSE][license] for more information.
