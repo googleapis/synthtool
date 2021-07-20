@@ -581,6 +581,8 @@ def copy_and_rename_method(filename: str, signature: str, before: str, after: st
     Goes line-by-line to detect the start of the block. Determines
     the end of the block by a closing brace at the same indentation
     level. This requires the file to be correctly formatted.
+    The method is copied over and renamed in the method signature.
+    The calls to both methods are separate and unaffected.
 
     Example: consider the following class:
 
@@ -663,16 +665,18 @@ def deprecate_method(filename: str, signature: str, alternative: str):
                 }
             }
 
-        To deprecate the `main` method above, use:
+        To deprecate the `main` method 6above, use:
 
-        DEPRECATION_WARNING = "This method is deprecated. Use {@link #{new_method}()} instead.
         deprecate_method('path/to/file', 'public void main(String[] args)', DEPRECATION_WARNING.format(new_method="foo"))
 
     Args:
         filename (str): Path to source file
         signature (str): Full signature of the method to remove. Example:
-            `public void main(String[] args)`."""
+            `public void main(String[] args)`.
+            DEPRECATION WARNING: multiline javadoc comment with user specified  leading open/close comment tags
+    """
     lines = []
+    annotations = []
     with open(filename, "r") as fp:
         line = fp.readline()
         while line:
@@ -680,7 +684,17 @@ def deprecate_method(filename: str, signature: str, alternative: str):
             regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
             match = regex.match(line)
             if match:
-                lines.append(alternative)
+                last_line = lines.pop()
+                if "*/" in last_line:
+                    alternative = "\n".join(alternative.splitlines()[1:])
+                    lines.extend(alternative)
+                elif "@" in last_line:
+                    while "@" in last_line:
+                        annotations.insert(0, last_line)
+                        last_line = lines.pop()
+                    alternative = "\n".join(alternative.splitlines()[1:])
+                    lines.extend(alternative)
+                    lines.extend(annotations)
             lines.append(line)
             line = fp.readline()
 

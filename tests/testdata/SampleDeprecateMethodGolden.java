@@ -25,9 +25,9 @@ class ExampleClass {
    * @deprecated This method will be removed in the next major version.
    * Use {@link #foo()} instead
    */
-  @Deprecated
-  public static void foobar() {
-    System.out.println("bar");
+   @Deprecated
+    public static void foobar() {
+   System.out.println("bar");
   }
 
   public static class InnerClass {

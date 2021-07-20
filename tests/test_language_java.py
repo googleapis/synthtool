@@ -146,6 +146,7 @@ def test_deprecate_method():
    * @deprecated This method will be removed in the next major version.
    * Use {{@link #{new_method}()}} instead
    */
+   @Deprecated
    """
         java.copy_and_rename_method(
             tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar"
@@ -155,6 +156,7 @@ def test_deprecate_method():
             "public static void foobar()",
             DEPRECATION_WARNING.format(new_method="foo"),
         )
+        java.format_code(tempdir + "/SampleClass.java")
         assert_matches_golden(
             "tests/testdata/SampleDeprecateMethodGolden.java",
             tempdir + "/SampleClass.java",
