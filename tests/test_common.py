@@ -12,13 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from synthtool.gcp.common import decamelize, _get_default_branch_name
-from pathlib import Path
-from pytest import raises
 import os
-import synthtool as s
-from . import util
+import tempfile
+from pathlib import Path
 from unittest import mock
+
+from pytest import raises
+
+import synthtool as s
+from synthtool.gcp.common import _get_default_branch_name, decamelize
+
+from . import util
 
 MOCK = Path(__file__).parent / "generationmock"
 template_dir = Path(__file__).parent.parent / "synthtool/gcp/templates"
@@ -42,8 +46,17 @@ def test_handles_empty_string():
 
 
 def test_get_default_branch():
-    with mock.patch.dict(os.environ, {"DEFAULT_BRANCH": "main"}):
-        assert _get_default_branch_name("repo_name") == "main"
+    with mock.patch.dict(os.environ, {"DEFAULT_BRANCH": "chickens"}):
+        assert _get_default_branch_name("repo_name") == "chickens"
+
+
+def test_get_default_branch_path():
+    f = tempfile.NamedTemporaryFile("wt", delete=False)
+    fname = f.name
+    f.write("ducks\n")
+    f.close()
+    with mock.patch.dict(os.environ, {"DEFAULT_BRANCH_PATH": fname}):
+        assert _get_default_branch_name("repo_name") == "ducks"
 
 
 def test_py_samples_clientlib():

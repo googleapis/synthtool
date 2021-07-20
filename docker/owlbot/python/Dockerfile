@@ -16,9 +16,21 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python/Dockerfile .
-FROM python:3.8.9-buster
+FROM python:3.9.5-buster
 
 WORKDIR /
+
+###################### Install python 3.8.11
+
+# Download python 3.8.11
+RUN wget https://www.python.org/ftp/python/3.8.11/Python-3.8.11.tgz
+
+# Extract files
+RUN tar -xvf Python-3.8.11.tgz
+
+# Install python 3.8.11
+RUN ./Python-3.8.11/configure --enable-optimizations
+RUN make altinstall
 
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
