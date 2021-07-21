@@ -598,7 +598,8 @@ def copy_and_rename_method(filename: str, signature: str, before: str, after: st
 
     To copy and rename the `main` method above, use:
 
-        copy_and_rename_method('path/to/file', 'public void main(String[] args)', 'main', 'foo1')
+    copy_and_rename_method('path/to/file', 'public void main(String[] args)',
+        'main', 'foo1')
 
     Args:
         filename (str): Path to source file
@@ -667,13 +668,15 @@ def deprecate_method(filename: str, signature: str, alternative: str):
 
         To deprecate the `main` method 6above, use:
 
-        deprecate_method('path/to/file', 'public void main(String[] args)', DEPRECATION_WARNING.format(new_method="foo"))
+        deprecate_method('path/to/file', 'public void main(String[] args)',
+            DEPRECATION_WARNING.format(new_method="foo"))
 
     Args:
         filename (str): Path to source file
         signature (str): Full signature of the method to remove. Example:
             `public void main(String[] args)`.
-            DEPRECATION WARNING: multiline javadoc comment with user specified  leading open/close comment tags
+        alternative: DEPRECATION WARNING: multiline javadoc comment with user
+            specified leading open/close comment tags
     """
     lines = []
     annotations = []
