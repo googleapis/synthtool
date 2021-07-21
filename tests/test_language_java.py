@@ -140,7 +140,8 @@ def test_copy_and_rename_method():
 def test_deprecate_method():
     with tempfile.TemporaryDirectory() as tempdir:
         shutil.copyfile(
-            "tests/testdata/SampleClass.java", tempdir + "/SampleClass.java"
+            "tests/testdata/SampleClass.java",
+            "tests/testdata/deprecate/SampleDeprecateClass.java",
         )
         DEPRECATION_WARNING = """ /*
    * @deprecated This method will be removed in the next major version.
@@ -152,23 +153,26 @@ def test_deprecate_method():
    */
    """
         java.copy_and_rename_method(
-            tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar"
+            "tests/testdata/deprecate/SampleDeprecateClass.java",
+            "public static void foo()",
+            "foo",
+            "foobar",
         )
         java.deprecate_method(
-            tempdir + "/SampleClass.java",
-            "public static void foobar()",
-            DEPRECATION_WARNING.format(new_method="foo"),
-        )
-        # adding a comment when a javadoc and annotation already exists
-        java.deprecate_method(
-            tempdir + "/SampleClass.java",
+            "tests/testdata/deprecate/SampleDeprecateClass.java",
             "public static void foobar()",
             ADDITIONAL_COMMENT.format(new_method="foo"),
         )
 
+        # adding a comment when a javadoc and annotation already exists
+        java.deprecate_method(
+            "tests/testdata/deprecate/SampleDeprecateClass.java",
+            "public static void foobar()",
+            DEPRECATION_WARNING.format(new_method="foo"),
+        )
         assert_matches_golden(
             "tests/testdata/SampleDeprecateMethodGolden.java",
-            tempdir + "/SampleClass.java",
+            "tests/testdata/deprecate/SampleDeprecateClass.java",
         )
 
 

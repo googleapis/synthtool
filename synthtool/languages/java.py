@@ -711,4 +711,5 @@ def deprecate_method(filename: str, signature: str, alternative: str):
         for line in lines:
             # print(line)
             fp.write(line)
+
     format_code("/".join(filename.split("/")[:-1]))
