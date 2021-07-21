@@ -455,8 +455,7 @@ def _common_template_metadata() -> Dict[str, Any]:
         )
 
     metadata["latest_bom_version"] = latest_maven_version(
-        group_id="com.google.cloud",
-        artifact_id="libraries-bom",
+        group_id="com.google.cloud", artifact_id="libraries-bom",
     )
 
     metadata["samples"] = samples.all_samples(["samples/**/src/main/java/**/*.java"])
