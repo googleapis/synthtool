@@ -142,12 +142,11 @@ def test_deprecate_method():
         shutil.copyfile(
             "tests/testdata/SampleClass.java", tempdir + "/SampleClass.java"
         )
-        DEPRECATION_WARNING = """  /*
+        DEPRECATION_WARNING = """ /*
    * @deprecated This method will be removed in the next major version.
    * Use {{@link #{new_method}()}} instead
    */
-@Deprecated
-"""
+    """
         ADDITIONAL_COMMENT = """ /*
    * {new_method} has the same functionality as foobar.
    */
@@ -166,6 +165,7 @@ def test_deprecate_method():
             "public static void foobar()",
             ADDITIONAL_COMMENT.format(new_method="foo"),
         )
+
         assert_matches_golden(
             "tests/testdata/SampleDeprecateMethodGolden.java",
             tempdir + "/SampleClass.java",

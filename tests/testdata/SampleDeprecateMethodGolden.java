@@ -26,7 +26,7 @@ class ExampleClass {
    * Use {@link #foo()} instead
    * foo has the same functionality as foobar.
    */
-   @Deprecated
+  @Deprecated
   public static void foobar() {
     System.out.println("bar");
   }

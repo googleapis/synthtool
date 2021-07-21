@@ -652,6 +652,7 @@ def deprecate_method(filename: str, signature: str, alternative: str):
 
         Goes line-by-line to detect the start of the block.
         Then adds the deprecation comment before the method signature.
+        The @Deprecation annotation is also added.
 
         Example: consider the following class:
 
@@ -692,7 +693,8 @@ def deprecate_method(filename: str, signature: str, alternative: str):
                     lines.extend(alternative)
                 elif "@" in last_line:
                     while "@" in last_line:
-                        annotations.insert(0, last_line)
+                        if "@Deprecated" not in last_line:
+                            annotations.insert(0, last_line)
                         last_line = lines.pop()
                     if "*/" in last_line:
                         alternative = "\n".join(alternative.splitlines()[1:])
@@ -701,6 +703,7 @@ def deprecate_method(filename: str, signature: str, alternative: str):
                 else:
                     lines.extend(last_line)
                     lines.extend(alternative)
+                lines.append("@Deprecated\n")
             lines.append(line)
             line = fp.readline()
 
@@ -708,3 +711,4 @@ def deprecate_method(filename: str, signature: str, alternative: str):
         for line in lines:
             # print(line)
             fp.write(line)
+    format_code("/".join(filename.split("/")[:-1]))
