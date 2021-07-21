@@ -19,7 +19,7 @@ import xml.etree.ElementTree as ET
 import yaml
 from pathlib import Path
 from synthtool.languages import java
-
+import requests_mock
 import pytest
 from . import util
 
