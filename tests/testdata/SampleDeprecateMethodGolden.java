@@ -24,9 +24,10 @@ class ExampleClass {
   /*
    * @deprecated This method will be removed in the next major version.
    * Use {@link #foo()} instead
+   * foo has the same functionality as foobar.
    */
    @Deprecated
-     public static void foobar() {
+  public static void foobar() {
     System.out.println("bar");
   }
 

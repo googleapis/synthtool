@@ -146,7 +146,11 @@ def test_deprecate_method():
    * @deprecated This method will be removed in the next major version.
    * Use {{@link #{new_method}()}} instead
    */
-   @Deprecated
+@Deprecated
+"""
+        ADDITIONAL_COMMENT = """ /*
+   * {new_method} has the same functionality as foobar.
+   */
    """
         java.copy_and_rename_method(
             tempdir + "/SampleClass.java", "public static void foo()", "foo", "foobar"
@@ -155,6 +159,12 @@ def test_deprecate_method():
             tempdir + "/SampleClass.java",
             "public static void foobar()",
             DEPRECATION_WARNING.format(new_method="foo"),
+        )
+        # adding a comment when a javadoc and annotation already exists
+        java.deprecate_method(
+            tempdir + "/SampleClass.java",
+            "public static void foobar()",
+            ADDITIONAL_COMMENT.format(new_method="foo"),
         )
         assert_matches_golden(
             "tests/testdata/SampleDeprecateMethodGolden.java",

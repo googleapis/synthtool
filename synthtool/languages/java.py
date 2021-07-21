@@ -694,7 +694,8 @@ def deprecate_method(filename: str, signature: str, alternative: str):
                     while "@" in last_line:
                         annotations.insert(0, last_line)
                         last_line = lines.pop()
-                    alternative = "\n".join(alternative.splitlines()[1:])
+                    if "*/" in last_line:
+                        alternative = "\n".join(alternative.splitlines()[1:])
                     lines.extend(alternative)
                     lines.extend(annotations)
                 else:
