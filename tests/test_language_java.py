@@ -19,7 +19,7 @@ import xml.etree.ElementTree as ET
 import yaml
 from pathlib import Path
 from synthtool.languages import java
-import requests_mock
+
 import pytest
 from . import util
 
@@ -156,7 +156,6 @@ def test_deprecate_method():
             "public static void foobar()",
             DEPRECATION_WARNING.format(new_method="foo"),
         )
-        java.format_code(tempdir + "/SampleClass.java")
         assert_matches_golden(
             "tests/testdata/SampleDeprecateMethodGolden.java",
             tempdir + "/SampleClass.java",

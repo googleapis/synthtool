@@ -26,8 +26,8 @@ class ExampleClass {
    * Use {@link #foo()} instead
    */
    @Deprecated
-    public static void foobar() {
-   System.out.println("bar");
+     public static void foobar() {
+    System.out.println("bar");
   }
 
   public static class InnerClass {

@@ -695,6 +695,9 @@ def deprecate_method(filename: str, signature: str, alternative: str):
                     alternative = "\n".join(alternative.splitlines()[1:])
                     lines.extend(alternative)
                     lines.extend(annotations)
+                else:
+                    lines.extend(last_line)
+                    lines.extend(alternative)
             lines.append(line)
             line = fp.readline()
 
