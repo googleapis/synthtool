@@ -15,32 +15,34 @@
  */
 
 class ExampleClass {
- /*
-  * sample has the same functionality as foobar.
-  */
+  /**
+   * @deprecated sample has the same functionality as foobar.
+   */
   @Deprecated
   public void cat(String bar) {
     for (int i = 0; i < 3; i++) {
       System.out.println("this is a test " + bar);
     }
   }
- /*
-  * @deprecated This method will be removed in the next major version.
-  * Use {@link #sample()} instead
-  */
+
+  /**
+   * @deprecated This method will be removed in the next major version.
+   *   Use {@link #sample()} instead
+   */
   @Beta
-@Generated()
-@Deprecated
+  @Generated()
+  @Deprecated
   public void foo(String bar) {
     for (int i = 0; i < 3; i++) {
       System.out.println("this is a test " + bar);
     }
   }
 
- /*
-  * @deprecated This method will be removed in the next major version.
-  * Use {@link #sample()} instead
-  */
+  /**
+   * This is an existing comment.
+   * @deprecated This method will be removed in the next major version.
+   *   Use {@link #sample()} instead
+   */
   @Deprecated
   public void bar(String bar) {
     for (int i = 0; i < 3; i++) {

@@ -138,20 +138,15 @@ def test_copy_and_rename_method():
 
 
 def test_deprecate_method():
-    with tempfile.TemporaryDirectory() as tempdir:
+    # with tempfile.TemporaryDirectory() as tempdir:
+    if True:
+        tempdir = tempfile.mkdtemp()
         shutil.copyfile(
             "tests/testdata/SampleDeprecateClass.java",
             tempdir + "/SampleDeprecateClass.java",
         )
-        DEPRECATION_WARNING = """ /*
-  * @deprecated This method will be removed in the next major version.
-  * Use {{@link #{new_method}()}} instead
-  */
-  """
-        ADDITIONAL_COMMENT = """ /*
-  * {new_method} has the same functionality as foobar.
-  */
-  """
+        DEPRECATION_WARNING = """This method will be removed in the next major version.\nUse {{@link #{new_method}()}} instead"""
+        ADDITIONAL_COMMENT = """{new_method} has the same functionality as foobar."""
         java.deprecate_method(
             tempdir + "/SampleDeprecateClass.java",
             "public void foo(String bar)",

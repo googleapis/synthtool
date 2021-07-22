@@ -20,7 +20,7 @@ class ExampleClass {
       System.out.println("this is a test " + bar);
     }
   }
-  
+
   @Beta
   @Generated()
   public void foo(String bar) {
@@ -29,6 +29,9 @@ class ExampleClass {
     }
   }
 
+  /**
+   * This is an existing comment.
+   */
   public void bar(String bar) {
     for (int i = 0; i < 3; i++) {
       System.out.println("this is a test " + bar);
