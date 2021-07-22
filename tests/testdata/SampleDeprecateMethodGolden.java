@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Google LLC
+ * Copyright 2021 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,37 @@
  * limitations under the License.
  */
 
-package dlp;
-
 class ExampleClass {
-  public static void foo() {
-    System.out.println("bar");
-  }
-
-  /*
-   * foo has the same functionality as foobar.
-   * @deprecated This method will be removed in the next major version.
-   * Use {@link #foo()} instead
-   */
+ /*
+  * sample has the same functionality as foobar.
+  */
   @Deprecated
-  public static void foobar() {
-    System.out.println("bar");
+  public void cat(String bar) {
+    for (int i = 0; i < 3; i++) {
+      System.out.println("this is a test " + bar);
+    }
+  }
+ /*
+  * @deprecated This method will be removed in the next major version.
+  * Use {@link #sample()} instead
+  */
+  @Beta
+@Generated()
+@Deprecated
+  public void foo(String bar) {
+    for (int i = 0; i < 3; i++) {
+      System.out.println("this is a test " + bar);
+    }
   }
 
-  public static class InnerClass {
-    public void asdf() {
-      System.out.println("qwer");
+ /*
+  * @deprecated This method will be removed in the next major version.
+  * Use {@link #sample()} instead
+  */
+  @Deprecated
+  public void bar(String bar) {
+    for (int i = 0; i < 3; i++) {
+      System.out.println("this is a test " + bar);
     }
   }
 }

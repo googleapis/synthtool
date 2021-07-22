@@ -140,39 +140,39 @@ def test_copy_and_rename_method():
 def test_deprecate_method():
     with tempfile.TemporaryDirectory() as tempdir:
         shutil.copyfile(
-            "tests/testdata/SampleClass.java",
-            "tests/testdata/deprecate/SampleDeprecateClass.java",
+            "tests/testdata/SampleDeprecateClass.java",
+            tempdir + "/SampleDeprecateClass.java",
         )
         DEPRECATION_WARNING = """ /*
-   * @deprecated This method will be removed in the next major version.
-   * Use {{@link #{new_method}()}} instead
-   */
-    """
+  * @deprecated This method will be removed in the next major version.
+  * Use {{@link #{new_method}()}} instead
+  */
+  """
         ADDITIONAL_COMMENT = """ /*
-   * {new_method} has the same functionality as foobar.
-   */
-   """
-        java.copy_and_rename_method(
-            "tests/testdata/deprecate/SampleDeprecateClass.java",
-            "public static void foo()",
-            "foo",
-            "foobar",
-        )
+  * {new_method} has the same functionality as foobar.
+  */
+  """
         java.deprecate_method(
-            "tests/testdata/deprecate/SampleDeprecateClass.java",
-            "public static void foobar()",
-            ADDITIONAL_COMMENT.format(new_method="foo"),
+            tempdir + "/SampleDeprecateClass.java",
+            "public void foo(String bar)",
+            DEPRECATION_WARNING.format(new_method="sample"),
         )
 
         # adding a comment when a javadoc and annotation already exists
         java.deprecate_method(
-            "tests/testdata/deprecate/SampleDeprecateClass.java",
-            "public static void foobar()",
-            DEPRECATION_WARNING.format(new_method="foo"),
+            tempdir + "/SampleDeprecateClass.java",
+            "public void bar(String bar)",
+            DEPRECATION_WARNING.format(new_method="sample"),
         )
+        java.deprecate_method(
+            tempdir + "/SampleDeprecateClass.java",
+            "public void cat(String bar)",
+            ADDITIONAL_COMMENT.format(new_method="sample"),
+        )
+
         assert_matches_golden(
             "tests/testdata/SampleDeprecateMethodGolden.java",
-            "tests/testdata/deprecate/SampleDeprecateClass.java",
+            tempdir + "/SampleDeprecateClass.java",
         )
 
 

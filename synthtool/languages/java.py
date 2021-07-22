@@ -680,6 +680,7 @@ def deprecate_method(filename: str, signature: str, alternative: str):
     """
     lines: List[str] = []
     annotations: List[str] = []
+    leading_spaces = None
     with open(filename, "r") as fp:
         line = fp.readline()
         while line:
@@ -687,6 +688,7 @@ def deprecate_method(filename: str, signature: str, alternative: str):
             regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
             match = regex.match(line)
             if match:
+                leading_spaces = len(line) - len(line.lstrip())
                 last_line = lines.pop()
                 if "*/" in last_line:
                     alternative = "\n".join(alternative.splitlines()[1:])
@@ -694,16 +696,19 @@ def deprecate_method(filename: str, signature: str, alternative: str):
                 elif "@" in last_line:
                     while "@" in last_line:
                         if "@Deprecated" not in last_line:
+                            last_line = (leading_spaces * "") + last_line.lstrip()
                             annotations.insert(0, last_line)
                         last_line = lines.pop()
                     if "*/" in last_line:
                         alternative = "\n".join(alternative.splitlines()[1:])
+
                     lines.extend(alternative)
                     lines.extend(annotations)
                 else:
                     lines.extend(last_line)
                     lines.extend(alternative)
-                lines.append("@Deprecated\n")
+                lines.append((leading_spaces * "") + "@Deprecated\n")
+                leading_spaces = 0
             lines.append(line)
             line = fp.readline()
 
@@ -711,5 +716,3 @@ def deprecate_method(filename: str, signature: str, alternative: str):
         for line in lines:
             # print(line)
             fp.write(line)
-
-    format_code("/".join(filename.split("/")[:-1]))
