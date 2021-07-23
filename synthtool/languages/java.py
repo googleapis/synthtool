@@ -666,7 +666,7 @@ def deprecate_method(filename: str, signature: str, alternative: str):
                 }
             }
 
-        To deprecate the `main` method 6above, use:
+        To deprecate the `main` method above, use:
 
         deprecate_method('path/to/file', 'public void main(String[] args)',
             DEPRECATION_WARNING.format(new_method="foo"))
@@ -689,25 +689,62 @@ def deprecate_method(filename: str, signature: str, alternative: str):
             match = regex.match(line)
             if match:
                 leading_spaces = len(line) - len(line.lstrip())
+                indent = leading_spaces * " "
                 last_line = lines.pop()
                 if "*/" in last_line:
-                    alternative = "\n".join(alternative.splitlines()[1:])
-                    lines.extend(alternative)
+                    first = True
+                    for alt_line in alternative.splitlines():
+                        if first:
+                            lines.append(indent + " * @deprecated " + alt_line + "\n")
+                            first = False
+                        else:
+                            lines.append(indent + " *   " + alt_line + "\n")
+                    lines.append(last_line)
+                    lines.append(indent + "@Deprecated\n")
                 elif "@" in last_line:
+                    # save existing annotations
                     while "@" in last_line:
                         if "@Deprecated" not in last_line:
-                            last_line = (leading_spaces * "") + last_line.lstrip()
                             annotations.insert(0, last_line)
                         last_line = lines.pop()
                     if "*/" in last_line:
-                        alternative = "\n".join(alternative.splitlines()[1:])
-
-                    lines.extend(alternative)
+                        first = True
+                        for alt_line in alternative.splitlines():
+                            if first:
+                                lines.append(
+                                    indent + " * @deprecated " + alt_line + "\n"
+                                )
+                                first = False
+                            else:
+                                lines.append(indent + " *   " + alt_line + "\n")
+                        lines.append(last_line)
+                    else:
+                        lines.append(last_line)
+                        lines.append(indent + "/**\n")
+                        first = True
+                        for alt_line in alternative.splitlines():
+                            if first:
+                                lines.append(
+                                    indent + " * @deprecated " + alt_line + "\n"
+                                )
+                                first = False
+                            else:
+                                lines.append(indent + " *   " + alt_line + "\n")
+                        lines.append(indent + " */\n")
                     lines.extend(annotations)
+                    lines.append(indent + "@Deprecated\n")
                 else:
                     lines.extend(last_line)
-                    lines.extend(alternative)
-                lines.append((leading_spaces * "") + "@Deprecated\n")
+                    lines.append(indent + "/**\n")
+                    first = True
+                    for alt_line in alternative.splitlines():
+                        if first:
+                            lines.append(indent + " * @deprecated " + alt_line + "\n")
+                            first = False
+                        else:
+                            lines.append(indent + " *   " + alt_line + "\n")
+                    lines.append(indent + " */\n")
+                    lines.append(indent + "@Deprecated\n")
                 leading_spaces = 0
             lines.append(line)
             line = fp.readline()
