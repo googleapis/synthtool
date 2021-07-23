@@ -572,3 +572,252 @@ def remove_method(filename: str, signature: str):
         for line in lines:
             # print(line)
             fp.write(line)
+
+
+def copy_and_rename_method(filename: str, signature: str, before: str, after: str):
+    """Helper to make a copy an entire method and rename it.
+
+    Goes line-by-line to detect the start of the block. Determines
+    the end of the block by a closing brace at the same indentation
+    level. This requires the file to be correctly formatted.
+    The method is copied over and renamed in the method signature.
+    The calls to both methods are separate and unaffected.
+
+    Example: consider the following class:
+
+        class Example {
+            public void main(String[] args) {
+                System.out.println("Hello World");
+            }
+
+            public String foo() {
+                return "bar";
+            }
+        }
+
+    To copy and rename the `main` method above, use:
+
+    copy_and_rename_method('path/to/file', 'public void main(String[] args)',
+        'main', 'foo1')
+
+    Args:
+        filename (str): Path to source file
+        signature (str): Full signature of the method to remove. Example:
+            `public void main(String[] args)`.
+        before (str): name of the method to be copied
+        after (str): new name of the copied method
+    """
+    lines = []
+    method = []
+    leading_regex = None
+    with open(filename, "r") as fp:
+        line = fp.readline()
+        while line:
+            # for each line, try to find the matching
+            regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
+            match = regex.match(line)
+            if match:
+                leading_regex = re.compile(match.group(1) + "}")
+                lines.append(line)
+                method.append(line.replace(before, after))
+                line = fp.readline()
+                continue
+
+            lines.append(line)
+            # not in a ignore block - preserve the line
+            if leading_regex:
+                method.append(line)
+            else:
+                line = fp.readline()
+                continue
+
+            # detect the closing tag based on the leading spaces
+            match = leading_regex.match(line)
+            if match:
+                # block is closed, resume capturing content
+                leading_regex = None
+                lines.append("\n")
+                lines.extend(method)
+
+            line = fp.readline()
+
+    with open(filename, "w") as fp:
+        for line in lines:
+            # print(line)
+            fp.write(line)
+
+
+def add_javadoc(filename: str, signature: str, javadoc_type: str, content: List[str]):
+    """Helper to add a javadoc annoatation to a method.
+
+        Goes line-by-line to detect the start of the block.
+        Then finds the existing method comment (if it exists). If the
+        comment already exists, it will append the javadoc annotation
+        to the javadoc block. Otherwise, it will create a new javadoc
+        comment block.
+
+        Example: consider the following class:
+
+            class Example {
+                public void main(String[] args) {
+                    System.out.println("Hello World");
+                }
+
+                public String foo() {
+                    return "bar";
+                }
+            }
+
+        To add a javadoc annotation the `main` method above, use:
+
+        add_javadoc('path/to/file', 'public void main(String[] args)',
+            'deprecated', 'Please use foo instead.')
+
+    Args:
+        filename (str): Path to source file
+        signature (str): Full signature of the method to remove. Example:
+            `public void main(String[] args)`.
+        javadoc_type (str): The type of javadoc annotation. Example: `deprecated`.
+        content (List[str]): The javadoc lines
+    """
+    lines: List[str] = []
+    annotations: List[str] = []
+    with open(filename, "r") as fp:
+        line = fp.readline()
+        while line:
+            # for each line, try to find the matching
+            regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
+            match = regex.match(line)
+            if match:
+                leading_spaces = len(line) - len(line.lstrip())
+                indent = leading_spaces * " "
+                last_line = lines.pop()
+                while last_line.lstrip() and last_line.lstrip()[0] == "@":
+                    annotations.append(last_line)
+                    last_line = lines.pop()
+                if last_line.strip() == "*/":
+                    first = True
+                    for content_line in content:
+                        if first:
+                            lines.append(
+                                indent
+                                + " * @"
+                                + javadoc_type
+                                + " "
+                                + content_line
+                                + "\n"
+                            )
+                            first = False
+                        else:
+                            lines.append(indent + " *   " + content_line + "\n")
+                    lines.append(last_line)
+                else:
+                    lines.append(last_line)
+                    lines.append(indent + "/**\n")
+                    first = True
+                    for content_line in content:
+                        if first:
+                            lines.append(
+                                indent
+                                + " * @"
+                                + javadoc_type
+                                + " "
+                                + content_line
+                                + "\n"
+                            )
+                            first = False
+                        else:
+                            lines.append(indent + " *   " + content_line + "\n")
+                    lines.append(indent + " */\n")
+                lines.extend(annotations[::-1])
+            lines.append(line)
+            line = fp.readline()
+
+    with open(filename, "w") as fp:
+        for line in lines:
+            # print(line)
+            fp.write(line)
+
+
+def annotate_method(filename: str, signature: str, annotation: str):
+    """Helper to add an annotation to a method.
+
+        Goes line-by-line to detect the start of the block.
+        Then adds the annotation above the found method signature.
+
+        Example: consider the following class:
+
+            class Example {
+                public void main(String[] args) {
+                    System.out.println("Hello World");
+                }
+
+                public String foo() {
+                    return "bar";
+                }
+            }
+
+        To add an annotation the `main` method above, use:
+
+        annotate_method('path/to/file', 'public void main(String[] args)',
+            '@Generated()')
+
+    Args:
+        filename (str): Path to source file
+        signature (str): Full signature of the method to remove. Example:
+            `public void main(String[] args)`.
+        annotation (str): Full annotation. Example: `@Deprecated`
+    """
+    lines: List[str] = []
+    with open(filename, "r") as fp:
+        line = fp.readline()
+        while line:
+            # for each line, try to find the matching
+            regex = re.compile("(\\s*)" + re.escape(signature) + ".*")
+            match = regex.match(line)
+            if match:
+                leading_spaces = len(line) - len(line.lstrip())
+                indent = leading_spaces * " "
+                lines.append(indent + annotation + "\n")
+            lines.append(line)
+            line = fp.readline()
+
+    with open(filename, "w") as fp:
+        for line in lines:
+            # print(line)
+            fp.write(line)
+
+
+def deprecate_method(filename: str, signature: str, alternative: str):
+    """Helper to deprecate a method.
+
+        Goes line-by-line to detect the start of the block.
+        Then adds the deprecation comment before the method signature.
+        The @Deprecation annotation is also added.
+
+        Example: consider the following class:
+
+            class Example {
+                public void main(String[] args) {
+                    System.out.println("Hello World");
+                }
+
+                public String foo() {
+                    return "bar";
+                }
+            }
+
+        To deprecate the `main` method above, use:
+
+        deprecate_method('path/to/file', 'public void main(String[] args)',
+            DEPRECATION_WARNING.format(new_method="foo"))
+
+    Args:
+        filename (str): Path to source file
+        signature (str): Full signature of the method to remove. Example:
+            `public void main(String[] args)`.
+        alternative: DEPRECATION WARNING: multiline javadoc comment with user
+            specified leading open/close comment tags
+    """
+    add_javadoc(filename, signature, "deprecated", alternative.splitlines())
+    annotate_method(filename, signature, "@Deprecated")
