@@ -72,7 +72,8 @@ See the [Authentication][authentication] section in the base directory's README.
 
 ## Authorization
 
-A GCP account credentials that are used in API calls should be granted [Authorization Scopes](https://developers.google.com/identity/protocols/oauth2/scopes) to call these APIs. You can also review existing [predefined IAM roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles) that can be granted to GCP account which is used for authentication.
+To authorize you calls grant [authorization scopes][auth-scopes] required by {{metadata['repo']['name_pretty']}} APIs to the identity you are using for authentication.
+You can do that by defining [IAM policy][iam-policy] to bind the identity with [predefined IAM roles][predefined-iam-roles] for particular GCP project.
 
 ## Getting Started
 
@@ -233,6 +234,9 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [maven-version-image]: https://img.shields.io/maven-central/v/{{ group_id }}/{{ artifact_id }}.svg
 [maven-version-link]: https://search.maven.org/search?q=g:{{ group_id }}%20AND%20a:{{ artifact_id }}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
+[auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
+[predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
+[iam-policy]: https://cloud.google.com/iam/docs/overview#cloud-iam-policy
 [developer-console]: https://console.developers.google.com/
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-sdk]: https://cloud.google.com/sdk/
