@@ -72,8 +72,7 @@ See the [Authentication][authentication] section in the base directory's README.
 
 ## Authorization
 
-To authorize you calls grant [authorization scopes][auth-scopes] required by {{metadata['repo']['name_pretty']}} APIs to the identity you are using for authentication.
-You can do that by defining [IAM policy][iam-policy] to bind the identity with [predefined IAM roles][predefined-iam-roles] for particular GCP project.
+The client application making API calls must be granted [authorization scopes][auth-scopes] required for the desired {{metadata['repo']['name_pretty']}} APIs, and the authenticated principal must have the [IAM role(s)][predefined-iam-roles] required to access GCP resources using the {{metadata['repo']['name_pretty']}} API calls.
 
 ## Getting Started
 
