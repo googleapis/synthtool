@@ -190,20 +190,6 @@ def system(session):
             *session.posargs
         )
 
-{% if samples_test %}
-@nox.session(python=["3.7"])
-def samples(session):
-    requirements_path = os.path.join("samples", "requirements.txt")
-    requirements_exists = os.path.exists(requirements_path)
-
-    session.install("mock", "pytest")
-    if requirements_exists:
-        session.install("-r", requirements_path)
-    session.install("-e", ".")
-
-    session.run("py.test", "--quiet", "samples", *session.posargs)
-{% endif %}
-
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def cover(session):
     """Run the final coverage report.
