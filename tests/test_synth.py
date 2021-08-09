@@ -216,6 +216,7 @@ def synthesize_loop_fixture() -> typing.Generator[SynthesizeLoopFixture, None, N
     ):
         # Create a git repo with a README.
         subprocess.check_call(["git", "init", "."])
+        subprocess.check_call(["git", "checkout", "-b", "main"])
         with open("README.md", "wt") as readme:
             readme.write("Well done.")
         git.commit_all_changes("Added Readme")
