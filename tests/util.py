@@ -28,7 +28,8 @@ def make_working_repo(working_dir: str, default_branch: str = "main"):
     Specifically, it has a history of synth.py changes that actually change the
     generated output.
     """
-    subprocess.check_call(["git", "init", "-b", default_branch], cwd=working_dir)
+    subprocess.check_call(["git", "init"], cwd=working_dir)
+    subprocess.check_call(["git", "checkout", "-b", default_branch], cwd=working_dir)
     subprocess.check_call(
         [
             "git",
