@@ -55,7 +55,7 @@ class GitHub:
         url = f"{_GITHUB_ROOT}/repos/{repository}"
         response = self.session.get(url)
         data = _get_json_or_raise_exception(response)
-        return data["default_branch"]
+        return cast(Dict[str, str], data)["default_branch"]
 
     def list_pull_requests(self, repository: str, **kwargs) -> Sequence[Dict]:
         """List all pull requests for a repository.
