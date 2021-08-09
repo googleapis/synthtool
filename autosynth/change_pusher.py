@@ -79,12 +79,15 @@ class PullRequest(AbstractPullRequest):
 class ChangePusher(AbstractChangePusher):
     """Actually pushes changes to github."""
 
-    def __init__(self, repository: str, gh: github.GitHub, synth_path: str):
+    def __init__(
+        self, repository: str, gh: github.GitHub, synth_path: str, default_branch: str
+    ):
         self._repository = repository
         self._gh = gh
         self._synth_path = synth_path
         # maps branch name to pr json response
         self._existing_pull_requests: typing.Dict[str, typing.Any] = {}
+        self.default_branch = default_branch
 
     def push_changes(
         self, commit_count: int, branch: str, pr_title: str, synth_log: str = ""
@@ -100,7 +103,11 @@ class ChangePusher(AbstractChangePusher):
             )
         else:
             pr = self._gh.create_pull_request(
-                self._repository, branch=branch, title=pr_title[0:250], body=new_body,
+                self._repository,
+                branch=branch,
+                title=pr_title[0:250],
+                body=new_body,
+                base_branch=self.default_branch,
             )
 
             # args.synth_path (and api: * labels) only exist in monorepos
@@ -133,7 +140,8 @@ class SquashingChangePusher(AbstractChangePusher):
 
     before pushing the pull request to github."""
 
-    def __init__(self, inner_change_pusher: AbstractChangePusher):
+    def __init__(self, inner_change_pusher: AbstractChangePusher, default_branch: str):
+        self.default_branch = default_branch
         self.inner_change_pusher = inner_change_pusher
 
     def push_changes(
@@ -159,7 +167,7 @@ class SquashingChangePusher(AbstractChangePusher):
             # Do a git dance to construct a branch with the commits squashed.
             temp_branch = str(uuid.uuid4())
             executor.check_call(["git", "branch", "-m", temp_branch])
-            executor.check_call(["git", "checkout", "master"])
+            executor.check_call(["git", "checkout", self.default_branch])
             executor.check_call(["git", "checkout", "-b", branch])
             executor.check_call(["git", "merge", "--squash", temp_branch])
             executor.check_call(["git", "commit", "-F", message_file.name])

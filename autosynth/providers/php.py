@@ -23,7 +23,7 @@ def list_repositories():
     # monorepo.
     repo = "googleapis/google-cloud-php"
 
-    tree = gh.get_tree(repo)
+    tree = gh.get_tree(repo, "master")
     subdirs = [item["path"] for item in tree["tree"] if item["type"] == "tree"]
     # No hidden dirs
     subdirs = [subdir for subdir in subdirs if not subdir.startswith(".")]

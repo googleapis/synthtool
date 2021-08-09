@@ -45,7 +45,11 @@ def make_repo_clone_url(repo: str) -> str:
 
 
 def clone(
-    url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
+    url: str,
+    dest: pathlib.Path = None,
+    committish: str = None,
+    force: bool = False,
+    default_branch: str = "master",
 ) -> pathlib.Path:
     """Clones a remote git repo.
 
@@ -82,9 +86,9 @@ def clone(
             cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
             shell.run(cmd, check=True)
         else:
-            shell.run(["git", "checkout", "master"], cwd=str(dest), check=True)
+            shell.run(["git", "checkout", default_branch], cwd=str(dest), check=True)
             shell.run(["git", "pull"], cwd=str(dest), check=True)
-        committish = committish or "master"
+        committish = committish or default_branch
 
     if committish:
         shell.run(["git", "reset", "--hard", committish], cwd=str(dest))

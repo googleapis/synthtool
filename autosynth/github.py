@@ -45,17 +45,17 @@ class GitHub:
 
         Arguments:
             repository {str} -- GitHub repository with the format [owner]/[repo]
-        
+
         Returns:
             str - Name of the default branch
-        
+
         Throws:
-            HttoError if the server returns an error code.
+            HttpError if the server returns an error code.
         """
         url = f"{_GITHUB_ROOT}/repos/{repository}"
         response = self.session.get(url)
         data = _get_json_or_raise_exception(response)
-        return data['default_branch']
+        return data["default_branch"]
 
     def list_pull_requests(self, repository: str, **kwargs) -> Sequence[Dict]:
         """List all pull requests for a repository.
@@ -78,7 +78,12 @@ class GitHub:
         return cast(List[Dict], _get_json_or_raise_exception(response))
 
     def create_pull_request(
-        self, repository: str, branch: str, title: str, body: str = None
+        self,
+        repository: str,
+        branch: str,
+        title: str,
+        base_branch: str,
+        body: str = None,
     ) -> Dict:
         """Open a pull request.
 
@@ -104,7 +109,7 @@ class GitHub:
                 "title": title,
                 "body": body,
                 "head": branch,
-                "base": "master",
+                "base": base_branch,
                 "maintainer_can_modify": True,
             },
         )
@@ -151,7 +156,7 @@ class GitHub:
         response = self.session.patch(url, json=json)
         return cast(Dict, _get_json_or_raise_exception(response))
 
-    def get_tree(self, repository: str, tree_sha: str = "master") -> Sequence[Dict]:
+    def get_tree(self, repository: str, tree_sha: str) -> Sequence[Dict]:
         """Returns a single tree using the SHA1 value for that tree.
 
         See: https://developer.github.com/v3/git/trees/#get-a-tree

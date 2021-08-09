@@ -25,14 +25,12 @@ def list_repositories():
     # monorepo.
     repo = "googleapis/google-cloud-ruby"
 
-    tree = gh.get_tree(repo)
+    tree = gh.get_tree(repo, "master")
     subdirs = [item["path"] for item in tree["tree"] if item["type"] == "tree"]
     # No hidden dirs
     subdirs = [subdir for subdir in subdirs if not subdir.startswith(".")]
     # Only subdirs that have synth.py files.
-    subdirs = [
-        subdir for subdir in subdirs if _check_docker_synth(gh, repo, subdir)
-    ]
+    subdirs = [subdir for subdir in subdirs if _check_docker_synth(gh, repo, subdir)]
 
     return [
         {

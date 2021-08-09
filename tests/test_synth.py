@@ -263,7 +263,7 @@ def test_synthesize_loop_with_realistic_change_history_squash_prs(
     synthesize_loop_fixture: SynthesizeLoopFixture,
 ):
     pusher = synthesize_loop_fixture.change_pusher
-    synthesize_loop_fixture.change_pusher = SquashingChangePusher(pusher)
+    synthesize_loop_fixture.change_pusher = SquashingChangePusher(pusher, "main")
     synthesize_loop_with_realistic_change_history(
         synthesize_loop_fixture, True, "mock-synth-golden-squash-prs.log"
     )
@@ -573,9 +573,9 @@ def test_pull_request_interleaved_with_commit():
         )
         subprocess.check_call(["git", "branch", "test"])
 
-        # Write version d in master.
+        # Write version d in main.
         working_path = pathlib.Path(working_dir)
-        subprocess.check_call(["git", "checkout", "master"])
+        subprocess.check_call(["git", "checkout", "main"])
         text = text.replace('"c\\n"', '"d\\n"')
         (working_path / "synth.py").write_text(text)
         subprocess.check_call(["git", "commit", "-am", "d"])
@@ -587,7 +587,7 @@ def test_pull_request_interleaved_with_commit():
         autosynth.synth.synthesize_loop(toolbox, False, MockChangePusher(), synthesizer)
 
         # Merge in the pull request.
-        subprocess.check_call(["git", "checkout", "master"])
+        subprocess.check_call(["git", "checkout", "main"])
         subprocess.check_call(["git", "merge", "--squash", "-X", "theirs", "test"])
         subprocess.check_call(["git", "commit", "-am", "merged PR"])
 
