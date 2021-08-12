@@ -140,8 +140,7 @@ class SquashingChangePusher(AbstractChangePusher):
 
     before pushing the pull request to github."""
 
-    def __init__(self, inner_change_pusher: AbstractChangePusher, default_branch: str):
-        self.default_branch = default_branch
+    def __init__(self, inner_change_pusher: AbstractChangePusher):
         self.inner_change_pusher = inner_change_pusher
 
     def push_changes(
@@ -167,7 +166,7 @@ class SquashingChangePusher(AbstractChangePusher):
             # Do a git dance to construct a branch with the commits squashed.
             temp_branch = str(uuid.uuid4())
             executor.check_call(["git", "branch", "-m", temp_branch])
-            executor.check_call(["git", "checkout", self.default_branch])
+            executor.check_call(["git", "checkout", f"HEAD~{commit_count}"])
             executor.check_call(["git", "checkout", "-b", branch])
             executor.check_call(["git", "merge", "--squash", temp_branch])
             executor.check_call(["git", "commit", "-F", message_file.name])

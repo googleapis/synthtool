@@ -225,7 +225,6 @@ def _inner_main(temp_dir: str) -> int:
         "--branch-suffix", default=os.environ.get("BRANCH_SUFFIX", None)
     )
     parser.add_argument("--pr-title", default="")
-    parser.add_argument("--default-branch", default=os.environ.get("DEFAULT_BRANCH"))
     parser.add_argument("extra_args", nargs=argparse.REMAINDER)
 
     args = parser.parse_args()
@@ -233,7 +232,7 @@ def _inner_main(temp_dir: str) -> int:
     gh = github.GitHub(args.github_token)
 
     branch = "-".join(filter(None, ["autosynth", args.branch_suffix]))
-    default_branch = args.default_branch or gh.get_default_branch(args.repository)
+    default_branch = gh.get_default_branch(args.repository)
 
     pr_title = args.pr_title or (
         f"[CHANGE ME] Re-generated {args.synth_path or ''} to pick up changes in "
@@ -334,7 +333,7 @@ def _inner_main(temp_dir: str) -> int:
                 base_synth_log_path,
             )
             if not multiple_commits:
-                change_pusher = SquashingChangePusher(change_pusher, default_branch)
+                change_pusher = SquashingChangePusher(change_pusher)
 
             # Call the loop.
             commit_count = synthesize_loop(x, multiple_prs, change_pusher, synthesizer)

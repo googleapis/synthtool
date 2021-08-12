@@ -264,7 +264,7 @@ def test_synthesize_loop_with_realistic_change_history_squash_prs(
     synthesize_loop_fixture: SynthesizeLoopFixture,
 ):
     pusher = synthesize_loop_fixture.change_pusher
-    synthesize_loop_fixture.change_pusher = SquashingChangePusher(pusher, "main")
+    synthesize_loop_fixture.change_pusher = SquashingChangePusher(pusher)
     synthesize_loop_with_realistic_change_history(
         synthesize_loop_fixture, True, "mock-synth-golden-squash-prs.log"
     )
