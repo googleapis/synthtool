@@ -44,12 +44,16 @@ def make_repo_clone_url(repo: str) -> str:
         return f"https://github.com/{repo}.git"
 
 
+def _local_default_branch(path: pathlib.Path) -> str:
+    output = subprocess.check_output(
+        ["git", "branch", "--sort=committerdate", "--format=%(refname:short)"],
+        cwd=str(path),
+    ).decode("utf-8")
+    return output.splitlines()[-1]
+
+
 def clone(
-    url: str,
-    dest: pathlib.Path = None,
-    committish: str = None,
-    force: bool = False,
-    default_branch: str = "master",
+    url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
 ) -> pathlib.Path:
     """Clones a remote git repo.
 
@@ -82,10 +86,12 @@ def clone(
         if force and dest.exists():
             shutil.rmtree(dest)
 
+        default_branch = None
         if not dest.exists():
             cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
             shell.run(cmd, check=True)
         else:
+            default_branch = _local_default_branch(dest)
             shell.run(["git", "checkout", default_branch], cwd=str(dest), check=True)
             shell.run(["git", "pull"], cwd=str(dest), check=True)
         committish = committish or default_branch
