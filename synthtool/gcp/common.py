@@ -225,17 +225,9 @@ class CommonTemplates:
             kwargs["default_python_version"] = "3.8"
         if "unit_test_python_versions" not in kwargs:
             kwargs["unit_test_python_versions"] = ["3.6", "3.7", "3.8", "3.9"]
-            if "microgenerator" not in kwargs:
-                kwargs["unit_test_python_versions"] = ["2.7"] + kwargs[
-                    "unit_test_python_versions"
-                ]
 
         if "system_test_python_versions" not in kwargs:
             kwargs["system_test_python_versions"] = ["3.8"]
-            if "microgenerator" not in kwargs:
-                kwargs["system_test_python_versions"] = ["2.7"] + kwargs[
-                    "system_test_python_versions"
-                ]
 
         # If cov_level is not given, set it to None.
         if "cov_level" not in kwargs:

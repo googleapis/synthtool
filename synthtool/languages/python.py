@@ -15,7 +15,7 @@
 import re
 import sys
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import yaml
 
@@ -45,8 +45,8 @@ LICENSE = """
 # See the License for the specific language governing permissions and
 # limitations under the License."""
 
-SAMPLES_VERSIONS = ["2.7", "3.6", "3.7", "3.8"]
-IGNORED_VERSIONS = ["2.7"]
+SAMPLES_VERSIONS = ["3.6", "3.7", "3.8"]
+IGNORED_VERSIONS: List[str] = []
 
 SAMPLES_TEMPLATE_PATH = Path(CommonTemplates()._template_root) / "python_samples"
 
