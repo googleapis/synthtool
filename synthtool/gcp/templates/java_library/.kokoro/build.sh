@@ -23,8 +23,8 @@ cd ${scriptDir}/..
 # include common functions
 source ${scriptDir}/common.sh
 
-# Print out Java version
-java -version
+# Print out Maven & Java version
+mvn -version
 echo ${JOB_TYPE}
 
 # attempt to install 3 times with exponential backoff (starting with 10 seconds)
@@ -115,7 +115,7 @@ fi
 # fix output location of logs
 bash .kokoro/coerce_logs.sh
 
-if [[ "${ENABLE_BUILD_COP}" == "true" ]]
+if [[ "${ENABLE_FLAKYBOT}" == "true" ]]
 then
     chmod +x ${KOKORO_GFILE_DIR}/linux_amd64/flakybot
     ${KOKORO_GFILE_DIR}/linux_amd64/flakybot -repo={{metadata['repo']['repo']}}

@@ -1,6 +1,7 @@
 {% set group_id = metadata['repo']['distribution_name'].split(':')|first -%}
 {% set artifact_id = metadata['repo']['distribution_name'].split(':')|last -%}
 {% set repo_short = metadata['repo']['repo'].split('/')|last -%}
+
 # Google {{ metadata['repo']['name_pretty'] }} Client for Java
 
 Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
@@ -16,10 +17,12 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
+
 ## Quickstart
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
+
 ```xml
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
 ```
@@ -28,6 +31,7 @@ If you are using Maven without BOM, add this to your dependencies:
 {% else %}
 If you are using Maven, add this to your pom.xml file:
 {% endif %}
+
 ```xml
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
 {{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
@@ -42,6 +46,7 @@ If you are using Maven, add this to your pom.xml file:
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
 If you are using Gradle 5.x or later, add this to your dependencies
+
 ```Groovy
 implementation platform('com.google.cloud:libraries-bom:{{metadata['latest_bom_version']}}')
 
@@ -50,11 +55,13 @@ compile '{{ group_id }}:{{ artifact_id }}'
 {% endif -%}
 
 If you are using Gradle without BOM, add this to your dependencies
+
 ```Groovy
 compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
 
 If you are using SBT, add this to your dependencies
+
 ```Scala
 libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['latest_version'] }}"
 ```
@@ -62,6 +69,10 @@ libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['la
 ## Authentication
 
 See the [Authentication][authentication] section in the base directory's README.
+
+## Authorization
+
+The client application making API calls must be granted [authorization scopes][auth-scopes] required for the desired {{metadata['repo']['name_pretty']}} APIs, and the authenticated principal must have the [IAM role(s)][predefined-iam-roles] required to access GCP resources using the {{metadata['repo']['name_pretty']}} API calls.
 
 ## Getting Started
 
@@ -96,8 +107,7 @@ use this {{metadata['repo']['name_pretty']}} Client Library.
 {% if metadata['samples']|length %}
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory. The samples' `README.md`
-has instructions for running the samples.
+Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
@@ -121,9 +131,49 @@ To get help, follow the instructions in the [shared Troubleshooting document][tr
 {% endif %}
 {% endif -%}
 
-## Java Versions
+## Supported Java Versions
 
 Java {{ metadata['min_java_version'] }} or above is required for using this client.
+
+Google's Java client libraries,
+[Google Cloud Client Libraries][cloudlibs]
+and
+[Google Cloud API Libraries][apilibs],
+follow the
+[Oracle Java SE support roadmap][oracle]
+(see the Oracle Java SE Product Releases section).
+
+### For new development
+
+In general, new feature development occurs with support for the lowest Java
+LTS version covered by  Oracle's Premier Support (which typically lasts 5 years
+from initial General Availability). If the minimum required JVM for a given
+library is changed, it is accompanied by a [semver][semver] major release.
+
+Java 11 and (in September 2021) Java 17 are the best choices for new
+development.
+
+### Keeping production systems current
+
+Google tests its client libraries with all current LTS versions covered by
+Oracle's Extended Support (which typically lasts 8 years from initial
+General Availability).
+
+#### Legacy support
+
+Google's client libraries support legacy versions of Java runtimes with long
+term stable libraries that don't receive feature updates on a best efforts basis
+as it may not be possible to backport all patches.
+
+Google provides updates on a best efforts basis to apps that continue to use
+Java 7, though apps might need to upgrade to current versions of the library
+that supports their JVM.
+
+#### Where to find specific information
+
+The latest versions and the supported Java versions are identified on
+the individual GitHub repository `github.com/GoogleAPIs/java-SERVICENAME`
+and on [google-cloud-java][g-c-j].
 
 ## Versioning
 
@@ -136,6 +186,7 @@ This library follows [Semantic Versioning](http://semver.org/).
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
 and the public API should not be considered stable.
 {% endif %}{% endif %}
+
 ## Contributing
 
 {% if 'partials' in metadata and metadata['partials']['contributing'] -%}
@@ -149,6 +200,7 @@ Please note that this project is released with a Contributor Code of Conduct. By
 this project you agree to abide by its terms. See [Code of Conduct][code-of-conduct] for more
 information.
 {% endif %}
+
 ## License
 
 Apache 2.0 - See [LICENSE][license] for more information.
@@ -181,6 +233,9 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [maven-version-image]: https://img.shields.io/maven-central/v/{{ group_id }}/{{ artifact_id }}.svg
 [maven-version-link]: https://search.maven.org/search?q=g:{{ group_id }}%20AND%20a:{{ artifact_id }}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
+[auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
+[predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
+[iam-policy]: https://cloud.google.com/iam/docs/overview#cloud-iam-policy
 [developer-console]: https://console.developers.google.com/
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-sdk]: https://cloud.google.com/sdk/
@@ -192,3 +247,9 @@ Java is a registered trademark of Oracle and/or its affiliates.
 {% if metadata['repo']['api_id'] %}[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
+
+[semver]: https://semver.org/
+[cloudlibs]: https://cloud.google.com/apis/docs/client-libraries-explained
+[apilibs]: https://cloud.google.com/apis/docs/client-libraries-explained#google_api_client_libraries
+[oracle]: https://www.oracle.com/java/technologies/java-se-support-roadmap.html
+[g-c-j]: http://github.com/googleapis/google-cloud-java
