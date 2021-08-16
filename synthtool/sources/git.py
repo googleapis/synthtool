@@ -45,11 +45,30 @@ def make_repo_clone_url(repo: str) -> str:
 
 
 def _local_default_branch(path: pathlib.Path) -> str:
-    output = subprocess.check_output(
-        ["git", "branch", "--sort=committerdate", "--format=%(refname:short)"],
-        cwd=str(path),
-    ).decode("utf-8")
-    return output.splitlines()[-1]
+    """Helper method to infer the default branch.
+
+    Sorts the list of branches by committerdate (latest is last) and then
+    returns the later of master or main. The order of branches that are tied
+    by committerdate is undefined.
+
+    Arguments:
+        path {pathlib.Path} - Path to the local git clone
+    
+    Returns:
+        string -- The inferred default branch.
+    """
+    branches = (
+        subprocess.check_output(
+            ["git", "branch", "--sort=-committerdate", "--format=%(refname:short)"],
+            cwd=str(path),
+        )
+        .decode("utf-8")
+        .splitlines()
+    )
+    for branch in branches:
+        if branch == "master" or branch == "main":
+            return branch
+    return None
 
 
 def clone(
