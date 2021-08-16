@@ -53,7 +53,7 @@ def _local_default_branch(path: pathlib.Path) -> str:
 
     Arguments:
         path {pathlib.Path} - Path to the local git clone
-    
+
     Returns:
         string -- The inferred default branch.
     """
