@@ -17,7 +17,7 @@ import pathlib
 import re
 import shutil
 import subprocess
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Union
 
 import synthtool
 import synthtool.preconfig
@@ -44,7 +44,7 @@ def make_repo_clone_url(repo: str) -> str:
         return f"https://github.com/{repo}.git"
 
 
-def _local_default_branch(path: pathlib.Path) -> str:
+def _local_default_branch(path: pathlib.Path) -> Union[str, None]:
     """Helper method to infer the default branch.
 
     Sorts the list of branches by committerdate (latest is last) and then
