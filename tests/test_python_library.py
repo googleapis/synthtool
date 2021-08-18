@@ -28,43 +28,67 @@ PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_
 @pytest.mark.parametrize(
     ["template_kwargs", "expected_text"],
     [
-        ({}, ["import nox", 'session.install("-e", ".", "-c", constraints_path)']),
+        ({}, ["import nox", 'session.install("-e", ".", *constraints)']),
         (
             {"unit_test_local_dependencies": ["../testutils", "../unitutils"]},
             [
-                'session.install("-e", "../testutils", "-c", constraints_path)',
-                'session.install("-e", "../unitutils", "-c", constraints_path)',
+                """\
+UNIT_TEST_LOCAL_DEPENDENCIES = [
+    "../testutils",
+    "../unitutils",
+]""",
             ],
         ),
         (
             {"system_test_local_dependencies": ["../testutils", "../sysutils"]},
             [
-                'session.install("-e", "../testutils", "-c", constraints_path)',
-                'session.install("-e", "../sysutils", "-c", constraints_path)',
+                """\
+SYSTEM_TEST_LOCAL_DEPENDENCIES = [
+    "../testutils",
+    "../sysutils",
+]""",
             ],
         ),
         (
             {"unit_test_extras": ["abc", "def"]},
-            ['session.install("-e", ".[abc,def]", "-c", constraints_path)'],
+            [
+                """\
+UNIT_TEST_EXTRAS = [
+    "abc",
+    "def",
+]""",
+            ],
         ),
         (
             {"system_test_extras": ["abc", "def"]},
-            ['session.install("-e", ".[abc,def]", "-c", constraints_path)'],
+                """\
+SYSTEM_TEST_EXTRAS = [
+    "abc",
+    "def",
+]""",
         ),
         (
             {"unit_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = ""',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+UNIT_TEST_EXTRAS_BY_PYTHON = { 
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
         (
             {"system_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = ""',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+SYSTEM_TEST_EXTRAS_BY_PYTHON = { 
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
         (
@@ -73,9 +97,18 @@ PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_
                 "unit_test_extras_by_python": {"3.8": ["abc", "def"]},
             },
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = "[tuv,wxyz]"',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+UNIT_TEST_EXTRAS = [
+    "tuv",
+    "wxyz",
+]""",
+                """\
+UNIT_TEST_EXTRAS_BY_PYTHON = { 
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
         (
@@ -84,9 +117,18 @@ PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_
                 "system_test_extras_by_python": {"3.8": ["abc", "def"]},
             },
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = "[tuv,wxyz]"',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+SYSTEM_TEST_EXTRAS = [
+    "tuv",
+    "wxyz",
+]""",
+                """\
+SYSTEM_TEST_EXTRAS_BY_PYTHON = { 
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
     ],
