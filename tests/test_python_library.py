@@ -61,7 +61,7 @@ UNIT_TEST_EXTRAS = [
         ),
         (
             {"system_test_extras": ["abc", "def"]},
-                """\
+            """\
 SYSTEM_TEST_EXTRAS = [
     "abc",
     "def",
