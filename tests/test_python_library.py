@@ -71,7 +71,7 @@ SYSTEM_TEST_EXTRAS = [
             {"unit_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
                 """\
-UNIT_TEST_EXTRAS_BY_PYTHON = { 
+UNIT_TEST_EXTRAS_BY_PYTHON = {
     "3.8": [
         "abc",
         "def",
@@ -83,7 +83,7 @@ UNIT_TEST_EXTRAS_BY_PYTHON = {
             {"system_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
                 """\
-SYSTEM_TEST_EXTRAS_BY_PYTHON = { 
+SYSTEM_TEST_EXTRAS_BY_PYTHON = {
     "3.8": [
         "abc",
         "def",
@@ -103,7 +103,7 @@ UNIT_TEST_EXTRAS = [
     "wxyz",
 ]""",
                 """\
-UNIT_TEST_EXTRAS_BY_PYTHON = { 
+UNIT_TEST_EXTRAS_BY_PYTHON = {
     "3.8": [
         "abc",
         "def",
@@ -123,7 +123,7 @@ SYSTEM_TEST_EXTRAS = [
     "wxyz",
 ]""",
                 """\
-SYSTEM_TEST_EXTRAS_BY_PYTHON = { 
+SYSTEM_TEST_EXTRAS_BY_PYTHON = {
     "3.8": [
         "abc",
         "def",

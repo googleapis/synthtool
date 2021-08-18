@@ -48,7 +48,7 @@ UNIT_TEST_DEPENDENCIES = [{% for v in unit_test_dependencies %}
 UNIT_TEST_EXTRAS = [{% for v in unit_test_extras %}
     "{{v}}",{% endfor %}
 ]
-UNIT_TEST_EXTRAS_BY_PYTHON = { {% if unit_test_extras_by_python %}{% for python_version, extras in unit_test_extras_by_python.items() %}
+UNIT_TEST_EXTRAS_BY_PYTHON = {{ '{' }}{% if unit_test_extras_by_python %}{% for python_version, extras in unit_test_extras_by_python.items() %}
     "{{python_version}}": [{% for v in extras %}
         "{{v}}",{% endfor %}
     ],{% endfor %}{% endif %}
@@ -70,7 +70,7 @@ SYSTEM_TEST_DEPENDENCIES = [{% for v in system_test_dependencies %}
 SYSTEM_TEST_EXTRAS = [{% for v in system_test_extras %}
     "{{v}}",{% endfor %}
 ]
-SYSTEM_TEST_EXTRAS_BY_PYTHON = { {% if system_test_extras_by_python %}{% for python_version, extras in system_test_extras_by_python.items() %}
+SYSTEM_TEST_EXTRAS_BY_PYTHON = {{ '{' }}{% if system_test_extras_by_python %}{% for python_version, extras in system_test_extras_by_python.items() %}
     "{{python_version}}": [{% for v in extras %}
         "{{v}}",{% endfor %}
     ],{% endfor %}{% endif %}
