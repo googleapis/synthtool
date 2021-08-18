@@ -25,7 +25,7 @@ import nox
 
 
 BLACK_VERSION = "black==19.10b0"
-BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
+BLACK_PATHS = ["docs", "google", "samples", "tests", "noxfile.py", "setup.py", "owlbot.py"]
 
 DEFAULT_PYTHON_VERSION="{{ default_python_version }}"
 SYSTEM_TEST_PYTHON_VERSIONS=[{% for v in system_test_python_versions %}"{{v}}"{% if not loop.last %},{% endif %}{% endfor %}]
