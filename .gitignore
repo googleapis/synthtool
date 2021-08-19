@@ -110,6 +110,7 @@ venv.bak/
 .vscode/
 .settings/
 .project
+.idea/
 
 # synthtool artifacts
 working_repo/

@@ -216,6 +216,7 @@ def synthesize_loop_fixture() -> typing.Generator[SynthesizeLoopFixture, None, N
     ):
         # Create a git repo with a README.
         subprocess.check_call(["git", "init", "."])
+        subprocess.check_call(["git", "checkout", "-b", "main"])
         with open("README.md", "wt") as readme:
             readme.write("Well done.")
         git.commit_all_changes("Added Readme")
@@ -573,9 +574,9 @@ def test_pull_request_interleaved_with_commit():
         )
         subprocess.check_call(["git", "branch", "test"])
 
-        # Write version d in master.
+        # Write version d in main.
         working_path = pathlib.Path(working_dir)
-        subprocess.check_call(["git", "checkout", "master"])
+        subprocess.check_call(["git", "checkout", "main"])
         text = text.replace('"c\\n"', '"d\\n"')
         (working_path / "synth.py").write_text(text)
         subprocess.check_call(["git", "commit", "-am", "d"])
@@ -587,7 +588,64 @@ def test_pull_request_interleaved_with_commit():
         autosynth.synth.synthesize_loop(toolbox, False, MockChangePusher(), synthesizer)
 
         # Merge in the pull request.
-        subprocess.check_call(["git", "checkout", "master"])
+        subprocess.check_call(["git", "checkout", "main"])
+        subprocess.check_call(["git", "merge", "--squash", "-X", "theirs", "test"])
+        subprocess.check_call(["git", "commit", "-am", "merged PR"])
+
+        # Create a second pull request.
+        subprocess.check_call(["git", "checkout", "-b", "test2"])
+        with open(metadata_path, "rb") as metadata_file:
+            metadata: typing.Dict[str, typing.Any] = json.load(metadata_file)
+        versions = autosynth.git_source.enumerate_versions_for_working_repo(
+            metadata_path, metadata.get("sources", [])
+        )
+        toolbox = autosynth.synth.SynthesizeLoopToolbox(
+            [versions], "test2", temp_dir, metadata_path, ""
+        )
+        autosynth.synth.synthesize_loop(toolbox, False, MockChangePusher(), synthesizer)
+
+        assert_git_log_matches(
+            pathlib.Path(__file__).parent
+            / "testdata"
+            / "test-pull-request-interleaved-with-commit.log"
+        )
+
+
+def test_pull_request_interleaved_with_commit_and_default_branch():
+    """Test a the case where:
+    1.  A pull request is generated.
+    2.  A commit unrelated to the pull request gets merged.
+    3.  The pull request gets merged.
+    4.  Regenerate and create a new pull request.  Autosynth should be able to
+        identify the changes triggered by #2.
+    """
+    test_default_branch = "foo-main"
+    with tempfile.TemporaryDirectory() as working_dir, util.OsChdirContext(
+        working_dir
+    ), tempfile.TemporaryDirectory() as temp_dir:
+        text = make_working_repo(working_dir, test_default_branch)
+        metadata_path = os.path.join(working_dir, "synth.metadata")
+        synthesizer = SimpleSynthesizer()
+        versions = autosynth.git_source.enumerate_versions_for_working_repo(
+            metadata_path, []
+        )
+        subprocess.check_call(["git", "branch", "test"])
+
+        # Write version d in main.
+        working_path = pathlib.Path(working_dir)
+        subprocess.check_call(["git", "checkout", test_default_branch])
+        text = text.replace('"c\\n"', '"d\\n"')
+        (working_path / "synth.py").write_text(text)
+        subprocess.check_call(["git", "commit", "-am", "d"])
+
+        subprocess.check_call(["git", "checkout", "test"])
+        toolbox = autosynth.synth.SynthesizeLoopToolbox(
+            [versions], "test", temp_dir, metadata_path, ""
+        )
+        autosynth.synth.synthesize_loop(toolbox, False, MockChangePusher(), synthesizer)
+
+        # Merge in the pull request.
+        subprocess.check_call(["git", "checkout", test_default_branch])
         subprocess.check_call(["git", "merge", "--squash", "-X", "theirs", "test"])
         subprocess.check_call(["git", "commit", "-am", "merged PR"])
 
