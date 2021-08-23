@@ -17,7 +17,7 @@ import pathlib
 import re
 import shutil
 import subprocess
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Union
 
 import synthtool
 import synthtool.preconfig
@@ -42,6 +42,33 @@ def make_repo_clone_url(repo: str) -> str:
         return f"git@github.com:{repo}.git"
     else:
         return f"https://github.com/{repo}.git"
+
+
+def _local_default_branch(path: pathlib.Path) -> Union[str, None]:
+    """Helper method to infer the default branch.
+
+    Sorts the list of branches by committerdate (latest is last) and then
+    returns the later of master or main. The order of branches that are tied
+    by committerdate is undefined.
+
+    Arguments:
+        path {pathlib.Path} - Path to the local git clone
+
+    Returns:
+        string -- The inferred default branch.
+    """
+    branches = (
+        subprocess.check_output(
+            ["git", "branch", "--sort=-committerdate", "--format=%(refname:short)"],
+            cwd=str(path),
+        )
+        .decode("utf-8")
+        .splitlines()
+    )
+    for branch in branches:
+        if branch == "master" or branch == "main":
+            return branch
+    return None
 
 
 def clone(
@@ -78,13 +105,15 @@ def clone(
         if force and dest.exists():
             shutil.rmtree(dest)
 
+        default_branch = None
         if not dest.exists():
             cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
             shell.run(cmd, check=True)
         else:
-            shell.run(["git", "checkout", "master"], cwd=str(dest), check=True)
+            default_branch = _local_default_branch(dest)
+            shell.run(["git", "checkout", default_branch], cwd=str(dest), check=True)
             shell.run(["git", "pull"], cwd=str(dest), check=True)
-        committish = committish or "master"
+        committish = committish or default_branch
 
     if committish:
         shell.run(["git", "reset", "--hard", committish], cwd=str(dest))

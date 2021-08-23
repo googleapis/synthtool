@@ -45,14 +45,14 @@ def _setup_branch_at(commit_hash: str):
     return setup_branch
 
 
-def generate(repository: str, commit_hash="master", synth_path="") -> str:
+def generate(repository: str, commit_hash="main", synth_path="") -> str:
     """Run synthtool on the repo and record the results as a git log.
 
     Arguments:
         repository {str} -- something like googleapis/nodejs-vision
 
     Keyword Arguments:
-        commit_hash {str} -- a commit hash or branch to checkout (default: {"master"})
+        commit_hash {str} -- a commit hash or branch to checkout (default: {"main"})
 
     Returns:
         str -- path to the git log file
