@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-shared-config</artifactId>
-    <version>0.11.0</version>
+    <version>1.0.0</version>
   </parent>
 
   <name>Google Example API BOM</name>
@@ -27,6 +27,15 @@
       <name>Jeff Ching</name>
       <email>chingor@google.com</email>
       <organization>Google LLC</organization>
+      <roles>
+        <role>Developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>neenushaji</id>
+      <name>Neenu Shaji</name>
+      <email>neenushaji@google.com</email>
+      <organization>Google</organization>
       <roles>
         <role>Developer</role>
       </roles>
