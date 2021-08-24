@@ -204,6 +204,12 @@ class CommonTemplates:
 
         overridden_samples_kwargs["subdir"] = override_path
         return self._generic_library("python_samples", **overridden_samples_kwargs)
+    
+    def python_notebooks(self, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+        return self._generic_library("python_notebooks", **kwargs)
 
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
