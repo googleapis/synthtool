@@ -46,10 +46,7 @@ def execute_notebook(
         execute_preprocessor = ExecutePreprocessor(timeout=-1, kernel_name="python3")
 
         # Use no-execute preprocessor
-        (
-            nb,
-            resources,
-        ) = remove_no_execute_cells_preprocessor.preprocess(nb)
+        (nb, resources,) = remove_no_execute_cells_preprocessor.preprocess(nb)
 
         (nb, resources) = update_variables_preprocessor.preprocess(nb, resources)
 
