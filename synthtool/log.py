@@ -18,7 +18,7 @@ import sys
 try:
     from colorlog import ColoredFormatter
 except ImportError:
-    ColoredFormatter = None
+    ColoredFormatter
 
 SUCCESS = 25
 
@@ -68,7 +68,7 @@ def configure_logger(name: str, color: bool = bool(ColoredFormatter)):
             },
         )
     else:
-        formatter = logging.Formatter(
+        formatter = logging.Formatter(  # type: ignore
             "%(asctime)s %(name)s [%(levelname)s] > %(message)s"
         )
 
