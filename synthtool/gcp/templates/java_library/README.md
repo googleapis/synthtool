@@ -50,14 +50,14 @@ If you are using Gradle 5.x or later, add this to your dependencies
 ```Groovy
 implementation platform('com.google.cloud:libraries-bom:{{metadata['latest_bom_version']}}')
 
-compile '{{ group_id }}:{{ artifact_id }}'
+implementation '{{ group_id }}:{{ artifact_id }}'
 ```
 {% endif -%}
 
 If you are using Gradle without BOM, add this to your dependencies
 
 ```Groovy
-compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
+implementation '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
 
 If you are using SBT, add this to your dependencies
