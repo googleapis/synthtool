@@ -6,15 +6,18 @@ on:
 name: ci
 jobs:
   units:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java: [8, 11]
     steps:
     - uses: actions/checkout@v2
+    - uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.8.1
     - uses: actions/setup-java@v1
       with:
-        java-version: ${{'{{matrix.java}}'}}
+        java-version: ${{matrix.java}}
     - run: java -version
     - run: .kokoro/build.sh
       env:
@@ -31,21 +34,27 @@ jobs:
       env:
         JOB_TYPE: test
   dependencies:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java: [8, 11]
     steps:
     - uses: actions/checkout@v2
+    - uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.8.1
     - uses: actions/setup-java@v1
       with:
-        java-version: ${{'{{matrix.java}}'}}
+        java-version: ${{matrix.java}}
     - run: java -version
     - run: .kokoro/dependencies.sh
   lint:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.8.1
     - uses: actions/setup-java@v1
       with:
         java-version: 8
@@ -54,9 +63,12 @@ jobs:
       env:
         JOB_TYPE: lint
   clirr:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: stCarolas/setup-maven@v4
+      with:
+        maven-version: 3.8.1
     - uses: actions/setup-java@v1
       with:
         java-version: 8
