@@ -4,7 +4,7 @@
 # For syntax help see:
 # https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners#codeowners-syntax
 
-{% if 'codeowner_team' in metadata['repo'] %}
+{% if 'codeowner_team' in metadata['repo'] and metadata['repo']['library_type'] == "GAPIC_AUTO" %}
 # @googleapis/yoshi-python and {{ metadata['repo']['codeowner_team'] }} are the default owners for changes in this repo
 *     @googleapis/yoshi-python {{ metadata['repo']['codeowner_team'] }}
 
