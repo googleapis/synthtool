@@ -23,6 +23,8 @@ steps:
     args: [ "build",
       "-t", "gcr.io/$PROJECT_ID/owlbot-java:$SHORT_SHA",
       "-t", "gcr.io/$PROJECT_ID/owlbot-java:latest",
+      "-t", "gcr.io/cloud-devrel-public-resources/owlbot-java:$SHORT_SHA",
+      "-t", "gcr.io/cloud-devrel-public-resources/owlbot-java:latest",
       "-f", "docker/owlbot/java/Dockerfile", "." ]
     id: "build"
   - name: gcr.io/gcp-runtimes/container-structure-test
@@ -43,3 +45,5 @@ steps:
 images:
   - gcr.io/$PROJECT_ID/owlbot-java:$SHORT_SHA
   - gcr.io/$PROJECT_ID/owlbot-java:latest
+  - gcr.io/cloud-devrel-public-resources/owlbot-java:$SHORT_SHA
+  - gcr.io/cloud-devrel-public-resources/owlbot-java:latest
