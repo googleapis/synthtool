@@ -86,7 +86,7 @@ if [ ${#notebooks[@]} -gt 0 ]; then
                 FLAKE8_RTN=$?
             else
                 echo "Running black..."
-                python3 -m nbqa black "$notebook" --nbqa-mutate
+                python3 -m black "$notebook"
                 BLACK_RTN=$?            
                 echo "Running pyupgrade..."
                 python3 -m nbqa pyupgrade "$notebook" --nbqa-mutate
