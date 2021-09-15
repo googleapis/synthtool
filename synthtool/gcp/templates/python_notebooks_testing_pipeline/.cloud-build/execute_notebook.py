@@ -14,7 +14,7 @@
 # limitations under the License.
 import sys
 import nbformat
-from nbconvert.preprocessors import ExecutePreprocessor, CellExecutionError
+from nbconvert.preprocessors import ExecutePreprocessor
 import os
 import errno
 from notebook_processors import RemoveNoExecuteCells, UpdateVariablesPreprocessor
@@ -43,7 +43,7 @@ def execute_notebook(
         update_variables_preprocessor = UpdateVariablesPreprocessor(
             replacement_map=replacement_map
         )
-        execute_preprocessor = ExecutePreprocessor(timeout=-1, kernel_name="python3")
+        ExecutePreprocessor(timeout=-1, kernel_name="python3")
 
         # Use no-execute preprocessor
         (nb, resources,) = remove_no_execute_cells_preprocessor.preprocess(nb)
@@ -78,8 +78,7 @@ def execute_notebook(
             stderr_file=sys.stderr,
         )
 
-    except Exception as error:
-        out = None
+    except Exception:
         print(f"Error executing the notebook: {notebook_file_path}.\n\n")
         has_error = True
 

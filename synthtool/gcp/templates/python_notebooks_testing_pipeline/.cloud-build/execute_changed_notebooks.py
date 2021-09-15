@@ -16,7 +16,7 @@ import argparse
 import pathlib
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 import execute_notebook
 
@@ -68,7 +68,7 @@ def run_changed_notebooks(
             + test_paths
         )
     else:
-        print(f"Looking for all notebooks.")
+        print("Looking for all notebooks.")
         notebooks = subprocess.check_output(["git", "ls-files"] + test_paths)
 
     notebooks = notebooks.decode("utf-8").split("\n")
@@ -101,7 +101,7 @@ def run_changed_notebooks(
                         "REGION": variable_region,
                     },
                 )
-                print(f"Notebook finished successfully.")
+                print("Notebook finished successfully.")
                 passed_notebooks.append(notebook)
             except Exception as error:
                 print(f"Notebook finished with failure: {error}")
