@@ -38,13 +38,13 @@ def run_cleanup_managers(managers: List[ResourceCleanupManager], is_dry_run: boo
             else:
                 manager.delete(resource)
 
-        print("")
 
-
-is_dry_run = False
-
-if is_dry_run:
+def set_dry_run(dry_run_status: bool):
+    if dry_run_status is True:
+        return True
     print("Starting cleanup in dry run mode...")
+    return False
+
 
 # List of all cleanup managers
 managers = [
@@ -53,4 +53,4 @@ managers = [
     ModelResourceCleanupManager(),
 ]
 
-run_cleanup_managers(managers=managers, is_dry_run=is_dry_run)
+run_cleanup_managers(managers=managers, is_dry_run=set_dry_run(False))

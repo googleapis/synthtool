@@ -84,7 +84,6 @@ def execute_notebook(
         error_message=None,
     )
 
-    # TODO: Handle cases where multiple notebooks have the same name
     time_start = datetime.datetime.now()
     try:
         ExecuteNotebook.execute_notebook(
