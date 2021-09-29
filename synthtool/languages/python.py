@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import glob
 import os
 import re
 import sys
@@ -113,12 +114,7 @@ def detect_versions(
       If specified, the default_version is guaranteed to be listed last.
       Otherwise, the list is sorted alphabetically.
     """
-    versions = []
-    if os.path.isdir(path):
-        for directory in os.listdir(path):
-            if os.path.isdir(os.path.join(path, directory)):
-                versions.append(directory)
-    versions.sort()
+    versions = sorted([p.name for p in Path(path).glob("**/*v[1-9]*")])
     if default_version is not None:
         versions = [v for v in versions if v != default_version] + [default_version]
     return versions
