@@ -130,26 +130,26 @@ def test_split_system_tests():
             assert "system-3.8" in contents
 
 
-def test_detect_versions_src():
+def test_detect_versions_non_default_path():
     temp_dir = Path(tempfile.mkdtemp())
     src_dir = temp_dir / "src"
-    for v in ("v1", "v2", "v3"):
+    for v in ("api_v1", "api_v2", "api_v3"):
         os.makedirs(src_dir / v)
 
     with util.chdir(temp_dir):
         versions = python.detect_versions(src_dir)
-        assert ["v1", "v2", "v3"] == versions
+        assert ["api_v1", "api_v2", "api_v3"] == versions
 
 
 def test_detect_versions_default_path():
     temp_dir = Path(tempfile.mkdtemp())
-    staging_dir = temp_dir / "owl-bot-staging"
-    for v in ("v1", "v2", "v3"):
-        os.makedirs(staging_dir / v)
+    default_dir = temp_dir / "google/cloud"
+    for v in ("api_v1", "api_v2", "api_v3"):
+        os.makedirs(default_dir / v)
 
     with util.chdir(temp_dir):
         versions = python.detect_versions()
-        assert ["v1", "v2", "v3"] == versions
+        assert ["api_v1", "api_v2", "api_v3"] == versions
 
 
 def test_detect_versions_dir_not_found():
@@ -159,16 +159,16 @@ def test_detect_versions_dir_not_found():
     assert [] == versions
 
 
-def test_detect_versions_with_default():
+def test_detect_versions_with_default_version():
     temp_dir = Path(tempfile.mkdtemp())
-    staging_dir = temp_dir / "owl-bot-staging"
-    for v in ("v1", "v2", "v3"):
-        os.makedirs(staging_dir / v)
+    default_dir = temp_dir / "google/cloud"
+    for v in ("api_v1", "api_v2", "api_v3"):
+        os.makedirs(default_dir / v)
 
     with util.chdir(temp_dir):
-        versions = python.detect_versions(default_version="v1")
-        assert ["v1", "v2", "v3"] == versions
-        versions = python.detect_versions(default_version="v2")
-        assert ["v2", "v1", "v3"] == versions
-        versions = python.detect_versions(default_version="v3")
-        assert ["v3", "v1", "v2"] == versions
+        versions = python.detect_versions(default_version="api_v1")
+        assert ["api_v1", "api_v2", "api_v3"] == versions
+        versions = python.detect_versions(default_version="api_v2")
+        assert ["api_v2", "api_v1", "api_v3"] == versions
+        versions = python.detect_versions(default_version="api_v3")
+        assert ["api_v3", "api_v1", "api_v2"] == versions

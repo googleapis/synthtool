@@ -1,11 +1,9 @@
 .. include:: README.rst
 
 .. include:: multiprocessing.rst
-{% if default_version %}
 {% if versions|length > 1 %}
 This package includes clients for multiple versions of {{ metadata['repo']['name_pretty'] }}.
-By default, you will get version ``{{ default_version }}``.
-{% endif %}
+By default, you will get version ``{{ versions | first }}``.
 {% endif %}
 {% for version in versions %}
 API Reference

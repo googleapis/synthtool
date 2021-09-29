@@ -96,25 +96,25 @@ def _get_sample_readme_metadata(sample_dir: Path) -> dict:
 
 
 def detect_versions(
-    path: str = "./owl-bot-staging", default_version: Optional[str] = None
+    path: str = "./google/cloud", default_version: Optional[str] = None
 ) -> List[str]:
     """
     Detects the versions a library has, based on distinct folders
     within path. This is based on the fact that our GAPIC libraries are
     structured as follows:
 
-    owl-bot-staging/v1
-    owl-bot-staging/v1beta
-    owl-bot-staging/v1alpha
+    google/cloud/*_v1
+    google/cloud/*_v1beta
+    google/cloud/*_v1alpha
 
     With folder names mapping directly to versions.
 
     Returns: a list of the subdirectories; for the example above:
-      ['v1', 'v1alpha', 'v1beta']
+      ['*_v1', '*_v1alpha', '*_v1beta']
       If specified, the default_version is guaranteed to be listed first.
       Otherwise, the list is sorted alphabetically.
     """
-    versions = sorted([p.name for p in Path(path).glob("**/*v[1-9]*")])
+    versions = sorted([p.name for p in Path(path).glob("**/*_v[1-9]*")])
     if default_version is not None:
         versions = [default_version] + [v for v in versions if v != default_version]
     return versions
