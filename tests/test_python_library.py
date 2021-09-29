@@ -137,18 +137,19 @@ def test_detect_versions_src():
         os.makedirs(src_dir / v)
 
     with util.chdir(temp_dir):
-        versions = python.detect_versions()
+        versions = python.detect_versions(src_dir)
         assert ["v1", "v2", "v3"] == versions
 
 
-def test_detect_versions_staging():
+def test_detect_versions_default_path():
     temp_dir = Path(tempfile.mkdtemp())
     staging_dir = temp_dir / "owl-bot-staging"
     for v in ("v1", "v2", "v3"):
         os.makedirs(staging_dir / v)
 
-    versions = python.detect_versions(staging_dir)
-    assert ["v1", "v2", "v3"] == versions
+    with util.chdir(temp_dir):
+        versions = python.detect_versions()
+        assert ["v1", "v2", "v3"] == versions
 
 
 def test_detect_versions_dir_not_found():
@@ -160,10 +161,9 @@ def test_detect_versions_dir_not_found():
 
 def test_detect_versions_with_default():
     temp_dir = Path(tempfile.mkdtemp())
-    src_dir = temp_dir / "src"
-    vs = ("v1", "v2", "v3")
-    for v in vs:
-        os.makedirs(src_dir / v)
+    staging_dir = temp_dir / "owl-bot-staging"
+    for v in ("v1", "v2", "v3"):
+        os.makedirs(staging_dir / v)
 
     with util.chdir(temp_dir):
         versions = python.detect_versions(default_version="v1")
