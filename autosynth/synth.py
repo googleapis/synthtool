@@ -232,12 +232,15 @@ def _inner_main(temp_dir: str) -> int:
     gh = github.GitHub(args.github_token)
 
     branch = "-".join(filter(None, ["autosynth", args.branch_suffix]))
+    default_branch = gh.get_default_branch(args.repository)
 
     pr_title = args.pr_title or (
         f"[CHANGE ME] Re-generated {args.synth_path or ''} to pick up changes in "
         f"the API or client library generator."
     )
-    change_pusher: AbstractChangePusher = ChangePusher(args.repository, gh, branch)
+    change_pusher: AbstractChangePusher = ChangePusher(
+        args.repository, gh, branch, default_branch
+    )
     synth_file_name = args.synth_file_name or "synth.py"
 
     # capture logs for later

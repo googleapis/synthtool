@@ -225,17 +225,9 @@ class CommonTemplates:
             kwargs["default_python_version"] = "3.8"
         if "unit_test_python_versions" not in kwargs:
             kwargs["unit_test_python_versions"] = ["3.6", "3.7", "3.8", "3.9"]
-            if "microgenerator" not in kwargs:
-                kwargs["unit_test_python_versions"] = ["2.7"] + kwargs[
-                    "unit_test_python_versions"
-                ]
 
         if "system_test_python_versions" not in kwargs:
             kwargs["system_test_python_versions"] = ["3.8"]
-            if "microgenerator" not in kwargs:
-                kwargs["system_test_python_versions"] = ["2.7"] + kwargs[
-                    "system_test_python_versions"
-                ]
 
         # If cov_level is not given, set it to None.
         if "cov_level" not in kwargs:
@@ -369,6 +361,17 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
 
 
 def _get_default_branch_name(repository_name: str) -> str:
+    """Read the default branch name from the environment.
+
+    First checks environment variable DEFAULT_BRANCH_PATH.  If found, it
+    reads the contents of the file at DEFAULT_BRANCH_PATH and returns it.
+
+    Then checks environment varabile DEFAULT_BRANCH, and returns it if found.
+    """
+    default_branch_path = os.getenv("DEFAULT_BRANCH_PATH")
+    if default_branch_path:
+        return Path(default_branch_path).read_text().strip()
+
     # This default should be switched to "main" once we've migrated
     # the majority of our repositories:
     return os.getenv("DEFAULT_BRANCH", "master")

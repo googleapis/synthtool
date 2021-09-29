@@ -87,10 +87,8 @@ def default(session):
     constraints_path = str(
         CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
     )
-    {%- if microgenerator %}
-    session.install("asyncmock", "pytest-asyncio", "-c", constraints_path)
-    {% endif %}
-    session.install("mock", "pytest", "pytest-cov", {% for d in unit_test_external_dependencies %}"{{d}}",{% endfor %} "-c", constraints_path)
+    session.install("mock", "asyncmock", "pytest", "pytest-cov", "pytest-asyncio", "-c", constraints_path)
+    {% for d in unit_test_external_dependencies %}session.install("{{d}}", "-c", constraints_path){% endfor %}
     {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
     {% endfor %}
     {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path){% endfor %}
@@ -191,20 +189,6 @@ def system(session):
             system_test_folder_path,
             *session.posargs
         )
-
-{% if samples_test %}
-@nox.session(python=["2.7", "3.7"])
-def samples(session):
-    requirements_path = os.path.join("samples", "requirements.txt")
-    requirements_exists = os.path.exists(requirements_path)
-
-    session.install("mock", "pytest")
-    if requirements_exists:
-        session.install("-r", requirements_path)
-    session.install("-e", ".")
-
-    session.run("py.test", "--quiet", "samples", *session.posargs)
-{% endif %}
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
 def cover(session):
