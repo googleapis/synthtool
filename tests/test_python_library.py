@@ -167,8 +167,8 @@ def test_detect_versions_with_default():
 
     with util.chdir(temp_dir):
         versions = python.detect_versions(default_version="v1")
-        assert ["v2", "v3", "v1"] == versions
-        versions = python.detect_versions(default_version="v2")
-        assert ["v1", "v3", "v2"] == versions
-        versions = python.detect_versions(default_version="v3")
         assert ["v1", "v2", "v3"] == versions
+        versions = python.detect_versions(default_version="v2")
+        assert ["v2", "v1", "v3"] == versions
+        versions = python.detect_versions(default_version="v3")
+        assert ["v3", "v1", "v2"] == versions

@@ -111,12 +111,12 @@ def detect_versions(
 
     Returns: a list of the subdirectories; for the example above:
       ['v1', 'v1alpha', 'v1beta']
-      If specified, the default_version is guaranteed to be listed last.
+      If specified, the default_version is guaranteed to be listed first.
       Otherwise, the list is sorted alphabetically.
     """
     versions = sorted([p.name for p in Path(path).glob("**/*v[1-9]*")])
     if default_version is not None:
-        versions = [v for v in versions if v != default_version] + [default_version]
+        versions = [default_version] + [v for v in versions if v != default_version]
     return versions
 
 
