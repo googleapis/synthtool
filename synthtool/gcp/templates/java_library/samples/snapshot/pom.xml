@@ -25,14 +25,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
-  <!-- {x-version-update-start:{{ artifactId }}:current} -->
   <dependencies>
+    <!-- {x-version-update-start:{{ artifact_id }}:current} -->
     <dependency>
       <groupId>{{ group_id }}</groupId>
       <artifactId>{{ artifact_id }}</artifactId>
       <version>{{ metadata['latest_version'] }}</version>
     </dependency>
-  <!-- {x-version-update-end} -->
+    <!-- {x-version-update-end} -->
 
     <dependency>
       <groupId>junit</groupId>
