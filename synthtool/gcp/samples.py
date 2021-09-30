@@ -39,9 +39,9 @@ def _read_sample_metadata_comment(sample_file: str) -> Dict:
             # prefix so that we can parse the yaml contained.
             sample_metadata_string = re.sub(r"((#|//) ?)", "", match.group("metadata"))
             try:
-                sample_metadata = yaml.load(sample_metadata_string, Loader=yaml.SafeLoader)[
-                    "sample-metadata"
-                ]
+                sample_metadata = yaml.load(
+                    sample_metadata_string, Loader=yaml.SafeLoader
+                )["sample-metadata"]
             except yaml.scanner.ScannerError:
                 # warn and continue on bad metadata
                 logger.warning(f"bad metadata detected in {sample_file}")
