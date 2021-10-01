@@ -236,7 +236,7 @@ class CommonTemplates:
         # Don't add samples templates if there are no samples
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
-        
+
         # Assume the python-docs-samples Dockerfile is used for samples by default
         if "custom_samples_dockerfile" not in kwargs:
             kwargs["custom_samples_dockerfile"] = False
