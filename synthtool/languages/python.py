@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -93,9 +94,7 @@ def _get_sample_readme_metadata(sample_dir: Path) -> dict:
     return sample_metadata
 
 
-def detect_versions(
-    path: str = "./google/cloud", default_version: Optional[str] = None
-) -> List[str]:
+def detect_versions(path: str = "./google/cloud") -> List[str]:
     """
     Detects the versions a library has, based on distinct folders
     within path. This is based on the fact that our GAPIC libraries are
@@ -109,11 +108,16 @@ def detect_versions(
 
     Returns: a list of the subdirectories; for the example above:
       ['*_v1', '*_v1alpha', '*_v1beta']
-      If specified, the default_version is guaranteed to be listed first.
-      Otherwise, the list is sorted alphabetically.
+      The default_version specified in .repo-metadata.json is
+      guaranteed to be listed first. Otherwise, the list is
+      sorted alphabetically.
     """
+
+    default_version = json.load(open(".repo-metadata.json", "rt")).get(
+        "default_version"
+    )
     versions = sorted([p.name for p in Path(path).glob("**/*_v[1-9]*")])
-    if default_version is not None:
+    if versions:
         versions = [default_version] + [v for v in versions if v != default_version]
     return versions
 

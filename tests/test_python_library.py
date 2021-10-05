@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import os
 from pathlib import Path
 
@@ -136,6 +137,11 @@ def test_detect_versions_non_default_path():
     for v in ("api_v1", "api_v2", "api_v3"):
         os.makedirs(src_dir / v)
 
+    # Set default_version to "api_v1"
+    test_json = {"default_version": "api_v1"}
+    with open(f"{temp_dir}/.repo-metadata.json", "w") as metadata:
+        json.dump(test_json, metadata)
+
     with util.chdir(temp_dir):
         versions = python.detect_versions(src_dir)
         assert ["api_v1", "api_v2", "api_v3"] == versions
@@ -147,6 +153,11 @@ def test_detect_versions_default_path():
     for v in ("api_v1", "api_v2", "api_v3"):
         os.makedirs(default_dir / v)
 
+    # Set default_version to "api_v1"
+    test_json = {"default_version": "api_v1"}
+    with open(f"{temp_dir}/.repo-metadata.json", "w") as metadata:
+        json.dump(test_json, metadata)
+
     with util.chdir(temp_dir):
         versions = python.detect_versions()
         assert ["api_v1", "api_v2", "api_v3"] == versions
@@ -154,6 +165,10 @@ def test_detect_versions_default_path():
 
 def test_detect_versions_dir_not_found():
     temp_dir = Path(tempfile.mkdtemp())
+
+    test_json = {"default_version": "api_v1"}
+    with open(f"{temp_dir}/.repo-metadata.json", "w") as metadata:
+        json.dump(test_json, metadata)
 
     versions = python.detect_versions(temp_dir / "does-not-exist")
     assert [] == versions
@@ -166,9 +181,23 @@ def test_detect_versions_with_default_version():
         os.makedirs(default_dir / v)
 
     with util.chdir(temp_dir):
-        versions = python.detect_versions(default_version="api_v1")
+        # Set default_version to "api_v1"
+        test_json = {"default_version": "api_v1"}
+        with open(f"{temp_dir}/.repo-metadata.json", "w") as metadata:
+            json.dump(test_json, metadata)
+        versions = python.detect_versions()
         assert ["api_v1", "api_v2", "api_v3"] == versions
-        versions = python.detect_versions(default_version="api_v2")
+
+        # Set default_version to "api_v2"
+        test_json = {"default_version": "api_v2"}
+        with open(f"{temp_dir}/.repo-metadata.json", "w") as metadata:
+            json.dump(test_json, metadata)
+        versions = python.detect_versions()
         assert ["api_v2", "api_v1", "api_v3"] == versions
-        versions = python.detect_versions(default_version="api_v3")
+
+        # Set default_version to "api_v3"
+        test_json = {"default_version": "api_v3"}
+        with open(f"{temp_dir}/.repo-metadata.json", "w") as metadata:
+            json.dump(test_json, metadata)
+        versions = python.detect_versions()
         assert ["api_v3", "api_v1", "api_v2"] == versions
