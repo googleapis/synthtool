@@ -245,8 +245,9 @@ class CommonTemplates:
         except FileNotFoundError:
             default_version = ""
 
-        # Exclude `docs/index.rst` if `default_version` is not specified.
-        if not default_version:
+        # Exclude `docs/index.rst` if `default_version` is not specified
+        # or `versions` is not given.
+        if not default_version or "versions" not in kwargs:
             self.excludes += ["docs/index.rst"]
 
         ret = self._generic_library("python_library", **kwargs)
