@@ -237,6 +237,18 @@ class CommonTemplates:
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
 
+        # Get the value of `default_version` from `.repo-metadata.json`
+        try:
+            default_version = json.load(open(".repo-metadata.json", "rt")).get(
+                "default_version"
+            )
+        except FileNotFoundError:
+            default_version = ""
+
+        # Exclude `docs/index.rst` if `default_version` is not specified.
+        if not default_version:
+            self.excludes += ["docs/index.rst"]
+
         ret = self._generic_library("python_library", **kwargs)
 
         # If split_system_tests is set to True, we disable the system
