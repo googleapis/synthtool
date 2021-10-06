@@ -27,8 +27,7 @@ from synthtool.log import logger
 
 STAGING_DIR = "owl-bot-staging"
 METADATA_DIR = "GPBMetadata"
-COPYRIGHT_REGEX = re.compile(r"Copyright (\d{4}) Google LLC$",
-                             flags=re.MULTILINE)
+COPYRIGHT_REGEX = re.compile(r"Copyright (\d{4}) Google LLC$", flags=re.MULTILINE)
 OWLBOT_PY_FILENAME = "owlbot.py"
 
 
@@ -65,9 +64,7 @@ def _merge(src: str, dest: str, path: Path):
     logger.debug("_merge called for %s", path)
     m = re.search(COPYRIGHT_REGEX, dest)
     if m:
-        return re.sub(
-            COPYRIGHT_REGEX, f"Copyright {m.group(1)} Google LLC", src, 1
-        )
+        return re.sub(COPYRIGHT_REGEX, f"Copyright {m.group(1)} Google LLC", src, 1)
     return src
 
 
@@ -107,7 +104,7 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
     logger.debug("owlbot_copy_version called from %s to %s", src, dest)
 
     # detect the version string for later use
-    entries = os.scandir(src / 'src')
+    entries = os.scandir(src / "src")
     if not entries:
         logger.info("there is no src directory to copy")
         return
@@ -115,13 +112,13 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
     logger.debug("version_string detected: %s", version_string)
 
     # copy all src including partial veneer classes
-    s.move(src / 'src', dest / 'src', merge=_merge)
+    s.move(src / "src", dest / "src", merge=_merge)
 
     # copy tests
-    s.move(src / 'tests', dest / 'tests', merge=_merge)
+    s.move(src / "tests", dest / "tests", merge=_merge)
 
     # detect the directory containing proto generated PHP source and metadata.
-    entries = os.scandir(src / 'proto/src')
+    entries = os.scandir(src / "proto/src")
     proto_dir = None
     metadata_dir = None
     if not entries:
@@ -131,15 +128,15 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
         if os.path.basename(entry.path) == METADATA_DIR:
             metadata_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
         else:
-            proto_dir =  _find_copy_target(Path(entry.path).resolve(), version_string)
+            proto_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
     logger.debug("metadata_dir detected: %s", metadata_dir)
     logger.debug("proto_dir detected: %s", proto_dir)
 
     # copy proto files
-    s.move(proto_dir, dest / 'src', merge=_merge)
+    s.move(proto_dir, dest / "src", merge=_merge)
 
     # copy metadata files
-    s.move(metadata_dir, dest / 'metadata', merge=_merge)
+    s.move(metadata_dir, dest / "metadata", merge=_merge)
 
 
 def owlbot_common_patch() -> None:
@@ -161,7 +158,7 @@ def owlbot_patch(dest: Path) -> None:
 
         # Load owlbot.py and execute `patch` function if defined.
         owlbot_py = get_owlbot_py(dest)
-        if owlbot_py and hasattr(owlbot_py, 'patch'):
+        if owlbot_py and hasattr(owlbot_py, "patch"):
             owlbot_py.patch()
 
 
@@ -197,7 +194,7 @@ def owlbot_main() -> None:
                 dest = Path(src.parts[-1]).resolve()
                 if dest.is_dir():
                     owlbot_py = get_owlbot_py(dest)
-                    if owlbot_py and hasattr(owlbot_py, 'main'):
+                    if owlbot_py and hasattr(owlbot_py, "main"):
                         # owlbot.py has `main` method defined.
                         # Change directory and run `main`.
                         with pushd(dest):
