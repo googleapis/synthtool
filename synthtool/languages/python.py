@@ -116,7 +116,9 @@ def detect_versions(path: str = "./google/cloud") -> List[str]:
     versions = []
 
     # Get the default_version from .repo-metadata.json
-    default_version = json.load(open(".repo-metadata.json", "rt")).get("default_version")
+    default_version = json.load(open(".repo-metadata.json", "rt")).get(
+        "default_version"
+    )
 
     # Sort the sub directories alphabetically
     sub_dirs = sorted([p.name for p in Path(path).glob("**/*_v[1-9]*")])
@@ -124,11 +126,15 @@ def detect_versions(path: str = "./google/cloud") -> List[str]:
     if default_version and sub_dirs:
         # The subdirectory with the same suffix as the default_version
         # specified in .repo-metadata.json will be the default client.
-        default_client = next(iter([d for d in sub_dirs if d.endswith(default_version)]), None)
+        default_client = next(
+            iter([d for d in sub_dirs if d.endswith(default_version)]), None
+        )
         if default_client:
             # The default_client will be first in the list.
             # The remaining elements will be sorted alphabetically.
-            versions = [default_client] + [d for d in sub_dirs if not d.endswith(default_version)]
+            versions = [default_client] + [
+                d for d in sub_dirs if not d.endswith(default_version)
+            ]
     return versions
 
 

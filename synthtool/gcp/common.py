@@ -214,8 +214,8 @@ class CommonTemplates:
         self._load_generic_metadata(kwargs["metadata"])
 
         # initialize default_version if it doesn't exist in kwargs["metadata"]['repo']
-        if "default_version" not in kwargs["metadata"]['repo']:
-            kwargs["metadata"]['repo']["default_version"] = ""
+        if "default_version" not in kwargs["metadata"]["repo"]:
+            kwargs["metadata"]["repo"]["default_version"] = ""
 
         # rename variable to accommodate existing owlbot.py files
         if "system_test_dependencies" in kwargs:
@@ -246,7 +246,10 @@ class CommonTemplates:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
 
         # Don't add `docs/index.rst` if `versions` is not provided or `default_version` is empty
-        if "versions" not in kwargs or not kwargs["metadata"]["repo"]["default_version"]:
+        if (
+            "versions" not in kwargs
+            or not kwargs["metadata"]["repo"]["default_version"]
+        ):
             self.excludes += ["docs/index.rst"]
 
         ret = self._generic_library("python_library", **kwargs)
