@@ -209,7 +209,15 @@ class CommonTemplates:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
-        # rename variable to accomodate existing synth.py files
+
+        # load common repo meta information (metadata that's not language specific).
+        self._load_generic_metadata(kwargs["metadata"])
+
+        # initialize default_version if it doesn't exist in kwargs["metadata"]['repo']
+        if "default_version" not in kwargs["metadata"]['repo']:
+            kwargs["metadata"]['repo']["default_version"] = ""
+
+        # rename variable to accommodate existing owlbot.py files
         if "system_test_dependencies" in kwargs:
             kwargs["system_test_local_dependencies"] = kwargs[
                 "system_test_dependencies"
@@ -237,17 +245,8 @@ class CommonTemplates:
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
 
-        # Get the value of `default_version` from `.repo-metadata.json`
-        try:
-            default_version = json.load(open(".repo-metadata.json", "rt")).get(
-                "default_version"
-            )
-        except FileNotFoundError:
-            default_version = ""
-
-        # Exclude `docs/index.rst` if `default_version` is not specified
-        # or `versions` is not given.
-        if not default_version or "versions" not in kwargs:
+        # Don't add `docs/index.rst` if `versions` is not provided or `default_version` is empty
+        if "versions" not in kwargs or not kwargs["metadata"]["repo"]["default_version"]:
             self.excludes += ["docs/index.rst"]
 
         ret = self._generic_library("python_library", **kwargs)
