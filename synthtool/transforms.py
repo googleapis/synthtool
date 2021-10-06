@@ -133,7 +133,12 @@ def _copy_dir_to_existing_dir(
                 os.makedirs(str(dest_dir), exist_ok=True)
                 source_path = Path(os.path.join(root, name))
                 if merge is not None and dest_path.is_file():
-                    _merge_file(source_path, dest_path, merge)
+                    try:
+                        _merge_file(source_path, dest_path, merge)
+                    except Exception as e:
+                        logger.info("_merge_file failed for %s: %s, fall back to copy",
+                                    source_path, e)
+                        shutil.copy2(str(source_path), str(dest_path))
                 else:
                     shutil.copy2(str(source_path), str(dest_path))
                 copied = True
@@ -203,7 +208,12 @@ def move(
         elif source not in excludes:
             # copy individual file
             if merge is not None and canonical_destination.is_file():
-                _merge_file(source, canonical_destination, merge)
+                try:
+                    _merge_file(source, canonical_destination, merge)
+                except Exception as e:
+                    logger.info("_merge_file failed for %s: %s, fall back to copy",
+                                source, e)
+                    shutil.copy2(source, canonical_destination)
             else:
                 shutil.copy2(source, canonical_destination)
             copied = True
