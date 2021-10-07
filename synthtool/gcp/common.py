@@ -224,7 +224,7 @@ class CommonTemplates:
         if "default_python_version" not in kwargs:
             kwargs["default_python_version"] = "3.8"
         if "unit_test_python_versions" not in kwargs:
-            kwargs["unit_test_python_versions"] = ["3.6", "3.7", "3.8", "3.9"]
+            kwargs["unit_test_python_versions"] = ["3.6", "3.7", "3.8", "3.9", "3.10"]
 
         if "system_test_python_versions" not in kwargs:
             kwargs["system_test_python_versions"] = ["3.8"]
@@ -236,6 +236,10 @@ class CommonTemplates:
         # Don't add samples templates if there are no samples
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
+
+        # Assume the python-docs-samples Dockerfile is used for samples by default
+        if "custom_samples_dockerfile" not in kwargs:
+            kwargs["custom_samples_dockerfile"] = False
 
         ret = self._generic_library("python_library", **kwargs)
 

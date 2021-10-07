@@ -74,6 +74,10 @@ def _dependency_matches(node, group_id, artifact_id) -> bool:
     )
 
 
+def _is_cloud_client(proto_modules: List[module.Module], grpc_modules: List[module.Module]) -> bool:
+    return len(proto_modules) > 0 or len(grpc_modules) > 0
+
+
 def update_cloud_pom(
     filename: str, proto_modules: List[module.Module], grpc_modules: List[module.Module]
 ):
@@ -343,6 +347,10 @@ def main():
         if module.artifact_id.startswith("grpc-")
     ]
     modules = [main_module] + grpc_modules + proto_modules
+
+    if not _is_cloud_client(proto_modules, grpc_modules):
+        print("no proto or grpc modules - probably not a cloud client")
+        return
 
     if os.path.isfile(f"{artifact_id}/pom.xml"):
         print("updating modules in cloud pom.xml")

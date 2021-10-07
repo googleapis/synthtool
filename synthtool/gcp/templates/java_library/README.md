@@ -50,14 +50,14 @@ If you are using Gradle 5.x or later, add this to your dependencies
 ```Groovy
 implementation platform('com.google.cloud:libraries-bom:{{metadata['latest_bom_version']}}')
 
-compile '{{ group_id }}:{{ artifact_id }}'
+implementation '{{ group_id }}:{{ artifact_id }}'
 ```
 {% endif -%}
 
 If you are using Gradle without BOM, add this to your dependencies
 
 ```Groovy
-compile '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
+implementation '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
 
 If you are using SBT, add this to your dependencies
@@ -107,11 +107,11 @@ use this {{metadata['repo']['name_pretty']}} Client Library.
 {% if metadata['samples']|length %}
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory.
+Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/main/samples) directory.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }}) |
+{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/main/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }}) |
 {% endfor %}
 {% endif %}
 
@@ -239,10 +239,10 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [developer-console]: https://console.developers.google.com/
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-sdk]: https://cloud.google.com/sdk/
-[troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/master/troubleshooting/readme.md#troubleshooting
-[contributing]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CONTRIBUTING.md
-[code-of-conduct]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CODE_OF_CONDUCT.md#contributor-code-of-conduct
-[license]: https://github.com/{{metadata['repo']['repo']}}/blob/master/LICENSE
+[troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/main/troubleshooting/readme.md#troubleshooting
+[contributing]: https://github.com/{{metadata['repo']['repo']}}/blob/main/CONTRIBUTING.md
+[code-of-conduct]: https://github.com/{{metadata['repo']['repo']}}/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
+[license]: https://github.com/{{metadata['repo']['repo']}}/blob/main/LICENSE
 {% if metadata['repo']['requires_billing'] %}[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing{% endif %}
 {% if metadata['repo']['api_id'] %}[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
