@@ -88,7 +88,9 @@ def default(session):
         CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
     )
     session.install("mock", "asyncmock", "pytest", "pytest-cov", "pytest-asyncio", "-c", constraints_path)
-    {% for d in unit_test_external_dependencies %}session.install("{{d}}", "-c", constraints_path){% endfor %}
+    {%- for d in unit_test_external_dependencies -%}
+    session.install("{{d}}", "-c", constraints_path)
+    {% endfor %}
     {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
     {% endfor %}
     {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path){% endfor %}
