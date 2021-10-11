@@ -14,6 +14,7 @@
 
 
 import contextlib
+from importlib.abc import Loader
 import importlib.util
 import logging
 import os
@@ -83,7 +84,7 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
     return None
 
 
-def get_owlbot_py(dest: Path) -> typing.Any:
+def get_owlbot_py(dest: str) -> typing.Any:
     """Dynamically load owlbot.py and returns it as a loaded module.
     """
     global owlbot_py_cache
@@ -94,10 +95,9 @@ def get_owlbot_py(dest: Path) -> typing.Any:
         logger.debug("loading %s", owlbot_py)
         spec = importlib.util.spec_from_file_location("owlbot.py", owlbot_py)
         owlbot_py_cache[dest] = importlib.util.module_from_spec(spec)
-        loader = spec.loader
-        if not loader:
+        if not isinstance(spec.loader, Loader):
             return None
-        loader.exec_module(owlbot_py_cache[dest])
+        spec.loader.exec_module(owlbot_py_cache[dest])
         logger.debug("loaded %s", owlbot_py)
         return owlbot_py_cache[dest]
 
@@ -133,14 +133,16 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
             metadata_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
         else:
             proto_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
-    logger.debug("metadata_dir detected: %s", metadata_dir)
-    logger.debug("proto_dir detected: %s", proto_dir)
 
     # copy proto files
-    s.move([proto_dir], dest / "src", merge=_merge)
+    if isinstance(proto_dir, Path):
+        logger.debug("proto_dir detected: %s", proto_dir)
+        s.move([proto_dir], dest / "src", merge=_merge)
 
     # copy metadata files
-    s.move([metadata_dir], dest / "metadata", merge=_merge)
+    if isinstance(metadata_dir, Path):
+        logger.debug("metadata_dir detected: %s", metadata_dir)
+        s.move([metadata_dir], dest / "metadata", merge=_merge)
 
 
 def owlbot_common_patch() -> None:
