@@ -33,7 +33,7 @@ OWLBOT_PY_FILENAME = "owlbot.py"
 
 # A dictionary containing dymanically loaded owlbot.py modules.
 # The key is the destination path.
-owlbot_py_cache = {}
+owlbot_py_cache: typing.Dict[str, typing.Any] = {}
 
 
 @contextlib.contextmanager
@@ -80,6 +80,7 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
             return src
         if entry.is_dir():
             return _find_copy_target(Path(entry.path).resolve(), version_string)
+    return None
 
 
 def get_owlbot_py(dest: Path) -> typing.Any:
@@ -93,7 +94,10 @@ def get_owlbot_py(dest: Path) -> typing.Any:
         logger.debug("loading %s", owlbot_py)
         spec = importlib.util.spec_from_file_location("owlbot.py", owlbot_py)
         owlbot_py_cache[dest] = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(owlbot_py_cache[dest])
+        loader = spec.loader
+        if not loader:
+            return None
+        loader.exec_module(owlbot_py_cache[dest])
         logger.debug("loaded %s", owlbot_py)
         return owlbot_py_cache[dest]
 
@@ -112,10 +116,10 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
     logger.debug("version_string detected: %s", version_string)
 
     # copy all src including partial veneer classes
-    s.move(src / "src", dest / "src", merge=_merge)
+    s.move([src / "src"], dest / "src", merge=_merge)
 
     # copy tests
-    s.move(src / "tests", dest / "tests", merge=_merge)
+    s.move([src / "tests"], dest / "tests", merge=_merge)
 
     # detect the directory containing proto generated PHP source and metadata.
     entries = os.scandir(src / "proto/src")
@@ -133,10 +137,10 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
     logger.debug("proto_dir detected: %s", proto_dir)
 
     # copy proto files
-    s.move(proto_dir, dest / "src", merge=_merge)
+    s.move([proto_dir], dest / "src", merge=_merge)
 
     # copy metadata files
-    s.move(metadata_dir, dest / "metadata", merge=_merge)
+    s.move([metadata_dir], dest / "metadata", merge=_merge)
 
 
 def owlbot_common_patch() -> None:
