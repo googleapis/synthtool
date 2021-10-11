@@ -34,7 +34,7 @@ OWLBOT_PY_FILENAME = "owlbot.py"
 
 # A dictionary containing dymanically loaded owlbot.py modules.
 # The key is the destination path.
-owlbot_py_cache: typing.Dict[str, typing.Any] = {}
+owlbot_py_cache: typing.Dict[Path, typing.Any] = {}
 
 
 @contextlib.contextmanager
@@ -84,7 +84,7 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
     return None
 
 
-def get_owlbot_py(dest: str) -> typing.Any:
+def get_owlbot_py(dest: Path) -> typing.Any:
     """Dynamically load owlbot.py and returns it as a loaded module.
     """
     global owlbot_py_cache
