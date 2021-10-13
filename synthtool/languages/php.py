@@ -145,27 +145,15 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
         s.move([metadata_dir], dest / "metadata", merge=_merge)
 
 
-def owlbot_common_patch() -> None:
-    """Apply common replacements.
-
-    Currently nothing here.
-    """
-    pass
-
-
-def owlbot_patch(dest: Path) -> None:
+def owlbot_patch() -> None:
     """Apply some replacements for copied libraries.
+
+    This function assumes the current directory is the target.
     """
     logger.debug("owlbot_patch called for %s", dest)
 
-    with pushd(dest):
-        # Apply common replacements.
-        owlbot_common_patch()
-
-        # Load owlbot.py and execute `patch` function if defined.
-        owlbot_py = get_owlbot_py(dest)
-        if owlbot_py and hasattr(owlbot_py, "patch"):
-            owlbot_py.patch()
+    # Apply common replacements, currently nothing.
+    pass
 
 
 def owlbot_copy(src: Path, dest: Path) -> None:
@@ -179,10 +167,9 @@ def owlbot_copy(src: Path, dest: Path) -> None:
         if entry.is_dir():
             version_src = Path(entry.path).resolve()
             owlbot_copy_version(version_src, dest)
-    owlbot_patch(dest)
 
 
-def owlbot_main() -> None:
+def owlbot_main(staging_dir: str = STAGING_DIR) -> None:
     """Copies files from staging and template directories into current working dir.
 
     """
@@ -190,25 +177,34 @@ def owlbot_main() -> None:
 
     logger.debug("owlbot_main called")
 
-    staging = Path(STAGING_DIR)
+    staging = Path(staging_dir)
     if staging.is_dir():
         logger.debug("Found the staging dir!")
         entries = os.scandir(staging)
         for entry in entries:
             if entry.is_dir():
+                # We use the same directory name for destination.
                 src = Path(entry.path).resolve()
                 dest = Path(src.parts[-1]).resolve()
-                if dest.is_dir():
-                    owlbot_py = get_owlbot_py(dest)
-                    if owlbot_py and hasattr(owlbot_py, "main"):
-                        # owlbot.py has `main` method defined.
-                        # Change directory and run `main`.
-                        with pushd(dest):
-                            owlbot_py.main(src)
-                        continue
+                owlbot_py = get_owlbot_py(dest)
+                if owlbot_py and hasattr(owlbot_py, "owlbot_copy"):
+                    # owlbot.py has `owlbot_copy` method defined.
+                    # Change directory and run `owlbot_copy`.
+                    with pushd(dest):
+                        owlbot_py.owlbot_copy(src)
                 else:
-                    logger.info("destination %s not found, but continuing")
-                owlbot_copy(src, dest)
+                    owlbot_copy(src, dest)
+
+                if owlbot_py and hasattr(owlbot_py, "owlbot_patch"):
+                    # `owlbot_patch` method defined.
+                    # Change directory and run `owlbot_patch`.
+                    with pushd(dest):
+                        owlbot_py.owlbot_patch()
+
+                else:
+                    with pushd(dest):
+                        owlbot_patch()
+
     else:
         logger.debug("Staging dir not found.")
 
