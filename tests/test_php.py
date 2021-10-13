@@ -12,19 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import filecmp
-import os
-import pathlib
-import tempfile
+
 from pathlib import Path
-from unittest import TestCase
-from unittest.mock import patch
 
-import pytest
-
-import synthtool as s
-from synthtool.languages import php
-from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"

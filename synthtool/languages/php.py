@@ -150,7 +150,7 @@ def owlbot_patch() -> None:
 
     This function assumes the current directory is the target.
     """
-    logger.debug("owlbot_patch called for %s", dest)
+    logger.debug("owlbot_patch called for %s", os.getcwd())
 
     # Apply common replacements, currently nothing.
     pass
