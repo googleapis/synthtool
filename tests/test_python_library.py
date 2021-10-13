@@ -12,16 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 import os
 from pathlib import Path
 
 import pytest
-import tempfile
 
 from synthtool import gcp
 from synthtool.sources import templates
-from synthtool.languages import python
 from . import util
 
 
@@ -129,77 +126,3 @@ def test_split_system_tests():
         with open(templated_files / ".kokoro/presubmit/system-3.8.cfg", "r") as f:
             contents = f.read()
             assert "system-3.8" in contents
-
-
-def test_detect_versions_non_default_path():
-    temp_dir = Path(tempfile.mkdtemp())
-    src_dir = temp_dir / "src"
-    for v in ("api_v1", "api_v2", "api_v3"):
-        os.makedirs(src_dir / v)
-
-    with util.chdir(temp_dir):
-        # Set default_version to "api_v1"
-        test_json = {"default_version": "api_v1"}
-        with open(".repo-metadata.json", "w") as metadata:
-            json.dump(test_json, metadata)
-
-        versions = python.detect_versions(src_dir)
-        assert ["api_v1", "api_v2", "api_v3"] == versions
-
-
-def test_detect_versions_default_path():
-    temp_dir = Path(tempfile.mkdtemp())
-    default_dir = temp_dir / "google/cloud"
-    for v in ("api_v1", "api_v2", "api_v3"):
-        os.makedirs(default_dir / v)
-
-    with util.chdir(temp_dir):
-        # Set default_version to "api_v1"
-        test_json = {"default_version": "api_v1"}
-
-        with open(".repo-metadata.json", "w") as metadata:
-            json.dump(test_json, metadata)
-
-        versions = python.detect_versions()
-        assert ["api_v1", "api_v2", "api_v3"] == versions
-
-
-def test_detect_versions_dir_not_found():
-    temp_dir = Path(tempfile.mkdtemp())
-
-    with util.chdir(temp_dir):
-        # Set default_version to "api_v1"
-        test_json = {"default_version": "api_v1"}
-        with open(".repo-metadata.json", "w") as metadata:
-            json.dump(test_json, metadata)
-        versions = python.detect_versions(temp_dir / "does-not-exist")
-        assert [] == versions
-
-
-def test_detect_versions_with_default_version():
-    temp_dir = Path(tempfile.mkdtemp())
-    default_dir = temp_dir / "google/cloud"
-    for v in ("api_v1", "api_v2", "api_v3"):
-        os.makedirs(default_dir / v)
-
-    with util.chdir(temp_dir):
-        # Set default_version to "api_v1"
-        test_json = {"default_version": "api_v1"}
-        with open(".repo-metadata.json", "w") as metadata:
-            json.dump(test_json, metadata)
-        versions = python.detect_versions()
-        assert ["api_v1", "api_v2", "api_v3"] == versions
-
-        # Set default_version to "api_v2"
-        test_json = {"default_version": "api_v2"}
-        with open(".repo-metadata.json", "w") as metadata:
-            json.dump(test_json, metadata)
-        versions = python.detect_versions()
-        assert ["api_v2", "api_v1", "api_v3"] == versions
-
-        # Set default_version to "api_v3"
-        test_json = {"default_version": "api_v3"}
-        with open(".repo-metadata.json", "w") as metadata:
-            json.dump(test_json, metadata)
-        versions = python.detect_versions()
-        assert ["api_v3", "api_v1", "api_v2"] == versions

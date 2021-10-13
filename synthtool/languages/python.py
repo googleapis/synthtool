@@ -94,50 +94,6 @@ def _get_sample_readme_metadata(sample_dir: Path) -> dict:
     return sample_metadata
 
 
-def detect_versions(path: str = "./google/cloud") -> List[str]:
-    """
-    Detects the versions a library has, based on distinct folders
-    within path. This is based on the fact that our GAPIC libraries are
-    structured as follows:
-
-    google/cloud/*_v1
-    google/cloud/*_v1beta
-    google/cloud/*_v1alpha
-
-    With folder names mapping directly to versions.
-
-    Returns: a list of the subdirectories; for the example above:
-      ['*_v1', '*_v1alpha', '*_v1beta']
-      The subdirectory with the same suffix as the default_version
-      specified in .repo-metadata.json will be first in the list. The
-      remaining elements will be sorted alphabetically.
-    """
-
-    versions = []
-
-    # Get the default_version from .repo-metadata.json
-    default_version = json.load(open(".repo-metadata.json", "rt")).get(
-        "default_version"
-    )
-
-    # Sort the sub directories alphabetically
-    sub_dirs = sorted([p.name for p in Path(path).glob("**/*_v[1-9]*")])
-
-    if default_version and sub_dirs:
-        # The subdirectory with the same suffix as the default_version
-        # specified in .repo-metadata.json will be the default client.
-        default_client = next(
-            iter([d for d in sub_dirs if d.endswith(default_version)]), None
-        )
-        if default_client:
-            # The default_client will be first in the list.
-            # The remaining elements will be sorted alphabetically.
-            versions = [default_client] + [
-                d for d in sub_dirs if not d.endswith(default_version)
-            ]
-    return versions
-
-
 def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
     """
     Find all samples projects and render templates.

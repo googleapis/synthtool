@@ -338,6 +338,71 @@ class CommonTemplates:
             metadata["repo"] = _load_repo_metadata()
 
 
+def detect_versions(
+    path: str = "./src",
+    default_version: Optional[str] = None,
+    default_first: Optional[bool] = None,
+) -> List[str]:
+    """
+    Detects the versions a library has, based on distinct folders
+    within path. This is based on the fact that our GAPIC libraries are
+    structured as follows:
+
+    src/v1
+    src/v1beta
+    src/v1alpha
+
+    With folder names mapping directly to versions.
+
+    Returns: a list of the sorted subdirectories; for the example above:
+      ['v1', 'v1alpha', 'v1beta']
+      If the `default_version` argument is not provided, the `default_version`
+      will be read from `.repo-metadata.json`, if it exists.
+      If `default_version` is available, the default_version is moved to
+      at the front or the end of the sorted list depending on the value of `default_first`.
+      The default_version will be first in the list when `default_first` is `True`.
+    """
+
+    versions = []
+
+    if not default_version:
+        try:
+            # Get the default_version from .repo-metadata.json
+            default_version = json.load(open(".repo-metadata.json", "rt")).get(
+                "default_version"
+            )
+        except FileNotFoundError:
+            pass
+
+    # Sort the sub directories alphabetically
+    sub_dirs = sorted([p.name for p in Path(path).glob("*v[1-9]*")])
+
+    if sub_dirs:
+        # if default_version is not specified, return the sorted directories.
+        if not default_version:
+            versions = sub_dirs
+        # if default_version is specified, the default client should be first in the
+        # list only when `default_first` is `True`.
+        else:
+            # The subdirectory with the same suffix as the default_version
+            # will be the default client.
+            default_client = next(
+                iter([d for d in sub_dirs if d.endswith(default_version)]), None
+            )
+
+            # start with all the versions except for the default client
+            versions = [d for d in sub_dirs if not d.endswith(default_version)]
+
+            if default_client:
+                # The default_client will be first in the list.
+                # The remaining elements will be sorted alphabetically.
+                if default_first:
+                    versions = [default_client] + versions
+                else:
+                    versions += [default_client]
+    return versions
+
+
 def decamelize(value: str):
     """ parser to convert fooBar.js to Foo Bar. """
     if not value:

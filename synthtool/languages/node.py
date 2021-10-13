@@ -214,36 +214,6 @@ def compile_protos(hide_output=False):
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
-def detect_versions(
-    path: str = "./src", default_version: Optional[str] = None
-) -> List[str]:
-    """
-    Detects the versions a library has, based on distinct folders
-    within path. This is based on the fact that our GAPIC libraries are
-    structured as follows:
-
-    src/v1
-    src/v1beta
-    src/v1alpha
-
-    With folder names mapping directly to versions.
-
-    Returns: a list of the subdirectories; for the example above:
-      ['v1', 'v1alpha', 'v1beta']
-      If specified, the default_version is guaranteed to be listed last.
-      Otherwise, the list is sorted alphabetically.
-    """
-    versions = []
-    if os.path.isdir(path):
-        for directory in os.listdir(path):
-            if os.path.isdir(os.path.join(path, directory)):
-                versions.append(directory)
-    versions.sort()
-    if default_version is not None:
-        versions = [v for v in versions if v != default_version] + [default_version]
-    return versions
-
-
 def compile_protos_hermetic(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
