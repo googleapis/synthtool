@@ -392,7 +392,7 @@ def detect_versions(
             versions = [d for d in sub_dirs if not d.endswith(default_version)]
 
             if default_client:
-                # If `default_first` is true, the default_client will be first 
+                # If `default_first` is true, the default_client will be first
                 # in the list.
                 if default_first:
                     versions = [default_client] + versions
