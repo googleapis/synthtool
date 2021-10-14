@@ -14,13 +14,14 @@
 
 import re
 import sys
+
+import json
 from pathlib import Path
 from typing import Any, Dict, List
-
 import yaml
 
 import synthtool as s
-from synthtool import _tracked_paths, log, shell
+from synthtool import _tracked_paths, log, shell, get_staging_dirs
 from synthtool.gcp.common import CommonTemplates
 from synthtool.sources import templates
 
@@ -45,7 +46,6 @@ LICENSE = """
 # See the License for the specific language governing permissions and
 # limitations under the License."""
 
-SAMPLES_VERSIONS = ["3.6", "3.7", "3.8"]
 IGNORED_VERSIONS: List[str] = []
 
 SAMPLES_TEMPLATE_PATH = Path(CommonTemplates()._template_root) / "python_samples"
@@ -145,3 +145,52 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         result = t.render(subdir=sample_project_dir, **sample_readme_metadata)
         _tracked_paths.add(result)
         s.copy([result], excludes=excludes)
+
+
+def owlbot_main() -> None:
+    """Copies files from staging and template directories into current working dir.
+
+    When there is no owlbot.py file, run this function instead.
+
+    Depends on owl-bot copying into a staging directory, so your .Owlbot.yaml should
+    look a lot like this:
+
+        docker:
+            image: docker pull gcr.io/cloud-devrel-public-resources/owlbot-python:latest
+
+        deep-remove-regex:
+            - /owl-bot-staging
+
+        deep-copy-regex:
+            - source: /google/cloud/video/transcoder/(.*)/.*-nodejs/(.*)
+              dest: /owl-bot-staging/$1/$2
+
+    Also, this function requires a default_version in your .repo-metadata.json.  Ex:
+        "default_version": "v1",
+    """
+
+    try:
+        # Load the default version defined in .repo-metadata.json.
+        default_version = json.load(open(".repo-metadata.json", "rt")).get(
+            "default_version"
+        )
+    except FileNotFoundError:
+        default_version = None
+
+    if default_version:
+        for library in s.get_staging_dirs(default_version):
+            s.move(library, excludes=["setup.py", "README.rst", "docs/index.rst"])
+        s.remove_staging_dirs()
+
+        templated_files = CommonTemplates().py_library(microgenerator=True)
+        s.move(
+            templated_files, excludes=[".coveragerc"]
+        )  # the microgenerator has a good coveragerc file
+
+        py_samples(skip_readmes=True)
+
+        s.shell.run(["nox", "-s", "blacken"], hide_output=False)
+
+
+if __name__ == "__main__":
+    owlbot_main()
