@@ -22,7 +22,7 @@ import yaml
 
 import synthtool as s
 from synthtool import _tracked_paths, log, shell
-from synthtool.gcp.common import CommonTemplates
+from synthtool.gcp.common import CommonTemplates, detect_versions
 from synthtool.sources import templates
 
 PathOrStr = templates.PathOrStr
@@ -179,12 +179,15 @@ def owlbot_main() -> None:
 
     if default_version:
         for library in s.get_staging_dirs(default_version):
-            s.move(library, excludes=["setup.py", "README.rst", "docs/index.rst"])
+            s.move([library], excludes=["setup.py", "README.rst", "docs/index.rst"])
         s.remove_staging_dirs()
 
-        templated_files = CommonTemplates().py_library(microgenerator=True)
+        templated_files = CommonTemplates().py_library(
+            microgenerator=True,
+            versions=detect_versions(path="./google/cloud", default_first=True),
+        )
         s.move(
-            templated_files, excludes=[".coveragerc"]
+            [templated_files], excludes=[".coveragerc"]
         )  # the microgenerator has a good coveragerc file
 
         py_samples(skip_readmes=True)
