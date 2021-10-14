@@ -21,7 +21,7 @@ from typing import Any, Dict, List
 import yaml
 
 import synthtool as s
-from synthtool import _tracked_paths, log, shell, get_staging_dirs
+from synthtool import _tracked_paths, log, shell
 from synthtool.gcp.common import CommonTemplates
 from synthtool.sources import templates
 
