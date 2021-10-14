@@ -15,7 +15,6 @@
 import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
-import os
 import re
 from synthtool import _tracked_paths, gcp, shell, transforms
 from synthtool.gcp import samples, snippets
