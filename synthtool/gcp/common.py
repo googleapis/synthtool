@@ -358,31 +358,29 @@ def detect_versions(
       ['v1', 'v1alpha', 'v1beta']
       If the `default_version` argument is not provided, the `default_version`
       will be read from `.repo-metadata.json`, if it exists.
-      If `default_version` is available, the default_version is moved to
+      If `default_version` is available, the `default_version` is moved to
       at the front or the end of the sorted list depending on the value of `default_first`.
-      The default_version will be first in the list when `default_first` is `True`.
+      The `default_version` will be first in the list when `default_first` is `True`.
     """
 
     versions = []
 
     if not default_version:
         try:
-            # Get the default_version from .repo-metadata.json
+            # Get the `default_version` from ``.repo-metadata.json`.
             default_version = json.load(open(".repo-metadata.json", "rt")).get(
                 "default_version"
             )
         except FileNotFoundError:
             pass
 
-    # Sort the sub directories alphabetically
+    # Sort the sub directories alphabetically.
     sub_dirs = sorted([p.name for p in Path(path).glob("*v[1-9]*")])
 
     if sub_dirs:
-        # if default_version is not specified, return the sorted directories.
+        # if `default_version` is not specified, return the sorted directories.
         if not default_version:
             versions = sub_dirs
-        # if default_version is specified, the default client should be first in the
-        # list only when `default_first` is `True`.
         else:
             # The subdirectory with the same suffix as the default_version
             # will be the default client.
@@ -394,8 +392,8 @@ def detect_versions(
             versions = [d for d in sub_dirs if not d.endswith(default_version)]
 
             if default_client:
-                # The default_client will be first in the list.
-                # The remaining elements will be sorted alphabetically.
+                # If `default_first` is true, the default_client will be first 
+                # in the list.
                 if default_first:
                     versions = [default_client] + versions
                 else:
