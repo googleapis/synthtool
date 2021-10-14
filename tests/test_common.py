@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import os
 import tempfile
 from pathlib import Path
@@ -20,7 +21,7 @@ from unittest import mock
 from pytest import raises
 
 import synthtool as s
-from synthtool.gcp.common import _get_default_branch_name, decamelize
+from synthtool.gcp.common import _get_default_branch_name, decamelize, detect_versions
 
 from . import util
 
@@ -159,3 +160,76 @@ def test_py_samples_multiple_override_content():
         with open("README.md") as f:
             result = f.read()
             assert "Last Example" in result
+
+
+def test_detect_versions_src():
+    temp_dir = Path(tempfile.mkdtemp())
+    src_dir = temp_dir / "src"
+    for v in ("v1", "v2", "v3"):
+        os.makedirs(src_dir / v)
+
+    with util.chdir(temp_dir):
+        versions = detect_versions()
+        assert ["v1", "v2", "v3"] == versions
+
+
+def test_detect_versions_staging():
+    temp_dir = Path(tempfile.mkdtemp())
+    staging_dir = temp_dir / "owl-bot-staging"
+    for v in ("v1", "v2", "v3"):
+        os.makedirs(staging_dir / v)
+
+    versions = detect_versions(staging_dir)
+    assert ["v1", "v2", "v3"] == versions
+
+
+def test_detect_versions_dir_not_found():
+    temp_dir = Path(tempfile.mkdtemp())
+
+    versions = detect_versions(temp_dir / "does-not-exist")
+    assert [] == versions
+
+
+def test_detect_versions_with_default_version():
+    temp_dir = Path(tempfile.mkdtemp())
+    src_dir = temp_dir / "src"
+    vs = ("v1", "v2", "v3")
+    for v in vs:
+        os.makedirs(src_dir / v)
+
+    with util.chdir(temp_dir):
+        versions = detect_versions(default_version="v1")
+        assert ["v2", "v3", "v1"] == versions
+        versions = detect_versions(default_version="v2")
+        assert ["v1", "v3", "v2"] == versions
+        versions = detect_versions(default_version="v3")
+        assert ["v1", "v2", "v3"] == versions
+
+
+def test_detect_versions_with_default_version_from_metadata():
+    temp_dir = Path(tempfile.mkdtemp())
+    default_dir = temp_dir / "src"
+    for v in ("api_v1", "api_v2", "api_v3"):
+        os.makedirs(default_dir / v)
+
+    with util.chdir(temp_dir):
+        # Set default_version to "api_v1"
+        test_json = {"default_version": "api_v1"}
+        with open(".repo-metadata.json", "w") as metadata:
+            json.dump(test_json, metadata)
+        versions = detect_versions(default_first=True)
+        assert ["api_v1", "api_v2", "api_v3"] == versions
+
+        # Set default_version to "api_v2"
+        test_json = {"default_version": "api_v2"}
+        with open(".repo-metadata.json", "w") as metadata:
+            json.dump(test_json, metadata)
+        versions = detect_versions(default_first=True)
+        assert ["api_v2", "api_v1", "api_v3"] == versions
+
+        # Set default_version to "api_v3"
+        test_json = {"default_version": "api_v3"}
+        with open(".repo-metadata.json", "w") as metadata:
+            json.dump(test_json, metadata)
+        versions = detect_versions(default_first=True)
+        assert ["api_v3", "api_v1", "api_v2"] == versions
