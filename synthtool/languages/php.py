@@ -14,8 +14,6 @@
 
 
 import contextlib
-from importlib.abc import Loader
-import importlib.util
 import logging
 import os
 from pathlib import Path
@@ -82,9 +80,7 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
 
 
 def owlbot_copy_version(
-    src: Path,
-    dest: Path,
-    copy_excludes: typing.Optional[typing.List[str]] = None,
+    src: Path, dest: Path, copy_excludes: typing.Optional[typing.List[str]] = None,
 ) -> None:
     """Copies files from a version subdirectory.
     """
@@ -122,17 +118,12 @@ def owlbot_copy_version(
     # copy proto files
     if isinstance(proto_dir, Path):
         logger.debug("proto_dir detected: %s", proto_dir)
-        s.move(
-            [proto_dir], dest / "src", merge=_merge, excludes=copy_excludes)
+        s.move([proto_dir], dest / "src", merge=_merge, excludes=copy_excludes)
 
     # copy metadata files
     if isinstance(metadata_dir, Path):
         logger.debug("metadata_dir detected: %s", metadata_dir)
-        s.move(
-            [metadata_dir],
-            dest / "metadata",
-            merge=_merge, excludes=copy_excludes
-        )
+        s.move([metadata_dir], dest / "metadata", merge=_merge, excludes=copy_excludes)
 
 
 def owlbot_patch() -> None:
@@ -147,9 +138,7 @@ def owlbot_patch() -> None:
 
 
 def owlbot_main(
-    src: Path,
-    dest: Path,
-    copy_excludes: typing.Optional[typing.List[str]] = None,
+    src: Path, dest: Path, copy_excludes: typing.Optional[typing.List[str]] = None,
 ) -> None:
     """Copies files from generated tree.
     """
@@ -184,7 +173,7 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                 dest = Path(src.parts[-1]).resolve()
                 owlbot_py = dest / OWLBOT_PY_FILENAME
                 if owlbot_py.is_file():
-                    subprocess.run(['python', owlbot_py], cwd=dest, check=True)
+                    subprocess.run(["python", owlbot_py], cwd=dest, check=True)
                 else:
                     owlbot_main(src, dest)
     else:

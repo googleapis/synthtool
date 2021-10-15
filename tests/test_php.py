@@ -26,9 +26,9 @@ def prepare_test_data(request):
     """A fixture for preparing test data.
     """
     param = request.param
-    print(f"Setup prepare_test_data with %s", param)
+    print(f"Setup prepare_test_data with {param}")
     yield param
-    print(f"Teardown %s", param)
+    print(f"Teardown {param}")
 
 
 def test_owlbot_php(prepare_test_data):
