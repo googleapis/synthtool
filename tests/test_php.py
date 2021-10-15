@@ -15,10 +15,21 @@
 
 from pathlib import Path
 
-
-FIXTURES = Path(__file__).parent / "fixtures"
-TEMPLATES = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
+import pytest
 
 
-def test_owlbot_php():
+FIXTURES = Path(__file__).parent / "fixtures" / "php"
+
+
+@pytest.fixture(scope="function", params=["asset", "secret_manager"])
+def prepare_test_data(request):
+    """A fixture for preparing test data.
+    """
+    param = request.param
+    print(f"Setup prepare_test_data with %s", param)
+    yield param
+    print(f"Teardown %s", param)
+
+
+def test_owlbot_php(prepare_test_data):
     pass

@@ -20,6 +20,7 @@ import logging
 import os
 from pathlib import Path
 import re
+import subprocess
 import typing
 
 import synthtool as s
@@ -30,11 +31,7 @@ STAGING_DIR = "owl-bot-staging"
 METADATA_DIR = "GPBMetadata"
 COPYRIGHT_REGEX = re.compile(r"Copyright (\d{4}) Google LLC$", flags=re.MULTILINE)
 OWLBOT_PY_FILENAME = "owlbot.py"
-
-
-# A dictionary containing dymanically loaded owlbot.py modules.
-# The key is the destination path.
-owlbot_py_cache: typing.Dict[Path, typing.Any] = {}
+DEFAULT_COPY_EXCLUDES: typing.List[str] = []
 
 
 @contextlib.contextmanager
@@ -84,29 +81,17 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
     return None
 
 
-def get_owlbot_py(dest: Path) -> typing.Any:
-    """Dynamically load owlbot.py and returns it as a loaded module.
-    """
-    global owlbot_py_cache
-    if dest in owlbot_py_cache:
-        return owlbot_py_cache[dest]
-    owlbot_py = dest / OWLBOT_PY_FILENAME
-    if owlbot_py.is_file():
-        logger.debug("loading %s", owlbot_py)
-        spec = importlib.util.spec_from_file_location("owlbot.py", owlbot_py)
-        owlbot_py_cache[dest] = importlib.util.module_from_spec(spec)
-        if not isinstance(spec.loader, Loader):
-            return None
-        spec.loader.exec_module(owlbot_py_cache[dest])
-        logger.debug("loaded %s", owlbot_py)
-        return owlbot_py_cache[dest]
-
-
-def owlbot_copy_version(src: Path, dest: Path) -> None:
+def owlbot_copy_version(
+    src: Path,
+    dest: Path,
+    copy_excludes: typing.Optional[typing.List[str]] = None,
+) -> None:
     """Copies files from a version subdirectory.
     """
     logger.debug("owlbot_copy_version called from %s to %s", src, dest)
 
+    if copy_excludes is None:
+        copy_excludes = DEFAULT_COPY_EXCLUDES
     # detect the version string for later use
     entries = os.scandir(src / "src")
     if not entries:
@@ -116,10 +101,10 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
     logger.debug("version_string detected: %s", version_string)
 
     # copy all src including partial veneer classes
-    s.move([src / "src"], dest / "src", merge=_merge)
+    s.move([src / "src"], dest / "src", merge=_merge, excludes=copy_excludes)
 
     # copy tests
-    s.move([src / "tests"], dest / "tests", merge=_merge)
+    s.move([src / "tests"], dest / "tests", merge=_merge, excludes=copy_excludes)
 
     # detect the directory containing proto generated PHP source and metadata.
     entries = os.scandir(src / "proto/src")
@@ -137,12 +122,17 @@ def owlbot_copy_version(src: Path, dest: Path) -> None:
     # copy proto files
     if isinstance(proto_dir, Path):
         logger.debug("proto_dir detected: %s", proto_dir)
-        s.move([proto_dir], dest / "src", merge=_merge)
+        s.move(
+            [proto_dir], dest / "src", merge=_merge, excludes=copy_excludes)
 
     # copy metadata files
     if isinstance(metadata_dir, Path):
         logger.debug("metadata_dir detected: %s", metadata_dir)
-        s.move([metadata_dir], dest / "metadata", merge=_merge)
+        s.move(
+            [metadata_dir],
+            dest / "metadata",
+            merge=_merge, excludes=copy_excludes
+        )
 
 
 def owlbot_patch() -> None:
@@ -156,7 +146,11 @@ def owlbot_patch() -> None:
     pass
 
 
-def owlbot_copy(src: Path, dest: Path) -> None:
+def owlbot_main(
+    src: Path,
+    dest: Path,
+    copy_excludes: typing.Optional[typing.List[str]] = None,
+) -> None:
     """Copies files from generated tree.
     """
     entries = os.scandir(src)
@@ -166,10 +160,12 @@ def owlbot_copy(src: Path, dest: Path) -> None:
     for entry in entries:
         if entry.is_dir():
             version_src = Path(entry.path).resolve()
-            owlbot_copy_version(version_src, dest)
+            owlbot_copy_version(version_src, dest, copy_excludes)
+    with pushd(dest):
+        owlbot_patch()
 
 
-def owlbot_main(staging_dir: str = STAGING_DIR) -> None:
+def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
     """Copies files from staging and template directories into current working dir.
 
     """
@@ -186,28 +182,14 @@ def owlbot_main(staging_dir: str = STAGING_DIR) -> None:
                 # We use the same directory name for destination.
                 src = Path(entry.path).resolve()
                 dest = Path(src.parts[-1]).resolve()
-                owlbot_py = get_owlbot_py(dest)
-                if owlbot_py and hasattr(owlbot_py, "owlbot_copy"):
-                    # owlbot.py has `owlbot_copy` method defined.
-                    # Change directory and run `owlbot_copy`.
-                    with pushd(dest):
-                        owlbot_py.owlbot_copy(src)
+                owlbot_py = dest / OWLBOT_PY_FILENAME
+                if owlbot_py.is_file():
+                    subprocess.run(['python', owlbot_py], cwd=dest, check=True)
                 else:
-                    owlbot_copy(src, dest)
-
-                if owlbot_py and hasattr(owlbot_py, "owlbot_patch"):
-                    # `owlbot_patch` method defined.
-                    # Change directory and run `owlbot_patch`.
-                    with pushd(dest):
-                        owlbot_py.owlbot_patch()
-
-                else:
-                    with pushd(dest):
-                        owlbot_patch()
-
+                    owlbot_main(src, dest)
     else:
         logger.debug("Staging dir not found.")
 
 
 if __name__ == "__main__":
-    owlbot_main()
+    owlbot_entrypoint()
