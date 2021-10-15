@@ -14,29 +14,29 @@
 # limitations under the License.
 steps:
   # Show the gcloud info and check if gcloud exists
-  - name: ${_PYTHON_IMAGE}
+  - name: 'gcr.io/cloud-devrel-public-resources/python-samples-testing-docker:latest'
     entrypoint: /bin/sh
     args:
     - -c
     - 'gcloud config list'
   # Check the Python version
-  - name: ${_PYTHON_IMAGE}
+  - name: 'gcr.io/cloud-devrel-public-resources/python-samples-testing-docker:latest'
     entrypoint: /bin/sh
     args:
     - -c
     - 'python3 .cloud-build/CheckPythonVersion.py'
   # Fetch base branch if required
-  - name: ${_PYTHON_IMAGE}
+  - name: 'gcr.io/cloud-devrel-public-resources/python-samples-testing-docker:latest'
     entrypoint: /bin/sh
     args:
     - -c
     - 'if [ -n "${_BASE_BRANCH}" ]; then git fetch origin "${_BASE_BRANCH}":refs/remotes/origin/"${_BASE_BRANCH}"; else echo "Skipping fetch."; fi'
   # Install Python dependencies
-  - name: ${_PYTHON_IMAGE}
+  - name: 'gcr.io/cloud-devrel-public-resources/python-samples-testing-docker:latest'
     entrypoint: pip
     args: ['install', '--upgrade',  '--user', '--requirement', '.cloud-build/requirements.txt']
   # Install Python dependencies and run testing script
-  - name: ${_PYTHON_IMAGE}
+  - name: 'gcr.io/cloud-devrel-public-resources/python-samples-testing-docker:latest'
     entrypoint: /bin/sh
     args:
     - '-c'
@@ -46,7 +46,7 @@ steps:
     env:
     - 'IS_TESTING=1'
   # Fail if there is anything in the failure folder
-  - name: ${_PYTHON_IMAGE}
+  - name: 'gcr.io/cloud-devrel-public-resources/python-samples-testing-docker:latest'
     entrypoint: /bin/sh
     args: 
     - -c
