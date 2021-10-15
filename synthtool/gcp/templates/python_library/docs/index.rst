@@ -14,16 +14,8 @@ API Reference
     {{ version }}/services
     {{ version }}/types
 {% endfor %}
-{%- if migration_guide_version %}
-Migration Guide
----------------
-
-See the guide below for instructions on migrating to the {{ migration_guide_version }} release of this library.
-
-.. toctree::
-    :maxdepth: 2
-
-    UPGRADING
+{% if include_uprading_doc %}
+.. include:: upgrading.rst
 {% endif %}
 Changelog
 ---------
