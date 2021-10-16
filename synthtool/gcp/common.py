@@ -375,7 +375,7 @@ def detect_versions(
             pass
 
     # Sort the sub directories alphabetically.
-    sub_dirs = sorted([p.name for p in Path(path).glob("*v[1-9]*")])
+    sub_dirs = sorted([p.name for p in Path(path).rglob("*v[1-9]*") if p.is_dir()])
 
     if sub_dirs:
         # if `default_version` is not specified, return the sorted directories.
