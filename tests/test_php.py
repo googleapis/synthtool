@@ -55,6 +55,6 @@ def test_owlbot_php(copy_fixture):
     with php.pushd(copy_fixture / "src"):
         php.owlbot_entrypoint()
 
-    dcmp = dircmp(copy_fixture / 'expected', copy_fixture / 'src')
+    dcmp = dircmp(copy_fixture / "expected", copy_fixture / "src")
     diff_string = get_diff_string(dcmp, "")
     assert diff_string == ""
