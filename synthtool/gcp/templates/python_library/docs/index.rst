@@ -15,7 +15,7 @@ API Reference
     {{ version }}/types
 {% endfor %}
 {% if include_uprading_doc %}
-.. include:: upgrading.rst
+.. include:: UPGRADING.md
 {% endif %}
 Changelog
 ---------
