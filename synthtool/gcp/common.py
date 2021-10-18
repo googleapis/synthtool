@@ -209,7 +209,15 @@ class CommonTemplates:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
-        # rename variable to accomodate existing synth.py files
+
+        # load common repo meta information (metadata that's not language specific).
+        self._load_generic_metadata(kwargs["metadata"])
+
+        # initialize default_version if it doesn't exist in kwargs["metadata"]['repo']
+        if "default_version" not in kwargs["metadata"]["repo"]:
+            kwargs["metadata"]["repo"]["default_version"] = ""
+
+        # rename variable to accommodate existing owlbot.py files
         if "system_test_dependencies" in kwargs:
             kwargs["system_test_local_dependencies"] = kwargs[
                 "system_test_dependencies"
@@ -236,6 +244,13 @@ class CommonTemplates:
         # Don't add samples templates if there are no samples
         if "samples" not in kwargs:
             self.excludes += ["samples/AUTHORING_GUIDE.md", "samples/CONTRIBUTING.md"]
+
+        # Don't add `docs/index.rst` if `versions` is not provided or `default_version` is empty
+        if (
+            "versions" not in kwargs
+            or not kwargs["metadata"]["repo"]["default_version"]
+        ):
+            self.excludes += ["docs/index.rst"]
 
         # Assume the python-docs-samples Dockerfile is used for samples by default
         if "custom_samples_dockerfile" not in kwargs:
@@ -321,6 +336,69 @@ class CommonTemplates:
         # set the "repo" key.
         if "repo" not in metadata:
             metadata["repo"] = _load_repo_metadata()
+
+
+def detect_versions(
+    path: str = "./src",
+    default_version: Optional[str] = None,
+    default_first: Optional[bool] = None,
+) -> List[str]:
+    """
+    Detects the versions a library has, based on distinct folders
+    within path. This is based on the fact that our GAPIC libraries are
+    structured as follows:
+
+    src/v1
+    src/v1beta
+    src/v1alpha
+
+    With folder names mapping directly to versions.
+
+    Returns: a list of the sorted subdirectories; for the example above:
+      ['v1', 'v1alpha', 'v1beta']
+      If the `default_version` argument is not provided, the `default_version`
+      will be read from `.repo-metadata.json`, if it exists.
+      If `default_version` is available, the `default_version` is moved to
+      at the front or the end of the sorted list depending on the value of `default_first`.
+      The `default_version` will be first in the list when `default_first` is `True`.
+    """
+
+    versions = []
+
+    if not default_version:
+        try:
+            # Get the `default_version` from ``.repo-metadata.json`.
+            default_version = json.load(open(".repo-metadata.json", "rt")).get(
+                "default_version"
+            )
+        except FileNotFoundError:
+            pass
+
+    # Sort the sub directories alphabetically.
+    sub_dirs = sorted([p.name for p in Path(path).glob("*v[1-9]*")])
+
+    if sub_dirs:
+        # if `default_version` is not specified, return the sorted directories.
+        if not default_version:
+            versions = sub_dirs
+        else:
+            # The subdirectory with the same suffix as the default_version
+            # will be the default client.
+            default_client = next(
+                iter([d for d in sub_dirs if d.endswith(default_version)]), None
+            )
+
+            # start with all the versions except for the default client
+            versions = [d for d in sub_dirs if not d.endswith(default_version)]
+
+            if default_client:
+                # If `default_first` is true, the default_client will be first
+                # in the list.
+                if default_first:
+                    versions = [default_client] + versions
+                else:
+                    versions += [default_client]
+    return versions
 
 
 def decamelize(value: str):
