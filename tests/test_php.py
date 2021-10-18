@@ -13,23 +13,48 @@
 # limitations under the License.
 
 
+from filecmp import dircmp
+import os
 from pathlib import Path
+import shutil
 
 import pytest
+
+from synthtool.languages import php
 
 
 FIXTURES = Path(__file__).parent / "fixtures" / "php"
 
 
-@pytest.fixture(scope="function", params=["asset", "secret_manager"])
-def prepare_test_data(request):
+@pytest.fixture(scope="function", params=["php_asset"])
+def copy_fixture(request, tmp_path):
     """A fixture for preparing test data.
     """
     param = request.param
-    print(f"Setup prepare_test_data with {param}")
-    yield param
-    print(f"Teardown {param}")
+    test_dir = tmp_path / param
+
+    shutil.copytree(FIXTURES / param, test_dir)
+    print(f"Copied fixture to {test_dir}")
+
+    yield test_dir
+
+    shutil.rmtree(test_dir)
 
 
-def test_owlbot_php(prepare_test_data):
-    pass
+def get_diff_string(dcmp, buf=""):
+    for name in dcmp.diff_files:
+        buf += f"diff_file: {name} found in {dcmp.left} and {dcmp.right}\n"
+    for sub_dcmp in dcmp.subdirs.values():
+        buf += get_diff_string(sub_dcmp)
+    return buf
+
+
+def test_owlbot_php(copy_fixture):
+    entries = os.scandir(copy_fixture)
+
+    with php.pushd(copy_fixture / "src"):
+        php.owlbot_entrypoint()
+
+    dcmp = dircmp(copy_fixture / 'expected', copy_fixture / 'src')
+    diff_string = get_diff_string(dcmp, "")
+    assert diff_string == ""
