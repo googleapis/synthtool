@@ -21,9 +21,9 @@ Migration Guide
 See the guide below for instructions on migrating to the latest version.
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   UPGRADING
+    UPGRADING
 
 {% endif %}
 Changelog
@@ -32,6 +32,6 @@ Changelog
 For a list of all ``{{ metadata['repo']['distribution_name'] }}`` releases:
 
 .. toctree::
-   :maxdepth: 2
+    :maxdepth: 2
 
-   changelog
+    changelog
