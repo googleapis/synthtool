@@ -18,7 +18,6 @@ from pathlib import Path
 import subprocess
 
 import synthtool as s
-from synthtool import _tracked_paths
 from synthtool.languages import php
 
 
@@ -101,7 +100,7 @@ s.replace(
      * Parses a formatted name string and returns an""",
 )
 
-### [START] protoc backwards compatibility fixes
+# [START] protoc backwards compatibility fixes
 
 # roll back to private properties.
 s.replace(
@@ -122,7 +121,7 @@ s.replace(
     r"public function \1Value",
 )
 
-### [END] protoc backwards compatibility fixes
+# [END] protoc backwards compatibility fixes
 
 # fix relative cloud.google.com links
 s.replace(
