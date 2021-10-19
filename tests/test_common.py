@@ -233,3 +233,19 @@ def test_detect_versions_with_default_version_from_metadata():
             json.dump(test_json, metadata)
         versions = detect_versions(default_first=True)
         assert ["api_v3", "api_v1", "api_v2"] == versions
+
+
+def test_detect_versions_nested_directory():
+    temp_dir = Path(tempfile.mkdtemp())
+    src_dir = temp_dir / "src" / "src2" / "src3"
+    vs = ("v1", "v2", "v3")
+    for v in vs:
+        os.makedirs(src_dir / v)
+
+    with util.chdir(temp_dir):
+        versions = detect_versions(default_version="v1")
+        assert ["v2", "v3", "v1"] == versions
+        versions = detect_versions(default_version="v2")
+        assert ["v1", "v3", "v2"] == versions
+        versions = detect_versions(default_version="v3")
+        assert ["v1", "v2", "v3"] == versions
