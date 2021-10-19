@@ -103,11 +103,12 @@ def owlbot_copy_version(
     s.move([src / "tests"], dest / "tests", merge=_merge, excludes=copy_excludes)
 
     # detect the directory containing proto generated PHP source and metadata.
-    entries = os.scandir(src / "proto/src")
+    proto_src = src / "proto/src"
+    entries = os.scandir(proto_src)
     proto_dir = None
     metadata_dir = None
     if not entries:
-        logger.info("there is no proto generated src directory to copy")
+        logger.info("there is no proto generated src directory to copy: %s", proto_src)
         return
     for entry in entries:
         if os.path.basename(entry.path) == METADATA_DIR:
@@ -138,7 +139,10 @@ def owlbot_patch() -> None:
 
 
 def owlbot_main(
-    src: Path, dest: Path, copy_excludes: typing.Optional[typing.List[str]] = None,
+    src: Path,
+    dest: Path,
+    copy_excludes: typing.Optional[typing.List[str]] = None,
+    patch_func: typing.Callable[[], None] = owlbot_patch,
 ) -> None:
     """Copies files from generated tree.
     """
@@ -151,7 +155,7 @@ def owlbot_main(
             version_src = Path(entry.path).resolve()
             owlbot_copy_version(version_src, dest, copy_excludes)
     with pushd(dest):
-        owlbot_patch()
+        patch_func()
 
 
 def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:

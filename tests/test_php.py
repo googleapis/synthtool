@@ -28,7 +28,7 @@ FIXTURES = Path(__file__).parent / "fixtures" / "php"
 @pytest.fixture(scope="session")
 def docker_image():
     image_name = "owlbot-php-test"
-    f = open("post-processor-changes.txt")
+    f = open("post-processor-changes.txt", "w")
     f.close()
 
     subprocess.run(

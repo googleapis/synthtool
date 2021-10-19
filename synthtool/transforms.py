@@ -135,11 +135,9 @@ def _copy_dir_to_existing_dir(
                 if merge is not None and dest_path.is_file():
                     try:
                         _merge_file(source_path, dest_path, merge)
-                    except Exception as e:
-                        logger.info(
-                            "_merge_file failed for %s: %s, fall back to copy",
-                            source_path,
-                            e,
+                    except Exception:
+                        logger.exception(
+                            "_merge_file failed for %s, fall back to copy", source_path,
                         )
                         shutil.copy2(str(source_path), str(dest_path))
                 else:
@@ -213,9 +211,9 @@ def move(
             if merge is not None and canonical_destination.is_file():
                 try:
                     _merge_file(source, canonical_destination, merge)
-                except Exception as e:
-                    logger.info(
-                        "_merge_file failed for %s: %s, fall back to copy", source, e
+                except Exception:
+                    logger.exception(
+                        "_merge_file failed for %s, fall back to copy", source
                     )
                     shutil.copy2(source, canonical_destination)
             else:
