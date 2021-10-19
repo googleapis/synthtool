@@ -15,7 +15,16 @@ API Reference
     {{ version }}/types
 {% endfor %}
 {% if include_uprading_doc %}
-.. include:: UPGRADING.md
+Migration Guide
+---------------
+
+See the guide below for instructions on migrating to the latest version.
+
+.. toctree::
+   :maxdepth: 2
+
+   UPGRADING
+
 {% endif %}
 Changelog
 ---------
