@@ -258,6 +258,10 @@ class CommonTemplates:
         ):
             self.excludes += ["docs/index.rst"]
 
+        # Add kwargs to signal that UPGRADING.md should be included in docs/index.rst if it exists
+        if Path("docs/UPGRADING.md").exists():
+            kwargs["include_uprading_doc"] = True
+
         # Assume the python-docs-samples Dockerfile is used for samples by default
         if "custom_samples_dockerfile" not in kwargs:
             kwargs["custom_samples_dockerfile"] = False
