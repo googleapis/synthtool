@@ -17,6 +17,7 @@ from filecmp import dircmp
 import os
 from pathlib import Path
 import shutil
+import subprocess
 
 import pytest
 
@@ -24,6 +25,21 @@ from synthtool.languages import php
 
 
 FIXTURES = Path(__file__).parent / "fixtures" / "php"
+
+
+@pytest.fixture(scope="session")
+def docker_image():
+    image_name = 'owlbot-php-test'
+    f = open('post-processor-changes.txt')
+    f.close()
+
+    subprocess.run([
+        "docker", "build", "-t", image_name, "-f",
+        "docker/owlbot/php/Dockerfile", "."
+    ],check=True)
+    yield image_name
+
+    os.remove('post-processor-changes.txt')
 
 
 @pytest.fixture(scope="function", params=["php_asset"])
@@ -49,11 +65,18 @@ def get_diff_string(dcmp, buf=""):
     return buf
 
 
-def test_owlbot_php(copy_fixture):
+def test_owlbot_php(copy_fixture, docker_image):
     entries = os.scandir(copy_fixture)
+    user_id = os.getuid()
+    group_id = os.getgid()
+    cwd = Path().resolve()
+    src_dir = (copy_fixture / "src").resolve()
 
-    with php.pushd(copy_fixture / "src"):
-        php.owlbot_entrypoint()
+    # Run the postprocessor image
+    subprocess.run([
+        "docker", "run", "--user", f"{user_id}:{group_id}", "--rm",
+        "-v", f"{src_dir}:/repo", "-w", "/repo", docker_image
+    ], check=True)
 
     dcmp = dircmp(copy_fixture / "expected", copy_fixture / "src")
     diff_string = get_diff_string(dcmp, "")
