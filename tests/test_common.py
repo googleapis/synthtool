@@ -237,7 +237,7 @@ def test_detect_versions_with_default_version_from_metadata():
 
 def test_detect_versions_nested_directory():
     temp_dir = Path(tempfile.mkdtemp())
-    src_dir = temp_dir / "src" / "src2" / "src3"
+    src_dir = temp_dir / "src" / "src2" / "src3" / "src4"
     vs = ("v1", "v2", "v3")
     for v in vs:
         os.makedirs(src_dir / v)

@@ -184,7 +184,7 @@ def owlbot_main() -> None:
 
         templated_files = CommonTemplates().py_library(
             microgenerator=True,
-            versions=detect_versions(path="./google/cloud", default_first=True),
+            versions=detect_versions(path="./google", default_first=True),
         )
         s.move(
             [templated_files], excludes=[".coveragerc"]
