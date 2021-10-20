@@ -241,6 +241,8 @@ def test_detect_versions_nested_directory():
     vs = ("v1", "v2", "v3")
     for v in vs:
         os.makedirs(src_dir / v)
+        # this folder should be ignored
+        os.makedirs(src_dir / v / "some_other_service_v1_beta")
 
     with util.chdir(temp_dir):
         versions = detect_versions(default_version="v1")

@@ -384,8 +384,13 @@ def detect_versions(
         except FileNotFoundError:
             pass
 
-    # Sort the sub directories alphabetically.
-    sub_dirs = sorted([p.name for p in Path(path).rglob("*v[1-9]*") if p.is_dir()])
+    # Detect versions in either the first, second or third level of hierarchy
+    for level in ("*v[1-9]*", "*/*v[1-9]*", "*/*/*v[1-9]*"):
+        # Sort the sub directories alphabetically.
+        sub_dirs = sorted([p.name for p in Path(path).glob(level) if p.is_dir()])
+        # Don't proceed to the next level if we've detected sub directories in this level
+        if sub_dirs:
+            break
 
     if sub_dirs:
         # if `default_version` is not specified, return the sorted directories.
