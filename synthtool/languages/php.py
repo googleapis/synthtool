@@ -89,9 +89,10 @@ def owlbot_copy_version(
     if copy_excludes is None:
         copy_excludes = DEFAULT_COPY_EXCLUDES
     # detect the version string for later use
-    entries = os.scandir(src / "src")
+    src_dir = src / "src"
+    entries = os.scandir(src_dir)
     if not entries:
-        logger.info("there is no src directory to copy")
+        logger.info("there is no src directory '%s' to copy", src_dir)
         return
     version_string = os.path.basename(os.path.basename(next(entries)))
     logger.debug("version_string detected: %s", version_string)
