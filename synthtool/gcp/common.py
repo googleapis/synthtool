@@ -262,6 +262,10 @@ class CommonTemplates:
         if Path("docs/UPGRADING.md").exists():
             kwargs["include_uprading_doc"] = True
 
+        # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
+        if Path("google/cloud").exists():
+            kwargs["is_google_cloud_api"] = True
+
         # Assume the python-docs-samples Dockerfile is used for samples by default
         if "custom_samples_dockerfile" not in kwargs:
             kwargs["custom_samples_dockerfile"] = False
