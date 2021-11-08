@@ -266,6 +266,11 @@ class CommonTemplates:
         if Path("google/cloud").exists():
             kwargs["is_google_cloud_api"] = True
 
+        # If Dockerfile exists in .kokoro/docker/samples, add kwargs to
+        # signal that a custom docker image should be used when testing samples.
+        if Path(".kokoro/docker/samples/Dockerfile").exists():
+            kwargs["custom_samples_dockerfile"] = True
+
         # Assume the python-docs-samples Dockerfile is used for samples by default
         if "custom_samples_dockerfile" not in kwargs:
             kwargs["custom_samples_dockerfile"] = False
