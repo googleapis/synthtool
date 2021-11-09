@@ -268,7 +268,9 @@ class CommonTemplates:
 
         # If Dockerfile exists in .kokoro/docker/samples, add kwargs to
         # signal that a custom docker image should be used when testing samples.
-        kwargs["custom_samples_dockerfile"] = Path(".kokoro/docker/samples/Dockerfile").exists()
+        kwargs["custom_samples_dockerfile"] = Path(
+            ".kokoro/docker/samples/Dockerfile"
+        ).exists()
 
         ret = self._generic_library("python_library", **kwargs)
 
