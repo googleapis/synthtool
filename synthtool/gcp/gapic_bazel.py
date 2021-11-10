@@ -94,9 +94,6 @@ class GAPICBazel:
         if discogapic:
             api_definitions_repo = self._clone_discovery_artifact_manager()
             api_definitions_repo_name = "discovery-artifact-manager"
-        elif diregapic:
-            api_definitions_repo = self._clone_googleapis_discovery()
-            api_definitions_repo_name = "googleapis-discovery"
         elif private:
             api_definitions_repo = self._clone_googleapis_private()
             api_definitions_repo_name = "googleapis_private"
