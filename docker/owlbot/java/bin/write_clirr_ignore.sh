@@ -21,7 +21,7 @@ is_release=$((git log -1 --pretty=%B | grep -e "chore.*release.*-SNAPSHOT") || e
 # on a snapshot bump, clear all clirr-ignore-differences files
 if [ ! -z "${is_release}" ]
 then
-  find . -name 'clirr-ignored-differences.xml' | xargs rm
+  find . -name 'clirr-ignored-differences.xml' | xargs rm || echo "no clirr-ignored-differences.xml files to clean up"
 fi
 
 # restore default clirr-ignored-differences.xml for protos if the file does not exist

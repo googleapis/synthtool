@@ -10,9 +10,13 @@ steps:
       args: [ 'build',
         '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA',
         '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest',
+        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
+        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
         '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
     # Push the docker image.
-    - name: 'gcr.io/cloud-builders/docker'
-      args: ['push', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA']
-    - name: 'gcr.io/cloud-builders/docker'
-      args: ['push', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest']
+images:
+  - gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA
+  - gcr.io/repo-automation-bots/owlbot-nodejs:latest
+  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA
+  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest
+
