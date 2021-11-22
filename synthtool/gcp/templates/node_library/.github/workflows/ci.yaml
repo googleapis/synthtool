@@ -9,10 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [10, 12, 14, 15]
+        node: [10, 12, 14, 16, 17]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: ${{ '{{' }} matrix.node {{ '}}' }}
       - run: node --version
@@ -30,9 +30,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
       - run: npm install
       - run: npm test
         env:
@@ -41,18 +41,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
       - run: npm install
       - run: npm run lint
   docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: 14
+          node-version: 16
       - run: npm install
       - run: npm run docs
       - uses: JustinBeckwith/linkinator-action@v1
