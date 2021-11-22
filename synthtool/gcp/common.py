@@ -259,7 +259,7 @@ class CommonTemplates:
             self.excludes += ["docs/index.rst"]
 
         # Add kwargs to signal that UPGRADING.md should be included in docs/index.rst if it exists
-        if Path("docs/UPGRADING.md").exists():
+        if Path("docs/UPGRADING.md").exists() or Path("docs/UPGRADING.rst").exists():
             kwargs["include_uprading_doc"] = True
 
         # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
