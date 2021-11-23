@@ -281,7 +281,7 @@ def main():
     else:
         excluded_modules = ""
 
-    if artifact_id not in existing_modules and artifact_id not in excluded_modules:
+    if artifact_id not in existing_modules:
         existing_modules[artifact_id] = module.Module(
             group_id=group_id,
             artifact_id=artifact_id,
@@ -290,14 +290,10 @@ def main():
         )
     main_module = existing_modules[artifact_id]
 
-    # Special case to accomodate parent modules that are not google-cloud-library
-    if "parent_artifact" in repo_metadata:
-        parent_artifact_id = repo_metadata["parent_artifact"]
-    else:
-        parent_artifact_id = f"{artifact_id}-parent"
+    parent_artifact_id = f"{artifact_id}-parent"
 
     # Special case to avoid cyclic dependency in java-common-protos
-    if parent_artifact_id in "proto-google-common-protos":
+    if artifact_id in "proto-google-common-protos":
         sys.exit(0)
 
     if parent_artifact_id not in existing_modules \
