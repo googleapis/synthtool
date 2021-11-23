@@ -13,7 +13,7 @@
 # limitations under the License.
 
 # build from the root of this repo:
-FROM gcr.io/cloud-devrel-public-resources/java8
+FROM gcr.io/cloud-devrel-public-resources/java11
 
 # The formatter version used by the fmt-maven-plugin
 # https://github.com/coveooss/fmt-maven-plugin
