@@ -15,7 +15,9 @@
 # build from the root of this repo:
 FROM gcr.io/cloud-devrel-public-resources/java8
 
-ARG JAVA_FORMAT_VERSION=1.7
+# The formatter version used by the fmt-maven-plugin
+# https://github.com/coveooss/fmt-maven-plugin
+ARG JAVA_FORMAT_VERSION=1.11.0
 
 RUN apt-get install -y --no-install-recommends jq
 
