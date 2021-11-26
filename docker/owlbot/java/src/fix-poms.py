@@ -311,10 +311,6 @@ def main():
 
     parent_artifact_id = f"{artifact_id}-parent"
 
-    # Special case to avoid cyclic dependency in java-common-protos
-    # if artifact_id in "proto-google-common-protos":
-    #     sys.exit(0)
-
     if parent_artifact_id not in existing_modules:
         existing_modules[parent_artifact_id] = module.Module(
             group_id=group_id,
