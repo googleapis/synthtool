@@ -320,11 +320,16 @@ def main():
         )
     parent_module = existing_modules[parent_artifact_id]
 
-    required_dependencies = [
-        module
-        for module in existing_modules.values()
-        if module.artifact_id not in excluded_dependencies_list
-    ]
+    required_dependencies = {}
+
+    for dependency_module in existing_modules:
+        if dependency_module not in excluded_dependencies_list:
+            required_dependencies[dependency_module] = dependency_module.Module(
+                group_id="com.google.api.grpc",
+                artifact_id=path,
+                version=main_module.version,
+                release_version=main_module.release_version,
+            )
 
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
