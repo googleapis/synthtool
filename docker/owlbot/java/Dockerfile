@@ -13,12 +13,9 @@
 # limitations under the License.
 
 # build from the root of this repo:
-FROM gcr.io/cloud-devrel-public-resources/java11
+FROM gcr.io/cloud-devrel-public-resources/java8
 
-# The formatter version used by the fmt-maven-plugin through the
-# google-cloud-shared-config.
-# https://github.com/googleapis/java-shared-config/blob/main/pom.xml#L228
-ARG JAVA_FORMAT_VERSION=1.13.0
+ARG JAVA_FORMAT_VERSION=1.7
 
 RUN apt-get install -y --no-install-recommends jq
 
