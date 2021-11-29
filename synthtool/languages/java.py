@@ -27,7 +27,7 @@ from pathlib import Path
 from typing import Any, Optional, Dict, Iterable, List
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
-DEFAULT_FORMAT_VERSION = "1.7"
+DEFAULT_FORMAT_VERSION = "1.13.0"
 GOOD_LICENSE = """/*
  * Copyright 2020 Google LLC
  *
