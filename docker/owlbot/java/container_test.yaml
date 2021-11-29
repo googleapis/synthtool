@@ -17,10 +17,10 @@ commandTests:
 - name: "version"
   command: ["java", "-version"]
   # java -version outputs to stderr...
-  expectedError: ["(java|openjdk) version \"1.8.*\""]
+  expectedError: ["(java|openjdk) version \"11.*\""]
 - name: "formatter"
   command: ["java", "-jar", "/owlbot/google-java-format.jar", "--version"]
-  expectedError: ["google-java-format: Version 1.7"]
+  expectedError: ["google-java-format: Version 1.13.0"]
 - name: "python"
   command: ["python", "--version"]
   expectedOutput: ["Python 3.6.1"]
