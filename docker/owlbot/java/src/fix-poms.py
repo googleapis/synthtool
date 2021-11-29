@@ -478,7 +478,6 @@ def main():
                 version=main_module.version,
                 release_version=main_module.release_version,
             )
-        existing_modules = sorted(existing_modules)
     templates.render(
         template_name="versions.txt.j2", output_name="./versions.txt", modules=existing_modules.values(),
     )
