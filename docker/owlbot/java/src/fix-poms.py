@@ -323,12 +323,7 @@ def main():
     required_dependencies = {}
     for dependency_module in existing_modules:
         if dependency_module not in excluded_dependencies_list:
-            required_dependencies[dependency_module] = module.Module(
-                group_id="com.google.api.grpc",
-                artifact_id=dependency_module,
-                version=main_module.version,
-                release_version=main_module.release_version,
-            )
+            required_dependencies[dependency_module] = existing_modules[dependency_module]
 
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
