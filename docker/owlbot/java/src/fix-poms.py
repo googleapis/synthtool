@@ -469,6 +469,8 @@ def main():
     else:
         print("creating missing versions.txt")
     existing_modules.pop(parent_artifact_id)
+
+    # add extra modules to versions.txt
     for dependency_module in extra_managed_modules:
         if dependency_module not in existing_modules:
             existing_modules[dependency_module] = module.Module(
