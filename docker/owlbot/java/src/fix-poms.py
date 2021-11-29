@@ -324,9 +324,9 @@ def main():
 
     for dependency_module in existing_modules:
         if dependency_module not in excluded_dependencies_list:
-            required_dependencies[dependency_module] = dependency_module.Module(
+            required_dependencies[dependency_module] = module.Module(
                 group_id="com.google.api.grpc",
-                artifact_id=path,
+                artifact_id=dependency_module,
                 version=main_module.version,
                 release_version=main_module.release_version,
             )
