@@ -133,10 +133,10 @@ def install_unittest_dependencies(session, *constraints):
         session.install(*UNIT_TEST_EXTERNAL_DEPENDENCIES, *constraints)
 
     if UNIT_TEST_LOCAL_DEPENDENCIES:
-        session.install("-e", *UNIT_TEST_LOCAL_DEPENDENCIES, *constraints)
+        session.install(*UNIT_TEST_LOCAL_DEPENDENCIES, *constraints)
 
     if UNIT_TEST_DEPENDENCIES:
-        session.install("-e", *UNIT_TEST_DEPENDENCIES, *constraints)
+        session.install(*UNIT_TEST_DEPENDENCIES, *constraints)
 
     if UNIT_TEST_EXTRAS_BY_PYTHON:
         extras = UNIT_TEST_EXTRAS_BY_PYTHON.get(session.python, [])
