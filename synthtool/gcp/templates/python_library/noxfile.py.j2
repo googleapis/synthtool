@@ -20,6 +20,7 @@ from __future__ import absolute_import
 import os
 import pathlib
 import shutil
+import warnings
 
 import nox
 
@@ -130,6 +131,11 @@ def install_unittest_dependencies(session, *constraints):
     session.install(*UNIT_TEST_STANDARD_DEPENDENCIES, *constraints)
 
     if UNIT_TEST_EXTERNAL_DEPENDENCIES:
+        warnings.warn(
+            "'unit_test_external_dependencies' is deprecated. Instead, please "
+            "use 'unit_test_dependencies' or 'unit_test_local_dependencies'.",
+            DeprecationWarning,
+        )
         session.install(*UNIT_TEST_EXTERNAL_DEPENDENCIES, *constraints)
 
     if UNIT_TEST_LOCAL_DEPENDENCIES:
