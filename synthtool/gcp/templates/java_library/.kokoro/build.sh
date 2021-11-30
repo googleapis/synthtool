@@ -69,6 +69,11 @@ integration)
       verify
     RETURN_CODE=$?
     ;;
+graalvm)
+    # Run Unit and Integration Tests with Native Image
+    mvn test -Pnative -Penable-integration-tests
+    RETURN_CODE=$?
+    ;;
 samples)
     SAMPLES_DIR=samples
     # only run ITs in snapshot/ on presubmit PRs. run ITs in all 3 samples/ subdirectories otherwise.
@@ -86,7 +91,6 @@ samples)
 
         pushd ${SAMPLES_DIR}
         mvn -B \
-          -Penable-samples \
           -ntp \
           -DtrimStackTrace=false \
           -Dclirr.skip=true \
