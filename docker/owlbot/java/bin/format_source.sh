@@ -18,7 +18,7 @@ set -e
 # Find all the java files relative to the current directory and format them
 # using google-java-format
 list="$(find . -name '*.java' )"
-tmpfile=$(mktemp /tmp/list_file.txt)
+tmpfile=$(mktemp)
 
 for file in $list;
 do
