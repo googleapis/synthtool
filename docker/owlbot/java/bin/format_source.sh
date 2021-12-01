@@ -17,4 +17,19 @@ set -e
 
 # Find all the java files relative to the current directory and format them
 # using google-java-format
-find . -name '*.java' | xargs java -jar /owlbot/google-java-format.jar --replace
+list="$(find . -name '*.java' )"
+
+for file in $list;
+do
+  if [[ "$file" =~ ".*/samples/snippets/src/main/java/com/example/firestore/Quickstart.java" ]];
+  then
+    echo "File skipped formatting: $file"
+  elif [[ "$file" =~ ".*/samples/snippets/src/main/java/com/example/spanner/.*.java" ]];
+  then
+    echo "File skipped formatting: $file"
+  else
+   echo $file >> file_list.txt
+  fi
+done
+
+cat file_list.txt | xargs java -jar /owlbot/google-java-format.jar --replace
