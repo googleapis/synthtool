@@ -18,6 +18,7 @@ set -e
 # Find all the java files relative to the current directory and format them
 # using google-java-format
 list="$(find . -name '*.java' )"
+tmpfile=$(mktemp /tmp/list_file.txt)
 
 for file in $list;
 do
@@ -28,8 +29,10 @@ do
   then
     echo "File skipped formatting: $file"
   else
-   echo $file >> file_list.txt
+   echo $file >> $tmpfile
   fi
 done
 
-cat file_list.txt | xargs java -jar /owlbot/google-java-format.jar --replace
+cat $tmpfile | xargs java -jar /owlbot/google-java-format.jar --replace
+
+rm $tmpfile
