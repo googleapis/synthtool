@@ -22,10 +22,10 @@ tmpfile=$(mktemp)
 
 for file in $list;
 do
-  if [[ "$file" =~ ".*/samples/snippets/src/main/java/com/example/firestore/Quickstart.java" ]];
+  if [[ $file =~ .*/samples/snippets/src/main/java/com/example/firestore/Quickstart.java ]];
   then
     echo "File skipped formatting: $file"
-  elif [[ "$file" =~ ".*/samples/snippets/src/main/java/com/example/spanner/.*.java" ]];
+  elif [[ $file =~ .*/samples/snippets/src/main/java/com/example/spanner/.*.java ]];
   then
     echo "File skipped formatting: $file"
   else
