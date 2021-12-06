@@ -259,16 +259,18 @@ class CommonTemplates:
             self.excludes += ["docs/index.rst"]
 
         # Add kwargs to signal that UPGRADING.md should be included in docs/index.rst if it exists
-        if Path("docs/UPGRADING.md").exists():
+        if Path("docs/UPGRADING.md").exists() or Path("docs/UPGRADING.rst").exists():
             kwargs["include_uprading_doc"] = True
 
         # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
         if Path("google/cloud").exists():
             kwargs["is_google_cloud_api"] = True
 
-        # Assume the python-docs-samples Dockerfile is used for samples by default
-        if "custom_samples_dockerfile" not in kwargs:
-            kwargs["custom_samples_dockerfile"] = False
+        # If Dockerfile exists in .kokoro/docker/samples, add kwargs to
+        # signal that a custom docker image should be used when testing samples.
+        kwargs["custom_samples_dockerfile"] = Path(
+            ".kokoro/docker/samples/Dockerfile"
+        ).exists()
 
         ret = self._generic_library("python_library", **kwargs)
 
