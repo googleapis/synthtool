@@ -96,3 +96,6 @@ def test_owlbot_php(copy_fixture, docker_image):
     dcmp = dircmp(copy_fixture / "expected", copy_fixture / "src")
     diff_string = get_diff_string(dcmp, "")
     assert diff_string == ""
+    staging = copy_fixture / "src/owl-bot-staging"
+    # make sure the staging directory is deleted
+    assert not staging.is_dir()
