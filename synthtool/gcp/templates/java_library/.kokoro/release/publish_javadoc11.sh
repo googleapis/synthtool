@@ -18,7 +18,7 @@ set -eo pipefail
 cd $(dirname "$0")/../../
 export ROOT_DIR=$(pwd)
 
-export NAME=google-cloud-memcache
+export NAME={{ metadata['repo']['distribution_name'].split(':')|last }}
 export VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 
 if [ "$REGENERATE" = "true" ]; then
