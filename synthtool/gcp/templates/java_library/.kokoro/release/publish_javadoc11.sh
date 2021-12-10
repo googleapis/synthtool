@@ -22,9 +22,9 @@ export NAME={{ metadata['repo']['distribution_name'].split(':')|last }}
 export VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 
 if [ "$REGENERATE" = "true" ]; then
-  GENERATE=${KOKORO_GFILE_DIR}/regenerate_publish_javadoc11.sh
+  GENERATE=${KOKORO_GFILE_DIR}/regenerate_publish_cloudrad_docs.sh
 else
-  GENERATE=${KOKORO_GFILE_DIR}/publish_javadoc11_1.0.0.sh
+  GENERATE=${KOKORO_GFILE_DIR}/publish_cloudrad_docs_1.0.0.sh
 fi
 
 bash ${GENERATE}
