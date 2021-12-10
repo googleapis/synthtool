@@ -12,52 +12,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 set -eo pipefail
 
-if [[ -z "${CREDENTIALS}" ]]; then
-  CREDENTIALS=${KOKORO_KEYSTORE_DIR}/73713_docuploader_service_account
-fi
-
-if [[ -z "${STAGING_BUCKET_V2}" ]]; then
-  echo "Need to set STAGING_BUCKET_V2 environment variable"
-  exit 1
-fi
-
 # work from the git root directory
-pushd $(dirname "$0")/../../
+cd $(dirname "$0")/../../
+export ROOT_DIR=$(pwd)
 
-# install docuploader package
-python3 -m pip install gcp-docuploader
-
-# compile all packages
-mvn clean install -B -q -DskipTests=true
-
-export NAME={{ metadata['repo']['distribution_name'].split(':')|last }}
+export NAME=google-cloud-memcache
 export VERSION=$(grep ${NAME}: versions.txt | cut -d: -f3)
 
-# cloud RAD generation
-mvn clean javadoc:aggregate -B -q -P docFX
-# include CHANGELOG
-cp CHANGELOG.md target/docfx-yml/history.md
+if [ "$REGENERATE" = "true" ]; then
+  GENERATE=${KOKORO_GFILE_DIR}/regenerate_publish_javadoc11.sh
+else
+  GENERATE=${KOKORO_GFILE_DIR}/publish_javadoc11.sh
+fi
 
-pushd target/docfx-yml
-
-# create metadata
-python3 -m docuploader create-metadata \
- --name ${NAME} \
- --version ${VERSION} \
- --xrefs devsite://java/gax \
- --xrefs devsite://java/google-cloud-core \
- --xrefs devsite://java/api-common \
- --xrefs devsite://java/proto-google-common-protos \
- --xrefs devsite://java/google-api-client \
- --xrefs devsite://java/google-http-client \
- --xrefs devsite://java/protobuf \
- --language java
-
-# upload yml to production bucket
-python3 -m docuploader upload . \
- --credentials ${CREDENTIALS} \
- --staging-bucket ${STAGING_BUCKET_V2} \
- --destination-prefix docfx
+bash ${GENERATE}
