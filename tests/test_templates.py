@@ -79,7 +79,7 @@ def test_release_quality_badge():
         "README.md", metadata={"repo": {"release_level": "preview"}, "samples": {}}
     ).read_text()
     assert "https://img.shields.io/badge/release%20level-beta-yellow.svg" in result
-    assert "This library is considered to be in **beta**" in result
+    assert "This library is considered to be in **preview**" in result
 
 
 def test_syntax_highlighter():
