@@ -101,9 +101,7 @@ def release_quality_badge(input: str) -> str:
     elif release_quality == "PREVIEW":
         badge = "beta-yellow"
     else:
-        log.error(
-            "Expected 'release_quality' to be one of: (stable, preview)"
-        )
+        log.error("Expected 'release_quality' to be one of: (stable, preview)")
         return ""
     return f"[![release level](https://img.shields.io/badge/release%20level-{badge}.svg?style=flat)](https://cloud.google.com/terms/launch-stages)"
 
