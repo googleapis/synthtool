@@ -442,7 +442,7 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
     * `product_documentation` - The product documentation on cloud.google.com
     * `client_documentation` - The client library reference documentation
     * `issue_tracker` - The public issue tracker for the product
-    * `release_level` - The release level of the client library. One of: alpha, beta, ga, deprecated
+    * `release_level` - The release level of the client library. One of: stable, preview
     * `language` - The repo language. One of dotnet, go, java, nodejs, php, python, ruby
     * `repo` - The GitHub repo in the format {owner}/{repo}
     * `distribution_name` - The language-idiomatic package/distribution name
