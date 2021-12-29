@@ -118,6 +118,12 @@ unless absolutely necessary (e.g. because of critical security issues) or with
 an extensive deprecation period. Issues and requests against **GA** libraries
 are addressed with the highest priority.
 {% endif %}
+{% if metadata['repo']['release_level'] == 'stable' %}
+This library is considered to be **stable**. The code surface will not change in backwards-incompatible ways
+unless absolutely necessary (e.g. because of critical security issues) or with
+an extensive deprecation period. Issues and requests against **stable** libraries
+are addressed with the highest priority.
+{% endif %}
 {% if metadata['repo']['release_level'] == 'beta' %}
 This library is considered to be in **beta**. This means it is expected to be
 mostly stable while we work toward a general availability release; however,
@@ -133,6 +139,11 @@ backwards-incompatible changes at any time.
 This library is **deprecated**. This means that it is no longer being
 actively maintained and the only updates the library will receive will
 be for critical security issues. {% if metadata['deprecated'] %}{{ metadata['deprecated'] }}{% endif %}
+{% endif %}
+{% if metadata['repo']['release_level'] == 'preview' %}
+This library is considered to be in **preview**. This means it is still a
+work-in-progress and under active development. Any release is subject to
+backwards-incompatible changes at any time.
 {% endif %}
 
 More Information: [Google Cloud Platform Launch Stages][launch_stages]
