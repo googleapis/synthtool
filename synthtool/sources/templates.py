@@ -98,6 +98,10 @@ def release_quality_badge(input: str) -> str:
 
     if release_quality == "GA":
         badge = "general%20availability%20%28GA%29-brightgreen"
+    elif release_quality == "STABLE":
+        badge = "general%20availability%20%28GA%29-brightgreen"
+    elif release_quality == "PREVIEW":
+        badge = "beta-yellow"
     elif release_quality == "BETA":
         badge = "beta-yellow"
     elif release_quality == "ALPHA":
@@ -108,7 +112,7 @@ def release_quality_badge(input: str) -> str:
         badge = "deprecated-red"
     else:
         log.error(
-            "Expected 'release_quality' to be one of: (ga, beta, alpha, eap, deprecated)"
+            "Expected 'release_quality' to be one of: (ga, stable, preview, beta, alpha, eap, deprecated)"
         )
         return ""
     return f"[![release level](https://img.shields.io/badge/release%20level-{badge}.svg?style=flat)](https://cloud.google.com/terms/launch-stages)"
