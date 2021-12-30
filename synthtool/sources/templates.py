@@ -99,9 +99,9 @@ def release_quality_badge(input: str) -> str:
     if release_quality == "GA":
         badge = "general%20availability%20%28GA%29-brightgreen"
     elif release_quality == "STABLE":
-        badge = "general%20availability%20%28GA%29-brightgreen"
+        badge = "stable-brightgreen"
     elif release_quality == "PREVIEW":
-        badge = "beta-yellow"
+        badge = "preview-yellow"
     elif release_quality == "BETA":
         badge = "beta-yellow"
     elif release_quality == "ALPHA":

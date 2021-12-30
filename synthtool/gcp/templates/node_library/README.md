@@ -10,7 +10,6 @@
 
 {{ metadata['repo']['release_level']|release_quality_badge }}
 [![npm version](https://img.shields.io/npm/v/{{ metadata['name'] }}.svg)](https://www.npmjs.org/package/{{ metadata['name'] }})
-[![codecov](https://img.shields.io/codecov/c/github/{{ metadata['repo']['repo'] }}/{{metadata['repo']['default_branch']}}.svg?style=flat)](https://codecov.io/gh/{{ metadata['repo']['repo'] }})
 
 {% if metadata['deprecated'] %}
 | :warning: Deprecated Module |
