@@ -25,10 +25,12 @@ echo "Generating missing pom.xml..."
 /owlbot/bin/write_missing_pom_files.sh
 echo "...done"
 
+# TODO: re-enable this once we figure out how to remove the clirr file
+# only after the latest version has been published to maven central.
 # write or restore clirr-ignored-differences.xml
-echo "Generating clirr-ignored-differences.xml..."
-/owlbot/bin/write_clirr_ignore.sh
-echo "...done"
+# echo "Generating clirr-ignored-differences.xml..."
+# /owlbot/bin/write_clirr_ignore.sh
+# echo "...done"
 
 # fix license headers
 echo "Fixing missing license headers..."
