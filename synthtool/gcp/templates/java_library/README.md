@@ -20,11 +20,11 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 
 ## Quickstart
 
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 
 ```xml
-{{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
+{{ metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] }}
 ```
 
 If you are using Maven without BOM, add this to your dependencies:
@@ -33,8 +33,8 @@ If you are using Maven, add this to your pom.xml file:
 {% endif %}
 
 ```xml
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
-{{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_without_bom'] -%}
+{{ metadata['snippets'][metadata['repo']['api_shortname'] + '_install_without_bom'] }}
 {% else -%}
 <dependency>
   <groupId>{{ group_id }}</groupId>
@@ -44,7 +44,7 @@ If you are using Maven, add this to your pom.xml file:
 {% endif -%}
 ```
 
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] -%}
 If you are using Gradle 5.x or later, add this to your dependencies
 
 ```Groovy
