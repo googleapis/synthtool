@@ -47,7 +47,9 @@ def test_samples_billing():
     ).read_text()
     assert "and you will need to [enable billing]" in result
 
+
 # def test_samples_noxfile(template_kwargs, expected_text):
+
 
 def test_samples_noxfile():
     t = templates.Templates(PYTHON_SAMPLES)
