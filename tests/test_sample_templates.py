@@ -48,17 +48,12 @@ def test_samples_billing():
     assert "and you will need to [enable billing]" in result
 
 
-# def test_samples_noxfile(template_kwargs, expected_text):
-
-
 def test_samples_noxfile():
     t = templates.Templates(PYTHON_SAMPLES)
     result = t.render("noxfile.py.j2").read_text()
     # Validate Python syntax.
     result_code = compile(result, "noxfile.py", "exec")
     assert result_code is not None
-    # for expected in expected_text:
-    #     assert expected in result
 
 
 def test_samples_footer():
