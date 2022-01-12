@@ -49,9 +49,9 @@ def test_samples_billing():
 
 # def test_samples_noxfile(template_kwargs, expected_text):
 
-def test_samples_noxfile(template_kwargs, expected_text):
+def test_samples_noxfile():
     t = templates.Templates(PYTHON_SAMPLES)
-    result = t.render("noxfile.py.j2", **template_kwargs,).read_text()
+    result = t.render("noxfile.py.j2").read_text()
     # Validate Python syntax.
     result_code = compile(result, "noxfile.py", "exec")
     assert result_code is not None
