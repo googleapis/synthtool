@@ -53,7 +53,7 @@ def test_samples_noxfile():
     result = t.render("noxfile.py.j2").read_text()
     # Validate Python syntax.
     result_code = compile(result, "noxfile.py", "exec")
-    exec(result_code, {}, {})
+    # exec(result_code, {}, {})
     assert result_code is not None
 
 
