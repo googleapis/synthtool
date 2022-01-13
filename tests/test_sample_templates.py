@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import tempfile
+
 from pathlib import Path
 
 from synthtool.sources import templates
@@ -49,12 +51,16 @@ def test_samples_billing():
 
 
 def test_samples_noxfile():
+    from flake8.checker import FileChecker
     t = templates.Templates(PYTHON_SAMPLES)
     result = t.render("noxfile.py.j2").read_text()
     # Validate Python syntax.
     result_code = compile(result, "noxfile.py", "exec")
-    # exec(result_code, {}, {})
     assert result_code is not None
+    result_code_temp_file = tempfile.TemporaryFile()
+    result_code_temp_file.write(result_code)
+    print(FileChecker(result_code_temp_file))
+    
 
 
 def test_samples_footer():
