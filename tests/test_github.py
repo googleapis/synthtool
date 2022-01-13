@@ -31,3 +31,10 @@ def test_list_repos():
     gh = new_gh()
     repos = gh.list_repos("googleapis")
     assert len(repos) > 10
+
+
+@requires_github_token
+def test_default_branch():
+    gh = new_gh()
+    default_branch = gh.get_default_branch("googleapis/sloth")
+    assert default_branch == "main"

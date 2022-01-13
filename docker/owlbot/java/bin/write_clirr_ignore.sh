@@ -16,13 +16,6 @@
 set -e
 
 templates_dir=$(realpath $(dirname "${BASH_SOURCE[0]}")/../templates/clirr)
-is_release=$((git log -1 --pretty=%B | grep -e "chore.*release.*-SNAPSHOT") || echo "")
-
-# on a snapshot bump, clear all clirr-ignore-differences files
-if [ ! -z "${is_release}" ]
-then
-  find . -name 'clirr-ignored-differences.xml' | xargs rm
-fi
 
 # restore default clirr-ignored-differences.xml for protos if the file does not exist
 for dir in `ls -d proto-google-*`
