@@ -63,7 +63,6 @@ def test_samples_noxfile():
     # run flake8, which will check for missing imports
     # test fails if flake8 fails, no need to assert
     subprocess.check_call(["flake8", result_code_temp_file.name ])
-    
 
 
 def test_samples_footer():
