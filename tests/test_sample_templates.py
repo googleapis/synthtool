@@ -60,8 +60,8 @@ def test_samples_noxfile():
     # write rendered template to a file
     result_code_temp_file = tempfile.NamedTemporaryFile()
     result_code_temp_file.write(bytes(result, "utf-8"))
-
     # run flake8, which will check for missing imports
+    # test fails if flake8 fails, no need to assert
     subprocess.check_call(["flake8", result_code_temp_file.name ])
     
 
