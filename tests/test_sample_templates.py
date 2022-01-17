@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import subprocess
+import tempfile
+
 from pathlib import Path
 
 from synthtool.sources import templates
@@ -46,6 +49,22 @@ def test_samples_billing():
         },
     ).read_text()
     assert "and you will need to [enable billing]" in result
+
+
+def test_samples_noxfile():
+    import shutil
+
+    t = templates.Templates(PYTHON_SAMPLES)
+    result = t.render("noxfile.py.j2").read_text()
+    # Validate Python syntax.
+    result_code = compile(result, "noxfile.py", "exec")
+    assert result_code is not None
+    # write rendered template to a file
+    result_code_temp_file = tempfile.NamedTemporaryFile()
+    result_code_temp_file.write(bytes(result, "utf-8"))
+    # run flake8, which will check for missing imports
+    # test fails if flake8 fails, no need to assert
+    subprocess.check_call([shutil.which("flake8"), result_code_temp_file.name])
 
 
 def test_samples_footer():
