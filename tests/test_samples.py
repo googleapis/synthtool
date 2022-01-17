@@ -33,3 +33,14 @@ def test_load_node_samples():
         assert all_samples[0]["usage"] == "node hello-world.js"
         assert all_samples[1]["title"] == "Metadata Example 2"
         assert all_samples[1]["usage"] == "node goodnight-moon.js"
+
+
+def test_bad_metadata():
+    with util.chdir(FIXTURES / "node_templates" / "bad_metadata"):
+        all_samples = samples.all_samples(["samples/*.js"])
+
+        # should have included additional meta-information provided.
+        assert all_samples[0]["title"] == "Bad_metadata1"
+        assert "usage" not in all_samples[0]
+        assert all_samples[1]["title"] == "Metadata Example 1"
+        assert all_samples[1]["usage"] == "node hello-world.js"

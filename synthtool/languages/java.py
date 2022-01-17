@@ -59,7 +59,7 @@ BAD_LICENSE = """/\\*
  \\* the License.
  \\*/
 """
-DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 7
+DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 8
 
 
 def format_code(

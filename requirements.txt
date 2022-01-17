@@ -5,7 +5,7 @@ requests
 pyyaml
 jinja2
 deprecation
-protobuf==3.17.3
+protobuf==3.19.3
 watchdog
 
 # https://github.com/googleapis/gapic-generator/issues/3334
@@ -19,3 +19,6 @@ lxml
 
 # Install sample-tester for generated samples
 sample-tester
+
+# flake8 is used to validate the python samples noxfile template
+flake8
