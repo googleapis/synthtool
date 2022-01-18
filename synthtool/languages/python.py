@@ -184,7 +184,7 @@ def owlbot_main() -> None:
 
         templated_files = CommonTemplates().py_library(
             microgenerator=True,
-            versions=detect_versions(path="./google/cloud", default_first=True),
+            versions=detect_versions(path="./google", default_first=True),
         )
         s.move(
             [templated_files], excludes=[".coveragerc"]
@@ -192,7 +192,9 @@ def owlbot_main() -> None:
 
         py_samples(skip_readmes=True)
 
-        s.shell.run(["nox", "-s", "blacken"], hide_output=False)
+        # run blacken session for all directories which a noxfile
+        for noxfile in Path(".").glob("**/noxfile.py"):
+            s.shell.run(["nox", "-s", "blacken"], cwd=noxfile.parent, hide_output=False)
 
 
 if __name__ == "__main__":
