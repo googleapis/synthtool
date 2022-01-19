@@ -1,13 +1,10 @@
-name: "Lint"
-
 on:
   pull_request:
     branches:
       - main
-
+name: lint
 jobs:
-  run-lint:
-    name: lint
+  lint:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout

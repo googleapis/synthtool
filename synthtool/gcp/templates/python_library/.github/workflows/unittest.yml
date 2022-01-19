@@ -1,51 +1,40 @@
-name: "Unit tests"
-
 on:
   pull_request:
     branches:
       - main
-
+name: unittest
 jobs:
-  run-unittests:
-{%- raw %}
-    name: unit-${{ matrix.python }}
-{%- endraw %}
+  unit:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python:
-{%- for v in unit_test_python_versions %}
-          - "{{v}}"
-{%- endfor %}
+        python: {{unit_test_python_versions}}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-{%- raw %}
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.python }}
+        python-version: ${{ '{{' }} matrix.python {{ '}}' }}
     - name: Install nox
       run: |
         python -m pip install --upgrade setuptools pip wheel
         python -m pip install nox
     - name: Run unit tests
       env:
-        COVERAGE_FILE: .coverage${{ matrix.option }}-${{matrix.python }}
+        COVERAGE_FILE: .coverage-${{ '{{' }} matrix.python {{ '}}' }}
       run: |
-        nox -s unit${{ matrix.option }}-${{ matrix.python }}
+        nox -s unit-${{ '{{' }} matrix.python {{ '}}' }}
     - name: Upload coverage results
       uses: actions/upload-artifact@v2
       with:
         name: coverage-artifacts
-        path: .coverage${{ matrix.option }}-${{ matrix.python }}
-{%- endraw %}
+        path: .coverage-${{ '{{' }} matrix.python {{ '}}' }}
 
-  report-coverage:
-    name: cover
+  cover:
     runs-on: ubuntu-latest
     needs:
-        - run-unittests
+        - unit
     steps:
     - name: Checkout
       uses: actions/checkout@v2
