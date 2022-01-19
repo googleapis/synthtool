@@ -18,6 +18,7 @@ import logging
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import typing
 
@@ -181,6 +182,8 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                     subprocess.run(["python", owlbot_py], cwd=dest, check=True)
                 else:
                     owlbot_main(src, dest)
+        # The staging directory should never be merged into the main branch.
+        shutil.rmtree(staging)
     else:
         logger.debug("Staging dir not found.")
 

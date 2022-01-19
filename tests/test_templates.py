@@ -76,10 +76,10 @@ def test_render_preserve_mode():
 def test_release_quality_badge():
     t = templates.Templates(NODE_TEMPLATES)
     result = t.render(
-        "README.md", metadata={"repo": {"release_level": "beta"}, "samples": {}}
+        "README.md", metadata={"repo": {"release_level": "preview"}, "samples": {}}
     ).read_text()
-    assert "https://img.shields.io/badge/release%20level-beta-yellow.svg" in result
-    assert "This library is considered to be in **beta**" in result
+    assert "https://img.shields.io/badge/release%20level-preview-yellow.svg" in result
+    assert "This library is considered to be in **preview**" in result
 
 
 def test_syntax_highlighter():
