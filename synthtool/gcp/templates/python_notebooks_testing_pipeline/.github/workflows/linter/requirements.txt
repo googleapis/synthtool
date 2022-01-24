@@ -4,6 +4,6 @@ jupyter
 nbconvert
 black==21.8b0
 pyupgrade==2.7.3
-isort==5.6.4
+isort==5.10.1
 flake8==4.0.1
 nbqa==1.2.3
