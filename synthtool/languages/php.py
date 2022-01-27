@@ -73,11 +73,10 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
     if not entries:
         return None
     for entry in entries:
-        entry = Path(entry.path).resolve()
-        if entry.stem.lower() == version_string:
+        if Path(entry.path).resolve().stem.lower() == version_string:
             return src
         if entry.is_dir():
-            return _find_copy_target(entry, version_string)
+            return _find_copy_target(Path(entry.path).resolve(), version_string)
     return None
 
 
