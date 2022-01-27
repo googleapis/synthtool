@@ -73,10 +73,11 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
     if not entries:
         return None
     for entry in entries:
-        if entry.path.endswith(version_string):
+        entry = Path(entry.path).resolve()
+        if entry.stem.lower() == version_string:
             return src
         if entry.is_dir():
-            return _find_copy_target(Path(entry.path).resolve(), version_string)
+            return _find_copy_target(entry, version_string)
     return None
 
 
@@ -95,7 +96,7 @@ def owlbot_copy_version(
     if not entries:
         logger.info("there is no src directory '%s' to copy", src_dir)
         return
-    version_string = os.path.basename(os.path.basename(next(entries)))
+    version_string = os.path.basename(os.path.basename(next(entries))).lower()
     logger.debug("version_string detected: %s", version_string)
 
     # copy all src including partial veneer classes
