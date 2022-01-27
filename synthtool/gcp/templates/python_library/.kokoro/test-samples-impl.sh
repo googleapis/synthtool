@@ -42,6 +42,12 @@ if [[ -f "${KOKORO_GFILE_DIR}/secrets_viewer_service_account.json" ]]; then
 	   --project="cloud-devrel-kokoro-resources"
 fi
 
+# Load secrets
+for FILE in ${KOKORO_GFILE_DIR}/secret_manager/*-samples-secrets; do
+  [[ -f "$FILE" ]] || continue
+  source "$FILE"
+done
+
 # This script will create 3 files:
 # - testing/test-env.sh
 # - testing/service-account.json
