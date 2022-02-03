@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# # Copyright 2021 Google LLC
+# # Copyright 2022 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,45 +12,49 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 from typing import List
 from resource_cleanup_manager import (
-    ResourceCleanupManager,
-    DatasetResourceCleanupManager,
-    EndpointResourceCleanupManager,
-    ModelResourceCleanupManager,
+	ResourceCleanupManager,
+	DatasetResourceCleanupManager,
+	EndpointResourceCleanupManager,
+	ModelResourceCleanupManager,
 )
 
 
 def run_cleanup_managers(managers: List[ResourceCleanupManager], is_dry_run: bool):
-    for manager in managers:
-        type_name = manager.type_name
+	for manager in managers:
+		type_name = manager.type_name
 
-        print(f"Fetching {type_name}'s...")
-        resources = manager.list()
-        print(f"Found {len(resources)} {type_name}'s")
-        for resource in resources:
-            if not manager.is_deletable(resource):
-                continue
+		print(f"Fetching {type_name}'s...")
+		resources = manager.list()
+		print(f"Found {len(resources)} {type_name}'s")
+		for resource in resources:
+			if not manager.is_deletable(resource):
+				continue
 
-            if is_dry_run:
-                resource_name = manager.resource_name(resource)
-                print(f"Will delete '{type_name}': {resource_name}")
-            else:
-                manager.delete(resource)
+			if is_dry_run:
+				resource_name = manager.resource_name(resource)
+				print(f"Will delete '{type_name}': {resource_name}")
+			else:
+				try:
+					manager.delete(resource)
+				except Exception as exception:
+					print(exception)
+
+		print("")
 
 
-def set_dry_run(dry_run_status: bool):
-    if dry_run_status is True:
-        return True
-    print("Starting cleanup in dry run mode...")
-    return False
+is_dry_run = False
 
+if is_dry_run:
+	print("Starting cleanup in dry run mode...")
 
 # List of all cleanup managers
 managers = [
-    DatasetResourceCleanupManager(),
-    EndpointResourceCleanupManager(),
-    ModelResourceCleanupManager(),
+	DatasetResourceCleanupManager(),
+	EndpointResourceCleanupManager(),
+	ModelResourceCleanupManager(),
 ]
 
-run_cleanup_managers(managers=managers, is_dry_run=set_dry_run(False))
+run_cleanup_managers(managers=managers, is_dry_run=is_dry_run)
