@@ -103,7 +103,7 @@ best-efforts basis with the following warnings:
 Client libraries targeting some end-of-life versions of Node.js are available, and
 can be installed through npm [dist-tags](https://docs.npmjs.com/cli/dist-tag).
 The dist-tags follow the naming convention `legacy-(version)`.
-For example, `npm i {{ metadata['lib_install_cmd'] }}@legacy-8` installs client libraries
+For example, `{{ metadata['lib_install_cmd'] }}@legacy-8` installs client libraries
 for versions compatible with Node.js 8.
 
 ## Versioning
