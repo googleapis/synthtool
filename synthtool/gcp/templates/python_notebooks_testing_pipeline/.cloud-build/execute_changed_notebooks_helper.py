@@ -64,9 +64,7 @@ class NotebookExecutionResult:
 
 
 def _process_notebook(
-    notebook_path: str,
-    variable_project_id: str,
-    variable_region: str,
+    notebook_path: str, variable_project_id: str, variable_region: str,
 ):
     # Read notebook
     with open(notebook_path) as f:
@@ -75,17 +73,11 @@ def _process_notebook(
     # Create preprocessors
     remove_no_execute_cells_preprocessor = NotebookProcessors.RemoveNoExecuteCells()
     update_variables_preprocessor = NotebookProcessors.UpdateVariablesPreprocessor(
-        replacement_map={
-            "PROJECT_ID": variable_project_id,
-            "REGION": variable_region,
-        },
+        replacement_map={"PROJECT_ID": variable_project_id, "REGION": variable_region,},
     )
 
     # Use no-execute preprocessor
-    (
-        nb,
-        resources,
-    ) = remove_no_execute_cells_preprocessor.preprocess(nb)
+    (nb, resources,) = remove_no_execute_cells_preprocessor.preprocess(nb)
 
     (nb, resources) = update_variables_preprocessor.preprocess(nb, resources)
 
@@ -191,8 +183,7 @@ def process_and_execute_notebook(
 
 
 def get_changed_notebooks(
-    test_paths_file: str,
-    base_branch: Optional[str] = None,
+    test_paths_file: str, base_branch: Optional[str] = None,
 ) -> List[str]:
     """
     Get the notebooks that exist under the folders defined in the test_paths_file.
@@ -302,9 +293,7 @@ def process_and_execute_notebooks(
     print("\n=== RESULTS ===\n")
 
     results_sorted = sorted(
-        notebook_execution_results,
-        key=lambda result: result.is_pass,
-        reverse=True,
+        notebook_execution_results, key=lambda result: result.is_pass, reverse=True,
     )
 
     # Print results
