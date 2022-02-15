@@ -78,7 +78,8 @@ The client application making API calls must be granted [authorization scopes][a
 
 ### Prerequisites
 
-You will need a [Google Cloud Platform Console][developer-console] project with the {{metadata['repo']['name_pretty']}} [API enabled][enable-api].
+You will need a [Google Cloud Platform Console][developer-console] project with the {% if 'api_name' in metadata['repo'] -%}
+{{ metadata['repo']['api_name'] }} {% else %} {{metadata['repo']['name_pretty']}} {% endif %} [API enabled][enable-api].
 {% if metadata['repo']['requires_billing'] %}You will need to [enable billing][enable-billing] to use Google {{metadata['repo']['name_pretty']}}.{% endif %}
 [Follow these instructions][create-project] to get your project set up. You will also need to set up the local development environment by
 [installing the Google Cloud SDK][cloud-sdk] and running the following commands in command line:
