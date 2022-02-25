@@ -17,6 +17,7 @@ import sys
 
 import json
 from pathlib import Path
+import shutil
 from typing import Any, Dict, List
 import yaml
 
@@ -169,6 +170,8 @@ def owlbot_main() -> None:
         "default_version": "v1",
     """
 
+    clean_up_generated_samples = True
+
     try:
         # Load the default version defined in .repo-metadata.json.
         default_version = json.load(open(".repo-metadata.json", "rt")).get(
@@ -179,6 +182,9 @@ def owlbot_main() -> None:
 
     if default_version:
         for library in s.get_staging_dirs(default_version):
+            if clean_up_generated_samples:
+                shutil.rmtree('samples/generated_samples', ignore_errors=True)
+                clean_up_generated_samples = False
             s.move([library], excludes=["setup.py", "README.rst", "docs/index.rst"])
         s.remove_staging_dirs()
 
