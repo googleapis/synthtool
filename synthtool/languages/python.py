@@ -56,7 +56,7 @@ def fix_pb2_headers(*, proto_root: str = "**/*_pb2.py") -> None:
     s.replace(
         proto_root,
         PB2_HEADER,
-        fr"\g<1>{LICENSE}\n\n\g<2>",  # change order to avoid stacking replacements
+        rf"\g<1>{LICENSE}\n\n\g<2>",  # change order to avoid stacking replacements
         flags=re.DOTALL | re.MULTILINE,
     )
 
@@ -65,7 +65,7 @@ def fix_pb2_grpc_headers(*, proto_root: str = "**/*_pb2_grpc.py") -> None:
     s.replace(
         proto_root,
         PB2_GRPC_HEADER,
-        fr"{LICENSE}\n\n\g<1>\n\n\g<2>",  # add line breaks to avoid stacking replacements
+        rf"{LICENSE}\n\n\g<1>\n\n\g<2>",  # add line breaks to avoid stacking replacements
     )
 
 
@@ -183,7 +183,7 @@ def owlbot_main() -> None:
     if default_version:
         for library in s.get_staging_dirs(default_version):
             if clean_up_generated_samples:
-                shutil.rmtree('samples/generated_samples', ignore_errors=True)
+                shutil.rmtree("samples/generated_samples", ignore_errors=True)
                 clean_up_generated_samples = False
             s.move([library], excludes=["setup.py", "README.rst", "docs/index.rst"])
         s.remove_staging_dirs()
