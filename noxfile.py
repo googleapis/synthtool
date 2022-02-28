@@ -23,7 +23,7 @@ def generate_protos(session):
 @nox.session(python=['3.6', '3.8'])
 def blacken(session):
     session.install('black==19.10b0')
-    session.run('black', 'synthtool', 'tests', 'integration_tests')
+    session.run('black', 'synthtool', 'tests')
 
 
 @nox.session(python=['3.6', '3.8'])
@@ -31,7 +31,7 @@ def lint(session):
     session.install('mypy==0.790', 'flake8', 'black==19.10b0')
     session.run('pip', 'install', '-e', '.')
     session.run('black', '--check', 'synthtool', 'tests')
-    session.run('flake8', 'synthtool', 'tests', 'integration_tests')
+    session.run('flake8', 'synthtool', 'tests')
     session.run('mypy', 'synthtool')
 
 
