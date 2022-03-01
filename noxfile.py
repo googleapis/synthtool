@@ -26,7 +26,7 @@ def blacken(session):
     session.run('black', 'synthtool', 'tests', 'autosynth', 'integration_tests')
 
 
-@nox.session(python=['3.6', '3.8'])
+@nox.session(python=['3.6', '3.8', '3.9'])
 def lint(session):
     session.install('mypy==0.790', 'flake8', 'black==19.10b0')
     session.run('pip', 'install', '-e', '.')
