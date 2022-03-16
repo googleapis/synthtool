@@ -317,13 +317,11 @@ def owlbot_main(
             s_copy([library], excludes=staging_excludes)
         # The staging directory should never be merged into the main branch.
         shutil.rmtree(staging)
-    else:
+    elif default_version:
         # Collect the subdirectories of the src directory.
         src = Path("src")
-        versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
-        if default_version:
-            versions = [v for v in versions if v != default_version] + [default_version]
+        versions = [v for v in versions if v != default_version] + [default_version]
         logger.info(f"Collected versions ${versions} from ${src}")
 
     common_templates = gcp.CommonTemplates(template_path)
