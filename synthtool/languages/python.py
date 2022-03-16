@@ -148,6 +148,42 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         s.copy([result], excludes=excludes)
 
 
+def configure_previous_major_version_branches() -> None:
+    """Allow releases from previous major version branches by editing
+     `.github/release-please.yml`.
+     
+     The current library version is obtained from `version.py` in `google/**/version.py`,
+     or the `setup.py`.
+
+     Releases are configured for all previous major versions. For example,
+     if the library version is currently 3.5.1, the release-please config
+     will include release branches for v2, v1, and v0.
+     """
+    if list(Path(".").glob("google/**/version.py")):
+        version_source_file = list(Path(".").glob("google/**/version.py"))[0].read_text()
+    else:
+        version_source_file = Path("setup.py").read_text()
+
+    # In version.py:    __version__ = "1.5.2"
+    # In setup.py:      version = "1.5.2"
+    VERSION_REGEX = '(?:__)?version(?:__)?\s?=\s?"(?P<major_version>\d)\.[\d\.]+"'
+    major_version = int(re.search(VERSION_REGEX, version_source_file).group("major_version"))
+
+    branch_release_config = """
+    # NOTE: this section is generated in owlbot_main()
+    # See https://github.com/googleapis/synthtool/blob/master/synthtool/languages/python.py
+    branches:"""
+
+    for v in range(major_version - 1, -1, -1):
+        branch_release_config +="""
+    - branch: v{}
+        handleGHRelease: true
+        releaseType: python""".format(v)
+
+    release_please_yml = Path(".github/release-please.yml").read_text()
+    Path(".github/release-please.yml").write_text(release_please_yml + branch_release_config)
+
+
 def owlbot_main() -> None:
     """Copies files from staging and template directories into current working dir.
 
@@ -201,6 +237,8 @@ def owlbot_main() -> None:
         # run blacken session for all directories which a noxfile
         for noxfile in Path(".").glob("**/noxfile.py"):
             s.shell.run(["nox", "-s", "blacken"], cwd=noxfile.parent, hide_output=False)
+        
+    configure_previous_major_version_branches()
 
 
 if __name__ == "__main__":
