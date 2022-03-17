@@ -18,6 +18,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import tempfile
 
 import pytest
 
@@ -48,12 +49,26 @@ def docker_image():
     os.remove("post-processor-changes.txt")
 
 
+@pytest.fixture(scope="session")
+def hybrid_tmp_path():
+    """A tmp dir implementation both for local run and on Kokoro.
+    """
+    # Trampoline mount KOKORO_ROOT at the same path.
+    # So we can mount files under there with docker in docker.
+    hybrid_dir = os.environ.get("KOKORO_ROOT", None)
+    d = tempfile.mkdtemp(prefix="synthtool-php-test", dir=hybrid_dir)
+
+    yield d
+
+    shutil.rmtree(d)
+
+
 @pytest.fixture(scope="function", params=["php_asset"])
-def copy_fixture(request, tmp_path):
+def copy_fixture(request, hybrid_tmp_path):
     """A fixture for preparing test data.
     """
     param = request.param
-    test_dir = tmp_path / param
+    test_dir = Path(f"{hybrid_tmp_path}/{param}")
 
     shutil.copytree(FIXTURES / param, test_dir)
     print(f"Copied fixture to {test_dir}")
@@ -96,3 +111,6 @@ def test_owlbot_php(copy_fixture, docker_image):
     dcmp = dircmp(copy_fixture / "expected", copy_fixture / "src")
     diff_string = get_diff_string(dcmp, "")
     assert diff_string == ""
+    staging = copy_fixture / "src/owl-bot-staging"
+    # make sure the staging directory is deleted
+    assert not staging.is_dir()

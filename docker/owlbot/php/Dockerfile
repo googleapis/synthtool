@@ -41,7 +41,6 @@ RUN mkdir /tmp/.npm && chmod 1777 /tmp/.npm
 
 # Copy synthtool.
 COPY synthtool /synthtool/synthtool
-COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
 COPY post-processor-changes.txt /post-processor-changes.txt
 
