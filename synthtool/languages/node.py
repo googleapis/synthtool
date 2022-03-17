@@ -15,7 +15,6 @@
 import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
-import os
 import re
 from synthtool import _tracked_paths, gcp, shell, transforms
 from synthtool.gcp import samples, snippets
@@ -133,7 +132,7 @@ def generate_index_ts(versions: List[str], default_version: str) -> None:
         )
         logger.error(err_msg)
         raise AttributeError(err_msg)
-    if default_version not in versions:
+    if default_version and default_version not in versions:
         err_msg = f"Version {versions} must contain default version {default_version}."
         logger.error(err_msg)
         raise AttributeError(err_msg)
@@ -141,13 +140,15 @@ def generate_index_ts(versions: List[str], default_version: str) -> None:
     # To make sure the output is always deterministic.
     versions = sorted(versions)
 
-    # compose default version's index.ts file path
-    versioned_index_ts_path = Path("src") / default_version / "index.ts"
-    clients = extract_clients(versioned_index_ts_path)
-    if not clients:
-        err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
-        logger.error(err_msg)
-        raise AttributeError(err_msg)
+    # compose default version's index.ts file
+    clients = []
+    if default_version:
+        versioned_index_ts_path = Path("src") / default_version / "index.ts"
+        clients = extract_clients(versioned_index_ts_path)
+        if not clients:
+            err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
+            logger.error(err_msg)
+            raise AttributeError(err_msg)
 
     # compose template directory
     template_path = (
@@ -212,36 +213,6 @@ def compile_protos(hide_output=False):
     """
     logger.debug("Compiling protos...")
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
-
-
-def detect_versions(
-    path: str = "./src", default_version: Optional[str] = None
-) -> List[str]:
-    """
-    Detects the versions a library has, based on distinct folders
-    within path. This is based on the fact that our GAPIC libraries are
-    structured as follows:
-
-    src/v1
-    src/v1beta
-    src/v1alpha
-
-    With folder names mapping directly to versions.
-
-    Returns: a list of the subdirectories; for the example above:
-      ['v1', 'v1alpha', 'v1beta']
-      If specified, the default_version is guaranteed to be listed last.
-      Otherwise, the list is sorted alphabetically.
-    """
-    versions = []
-    if os.path.isdir(path):
-        for directory in os.listdir(path):
-            if os.path.isdir(os.path.join(path, directory)):
-                versions.append(directory)
-    versions.sort()
-    if default_version is not None:
-        versions = [v for v in versions if v != default_version] + [default_version]
-    return versions
 
 
 def compile_protos_hermetic(hide_output=False):
@@ -328,14 +299,14 @@ def owlbot_main(
     )
     staging = Path("owl-bot-staging")
     s_copy = transforms.move
-    if default_version is None:
-        logger.info("No default version found in .repo-metadata.json.  Ok.")
-    elif staging.is_dir():
+    versions = []
+    if staging.is_dir():
         logger.info(f"Copying files from staging directory ${staging}.")
         # Collect the subdirectories of the staging directory.
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        if default_version:
+            versions = [v for v in versions if v != default_version] + [default_version]
         logger.info(f"Collected versions ${versions} from ${staging}")
 
         # Copy each version directory into the root.
@@ -351,12 +322,13 @@ def owlbot_main(
         src = Path("src")
         versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        if default_version:
+            versions = [v for v in versions if v != default_version] + [default_version]
         logger.info(f"Collected versions ${versions} from ${src}")
 
     common_templates = gcp.CommonTemplates(template_path)
     common_templates.excludes.extend(templates_excludes)
-    if default_version:
+    if len(versions) > 0:
         templates = common_templates.node_library(
             source_location="build/src",
             versions=versions,

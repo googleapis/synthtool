@@ -47,3 +47,11 @@ steps:
     args: ["diff", "-rw", "input", "golden"]
     dir: docker/owlbot/java/tests/new-version
     waitFor: ["new-version-run"]
+  - name: "gcr.io/$PROJECT_ID/owlbot-java:$SHORT_SHA"
+    dir: docker/owlbot/java/tests/fix-poms/input
+    id: "fix-poms-run"
+    waitFor: ["build"]
+  - name: "bash"
+    args: ["diff", "-rw", "input", "golden"]
+    dir: docker/owlbot/java/tests/fix-poms
+    waitFor: ["fix-poms-run"]

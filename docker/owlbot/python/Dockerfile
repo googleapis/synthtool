@@ -45,7 +45,6 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 
 # Copy synthtool.
 COPY synthtool /synthtool/synthtool
-COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
 COPY post-processor-changes.txt /post-processor-changes.txt
 
