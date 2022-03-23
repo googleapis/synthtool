@@ -17,7 +17,6 @@ import shutil
 from pathlib import Path
 
 import pytest
-import yaml
 
 from synthtool import gcp
 from synthtool.sources import templates
@@ -162,4 +161,5 @@ branches:
 - branch: v0
   handleGHRelease: true
   releaseType: python
-""")
+"""
+        )
