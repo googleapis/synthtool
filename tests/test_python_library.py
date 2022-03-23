@@ -149,7 +149,6 @@ def test_configure_previous_major_version_branches(fixtures_dir):
         python.configure_previous_major_version_branches()
         release_please_yml = Path(".github/release-please.yml").read_text()
 
-        print(release_please_yml)
         assert (
             release_please_yml
             == """releaseType: python
