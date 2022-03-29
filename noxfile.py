@@ -22,7 +22,7 @@ def generate_protos(session):
 
 @nox.session(python=['3.6', '3.8'])
 def blacken(session):
-    session.install('black==19.10b0')
+    session.install('black==22.3.0')
     session.run('black', 'synthtool', 'tests')
 
 
