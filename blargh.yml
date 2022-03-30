@@ -1,0 +1,7 @@
+bumpMinorPreMajor: true
+handleGHRelease: true
+releaseType: java-yoshi
+branches:
+  - handleGHRelease: true
+    releaseType: python
+    branch: java7
