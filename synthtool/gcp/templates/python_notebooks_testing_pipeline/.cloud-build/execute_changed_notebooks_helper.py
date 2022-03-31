@@ -73,7 +73,7 @@ def _process_notebook(
     # Create preprocessors
     remove_no_execute_cells_preprocessor = NotebookProcessors.RemoveNoExecuteCells()
     update_variables_preprocessor = NotebookProcessors.UpdateVariablesPreprocessor(
-        replacement_map={"PROJECT_ID": variable_project_id, "REGION": variable_region,},
+        replacement_map={"PROJECT_ID": variable_project_id, "REGION": variable_region},
     )
 
     # Use no-execute preprocessor
@@ -149,7 +149,7 @@ def process_and_execute_notebook(
         result.log_url = operation_metadata.build.log_url
 
         # Block and wait for the result
-        operation_result = operation.result()
+        operation.result()
 
         result.duration = datetime.datetime.now() - time_start
         result.is_pass = True
@@ -209,7 +209,7 @@ def get_changed_notebooks(
             ["git", "diff", "--name-only", f"origin/{base_branch}..."] + test_paths
         )
     else:
-        print(f"Looking for all notebooks.")
+        print("Looking for all notebooks.")
         notebooks = subprocess.check_output(["git", "ls-files"] + test_paths)
 
     notebooks = notebooks.decode("utf-8").split("\n")
