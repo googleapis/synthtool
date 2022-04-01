@@ -23,9 +23,6 @@ from synthtool.sources import git
 
 GOOGLEAPIS_URL: str = git.make_repo_clone_url("googleapis/googleapis")
 GOOGLEAPIS_PRIVATE_URL: str = git.make_repo_clone_url("googleapis/googleapis-private")
-GOOGLEAPIS_DISCOVERY_URL: str = git.make_repo_clone_url(
-    "googleapis/googleapis-discovery"
-)
 DISCOVERY_ARTIFACT_MANAGER_URL: str = git.make_repo_clone_url(
     "googleapis/discovery-artifact-manager"
 )
@@ -94,9 +91,6 @@ class GAPICBazel:
         if discogapic:
             api_definitions_repo = self._clone_discovery_artifact_manager()
             api_definitions_repo_name = "discovery-artifact-manager"
-        elif diregapic:
-            api_definitions_repo = self._clone_googleapis_discovery()
-            api_definitions_repo_name = "googleapis-discovery"
         elif private:
             api_definitions_repo = self._clone_googleapis_private()
             api_definitions_repo_name = "googleapis_private"
@@ -295,22 +289,6 @@ class GAPICBazel:
             self._googleapis_private = git.clone(GOOGLEAPIS_PRIVATE_URL)
 
         return self._googleapis_private
-
-    def _clone_googleapis_discovery(self):
-        if self._googleapis_discovery:
-            return self._googleapis_discovery
-
-        if LOCAL_GOOGLEAPIS_DISCOVERY:
-            self._googleapis_discovery = Path(LOCAL_GOOGLEAPIS_DISCOVERY).expanduser()
-            logger.debug(
-                f"Using local googleapis-discovery at {self._googleapis_discovery}"
-            )
-
-        else:
-            logger.debug("Cloning googleapis-discovery.")
-            self._googleapis_discovery = git.clone(GOOGLEAPIS_DISCOVERY_URL)
-
-        return self._googleapis_discovery
 
     def _clone_discovery_artifact_manager(self):
         if self._discovery_artifact_manager:
