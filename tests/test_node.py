@@ -102,16 +102,6 @@ def test_extract_multiple_clients():
     assert clients[1] == "VideoIntelligenceServiceClient"
 
 
-def test_generate_index_ts_no_default_version():
-    # use a non-nodejs template directory
-    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
-        versions = ["v1beta1"]
-        node.generate_index_ts(versions, None)
-        text = open("./src/index.ts", "rt").read()
-        assert "export {v1beta1};" in text
-        assert "export default {v1beta1};" in text
-
-
 def test_generate_index_ts():
     # use a non-nodejs template directory
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):
