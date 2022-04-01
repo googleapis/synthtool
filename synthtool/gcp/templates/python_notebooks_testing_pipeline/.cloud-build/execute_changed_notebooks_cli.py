@@ -64,7 +64,7 @@ parser.add_argument(
 parser.add_argument(
     "--staging_bucket",
     type=str,
-    help="The GCP directory for staging temporary files.",
+    help="The GCS bucket for staging temporary files.",
     required=True,
 )
 parser.add_argument(
