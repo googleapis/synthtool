@@ -28,7 +28,9 @@ from google.cloud.aiplatform import utils
 
 
 def execute_notebook(
-    notebook_source: str, output_file_or_uri: str, should_log_output: bool,
+    notebook_source: str,
+    output_file_or_uri: str,
+    should_log_output: bool,
 ):
     """Execute a single notebook using Papermill"""
     file_name = os.path.basename(os.path.normpath(notebook_source))
