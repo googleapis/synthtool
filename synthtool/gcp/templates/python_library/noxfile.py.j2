@@ -20,16 +20,62 @@ from __future__ import absolute_import
 import os
 import pathlib
 import shutil
+import warnings
 
 import nox
-
 
 BLACK_VERSION = "black==22.3.0"
 BLACK_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
 
 DEFAULT_PYTHON_VERSION="{{ default_python_version }}"
-SYSTEM_TEST_PYTHON_VERSIONS=[{% for v in system_test_python_versions %}"{{v}}"{% if not loop.last %},{% endif %}{% endfor %}]
-UNIT_TEST_PYTHON_VERSIONS=[{% for v in unit_test_python_versions %}"{{v}}"{% if not loop.last %},{% endif %}{% endfor %}]
+
+UNIT_TEST_PYTHON_VERSIONS=[{% for v in unit_test_python_versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+UNIT_TEST_STANDARD_DEPENDENCIES = [
+    "mock",
+    "asyncmock",
+    "pytest",
+    "pytest-cov",
+    "pytest-asyncio",
+]
+UNIT_TEST_EXTERNAL_DEPENDENCIES = [{% for v in unit_test_external_dependencies %}
+    "{{v}}",{% endfor %}
+]
+UNIT_TEST_LOCAL_DEPENDENCIES = [{% for v in unit_test_local_dependencies %}
+    "{{v}}",{% endfor %}
+]
+UNIT_TEST_DEPENDENCIES = [{% for v in unit_test_dependencies %}
+    "{{v}}",{% endfor %}
+]
+UNIT_TEST_EXTRAS = [{% for v in unit_test_extras %}
+    "{{v}}",{% endfor %}
+]
+UNIT_TEST_EXTRAS_BY_PYTHON = {{ '{' }}{% if unit_test_extras_by_python %}{% for python_version, extras in unit_test_extras_by_python.items() %}
+    "{{python_version}}": [{% for v in extras %}
+        "{{v}}",{% endfor %}
+    ],{% endfor %}{% endif %}
+}
+
+SYSTEM_TEST_PYTHON_VERSIONS=[{% for v in system_test_python_versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+SYSTEM_TEST_STANDARD_DEPENDENCIES = [
+    "mock", "pytest", "google-cloud-testutils",
+]
+SYSTEM_TEST_EXTERNAL_DEPENDENCIES = [{% for v in system_test_external_dependencies %}
+    "{{v}}",{% endfor %}
+]
+SYSTEM_TEST_LOCAL_DEPENDENCIES = [{% for v in system_test_local_dependencies %}
+    "{{v}}",{% endfor %}
+]
+SYSTEM_TEST_DEPENDENCIES = [{% for v in system_test_dependencies %}
+    "{{v}}",{% endfor %}
+]
+SYSTEM_TEST_EXTRAS = [{% for v in system_test_extras %}
+    "{{v}}",{% endfor %}
+]
+SYSTEM_TEST_EXTRAS_BY_PYTHON = {{ '{' }}{% if system_test_extras_by_python %}{% for python_version, extras in system_test_extras_by_python.items() %}
+    "{{python_version}}": [{% for v in extras %}
+        "{{v}}",{% endfor %}
+    ],{% endfor %}{% endif %}
+}
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
 
@@ -81,31 +127,41 @@ def lint_setup_py(session):
     session.run("python", "setup.py", "check", "--restructuredtext", "--strict")
 
 
+def install_unittest_dependencies(session, *constraints):
+    standard_deps = UNIT_TEST_STANDARD_DEPENDENCIES + UNIT_TEST_DEPENDENCIES
+    session.install(*standard_deps, *constraints)
+
+    if UNIT_TEST_EXTERNAL_DEPENDENCIES:
+        warnings.warn(
+            "'unit_test_external_dependencies' is deprecated. Instead, please "
+            "use 'unit_test_dependencies' or 'unit_test_local_dependencies'.",
+            DeprecationWarning,
+        )
+        session.install(*UNIT_TEST_EXTERNAL_DEPENDENCIES, *constraints)
+
+    if UNIT_TEST_LOCAL_DEPENDENCIES:
+        session.install(*UNIT_TEST_LOCAL_DEPENDENCIES, *constraints)
+
+    if UNIT_TEST_EXTRAS_BY_PYTHON:
+        extras = UNIT_TEST_EXTRAS_BY_PYTHON.get(session.python, [])
+    elif UNIT_TEST_EXTRAS:
+        extras = UNIT_TEST_EXTRAS
+    else:
+        extras = []
+
+    if extras:
+        session.install("-e", f".[{','.join(extras)}]", *constraints)
+    else:
+        session.install("-e", ".", *constraints)
+
+
 def default(session):
     # Install all test dependencies, then install this package in-place.
 
     constraints_path = str(
         CURRENT_DIRECTORY / "testing" / f"constraints-{session.python}.txt"
     )
-    session.install("mock", "asyncmock", "pytest", "pytest-cov", "pytest-asyncio", "-c", constraints_path)
-    {% for d in unit_test_external_dependencies -%}
-    session.install("{{d}}", "-c", constraints_path)
-    {% endfor %}
-    {% for dependency in unit_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
-    {% endfor %}
-    {% for dependency in unit_test_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path){% endfor %}
-    {%- if unit_test_extras_by_python %}
-    {% for extras_python in unit_test_extras_by_python %}
-    {%- if not loop.first %}el{% endif %}if session.python == "{{extras_python}}":
-        extras = "[{{",".join(unit_test_extras_by_python[extras_python])}}]"
-    {% endfor %}else:
-        extras = "{%- if unit_test_extras %}[{{",".join(unit_test_extras)}}]{% endif %}"
-    session.install("-e", f".{extras}", "-c", constraints_path)
-    {% elif unit_test_extras %}
-    session.install("-e", ".[{{",".join(unit_test_extras)}}]", "-c", constraints_path)
-    {% else %}
-    session.install("-e", ".", "-c", constraints_path)
-    {% endif %}
+    install_unittest_dependencies(session, "-c", constraints_path)
 
     # Run py.test against the unit tests.
     session.run(
@@ -126,6 +182,35 @@ def default(session):
 def unit(session):
     """Run the unit test suite."""
     default(session)
+
+
+def install_systemtest_dependencies(session, *constraints):
+
+    # Use pre-release gRPC for system tests.
+    session.install("--pre", "grpcio")
+
+    session.install(*SYSTEM_TEST_STANDARD_DEPENDENCIES, *constraints)
+
+    if SYSTEM_TEST_EXTERNAL_DEPENDENCIES:
+        session.install(*SYSTEM_TEST_EXTERNAL_DEPENDENCIES, *constraints)
+
+    if SYSTEM_TEST_LOCAL_DEPENDENCIES:
+        session.install("-e", *SYSTEM_TEST_LOCAL_DEPENDENCIES, *constraints)
+
+    if SYSTEM_TEST_DEPENDENCIES:
+        session.install("-e", *SYSTEM_TEST_DEPENDENCIES, *constraints)
+
+    if SYSTEM_TEST_EXTRAS_BY_PYTHON:
+        extras = SYSTEM_TEST_EXTRAS_BY_PYTHON.get(session.python, [])
+    elif SYSTEM_TEST_EXTRAS:
+        extras = SYSTEM_TEST_EXTRAS
+    else:
+        extras = []
+
+    if extras:
+        session.install("-e", f".[{','.join(extras)}]", *constraints)
+    else:
+        session.install("-e", ".", *constraints)
 
 
 @nox.session(python=SYSTEM_TEST_PYTHON_VERSIONS)
@@ -150,29 +235,7 @@ def system(session):
     if not system_test_exists and not system_test_folder_exists:
         session.skip("System tests were not found")
 
-    # Use pre-release gRPC for system tests.
-    session.install("--pre", "grpcio")
-
-    # Install all test dependencies, then install this package into the
-    # virtualenv's dist-packages.
-    session.install("mock", "pytest", "google-cloud-testutils"{% for d in system_test_external_dependencies %}, "{{d}}"{% endfor %}, "-c", constraints_path)
-
-    {%- if system_test_local_dependencies %}
-    {% for dependency in system_test_local_dependencies %}session.install("-e", "{{dependency}}", "-c", constraints_path)
-    {% endfor %}
-    {%- endif %}
-    {%- if system_test_extras_by_python %}
-    {% for extras_python in system_test_extras_by_python %}
-    {%- if not loop.first %}el{% endif %}if session.python == "{{extras_python}}":
-        extras = "[{{",".join(system_test_extras_by_python[extras_python])}}]"
-    {% endfor %}else:
-        extras = "{%- if system_test_extras %}[{{",".join(system_test_extras)}}]{% endif %}"
-    session.install("-e", f".{extras}", "-c", constraints_path)
-    {% elif system_test_extras %}
-    session.install("-e", ".[{{",".join(system_test_extras)}}]", "-c", constraints_path)
-    {% else %}
-    session.install("-e", ".", "-c", constraints_path)
-    {% endif %}
+    install_systemtest_dependencies(session, "-c", constraints_path)
 
     # Run py.test against the system tests.
     if system_test_exists:
