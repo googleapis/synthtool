@@ -80,9 +80,11 @@ def execute_notebook_remote(
 
     operation = client.create_build(project_id=project_id, build=build)
     # Print the in-progress operation
+    # TODO(developer): Uncomment next two lines
     # print("IN PROGRESS:")
     # print(operation.metadata)
 
     # Print the completed status
+    # TODO(developer): Uncomment next line
     # print("RESULT:", result.status)
     return operation
