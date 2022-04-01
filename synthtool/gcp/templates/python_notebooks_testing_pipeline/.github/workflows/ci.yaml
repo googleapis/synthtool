@@ -19,8 +19,10 @@ jobs:
     - name: Format and lint notebooks
       run: |
         set +e
+
         .github/workflows/linter/run_linter.sh -t
         RTN=$?
+
         if [ "$RTN" != "0" ]; then
           echo "There were problems formatting/linting the notebooks."
           echo "Please run the following commands locally from the root directory to attempt to autofix the issues:"
