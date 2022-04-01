@@ -20,7 +20,7 @@ def generate_protos(session):
     session.run(
         "python", "-m", "grpc_tools.protoc", "-Isynthtool/protos", "--python_out=synthtool/protos", "synthtool/protos/metadata.proto", "synthtool/protos/preconfig.proto")
 
-@nox.session(python=['3.6', '3.8'])
+@nox.session(python=['3.6', '3.9'])
 def blacken(session):
     session.install('black==22.3.0', 'click>8.0')
     session.run('black', 'synthtool', 'tests')
