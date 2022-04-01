@@ -1,0 +1,181 @@
+commit 1c9eabaf2124b21607f48b7e888cc3c017957ff8
+Author: David Supplee <dwsupplee@gmail.com>
+Date:   Tue Aug 31 19:49:11 2021 -0700
+
+    chore: address breaks
+
+diff --git a/Asset/src/V1/Gapic/AssetServiceGapicClient.php b/Asset/src/V1/Gapic/AssetServiceGapicClient.php
+index bc2a940b72..0a2484da92 100644
+--- a/Asset/src/V1/Gapic/AssetServiceGapicClient.php
++++ b/Asset/src/V1/Gapic/AssetServiceGapicClient.php
+@@ -130,6 +130,8 @@ class AssetServiceGapicClient
+ 
+     private static $projectFeedNameTemplate;
+ 
++    private static $projectNameTemplate;
++
+     private static $pathTemplateMap;
+ 
+     private $operationsClient;
+@@ -711,6 +713,14 @@ class AssetServiceGapicClient
+      * @param string $parent       Required. The relative name of the root asset. It can only be an
+      *                             organization number (such as "organizations/123"), a project ID (such as
+      *                             "projects/my-project-id")", or a project number (such as "projects/12345").
++     * @param int  $contentType    Optional. The content type.
++     *                             For allowed values, use constants defined on {@see \Google\Cloud\Asset\V1\ContentType}
++     * @param TimeWindow $readTimeWindow Optional. The time window for the asset history. Both start_time and
++     *                                   end_time are optional and if set, it must be after the current time minus
++     *                                   35 days. If end_time is not set, it is default to current timestamp.
++     *                                   If start_time is not set, the snapshot of the assets at end_time will be
++     *                                   returned. The returned results contain all temporal assets whose time
++     *                                   window overlap with read_time_window.
+      * @param array  $optionalArgs {
+      *     Optional.
+      *
+@@ -723,16 +733,6 @@ class AssetServiceGapicClient
+      *
+      *           The request becomes a no-op if the asset name list is empty, and the max
+      *           size of the asset name list is 100 in one request.
+-     *     @type int $contentType
+-     *           Optional. The content type.
+-     *           For allowed values, use constants defined on {@see \Google\Cloud\Asset\V1\ContentType}
+-     *     @type TimeWindow $readTimeWindow
+-     *           Optional. The time window for the asset history. Both start_time and
+-     *           end_time are optional and if set, it must be after the current time minus
+-     *           35 days. If end_time is not set, it is default to current timestamp.
+-     *           If start_time is not set, the snapshot of the assets at end_time will be
+-     *           returned. The returned results contain all temporal assets whose time
+-     *           window overlap with read_time_window.
+      *     @type string[] $relationshipTypes
+      *           Optional. A list of relationship types to output, for example:
+      *           `INSTANCE_TO_INSTANCEGROUP`. This field should only be specified if
+@@ -761,24 +761,18 @@ class AssetServiceGapicClient
+      *
+      * @throws ApiException if the remote call fails
+      */
+-    public function batchGetAssetsHistory($parent, array $optionalArgs = [])
++    public function batchGetAssetsHistory($parent, $contentType, $readTimeWindow, array $optionalArgs = [])
+     {
+         $request = new BatchGetAssetsHistoryRequest();
+         $requestParamHeaders = [];
+         $request->setParent($parent);
++        $request->setContentType($contentType);
++        $request->setReadTimeWindow($readTimeWindow);
+         $requestParamHeaders['parent'] = $parent;
+         if (isset($optionalArgs['assetNames'])) {
+             $request->setAssetNames($optionalArgs['assetNames']);
+         }
+ 
+-        if (isset($optionalArgs['contentType'])) {
+-            $request->setContentType($optionalArgs['contentType']);
+-        }
+-
+-        if (isset($optionalArgs['readTimeWindow'])) {
+-            $request->setReadTimeWindow($optionalArgs['readTimeWindow']);
+-        }
+-
+         if (isset($optionalArgs['relationshipTypes'])) {
+             $request->setRelationshipTypes($optionalArgs['relationshipTypes']);
+         }
+diff --git a/Asset/src/V1/resources/asset_service_rest_client_config.php b/Asset/src/V1/resources/asset_service_rest_client_config.php
+index bfc0b0c09f..2d29646f80 100644
+--- a/Asset/src/V1/resources/asset_service_rest_client_config.php
++++ b/Asset/src/V1/resources/asset_service_rest_client_config.php
+@@ -154,5 +154,52 @@ return [
+                 ],
+             ],
+         ],
++        'google.longrunning.Operations' => [
++            'GetOperation' => [
++                'method' => 'get',
++                'uriTemplate' => '/v1alpha1/{name=projects/*/operations/*/*}',
++                'additionalBindings' => [
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1alpha1/{name=organizations/*/operations/*/*}',
++                    ],
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1alpha2/{name=projects/*/operations/*/*}',
++                    ],
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1alpha2/{name=organizations/*/operations/*/*}',
++                    ],
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1beta1/{name=projects/*/operations/*/*}',
++                    ],
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1beta1/{name=folders/*/operations/*/*}',
++                    ],
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1beta1/{name=organizations/*/operations/*/*}',
++                    ],
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1/{name=*/*/operations/*/*}',
++                    ],
++                    [
++                        'method' => 'get',
++                        'uriTemplate' => '/v1/{name=*/*/operations/*/**}',
++                    ],
++                ],
++                'placeholders' => [
++                    'name' => [
++                        'getters' => [
++                            'getName',
++                        ],
++                    ],
++                ],
++            ],
++        ],
+     ],
+-];
++];
+\ No newline at end of file
+diff --git a/Asset/tests/Unit/V1/AssetServiceClientTest.php b/Asset/tests/Unit/V1/AssetServiceClientTest.php
+index 122ad56c3b..342efc22bf 100644
+--- a/Asset/tests/Unit/V1/AssetServiceClientTest.php
++++ b/Asset/tests/Unit/V1/AssetServiceClientTest.php
+@@ -36,6 +36,7 @@ use Google\Cloud\Asset\V1\AnalyzeMoveResponse;
+ use Google\Cloud\Asset\V1\Asset;
+ use Google\Cloud\Asset\V1\AssetServiceClient;
+ use Google\Cloud\Asset\V1\BatchGetAssetsHistoryResponse;
++use Google\Cloud\Asset\V1\ContentType;
+ use Google\Cloud\Asset\V1\ExportAssetsResponse;
+ use Google\Cloud\Asset\V1\Feed;
+ use Google\Cloud\Asset\V1\FeedOutputConfig;
+@@ -48,6 +49,7 @@ use Google\Cloud\Asset\V1\OutputConfig;
+ use Google\Cloud\Asset\V1\ResourceSearchResult;
+ use Google\Cloud\Asset\V1\SearchAllIamPoliciesResponse;
+ use Google\Cloud\Asset\V1\SearchAllResourcesResponse;
++use Google\Cloud\Asset\V1\TimeWindow;
+ use Google\LongRunning\GetOperationRequest;
+ use Google\LongRunning\Operation;
+ use Google\Protobuf\Any;
+@@ -368,7 +370,9 @@ class AssetServiceClientTest extends GeneratedTest
+         $transport->addResponse($expectedResponse);
+         // Mock request
+         $parent = 'parent-995424086';
+-        $response = $client->batchGetAssetsHistory($parent);
++        $contentType = ContentType::CONTENT_TYPE_UNSPECIFIED;
++        $readTimeWindow = new TimeWindow();
++        $response = $client->batchGetAssetsHistory($parent, $contentType, $readTimeWindow);
+         $this->assertEquals($expectedResponse, $response);
+         $actualRequests = $transport->popReceivedCalls();
+         $this->assertSame(1, count($actualRequests));
+@@ -402,8 +406,10 @@ class AssetServiceClientTest extends GeneratedTest
+         $transport->addResponse(null, $status);
+         // Mock request
+         $parent = 'parent-995424086';
++        $contentType = ContentType::CONTENT_TYPE_UNSPECIFIED;
++        $readTimeWindow = new TimeWindow();
+         try {
+-            $client->batchGetAssetsHistory($parent);
++            $client->batchGetAssetsHistory($parent, $contentType, $readTimeWindow);
+             // If the $client method call did not throw, fail the test
+             $this->fail('Expected an ApiException, but no exception was thrown.');
+         } catch (ApiException $ex) {

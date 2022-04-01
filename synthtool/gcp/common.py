@@ -205,6 +205,12 @@ class CommonTemplates:
         overridden_samples_kwargs["subdir"] = override_path
         return self._generic_library("python_samples", **overridden_samples_kwargs)
 
+    def python_notebooks(self, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+        return self._generic_library("python_notebooks", **kwargs)
+
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
@@ -252,9 +258,19 @@ class CommonTemplates:
         ):
             self.excludes += ["docs/index.rst"]
 
-        # Assume the python-docs-samples Dockerfile is used for samples by default
-        if "custom_samples_dockerfile" not in kwargs:
-            kwargs["custom_samples_dockerfile"] = False
+        # Add kwargs to signal that UPGRADING.md should be included in docs/index.rst if it exists
+        if Path("docs/UPGRADING.md").exists() or Path("docs/UPGRADING.rst").exists():
+            kwargs["include_uprading_doc"] = True
+
+        # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
+        if Path("google/cloud").exists():
+            kwargs["is_google_cloud_api"] = True
+
+        # If Dockerfile exists in .kokoro/docker/samples, add kwargs to
+        # signal that a custom docker image should be used when testing samples.
+        kwargs["custom_samples_dockerfile"] = Path(
+            ".kokoro/docker/samples/Dockerfile"
+        ).exists()
 
         ret = self._generic_library("python_library", **kwargs)
 
@@ -374,8 +390,13 @@ def detect_versions(
         except FileNotFoundError:
             pass
 
-    # Sort the sub directories alphabetically.
-    sub_dirs = sorted([p.name for p in Path(path).glob("*v[1-9]*")])
+    # Detect versions up to a depth of 4 in directory hierarchy
+    for level in ("*v[1-9]*", "*/*v[1-9]*", "*/*/*v[1-9]*", "*/*/*/*v[1-9]*"):
+        # Sort the sub directories alphabetically.
+        sub_dirs = sorted([p.name for p in Path(path).glob(level) if p.is_dir()])
+        # Don't proceed to the next level if we've detected versions in this depth level
+        if sub_dirs:
+            break
 
     if sub_dirs:
         # if `default_version` is not specified, return the sorted directories.
@@ -421,7 +442,8 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
     * `product_documentation` - The product documentation on cloud.google.com
     * `client_documentation` - The client library reference documentation
     * `issue_tracker` - The public issue tracker for the product
-    * `release_level` - The release level of the client library. One of: alpha, beta, ga, deprecated
+    * `release_level` - The release level of the client library. One of: alpha, beta,
+      ga, deprecated, preview, stable
     * `language` - The repo language. One of dotnet, go, java, nodejs, php, python, ruby
     * `repo` - The GitHub repo in the format {owner}/{repo}
     * `distribution_name` - The language-idiomatic package/distribution name

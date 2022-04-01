@@ -3,6 +3,6 @@
 
 google-cloud-foo:0.0.0:0.1.1-SNAPSHOT
 grpc-google-cloud-foo-v1:0.0.0:0.1.1-SNAPSHOT
-grpc-google-cloud-foo-v2:0.0.0:0.1.1-SNAPSHOT
 proto-google-cloud-foo-v1:0.0.0:0.1.1-SNAPSHOT
 proto-google-cloud-foo-v2:0.0.0:0.1.1-SNAPSHOT
+grpc-google-cloud-foo-v2:0.0.0:0.1.1-SNAPSHOT
