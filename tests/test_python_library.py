@@ -137,7 +137,10 @@ SYSTEM_TEST_EXTRAS_BY_PYTHON = {
 )
 def test_library_noxfile(template_kwargs, expected_text):
     t = templates.Templates(PYTHON_LIBRARY)
-    result = t.render("noxfile.py.j2", **template_kwargs,).read_text()
+    result = t.render(
+        "noxfile.py.j2",
+        **template_kwargs,
+    ).read_text()
     # Validate Python syntax.
     result_code = compile(result, "noxfile.py", "exec")
     assert result_code is not None
