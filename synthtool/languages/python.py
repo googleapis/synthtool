@@ -52,9 +52,8 @@ IGNORED_VERSIONS: List[str] = []
 SAMPLES_TEMPLATE_PATH = Path(CommonTemplates()._template_root) / "python_samples"
 
 NOTEBOOK_TEMPLATE_PATH = (
-    Path(CommonTemplates()._template_root) / "python_notebooks_testing_pipeline"
+    Path(CommonTemplates().python_notebooks) / "python_notebooks_testing_pipeline"
 )
-
 
 def fix_pb2_headers(*, proto_root: str = "**/*_pb2.py") -> None:
     s.replace(
