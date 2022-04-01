@@ -423,7 +423,7 @@ def detect_versions(
 
 
 def decamelize(value: str):
-    """ parser to convert fooBar.js to Foo Bar. """
+    """parser to convert fooBar.js to Foo Bar."""
     if not value:
         return ""
     str_decamelize = re.sub("^.", value[0].upper(), value)  # apple -> Apple.

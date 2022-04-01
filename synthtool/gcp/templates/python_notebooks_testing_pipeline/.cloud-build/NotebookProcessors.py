@@ -53,7 +53,8 @@ class UpdateVariablesPreprocessor(Preprocessor):
         for cell in notebook.cells:
             if cell.cell_type == "code":
                 cell.source = self.update_variables(
-                    content=cell.source, replacement_map=self._replacement_map,
+                    content=cell.source,
+                    replacement_map=self._replacement_map,
                 )
 
             executable_cells.append(cell)

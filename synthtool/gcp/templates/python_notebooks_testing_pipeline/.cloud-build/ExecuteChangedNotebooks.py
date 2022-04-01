@@ -219,7 +219,9 @@ def run_changed_notebooks(
     print("\n=== RESULTS ===\n")
 
     notebooks_sorted = sorted(
-        notebook_execution_results, key=lambda result: result.is_pass, reverse=True,
+        notebook_execution_results,
+        key=lambda result: result.is_pass,
+        reverse=True,
     )
     # Print results
     print(

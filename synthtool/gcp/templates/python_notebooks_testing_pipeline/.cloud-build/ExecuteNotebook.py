@@ -124,7 +124,10 @@ def execute_notebook(
         )
 
         # Use no-execute preprocessor
-        (nb, resources,) = remove_no_execute_cells_preprocessor.preprocess(nb)
+        (
+            nb,
+            resources,
+        ) = remove_no_execute_cells_preprocessor.preprocess(nb)
 
         (nb, resources) = update_variables_preprocessor.preprocess(nb, resources)
 
