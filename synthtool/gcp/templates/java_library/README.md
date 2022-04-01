@@ -13,18 +13,18 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 - [Client Library Documentation][javadocs]
 {% if 'partials' in metadata and metadata['partials']['deprecation_warning'] -%}
 {{ metadata['partials']['deprecation_warning'] }}
-{% elif metadata['repo']['release_level'] in ['alpha', 'beta'] %}
+{% elif metadata['repo']['release_level'] in ['preview'] %}
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
 
 ## Quickstart
 
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] -%}
 If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
 
 ```xml
-{{ metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] }}
+{{ metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] }}
 ```
 
 If you are using Maven without BOM, add this to your dependencies:
@@ -33,8 +33,8 @@ If you are using Maven, add this to your pom.xml file:
 {% endif %}
 
 ```xml
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] -%}
-{{ metadata['snippets'][metadata['repo']['name'] + '_install_without_bom'] }}
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_without_bom'] -%}
+{{ metadata['snippets'][metadata['repo']['api_shortname'] + '_install_without_bom'] }}
 {% else -%}
 <dependency>
   <groupId>{{ group_id }}</groupId>
@@ -44,7 +44,7 @@ If you are using Maven, add this to your pom.xml file:
 {% endif -%}
 ```
 
-{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['name'] + '_install_with_bom'] -%}
+{% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] -%}
 If you are using Gradle 5.x or later, add this to your dependencies
 
 ```Groovy
@@ -107,11 +107,11 @@ use this {{metadata['repo']['name_pretty']}} Client Library.
 {% if metadata['samples']|length %}
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/master/samples) directory.
+Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/main/samples) directory.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/master/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }}) |
+{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/main/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }}) |
 {% endfor %}
 {% endif %}
 
@@ -182,7 +182,7 @@ and on [google-cloud-java][g-c-j].
 {% else %}
 This library follows [Semantic Versioning](http://semver.org/).
 
-{% if metadata['repo']['release_level'] in ['alpha', 'beta'] %}
+{% if metadata['repo']['release_level'] in ['preview'] %}
 It is currently in major version zero (``0.y.z``), which means that anything may change at any time
 and the public API should not be considered stable.
 {% endif %}{% endif %}
@@ -229,7 +229,7 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [kokoro-badge-link-4]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java8-win.html
 [kokoro-badge-image-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java11.svg
 [kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java11.html
-[stability-image]: https://img.shields.io/badge/stability-{% if metadata['repo']['release_level'] == 'ga' %}ga-green{% elif metadata['repo']['release_level'] == 'beta' %}beta-yellow{% elif metadata['repo']['release_level'] == 'alpha' %}alpha-orange{% else %}unknown-red{% endif %}
+[stability-image]: https://img.shields.io/badge/stability-{% if metadata['repo']['release_level'] == 'stable' %}stable-green{% elif metadata['repo']['release_level'] == 'preview' %}preview-yellow{% else %}unknown-red{% endif %}
 [maven-version-image]: https://img.shields.io/maven-central/v/{{ group_id }}/{{ artifact_id }}.svg
 [maven-version-link]: https://search.maven.org/search?q=g:{{ group_id }}%20AND%20a:{{ artifact_id }}&core=gav
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
@@ -239,10 +239,10 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [developer-console]: https://console.developers.google.com/
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-sdk]: https://cloud.google.com/sdk/
-[troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/master/troubleshooting/readme.md#troubleshooting
-[contributing]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CONTRIBUTING.md
-[code-of-conduct]: https://github.com/{{metadata['repo']['repo']}}/blob/master/CODE_OF_CONDUCT.md#contributor-code-of-conduct
-[license]: https://github.com/{{metadata['repo']['repo']}}/blob/master/LICENSE
+[troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/main/troubleshooting/readme.md#troubleshooting
+[contributing]: https://github.com/{{metadata['repo']['repo']}}/blob/main/CONTRIBUTING.md
+[code-of-conduct]: https://github.com/{{metadata['repo']['repo']}}/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
+[license]: https://github.com/{{metadata['repo']['repo']}}/blob/main/LICENSE
 {% if metadata['repo']['requires_billing'] %}[enable-billing]: https://cloud.google.com/apis/docs/getting-started#enabling_billing{% endif %}
 {% if metadata['repo']['api_id'] %}[enable-api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [libraries-bom]: https://github.com/GoogleCloudPlatform/cloud-opensource-java/wiki/The-Google-Cloud-Platform-Libraries-BOM
