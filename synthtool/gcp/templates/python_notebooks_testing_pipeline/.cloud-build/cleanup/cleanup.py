@@ -42,13 +42,8 @@ def run_cleanup_managers(managers: List[ResourceCleanupManager], is_dry_run: boo
                 except Exception as exception:
                     print(exception)
 
-        print("")
-
 
 is_dry_run = False
-
-if is_dry_run:
-    print("Starting cleanup in dry run mode...")
 
 # List of all cleanup managers
 managers = [
