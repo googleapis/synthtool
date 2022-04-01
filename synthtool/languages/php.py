@@ -66,8 +66,7 @@ def _merge(src: str, dest: str, path: Path):
 
 
 def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
-    """Returns a directory contains the version subdirectory.
-    """
+    """Returns a directory contains the version subdirectory."""
     logger.debug("_find_copy_target called with %s and %s", src, version_string)
     entries = os.scandir(src)
     if not entries:
@@ -81,10 +80,11 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
 
 
 def owlbot_copy_version(
-    src: Path, dest: Path, copy_excludes: typing.Optional[typing.List[str]] = None,
+    src: Path,
+    dest: Path,
+    copy_excludes: typing.Optional[typing.List[str]] = None,
 ) -> None:
-    """Copies files from a version subdirectory.
-    """
+    """Copies files from a version subdirectory."""
     logger.debug("owlbot_copy_version called from %s to %s", src, dest)
 
     if copy_excludes is None:
@@ -146,8 +146,7 @@ def owlbot_main(
     copy_excludes: typing.Optional[typing.List[str]] = None,
     patch_func: typing.Callable[[], None] = owlbot_patch,
 ) -> None:
-    """Copies files from generated tree.
-    """
+    """Copies files from generated tree."""
     entries = os.scandir(src)
     if not entries:
         logger.info("there is no version subdirectory to copy")
@@ -161,9 +160,7 @@ def owlbot_main(
 
 
 def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
-    """Copies files from staging and template directories into current working dir.
-
-    """
+    """Copies files from staging and template directories into current working dir."""
     logging.basicConfig(level=logging.INFO)
 
     logger.debug("owlbot_main called")

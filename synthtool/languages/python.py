@@ -59,7 +59,7 @@ def fix_pb2_headers(*, proto_root: str = "**/*_pb2.py") -> None:
     s.replace(
         proto_root,
         PB2_HEADER,
-        fr"\g<1>{LICENSE}\n\n\g<2>",  # change order to avoid stacking replacements
+        rf"\g<1>{LICENSE}\n\n\g<2>",  # change order to avoid stacking replacements
         flags=re.DOTALL | re.MULTILINE,
     )
 
@@ -68,7 +68,7 @@ def fix_pb2_grpc_headers(*, proto_root: str = "**/*_pb2_grpc.py") -> None:
     s.replace(
         proto_root,
         PB2_GRPC_HEADER,
-        fr"{LICENSE}\n\n\g<1>\n\n\g<2>",  # add line breaks to avoid stacking replacements
+        rf"{LICENSE}\n\n\g<1>\n\n\g<2>",  # add line breaks to avoid stacking replacements
     )
 
 
@@ -161,15 +161,15 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
 
 def configure_previous_major_version_branches() -> None:
     """Configure releases from previous major version branches by editing
-     `.github/release-please.yml`.
+    `.github/release-please.yml`.
 
-     The current library version is obtained from `version.py` in `google/**/version.py`,
-     or the `setup.py`.
+    The current library version is obtained from `version.py` in `google/**/version.py`,
+    or the `setup.py`.
 
-     Releases are configured for all previous major versions. For example,
-     if the library version is currently 3.5.1, the release-please config
-     will include v2, v1, and v0.
-     """
+    Releases are configured for all previous major versions. For example,
+    if the library version is currently 3.5.1, the release-please config
+    will include v2, v1, and v0.
+    """
     if list(Path(".").glob("google/**/version.py")):
         version_file = list(Path(".").glob("google/**/version.py"))[0]
     else:
