@@ -85,7 +85,8 @@ parser.add_argument(
 args = parser.parse_args()
 
 notebooks = execute_changed_notebooks_helper.get_changed_notebooks(
-    test_paths_file=args.test_paths_file, base_branch=args.base_branch,
+    test_paths_file=args.test_paths_file,
+    base_branch=args.base_branch,
 )
 
 execute_changed_notebooks_helper.process_and_execute_notebooks(
