@@ -51,8 +51,7 @@ def docker_image():
 
 @pytest.fixture(scope="session")
 def hybrid_tmp_path():
-    """A tmp dir implementation both for local run and on Kokoro.
-    """
+    """A tmp dir implementation both for local run and on Kokoro."""
     # Trampoline mount KOKORO_ROOT at the same path.
     # So we can mount files under there with docker in docker.
     hybrid_dir = os.environ.get("KOKORO_ROOT", None)
@@ -65,8 +64,7 @@ def hybrid_tmp_path():
 
 @pytest.fixture(scope="function", params=["php_asset"])
 def copy_fixture(request, hybrid_tmp_path):
-    """A fixture for preparing test data.
-    """
+    """A fixture for preparing test data."""
     param = request.param
     test_dir = Path(f"{hybrid_tmp_path}/{param}")
 

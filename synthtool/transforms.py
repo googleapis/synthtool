@@ -137,7 +137,8 @@ def _copy_dir_to_existing_dir(
                         _merge_file(source_path, dest_path, merge)
                     except Exception:
                         logger.exception(
-                            "_merge_file failed for %s, fall back to copy", source_path,
+                            "_merge_file failed for %s, fall back to copy",
+                            source_path,
                         )
                         shutil.copy2(str(source_path), str(dest_path))
                 else:
@@ -147,7 +148,9 @@ def _copy_dir_to_existing_dir(
     return copied
 
 
-def dont_overwrite(patterns: ListOfPathsOrStrs,) -> Callable[[str, str, Path], str]:
+def dont_overwrite(
+    patterns: ListOfPathsOrStrs,
+) -> Callable[[str, str, Path], str]:
     """Returns a merge function that doesn't overwrite the specified files.
 
     Pass the return value to move() or copy() to avoid overwriting existing
