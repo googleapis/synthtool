@@ -1,11 +1,11 @@
-setuptools==61.3.0
+setuptools==62.0.0
 
 nox
 requests
 pyyaml
 jinja2
 deprecation
-protobuf==3.19.3
+protobuf==3.20.0
 watchdog
 
 # some java processing requires xml handling
