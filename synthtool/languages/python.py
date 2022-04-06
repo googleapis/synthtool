@@ -178,10 +178,10 @@ def configure_previous_major_version_branches() -> None:
 
     if major_version is None:
         raise RuntimeError(
-                "Unable to find library version in files {} with regex {}".format(
-                    version_paths, VERSION_REGEX
-                )
+            "Unable to find library version in files {} with regex {}".format(
+                version_paths, VERSION_REGEX
             )
+        )
 
     with open(".github/release-please.yml") as f:
         release_please_yml = yaml.load(f, Loader=yaml.SafeLoader)
