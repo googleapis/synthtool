@@ -170,25 +170,27 @@ def configure_previous_major_version_branches() -> None:
     if the library version is currently 3.5.1, the release-please config
     will include v2, v1, and v0.
     """
-    if list(Path(".").glob("google/**/version.py")):
-        version_file = list(Path(".").glob("google/**/version.py"))[0]
-    else:
-        version_file = Path("setup.py")
 
     # In version.py:    __version__ = "1.5.2"
     # In setup.py:      version = "1.5.2"
     VERSION_REGEX = (
         r"(?:__)?version(?:__)?\s*=\s*[\"'](?P<major_version>\d)\.[\d\.]+[\"']"
     )
+    version_paths = list(Path(".").glob("google/**/version.py")) + [Path("setup.py")]
 
-    match = re.search(VERSION_REGEX, Path(version_file).read_text())
+    major_version = None
 
-    if match is not None:
-        major_version = int(match.group("major_version"))
-    else:
+    for p in version_paths:
+        match = re.search(VERSION_REGEX, Path(p).read_text())
+
+        if match is not None:
+            major_version = int(match.group("major_version"))
+            break
+
+    if major_version is None:
         raise RuntimeError(
-            "Unable to find library version in {} with regex {}".format(
-                version_file, VERSION_REGEX
+            "Unable to find library version in files {} with regex {}".format(
+                version_paths, VERSION_REGEX
             )
         )
 
