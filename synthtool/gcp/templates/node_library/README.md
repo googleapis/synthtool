@@ -72,6 +72,9 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 {% endif %}{% if 'partials' in metadata and metadata['partials']['body'] %}{{ metadata['partials']['body'] }}{% endif %}
 
 {% if metadata['samples']|length %}
+
+This library is built on top of google-gax as its transport layer. To customize the common behavior of this client library (timeout, retry, etc), see [Client Library Howto](https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md).
+
 ## Samples
 
 Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/{{ metadata['repo']['default_branch'] }}/samples) directory. Each sample's `README.md` has instructions for running its sample.
