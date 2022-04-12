@@ -4,6 +4,12 @@
 
 # Google {{ metadata['repo']['name_pretty'] }} Client for Java
 
+🔔 **AutoML API Java Client is now available in Vertex AI. Please visit** 
+[java-aiplatform](https://github.com/googleapis/java-aiplatform) **for the new Java Vertex AI client.** 
+Vertex AI is our next generation AI Platform, with many new features that are unavailable in the current platform. 
+[Migrate your resources to Vertex AI](https://cloud.google.com/vertex-ai/docs/start/migrating-to-vertex-ai) to get 
+the latest machine learning features, simplify end-to-end journeys, and productionize models with MLOps.
+
 Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 
 [![Maven][maven-version-image]][maven-version-link]
