@@ -39,6 +39,9 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 ENV npm_config_cache=/tmp/.npm
 RUN mkdir /tmp/.npm && chmod 1777 /tmp/.npm
 
+# Install @prettier/plugin-php
+RUN npm install --global prettier @prettier/plugin-php@^0.18.4
+
 # Copy synthtool.
 COPY synthtool /synthtool/synthtool
 COPY docker /synthtool/docker
