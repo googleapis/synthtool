@@ -1,18 +1,12 @@
-setuptools==54.2.0
+setuptools==62.0.0
 
 nox
 requests
 pyyaml
 jinja2
 deprecation
-protobuf==3.19.3
+protobuf==3.20.0
 watchdog
-
-# https://github.com/googleapis/gapic-generator/issues/3334
-# temporarily install google-api-core for gapic-generator-python
-# Bazel should install this, but there is currently a bug
-# that causes the package to be skipped
-google-api-core==2.0.0
 
 # some java processing requires xml handling
 lxml
