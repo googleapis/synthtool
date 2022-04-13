@@ -24,7 +24,7 @@ from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
 
-_REQUIRED_FIELDS = ["name", "repository"]
+_REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
 
 
@@ -48,6 +48,7 @@ def read_metadata():
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
+        data["engine"] = data["engines"]["node"].replace(">=", "").replace(".0", "")
 
         return data
 
