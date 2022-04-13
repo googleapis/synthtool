@@ -48,7 +48,7 @@ def read_metadata():
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
-        data["engine"] = re.search(r'([0-9][0-9])', data["engines"]["node"]).group()
+        data["engine"] = re.search(r"([0-9][0-9])", data["engines"]["node"]).group()
 
         return data
 
