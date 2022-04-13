@@ -42,6 +42,7 @@ def test_quickstart_metadata_with_snippet():
         sample_names = list(map(lambda sample: sample["file"], metadata["samples"]))
         assert "samples/quickstart.js" in sample_names
 
+
 def test_metadata_engines_field():
     with util.chdir(FIXTURES / "node_templates" / "standard"):
         metadata = node.template_metadata()
