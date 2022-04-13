@@ -74,17 +74,6 @@ def test_no_samples():
         assert isinstance(metadata["samples"], list)
         assert len(metadata["samples"]) == 0
 
-def test_metadata_collected():
-    # use a non-nodejs template directory
-    with util.chdir(FIXTURES):
-        metadata = node.template_metadata()
-
-        # should not have populated the quickstart for the README
-        assert not metadata["quickstart"]
-
-        assert isinstance(metadata["samples"], list)
-        assert len(metadata["samples"]) == 0
-
 
 def test_extract_clients_no_file():
     index_ts_path = pathlib.Path(
