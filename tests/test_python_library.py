@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import os
+import shutil
 from pathlib import Path
 
 import pytest
 
 from synthtool import gcp
 from synthtool.sources import templates
+from synthtool.languages import python
 from . import util
 
 
@@ -28,43 +30,67 @@ PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_
 @pytest.mark.parametrize(
     ["template_kwargs", "expected_text"],
     [
-        ({}, ["import nox", 'session.install("-e", ".", "-c", constraints_path)']),
+        ({}, ["import nox", 'session.install("-e", ".", *constraints)']),
         (
             {"unit_test_local_dependencies": ["../testutils", "../unitutils"]},
             [
-                'session.install("-e", "../testutils", "-c", constraints_path)',
-                'session.install("-e", "../unitutils", "-c", constraints_path)',
+                """\
+UNIT_TEST_LOCAL_DEPENDENCIES = [
+    "../testutils",
+    "../unitutils",
+]""",
             ],
         ),
         (
             {"system_test_local_dependencies": ["../testutils", "../sysutils"]},
             [
-                'session.install("-e", "../testutils", "-c", constraints_path)',
-                'session.install("-e", "../sysutils", "-c", constraints_path)',
+                """\
+SYSTEM_TEST_LOCAL_DEPENDENCIES = [
+    "../testutils",
+    "../sysutils",
+]""",
             ],
         ),
         (
             {"unit_test_extras": ["abc", "def"]},
-            ['session.install("-e", ".[abc,def]", "-c", constraints_path)'],
+            [
+                """\
+UNIT_TEST_EXTRAS = [
+    "abc",
+    "def",
+]""",
+            ],
         ),
         (
             {"system_test_extras": ["abc", "def"]},
-            ['session.install("-e", ".[abc,def]", "-c", constraints_path)'],
+            """\
+SYSTEM_TEST_EXTRAS = [
+    "abc",
+    "def",
+]""",
         ),
         (
             {"unit_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = ""',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+UNIT_TEST_EXTRAS_BY_PYTHON = {
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
         (
             {"system_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = ""',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+SYSTEM_TEST_EXTRAS_BY_PYTHON = {
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
         (
@@ -73,9 +99,18 @@ PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_
                 "unit_test_extras_by_python": {"3.8": ["abc", "def"]},
             },
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = "[tuv,wxyz]"',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+UNIT_TEST_EXTRAS = [
+    "tuv",
+    "wxyz",
+]""",
+                """\
+UNIT_TEST_EXTRAS_BY_PYTHON = {
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
         (
@@ -84,16 +119,28 @@ PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_
                 "system_test_extras_by_python": {"3.8": ["abc", "def"]},
             },
             [
-                'if session.python == "3.8":\n        extras = "[abc,def]"',
-                'else:\n        extras = "[tuv,wxyz]"',
-                'session.install("-e", f".{extras}", "-c", constraints_path)',
+                """\
+SYSTEM_TEST_EXTRAS = [
+    "tuv",
+    "wxyz",
+]""",
+                """\
+SYSTEM_TEST_EXTRAS_BY_PYTHON = {
+    "3.8": [
+        "abc",
+        "def",
+    ],
+}""",
             ],
         ),
     ],
 )
 def test_library_noxfile(template_kwargs, expected_text):
     t = templates.Templates(PYTHON_LIBRARY)
-    result = t.render("noxfile.py.j2", **template_kwargs,).read_text()
+    result = t.render(
+        "noxfile.py.j2",
+        **template_kwargs,
+    ).read_text()
     # Validate Python syntax.
     result_code = compile(result, "noxfile.py", "exec")
     assert result_code is not None
@@ -126,3 +173,38 @@ def test_split_system_tests():
         with open(templated_files / ".kokoro/presubmit/system-3.8.cfg", "r") as f:
             contents = f.read()
             assert "system-3.8" in contents
+
+
+@pytest.mark.parametrize(
+    "fixtures_dir",
+    [
+        Path(__file__).parent / "fixtures/python_library",  # just setup.py
+        Path(__file__).parent
+        / "fixtures/python_library_w_version_py",  # has google/cloud/texttospeech/version.py
+    ],
+)
+def test_configure_previous_major_version_branches(fixtures_dir):
+    with util.copied_fixtures_dir(fixtures_dir):
+        t = templates.Templates(PYTHON_LIBRARY)
+        result = t.render(".github/release-please.yml")
+        os.makedirs(".github")
+        shutil.copy(result, Path(".github/release-please.yml"))
+
+        python.configure_previous_major_version_branches()
+        release_please_yml = Path(".github/release-please.yml").read_text()
+
+        assert (
+            release_please_yml
+            == """releaseType: python
+handleGHRelease: true
+# NOTE: this section is generated by synthtool.languages.python
+# See https://github.com/googleapis/synthtool/blob/master/synthtool/languages/python.py
+branches:
+- branch: v1
+  handleGHRelease: true
+  releaseType: python
+- branch: v0
+  handleGHRelease: true
+  releaseType: python
+"""
+        )

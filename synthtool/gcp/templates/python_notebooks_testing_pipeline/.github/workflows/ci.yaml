@@ -7,9 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
     - name: Fetch pull request branch
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         fetch-depth: 0      
     - name: Fetch base main branch
@@ -19,8 +19,10 @@ jobs:
     - name: Format and lint notebooks
       run: |
         set +e
+
         .github/workflows/linter/run_linter.sh -t
         RTN=$?
+
         if [ "$RTN" != "0" ]; then
           echo "There were problems formatting/linting the notebooks."
           echo "Please run the following commands locally from the root directory to attempt to autofix the issues:"

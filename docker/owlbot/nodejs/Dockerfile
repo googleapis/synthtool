@@ -16,7 +16,7 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-nodejs -f docker/owlbot/nodejs/Dockerfile .
-FROM python:3.9.5-buster
+FROM python:3.10.4-buster
 
 WORKDIR /
 
@@ -37,7 +37,6 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 
 # Copy synthtool.
 COPY synthtool /synthtool/synthtool
-COPY autosynth /synthtool/autosynth
 COPY docker /synthtool/docker
 COPY post-processor-changes.txt /post-processor-changes.txt
 

@@ -78,7 +78,7 @@ def all_samples(sample_globs: List[str]) -> List[Dict[str, str]]:
 
 
 def _decamelize(value: str):
-    """ parser to convert fooBar.js to Foo Bar. """
+    """Parser to convert fooBar.js to Foo Bar."""
     if not value:
         return ""
     str_decamelize = re.sub("^.", value[0].upper(), value)  # apple -> Apple.

@@ -72,7 +72,10 @@ def _local_default_branch(path: pathlib.Path) -> Union[str, None]:
 
 
 def clone(
-    url: str, dest: pathlib.Path = None, committish: str = None, force: bool = False,
+    url: str,
+    dest: pathlib.Path = None,
+    committish: str = None,
+    force: bool = False,
 ) -> pathlib.Path:
     """Clones a remote git repo.
 

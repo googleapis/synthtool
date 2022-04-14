@@ -25,7 +25,7 @@ import logging
 import shutil
 import common
 
-_REQUIRED_FIELDS = ["name", "repository"]
+_REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
 
 
@@ -49,6 +49,7 @@ def read_metadata():
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
+        data["engine"] = re.search(r"([0-9][0-9])", data["engines"]["node"]).group()
 
         return data
 
