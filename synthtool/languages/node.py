@@ -23,10 +23,11 @@ from synthtool.sources import git
 from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
-import common
+from synthtool.languages import common
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
+_GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
 
 
 def read_metadata():
@@ -50,22 +51,10 @@ def read_metadata():
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
         data["engine"] = re.search(r"([0-9][0-9])", data["engines"]["node"]).group()
+        data["version"] = data["version"]
 
         return data
 
-
-def get_library_version():
-    """
-    get library version from package.json
-
-    Returns:
-        client library version
-    """
-    with open("./package.json") as f:
-        data = json.load(f)
-        version = data["version"]
-
-        return version
 
 def template_metadata() -> Dict[str, Any]:
     """Load node specific template metadata.
@@ -351,9 +340,11 @@ def owlbot_main(
     else:
         templates = common_templates.node_library(source_location="build/src")
         s_copy([templates], excludes=templates_excludes)
-    
-    library_version = get_library_version()
+
+    library_version = template_metadata()["version"]
+    logger.info(library_version, _GENERATED_SAMPLES_DIRECTORY)
     common.update_library_version(library_version)
+
 
 if __name__ == "__main__":
     owlbot_main()

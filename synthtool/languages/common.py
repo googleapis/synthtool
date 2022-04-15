@@ -12,34 +12,41 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from synthtool import transforms
 import json
-import os
+from pathlib import Path
 import re
 
-def update_library_version(version):
+
+def update_library_version(version: str, root_dir: str):
     """
-    read package name and repository in package.json from a Node library.
+    Rewrites all metadata files in ./samples/generated to the version number argument
+
+    """
+    root_dir = Path(root_dir)
+
+    snippet_metadata_files = get_sample_metadata_files(root_dir)
+    for file in snippet_metadata_files:
+        with open(file, "r+") as f:
+            data = json.load(f)
+            data["clientLibrary"]["version"] = version
+            f.seek(0)
+            json.dump(data, f, indent=4)
+            f.truncate()
+
+
+def get_sample_metadata_files(dir: Path):
+    """
+    Walks through samples/generated to find all snippet metadata files, appends them to a list
 
     Returns:
-        data - package.json file as a dict.
+    A list of all metadata files.
     """
-    snippet_metadata_files = get_sample_metadata_files()
-    for file in snippet_metadata_files:
-        file_to_overwrite = open(file, "w")
-        data = json.load(file)
-        data["version"] = version
-        file_to_overwrite(data)
-
-def get_sample_metadata_files():
-    rootdir = "./samples/generated"
-    regex = re.compile('snipppet_metdata')
-
     metadata_files = []
-    for root, dirs, files in os.walk(rootdir):
-        for file in files:
-            if regex.match(file):
-                metadata_files.append[os.path.join(rootdir,file)]
+    for path_object in Path(dir).glob("**/*"):
+        if path_object.is_file():
+            if re.search(r"snippet_metadata", str(path_object)):
+                metadata_files.append(str(Path.resolve(path_object)))
+        if path_object.is_dir():
+            get_sample_metadata_files(path_object)
 
     return metadata_files
-
