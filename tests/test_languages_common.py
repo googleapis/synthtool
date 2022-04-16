@@ -16,6 +16,7 @@ from synthtool.languages import common
 from pathlib import Path
 import json
 import shutil
+import numpy as np
 
 FIXTURES_SAMPLES = Path(__file__).parent / "fixtures" / "samples" / "generated"
 
@@ -33,9 +34,8 @@ def test_get_sample_metadata_files():
             )
         ),
     ]
-    assert (
-        common.get_sample_metadata_files(Path.resolve(FIXTURES_SAMPLES))
-        == metadataFiles
+    assert np.array_equal(
+        common.get_sample_metadata_files(Path.resolve(FIXTURES_SAMPLES)), metadataFiles
     )
 
 
