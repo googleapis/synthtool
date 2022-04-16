@@ -17,9 +17,7 @@ from pathlib import Path
 import json
 import shutil
 
-FIXTURES_SAMPLES = (
-    Path(__file__).parent / "fixtures" / "nodejs-dlp" / "samples" / "generated"
-)
+FIXTURES_SAMPLES = Path(__file__).parent / "fixtures" / "samples" / "generated"
 
 
 def test_get_sample_metadata_files():
