@@ -51,7 +51,6 @@ def read_metadata():
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
         data["engine"] = re.search(r"([0-9][0-9])", data["engines"]["node"]).group()
-        data["version"] = data["version"]
 
         return data
 
@@ -342,7 +341,6 @@ def owlbot_main(
         s_copy([templates], excludes=templates_excludes)
 
     library_version = template_metadata()["version"]
-    logger.info(library_version, _GENERATED_SAMPLES_DIRECTORY)
     common.update_library_version(library_version)
 
 
