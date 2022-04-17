@@ -341,7 +341,7 @@ def owlbot_main(
         s_copy([templates], excludes=templates_excludes)
 
     library_version = template_metadata()["version"]
-    common.update_library_version(library_version)
+    common.update_library_version(library_version, _GENERATED_SAMPLES_DIRECTORY)
 
 
 if __name__ == "__main__":
