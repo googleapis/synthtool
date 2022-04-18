@@ -22,9 +22,9 @@ def update_library_version(version: str, root_dir: str):
     Rewrites all metadata files in ./samples/generated to the version number argument
 
     """
-    root_dir = Path(root_dir)
+    root_dir_path = Path(root_dir)
 
-    snippet_metadata_files = get_sample_metadata_files(root_dir)
+    snippet_metadata_files = get_sample_metadata_files(root_dir_path)
     for file in snippet_metadata_files:
         with open(file, "r+") as f:
             data = json.load(f)
@@ -42,7 +42,7 @@ def get_sample_metadata_files(dir: Path):
     A list of all metadata files.
     """
     metadata_files = []
-    for path_object in Path(dir).glob("**/*"):
+    for path_object in dir.glob("**/*"):
         if path_object.is_file():
             if re.search(r"snippet_metadata", str(path_object)):
                 metadata_files.append(str(Path.resolve(path_object)))
