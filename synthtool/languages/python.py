@@ -51,7 +51,10 @@ IGNORED_VERSIONS: List[str] = []
 
 SAMPLES_TEMPLATE_PATH = Path(CommonTemplates()._template_root) / "python_samples"
 
-NOTEBOOK_TEMPLATE_PATH = Path(CommonTemplates()._template_root) / "python_notebooks_testing_pipeline"
+NOTEBOOK_TEMPLATE_PATH = (
+    Path(CommonTemplates()._template_root) / "python_notebooks_testing_pipeline"
+)
+
 
 def fix_pb2_headers(*, proto_root: str = "**/*_pb2.py") -> None:
     s.replace(
@@ -98,7 +101,7 @@ def _get_sample_readme_metadata(sample_dir: Path) -> dict:
 def python_notebooks_testing_pipeline() -> None:
     in_client_library = Path("owlbot.py").exists()
     if in_client_library:
-        excludes = []
+        excludes: List[str] = []
         _tracked_paths.add(NOTEBOOK_TEMPLATE_PATH)
         s.copy([NOTEBOOK_TEMPLATE_PATH], excludes=excludes)
 
