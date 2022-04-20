@@ -268,9 +268,9 @@ def owlbot_main() -> None:
 
         py_samples(skip_readmes=True)
 
-        # run blacken session for all directories which a noxfile
+        # run format nox session for all directories which have a noxfile
         for noxfile in Path(".").glob("**/noxfile.py"):
-            s.shell.run(["nox", "-s", "blacken"], cwd=noxfile.parent, hide_output=False)
+            s.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
 
     configure_previous_major_version_branches()
 
