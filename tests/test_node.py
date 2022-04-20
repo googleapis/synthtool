@@ -43,6 +43,12 @@ def test_quickstart_metadata_with_snippet():
         assert "samples/quickstart.js" in sample_names
 
 
+def test_metadata_engines_field():
+    with util.chdir(FIXTURES / "node_templates" / "standard"):
+        metadata = node.template_metadata()
+        assert "10" in metadata["engine"]
+
+
 def test_quickstart_metadata_without_snippet():
     with util.chdir(FIXTURES / "node_templates" / "no_quickstart_snippet"):
         metadata = node.template_metadata()

@@ -23,9 +23,11 @@ from synthtool.sources import git
 from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
+from synthtool.languages import common
 
-_REQUIRED_FIELDS = ["name", "repository"]
+_REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
+_GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
 
 
 def read_metadata():
@@ -48,6 +50,7 @@ def read_metadata():
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
+        data["engine"] = re.search(r"([0-9][0-9])", data["engines"]["node"]).group()
 
         return data
 
@@ -336,6 +339,9 @@ def owlbot_main(
     else:
         templates = common_templates.node_library(source_location="build/src")
         s_copy([templates], excludes=templates_excludes)
+
+    library_version = template_metadata()["version"]
+    common.update_library_version(library_version, _GENERATED_SAMPLES_DIRECTORY)
 
 
 if __name__ == "__main__":
