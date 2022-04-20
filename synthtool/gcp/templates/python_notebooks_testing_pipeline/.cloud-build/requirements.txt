@@ -1,6 +1,6 @@
 ipython==8.2.0
 jupyter==1.0
-nbconvert==6.0
+nbconvert==6.5.0
 papermill==2.3
 numpy==1.22.3
 pandas==1.4.2
