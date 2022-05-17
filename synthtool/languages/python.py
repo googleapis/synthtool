@@ -255,7 +255,10 @@ def owlbot_main() -> None:
             if clean_up_generated_samples:
                 shutil.rmtree("samples/generated_samples", ignore_errors=True)
                 clean_up_generated_samples = False
-            s.move([library], excludes=["setup.py", "README.rst", "docs/index.rst"])
+            s.move(
+                [library],
+                excludes=["setup.py", "README.rst", "docs/index.rst", "**/version.py"],
+            )
         s.remove_staging_dirs()
 
         templated_files = CommonTemplates().py_library(
