@@ -17,7 +17,7 @@ set -e
 
 # Find all the java files relative to the current directory and format them
 # using google-java-format
-list="$(find . -name '*.java' )"
+list="$(find . -name '*.java' -not -path ".*/samples/snippets/generated/**/*" )"
 tmpfile=$(mktemp)
 
 for file in $list;
