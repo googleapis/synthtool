@@ -33,6 +33,16 @@ Before running the samples, make sure you've followed the steps outlined in
 
 `cd ..`
 
+## Run the test
+
+If you want to run all tests of the sample code, you can run the following commands from the root.
+
+`cd samples`
+
+`npm test`
+
+`cd ..`
+
 ## Samples
 {% if metadata['samples']|length %}
 {% for sample in metadata['samples'] %}
