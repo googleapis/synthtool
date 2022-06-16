@@ -1,4 +1,4 @@
-setuptools==62.3.4
+setuptools==62.4.0
 
 nox
 requests
