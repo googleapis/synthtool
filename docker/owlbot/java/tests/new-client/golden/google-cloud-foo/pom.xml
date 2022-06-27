@@ -75,18 +75,6 @@
       <artifactId>grpc-google-iam-v1</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.api.grpc</groupId>
-      <artifactId>grpc-google-common-protos</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api.grpc</groupId>
-      <artifactId>proto-google-iam-v1</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.api.grpc</groupId>
-      <artifactId>grpc-google-iam-v1</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.threeten</groupId>
       <artifactId>threetenbp</artifactId>
     </dependency>
