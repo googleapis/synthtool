@@ -35,7 +35,11 @@ def read_module(pom: str) -> Module:
         if artifact_id.startswith("google-cloud")
         else "com.google.api.grpc"
     )
-    return Module(group_id=group_id, artifact_id=artifact_id, version=version,)
+    return Module(
+        group_id=group_id,
+        artifact_id=artifact_id,
+        version=version,
+    )
 
 
 def read_modules(service: str) -> List[Module]:

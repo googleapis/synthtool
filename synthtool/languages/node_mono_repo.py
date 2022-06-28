@@ -77,7 +77,9 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     # quickstart.js sample is special - only include it in the samples list if there is
     # a quickstart snippet present in the file
     quickstart_snippets = list(
-        snippets.all_snippets_from_file(Path(relative_dir, "samples/quickstart.js").resolve()).values()
+        snippets.all_snippets_from_file(
+            Path(relative_dir, "samples/quickstart.js").resolve()
+        ).values()
     )
     metadata["quickstart"] = quickstart_snippets[0] if quickstart_snippets else ""
     metadata["samples"] = list(
@@ -120,7 +122,9 @@ def extract_clients(filePath: Path) -> List[str]:
     return re.findall(r"\{(.*Client)\}", content)
 
 
-def generate_index_ts(versions: List[str], default_version: str, relative_dir: str) -> None:
+def generate_index_ts(
+    versions: List[str], default_version: str, relative_dir: str
+) -> None:
     """
     generate src/index.ts to export the client name and versions in the client library.
 
@@ -146,7 +150,9 @@ def generate_index_ts(versions: List[str], default_version: str, relative_dir: s
     versions = sorted(versions)
 
     # compose default version's index.ts file path
-    versioned_index_ts_path = Path(relative_dir) / Path("src") / default_version / "index.ts"
+    versioned_index_ts_path = (
+        Path(relative_dir) / Path("src") / default_version / "index.ts"
+    )
     clients = extract_clients(versioned_index_ts_path)
     if not clients:
         err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
@@ -170,57 +176,55 @@ def generate_index_ts(versions: List[str], default_version: str, relative_dir: s
     logger.info("successfully generate `src/index.ts`")
 
 
-def install(relative_dir: str, hide_output=False):
+def install(hide_output=False):
     """
     Installs all dependencies for the current Node.js library.
     """
     logger.debug("Installing dependencies...")
-    shell.run(["npm", "install"], hide_output=hide_output, cwd=relative_dir)
+    shell.run(["npm", "install"], hide_output=hide_output)
 
 
-def fix(cwd, hide_output=False):
+def fix(hide_output=False):
     """
     Fixes the formatting in the current Node.js library.
     Before running fix script, run prelint to install extra dependencies
     for samples, but do not fail if it does not succeed.
     """
     logger.debug("Running prelint...")
-    shell.run(["npm", "run", "prelint"], check=False, hide_output=hide_output, cwd=cwd)
+    shell.run(["npm", "run", "prelint"], check=False, hide_output=hide_output)
     logger.debug("Running fix...")
-    shell.run(["npm", "run", "fix"], hide_output=hide_output, cwd=cwd)
+    shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
 
-def fix_hermetic(cwd, hide_output=False):
+def fix_hermetic(hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
     is already installed in a well known location on disk:
     """
     logger.debug("Copy eslint config")
     shell.run(
-        ["cp", "-r", f"{cwd}{_TOOLS_DIRECTORY}/node_modules", "."],
+        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
         check=True,
         hide_output=hide_output,
-        cwd=cwd
     )
     logger.debug("Running fix...")
     shell.run(
-        [f"{cwd}{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix"],
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix"],
         check=False,
         hide_output=hide_output,
-        cwd=cwd
     )
 
 
-def compile_protos(cwd, hide_output=False):
+def compile_protos(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
     compileProtos script from google-gax.
     """
     logger.debug("Compiling protos...")
-    shell.run(["npx", "compileProtos", "src"], hide_output=hide_output, cwd=cwd)
+    shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
-def compile_protos_hermetic(cwd, hide_output=False):
+def compile_protos_hermetic(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
     compileProtos script from google-gax.
@@ -230,22 +234,21 @@ def compile_protos_hermetic(cwd, hide_output=False):
         [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
         check=True,
         hide_output=hide_output,
-        cwd=cwd
     )
 
 
-def postprocess_gapic_library(cwd, hide_output=False):
+def postprocess_gapic_library(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
-    install(cwd, hide_output=hide_output)
-    fix(cwd, hide_output=hide_output)
-    compile_protos(cwd, hide_output=hide_output)
+    install(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
 
-def postprocess_gapic_library_hermetic(cwd, hide_output=False):
+def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
-    fix_hermetic(cwd, hide_output=hide_output)
-    compile_protos_hermetic(cwd, hide_output=hide_output)
+    fix_hermetic(hide_output=hide_output)
+    compile_protos_hermetic(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
 
@@ -255,6 +258,7 @@ default_templates_excludes: List[str] = []
 
 def _noop(library: Path) -> None:
     pass
+
 
 # 1. Copy all the staging files at the top level of our monorepo into our subfolder
 def walk_through_owlbot_dirs(dir: Optional[Path] = None):
@@ -268,6 +272,8 @@ def walk_through_owlbot_dirs(dir: Optional[Path] = None):
     for path_object in dir.glob("**/*"):
         if path_object.is_file():
             if re.search(r".OwlBot.yaml", str(path_object)):
+                print("HI!")
+                print(str(Path(path_object).parents[0]))
                 owlbot_dirs.append(str(Path(path_object).parents[0]))
         if path_object.is_dir():
             walk_through_owlbot_dirs(path_object)
@@ -319,9 +325,10 @@ def owlbot_main(
 
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
-    default_version = json.load(open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")).get(
-        "default_version"
-    )
+    print(Path(relative_dir, ".repo-metadata.json"))
+    default_version = json.load(
+        open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
+    ).get("default_version")
     staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
     s_copy = transforms.move
     if default_version is None:
@@ -344,7 +351,9 @@ def owlbot_main(
         shutil.rmtree(staging)
     else:
         # Collect the subdirectories of the src directory.
-        src = Path("src", Path(relative_dir).name).resolve()
+        print("HELOOOOO")
+        print(Path(Path(relative_dir), "src").resolve())
+        src = Path(Path(relative_dir), "src").resolve()
         versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
         versions = [v for v in versions if v != default_version] + [default_version]
@@ -360,18 +369,32 @@ def owlbot_main(
             default_version=default_version,
         )
         s_copy([templates], destination=relative_dir, excludes=templates_excludes)
-        postprocess_gapic_library_hermetic(cwd=relative_dir)
+        postprocess_gapic_library_hermetic()
     else:
-        templates = common_templates.node_mono_repo_library(relative_dir=relative_dir,
-source_location="build/src")
+        templates = common_templates.node_mono_repo_library(
+            relative_dir=relative_dir, source_location="build/src"
+        )
         s_copy([templates], destination=relative_dir, excludes=templates_excludes)
 
-    library_version = template_metadata().get("version")
+    library_version = template_metadata(Path(relative_dir)).get("version")
     if library_version:
-        common.update_library_version(library_version, Path(relative_dir,_GENERATED_SAMPLES_DIRECTORY).resolve())
+        common.update_library_version(
+            library_version, Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()
+        )
+
+
+def owlbot_entrypoint(
+    template_path: Optional[Path] = None,
+    staging_excludes: Optional[List[str]] = None,
+    templates_excludes: Optional[List[str]] = None,
+    patch_staging: Callable[[Path], None] = _noop,
+):
+    owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
+    for dir in owlbot_dirs:
+        owlbot_main(
+            dir, template_path, staging_excludes, templates_excludes, patch_staging
+        )
 
 
 if __name__ == "__main__":
-    owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
-    for dir in owlbot_dirs:
-        owlbot_main(dir)
+    owlbot_entrypoint()

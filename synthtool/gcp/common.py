@@ -336,7 +336,9 @@ class CommonTemplates:
                 self.excludes.append("samples/README.md")
 
         kwargs["metadata"] = node_mono_repo.template_metadata(relative_dir)
-        kwargs["publish_token"] = node_mono_repo.get_publish_token(kwargs["metadata"]["name"])
+        kwargs["publish_token"] = node_mono_repo.get_publish_token(
+            kwargs["metadata"]["name"]
+        )
 
         ignore_src_index = [
             "yes" for f in self.excludes if fnmatch.fnmatch("src/index.ts", f)
@@ -348,10 +350,12 @@ class CommonTemplates:
             and not ignore_src_index
         ):
             node_mono_repo.generate_index_ts(
-                versions=kwargs["versions"], default_version=kwargs["default_version"], relative_dir=relative_dir
+                versions=kwargs["versions"],
+                default_version=kwargs["default_version"],
+                relative_dir=relative_dir,
             )
 
-        return self._generic_library("node_library", **kwargs)        
+        return self._generic_library("node_mono_repo_library", **kwargs)
 
     def php_library(self, **kwargs) -> Path:
         return self._generic_library("php_library", **kwargs)

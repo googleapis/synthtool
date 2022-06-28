@@ -14,10 +14,10 @@
 
 import setuptools
 
-name = 'gcp-synthtool'
-description = ''
-version = '2020.02.04'
-release_status = 'Development Status :: 3 - Alpha'
+name = "gcp-synthtool"
+description = ""
+version = "2020.02.04"
+release_status = "Development Status :: 3 - Alpha"
 dependencies = [
     "click >=7.0.0, <8.0.0",
     "colorlog",
@@ -31,36 +31,34 @@ dependencies = [
 ]
 
 packages = setuptools.find_packages()
-scripts = [
-    'synthtool=synthtool.__main__:main'
-]
+scripts = ["synthtool=synthtool.__main__:main"]
 
 setuptools.setup(
     name=name,
     version=version,
     description=description,
-    author='Google LLC',
-    author_email='theaflowers@google.com',
-    license='Apache 2.0',
-    url='',
+    author="Google LLC",
+    author_email="theaflowers@google.com",
+    license="Apache 2.0",
+    url="",
     classifiers=[
         release_status,
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Operating System :: OS Independent',
-        'Topic :: Internet',
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Operating System :: OS Independent",
+        "Topic :: Internet",
     ],
-    platforms='Posix; MacOS X; Windows',
+    platforms="Posix; MacOS X; Windows",
     packages=packages,
     install_requires=dependencies,
     include_package_data=True,
     zip_safe=False,
     entry_points={
-        'console_scripts': scripts,
+        "console_scripts": scripts,
     },
 )
