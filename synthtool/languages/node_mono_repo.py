@@ -272,8 +272,6 @@ def walk_through_owlbot_dirs(dir: Optional[Path] = None):
     for path_object in dir.glob("**/*"):
         if path_object.is_file():
             if re.search(r".OwlBot.yaml", str(path_object)):
-                print("HI!")
-                print(str(Path(path_object).parents[0]))
                 owlbot_dirs.append(str(Path(path_object).parents[0]))
         if path_object.is_dir():
             walk_through_owlbot_dirs(path_object)
@@ -325,7 +323,6 @@ def owlbot_main(
 
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
-    print(Path(relative_dir, ".repo-metadata.json"))
     default_version = json.load(
         open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
     ).get("default_version")
@@ -351,8 +348,6 @@ def owlbot_main(
         shutil.rmtree(staging)
     else:
         # Collect the subdirectories of the src directory.
-        print("HELOOOOO")
-        print(Path(Path(relative_dir), "src").resolve())
         src = Path(Path(relative_dir), "src").resolve()
         versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.

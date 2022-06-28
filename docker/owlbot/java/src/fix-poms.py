@@ -274,7 +274,6 @@ def update_bom_pom(filename: str, modules: List[module.Module]):
 
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
-
 def main():
     with open(".repo-metadata.json", "r") as fp:
         repo_metadata = json.load(fp)
@@ -324,9 +323,7 @@ def main():
     required_dependencies = {}
     for dependency_module in existing_modules:
         if dependency_module not in excluded_dependencies_list:
-            required_dependencies[dependency_module] = existing_modules[
-                dependency_module
-            ]
+            required_dependencies[dependency_module] = existing_modules[dependency_module]
 
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
@@ -336,10 +333,8 @@ def main():
                 version=main_module.version,
                 release_version=main_module.release_version,
             )
-            if (
-                path not in excluded_dependencies_list
-                and path not in main_module.artifact_id
-            ):
+            if path not in excluded_dependencies_list \
+                    and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
                     group_id="com.google.api.grpc",
                     artifact_id=path,
@@ -355,17 +350,15 @@ def main():
                 parent_module=parent_module,
                 main_module=main_module,
             )
-            if (
-                path not in excluded_dependencies_list
-                and path not in main_module.artifact_id
-            ):
+            if path not in excluded_dependencies_list \
+                and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
                     group_id="com.google.api.grpc",
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
                 )
-
+          
     for path in glob.glob("grpc-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
@@ -374,17 +367,15 @@ def main():
                 version=main_module.version,
                 release_version=main_module.release_version,
             )
-            if (
-                path not in excluded_dependencies_list
-                and path not in main_module.artifact_id
-            ):
+            if path not in excluded_dependencies_list \
+                and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
                     group_id="com.google.api.grpc",
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
                 )
-
+            
         if not os.path.isfile(f"{path}/pom.xml"):
             proto_artifact_id = path.replace("grpc-", "proto-")
             print(f"creating missing grpc pom: {path}")
@@ -396,10 +387,8 @@ def main():
                 main_module=main_module,
                 proto_module=existing_modules[proto_artifact_id],
             )
-            if (
-                path not in excluded_dependencies_list
-                and path not in main_module.artifact_id
-            ):
+            if path not in excluded_dependencies_list \
+                and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
                     group_id="com.google.api.grpc",
                     artifact_id=path,
@@ -410,13 +399,13 @@ def main():
         module
         for module in required_dependencies.values()
         if module.artifact_id.startswith("proto-")
-        and module.artifact_id not in parent_artifact_id
+           and module.artifact_id not in parent_artifact_id
     ]
     grpc_modules = [
         module
         for module in required_dependencies.values()
-        if module.artifact_id.startswith("grpc-")
-        and module.artifact_id not in parent_artifact_id
+        if module.artifact_id.startswith("grpc-") \
+           and module.artifact_id not in parent_artifact_id
     ]
     if main_module in grpc_modules or main_module in proto_modules:
         modules = grpc_modules + proto_modules
@@ -447,9 +436,9 @@ def main():
 
     if os.path.isfile(f"{artifact_id}-bom/pom.xml"):
         print("updating modules in bom pom.xml")
-        if artifact_id + "-bom" not in excluded_poms_list:
+        if artifact_id+"-bom" not in excluded_poms_list:
             update_bom_pom(f"{artifact_id}-bom/pom.xml", modules)
-    elif artifact_id + "-bom" not in excluded_poms_list:
+    elif artifact_id+"-bom" not in excluded_poms_list:
         print("creating missing bom pom.xml")
         templates.render(
             template_name="bom_pom.xml.j2",
@@ -490,11 +479,8 @@ def main():
                 release_version=main_module.release_version,
             )
     templates.render(
-        template_name="versions.txt.j2",
-        output_name="./versions.txt",
-        modules=existing_modules.values(),
+        template_name="versions.txt.j2", output_name="./versions.txt", modules=existing_modules.values(),
     )
-
 
 if __name__ == "__main__":
     main()

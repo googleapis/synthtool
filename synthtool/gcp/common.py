@@ -309,7 +309,6 @@ class CommonTemplates:
                 self.excludes.append("samples/README.md")
 
         kwargs["metadata"] = node.template_metadata()
-        print(kwargs["metadata"])
         kwargs["publish_token"] = node.get_publish_token(kwargs["metadata"]["name"])
 
         ignore_src_index = [

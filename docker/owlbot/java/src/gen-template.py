@@ -24,8 +24,7 @@ import jinja2
 
 @click.command()
 @click.option(
-    "--folder",
-    help="Path to folder of templates",
+    "--folder", help="Path to folder of templates",
 )
 @click.option("--file", help="Path to template file")
 @click.option(
@@ -35,9 +34,7 @@ import jinja2
     required=True,
 )
 @click.option(
-    "--output",
-    help="Path to output",
-    default=".",
+    "--output", help="Path to output", default=".",
 )
 def main(folder: str, file: str, data: List[str], output: str):
     """Generate templates"""
