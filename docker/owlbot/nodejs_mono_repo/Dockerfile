@@ -52,4 +52,4 @@ RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@2.29.1 typ
     minimist@1.2.5 semver@7.3.5 tmp@0.2.1 uglify-js@3.14.2
 
 ENTRYPOINT [ "/bin/bash" ]
-CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
+CMD [ "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]

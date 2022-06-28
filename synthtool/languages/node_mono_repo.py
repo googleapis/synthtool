@@ -25,19 +25,20 @@ import logging
 import shutil
 from synthtool.languages import common
 
+
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
 _GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
 
 
-def read_metadata():
+def read_metadata(relative_dir: str):
     """
     read package name and repository in package.json from a Node library.
 
     Returns:
         data - package.json file as a dict.
     """
-    with open("./package.json") as f:
+    with open(Path(relative_dir, "./package.json").resolve()) as f:
         data = json.load(f)
 
         if not all(key in data for key in _REQUIRED_FIELDS):
@@ -55,7 +56,7 @@ def read_metadata():
         return data
 
 
-def template_metadata() -> Dict[str, Any]:
+def template_metadata(relative_dir: str) -> Dict[str, Any]:
     """Load node specific template metadata.
 
     Returns:
@@ -66,16 +67,18 @@ def template_metadata() -> Dict[str, Any]:
     """
     metadata = {}
     try:
-        metadata = read_metadata()
+        metadata = read_metadata(relative_dir)
     except FileNotFoundError:
         pass
 
-    all_samples = samples.all_samples(["samples/*.js"])
+    all_samples = samples.all_samples([str(Path(relative_dir, "samples/*.js"))])
 
     # quickstart.js sample is special - only include it in the samples list if there is
     # a quickstart snippet present in the file
     quickstart_snippets = list(
-        snippets.all_snippets_from_file("samples/quickstart.js").values()
+        snippets.all_snippets_from_file(
+            Path(relative_dir, "samples/quickstart.js").resolve()
+        ).values()
     )
     metadata["quickstart"] = quickstart_snippets[0] if quickstart_snippets else ""
     metadata["samples"] = list(
@@ -118,7 +121,9 @@ def extract_clients(filePath: Path) -> List[str]:
     return re.findall(r"\{(.*Client)\}", content)
 
 
-def generate_index_ts(versions: List[str], default_version: str) -> None:
+def generate_index_ts(
+    versions: List[str], default_version: str, relative_dir: str
+) -> None:
     """
     generate src/index.ts to export the client name and versions in the client library.
 
@@ -144,7 +149,9 @@ def generate_index_ts(versions: List[str], default_version: str) -> None:
     versions = sorted(versions)
 
     # compose default version's index.ts file path
-    versioned_index_ts_path = Path("src") / default_version / "index.ts"
+    versioned_index_ts_path = (
+        Path(relative_dir) / Path("src") / default_version / "index.ts"
+    )
     clients = extract_clients(versioned_index_ts_path)
     if not clients:
         err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
@@ -163,7 +170,7 @@ def generate_index_ts(versions: List[str], default_version: str) -> None:
     output_text = index_template.render(
         versions=versions, default_version=default_version, clients=clients
     )
-    with open("src/index.ts", "w") as fh:
+    with open(Path(relative_dir, "src/index.ts").resolve(), "w") as fh:
         fh.write(output_text)
     logger.info("successfully generate `src/index.ts`")
 
@@ -252,7 +259,27 @@ def _noop(library: Path) -> None:
     pass
 
 
+# 1. Copy all the staging files at the top level of our monorepo into our subfolder
+def walk_through_owlbot_dirs(dir: Optional[Path] = None):
+    """
+    Walks through samples/generated to find all snippet metadata files, appends them to a list
+
+    Returns:
+    A list of all metadata files.
+    """
+    owlbot_dirs = []
+    for path_object in dir.glob("**/*"):
+        if path_object.is_file():
+            if re.search(r".OwlBot.yaml", str(path_object)):
+                owlbot_dirs.append(str(Path(path_object).parents[0]))
+        if path_object.is_dir():
+            walk_through_owlbot_dirs(path_object)
+
+    return owlbot_dirs
+
+
 def owlbot_main(
+    relative_dir,
     template_path: Optional[Path] = None,
     staging_excludes: Optional[List[str]] = None,
     templates_excludes: Optional[List[str]] = None,
@@ -295,10 +322,10 @@ def owlbot_main(
 
     logging.basicConfig(level=logging.DEBUG)
     # Load the default version defined in .repo-metadata.json.
-    default_version = json.load(open(".repo-metadata.json", "rt")).get(
-        "default_version"
-    )
-    staging = Path("owl-bot-staging")
+    default_version = json.load(
+        open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
+    ).get("default_version")
+    staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
     s_copy = transforms.move
     if default_version is None:
         logger.info("No default version found in .repo-metadata.json.  Ok.")
@@ -315,12 +342,12 @@ def owlbot_main(
             library = staging / version
             _tracked_paths.add(library)
             patch_staging(library)
-            s_copy([library], excludes=staging_excludes)
+            s_copy([library], destination=relative_dir, excludes=staging_excludes)
         # The staging directory should never be merged into the main branch.
         shutil.rmtree(staging)
     else:
         # Collect the subdirectories of the src directory.
-        src = Path("src")
+        src = Path(Path(relative_dir), "src").resolve()
         versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
         versions = [v for v in versions if v != default_version] + [default_version]
@@ -329,21 +356,39 @@ def owlbot_main(
     common_templates = gcp.CommonTemplates(template_path)
     common_templates.excludes.extend(templates_excludes)
     if default_version:
-        templates = common_templates.node_library(
+        templates = common_templates.node_mono_repo_library(
+            relative_dir=relative_dir,
             source_location="build/src",
             versions=versions,
             default_version=default_version,
         )
-        s_copy([templates], excludes=templates_excludes)
+        s_copy([templates], destination=relative_dir, excludes=templates_excludes)
         postprocess_gapic_library_hermetic()
     else:
-        templates = common_templates.node_library(source_location="build/src")
-        s_copy([templates], excludes=templates_excludes)
+        templates = common_templates.node_mono_repo_library(
+            relative_dir=relative_dir, source_location="build/src"
+        )
+        s_copy([templates], destination=relative_dir, excludes=templates_excludes)
 
-    library_version = template_metadata().get("version")
+    library_version = template_metadata(Path(relative_dir)).get("version")
     if library_version:
-        common.update_library_version(library_version, _GENERATED_SAMPLES_DIRECTORY)
+        common.update_library_version(
+            library_version, Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()
+        )
+
+
+def owlbot_entrypoint(
+    template_path: Optional[Path] = None,
+    staging_excludes: Optional[List[str]] = None,
+    templates_excludes: Optional[List[str]] = None,
+    patch_staging: Callable[[Path], None] = _noop,
+):
+    owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
+    for dir in owlbot_dirs:
+        owlbot_main(
+            dir, template_path, staging_excludes, templates_excludes, patch_staging
+        )
 
 
 if __name__ == "__main__":
-    owlbot_main()
+    owlbot_entrypoint()

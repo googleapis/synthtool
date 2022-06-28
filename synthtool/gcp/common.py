@@ -24,7 +24,7 @@ import jinja2
 
 from synthtool import shell, _tracked_paths
 from synthtool.gcp import partials
-from synthtool.languages import node
+from synthtool.languages import node, node_mono_repo
 from synthtool.log import logger
 from synthtool.sources import git, templates
 
@@ -325,6 +325,36 @@ class CommonTemplates:
             )
 
         return self._generic_library("node_library", **kwargs)
+
+    def node_mono_repo_library(self, relative_dir, **kwargs) -> Path:
+        # TODO: once we've migrated all Node.js repos to either having
+        #  .repo-metadata.json, or excluding README.md, we can remove this.
+        if not os.path.exists("./.repo-metadata.json"):
+            self.excludes.append("README.md")
+            if "samples/README.md" not in self.excludes:
+                self.excludes.append("samples/README.md")
+
+        kwargs["metadata"] = node_mono_repo.template_metadata(relative_dir)
+        kwargs["publish_token"] = node_mono_repo.get_publish_token(
+            kwargs["metadata"]["name"]
+        )
+
+        ignore_src_index = [
+            "yes" for f in self.excludes if fnmatch.fnmatch("src/index.ts", f)
+        ]
+        # generate root-level `src/index.ts` to export multiple versions and its default clients
+        if (
+            "versions" in kwargs
+            and "default_version" in kwargs
+            and not ignore_src_index
+        ):
+            node_mono_repo.generate_index_ts(
+                versions=kwargs["versions"],
+                default_version=kwargs["default_version"],
+                relative_dir=relative_dir,
+            )
+
+        return self._generic_library("node_mono_repo_library", **kwargs)
 
     def php_library(self, **kwargs) -> Path:
         return self._generic_library("php_library", **kwargs)

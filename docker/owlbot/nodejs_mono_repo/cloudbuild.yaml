@@ -8,15 +8,14 @@ steps:
     # Build the docker image.
     - name: 'gcr.io/cloud-builders/docker'
       args: [ 'build',
-        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA',
-        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest',
-        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
-        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
-        '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
+        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA',
+        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest',
+        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:$SHORT_SHA',
+        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest',
+        '-f', 'docker/owlbot/nodejs-mono-repo/Dockerfile', '.' ]
     # Push the docker image.
 images:
-  - gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA
-  - gcr.io/repo-automation-bots/owlbot-nodejs:latest
-  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA
-  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest
-
+  - gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA
+  - gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest
+  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:$SHORT_SHA
+  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest
