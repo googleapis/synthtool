@@ -375,7 +375,8 @@ def owlbot_main(
     library_version = template_metadata(str(Path(relative_dir))).get("version")
     if library_version:
         common.update_library_version(
-            library_version, str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve())
+            library_version,
+            str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
         )
 
 
