@@ -51,7 +51,9 @@ def read_metadata(relative_dir: str):
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
-        data["engine"] = re.search(r"([0-9][0-9])", data["engines"]["node"]).group()
+        engines_field = re.search(r"([0-9][0-9])", data["engines"]["node"])
+        assert engines_field is not None
+        data["engine"] = engines_field.group()
 
         return data
 
@@ -77,7 +79,7 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     # a quickstart snippet present in the file
     quickstart_snippets = list(
         snippets.all_snippets_from_file(
-            Path(relative_dir, "samples/quickstart.js").resolve()
+            str(Path(relative_dir, "samples/quickstart.js").resolve())
         ).values()
     )
     metadata["quickstart"] = quickstart_snippets[0] if quickstart_snippets else ""
@@ -260,7 +262,7 @@ def _noop(library: Path) -> None:
 
 
 # 1. Copy all the staging files at the top level of our monorepo into our subfolder
-def walk_through_owlbot_dirs(dir: Optional[Path] = None):
+def walk_through_owlbot_dirs(dir: Path):
     """
     Walks through samples/generated to find all snippet metadata files, appends them to a list
 
@@ -370,10 +372,10 @@ def owlbot_main(
         )
         s_copy([templates], destination=relative_dir, excludes=templates_excludes)
 
-    library_version = template_metadata(Path(relative_dir)).get("version")
+    library_version = template_metadata(str(Path(relative_dir))).get("version")
     if library_version:
         common.update_library_version(
-            library_version, Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()
+            library_version, str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve())
         )
 
 
