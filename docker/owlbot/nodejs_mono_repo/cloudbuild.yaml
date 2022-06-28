@@ -1,0 +1,22 @@
+steps:
+    # Write the latest commit message to a file in the workspace.
+    - name: 'gcr.io/cloud-builders/git'
+      entrypoint: '/bin/sh'
+      args:
+        - '-c'
+        - 'git log -1 --format="%s%n%n%b%nSource-Link: https://github.com/googleapis/synthtool/commit/%H" > post-processor-changes.txt'
+    # Build the docker image.
+    - name: 'gcr.io/cloud-builders/docker'
+      args: [ 'build',
+        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA',
+        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest',
+        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
+        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
+        '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
+    # Push the docker image.
+images:
+  - gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA
+  - gcr.io/repo-automation-bots/owlbot-nodejs:latest
+  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA
+  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest
+
