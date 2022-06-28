@@ -24,7 +24,6 @@ from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
 from synthtool.languages import common
-import os
 
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
