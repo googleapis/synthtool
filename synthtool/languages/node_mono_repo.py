@@ -245,21 +245,17 @@ def _noop(library: Path) -> None:
     pass
 
 
-# 1. Copy all the staging files at the top level of our monorepo into our subfolder
 def walk_through_owlbot_dirs(dir: Path):
     """
-    Walks through samples/generated to find all snippet metadata files, appends them to a list
+    Walks through all API packages in google-cloud-node/packages
 
     Returns:
-    A list of all metadata files.
+    A list of client libs
     """
     owlbot_dirs = []
-    for path_object in dir.glob("**/*"):
+    for path_object in dir.glob("packages/**/.OwlBot.yaml"):
         if path_object.is_file():
-            if re.search(r".OwlBot.yaml", str(path_object)):
-                owlbot_dirs.append(str(Path(path_object).parents[0]))
-        if path_object.is_dir():
-            walk_through_owlbot_dirs(path_object)
+            owlbot_dirs.append(str(Path(path_object).parents[0]))
 
     return owlbot_dirs
 
