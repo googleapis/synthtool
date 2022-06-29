@@ -335,9 +335,6 @@ class CommonTemplates:
                 self.excludes.append("samples/README.md")
 
         kwargs["metadata"] = node_mono_repo.template_metadata(relative_dir)
-        kwargs["publish_token"] = node_mono_repo.get_publish_token(
-            kwargs["metadata"]["name"]
-        )
 
         ignore_src_index = [
             "yes" for f in self.excludes if fnmatch.fnmatch("src/index.ts", f)

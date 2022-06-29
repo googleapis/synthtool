@@ -93,22 +93,6 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     return metadata
 
 
-def get_publish_token(package_name: str):
-    """
-    parses the package_name into the name of the token to publish the package.
-
-    Example:
-        @google-cloud/storage => google-cloud-storage-npm-token
-        dialogflow => dialogflow-npm-token
-
-    Args:
-        package: Name of the npm package.
-    Returns:
-        The name of the key to fetch the publish token.
-    """
-    return package_name.strip("@").replace("/", "-") + "-npm-token"
-
-
 def extract_clients(filePath: Path) -> List[str]:
     """
     parse the client name from index.ts file
