@@ -329,7 +329,7 @@ class CommonTemplates:
     def node_mono_repo_library(self, relative_dir, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
         #  .repo-metadata.json, or excluding README.md, we can remove this.
-        if not os.path.exists("./.repo-metadata.json"):
+        if not os.path.exists(Path(relative_dir, "/.repo-metadata.json").resolve()):
             self.excludes.append("README.md")
             if "samples/README.md" not in self.excludes:
                 self.excludes.append("samples/README.md")
