@@ -44,12 +44,13 @@ branchProtectionRules:
   - "dependencies (8)"
   - "dependencies (11)"
   - "lint"
-  - "clirr"
   - "units (8)"
   - "units (11)"
   - "Kokoro - Test: Integration"
   - "cla/google"
   - "OwlBot Post Processor"
+  - "Kokoro - Test: Java GraalVM Native Image"
+  - "Kokoro - Test: Java 17 GraalVM Native Image"
 # List of explicit permissions to add (additive only)
 permissionRules:
 - team: yoshi-admins
