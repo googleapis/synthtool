@@ -15,7 +15,7 @@ Python Client for {{ metadata['repo']['name_pretty'] }} API
 .. |versions| image:: https://img.shields.io/pypi/pyversions/{{ metadata['repo']['distribution_name'] }}.svg
    :target: https://pypi.org/project/{{ metadata['repo']['distribution_name'] }}/
 .. _{{ metadata['repo']['name_pretty'] }} API: {{ metadata['repo']['product_documentation'] }}
-.. _Client Library Documentation: https://cloud.google.com/python/docs/reference/{{ metadata['repo']['api_shortname'] }}/latest
+.. _Client Library Documentation: {{ metadata['repo']['client_documentation'] }}
 .. _Product Documentation:  {{ metadata['repo']['product_documentation'] }}
 
 Quick Start
