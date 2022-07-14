@@ -21,7 +21,7 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 ## Quickstart
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] -%}
-If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file
+If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
 
 ```xml
 {{ metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] }}
@@ -45,7 +45,7 @@ If you are using Maven, add this to your pom.xml file:
 ```
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] -%}
-If you are using Gradle 5.x or later, add this to your dependencies
+If you are using Gradle 5.x or later, add this to your dependencies:
 
 ```Groovy
 implementation platform('com.google.cloud:libraries-bom:{{metadata['latest_bom_version']}}')
@@ -54,13 +54,13 @@ implementation '{{ group_id }}:{{ artifact_id }}'
 ```
 {% endif -%}
 
-If you are using Gradle without BOM, add this to your dependencies
+If you are using Gradle without BOM, add this to your dependencies:
 
 ```Groovy
 implementation '{{ group_id }}:{{ artifact_id }}:{{ metadata['latest_version'] }}'
 ```
 
-If you are using SBT, add this to your dependencies
+If you are using SBT, add this to your dependencies:
 
 ```Scala
 libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['latest_version'] }}"
