@@ -855,7 +855,7 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                     print(ret.stdout.decode("utf-8") )
                     print('Subprocess stderr:')
                     print(ret.stderr.decode("utf-8") )
-                    else:
+                else:
                     print("No owlbot.py found in " + str(dest))
             else:
                 print("Entry is not directory: " + str(entry))
