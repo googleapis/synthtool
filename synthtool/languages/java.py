@@ -20,12 +20,16 @@ import requests
 import yaml
 import synthtool as s
 import synthtool.gcp as gcp
+import shutil
+import subprocess
 from synthtool import cache, shell
 from synthtool.gcp import common, partials, pregenerated, samples, snippets
 from synthtool.log import logger
 from pathlib import Path
 from typing import Any, Optional, Dict, Iterable, List
 
+STAGING_DIR = "owl-bot-staging"
+OWLBOT_PY_FILENAME = "owlbot.py"
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
 GOOD_LICENSE = """/*
@@ -822,3 +826,37 @@ def deprecate_method(filename: str, signature: str, alternative: str):
     """
     add_javadoc(filename, signature, "deprecated", alternative.splitlines())
     annotate_method(filename, signature, "@Deprecated")
+
+
+def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
+    """Copies files from staging and template directories into current working dir."""
+
+    print("owlbot_main called")
+
+    staging = Path(staging_dir)
+    if staging.is_dir():
+        print("Found the staging dir!")
+        entries = os.scandir(staging)
+        for entry in entries:
+            if entry.is_dir():
+                # We use the same directory name for destination.
+                src = Path(entry.path).resolve()
+                dest = Path(src.parts[-1]).resolve()
+                owlbot_py = dest / OWLBOT_PY_FILENAME
+                if owlbot_py.is_file():
+                    subprocess.run(["python3", owlbot_py], cwd=dest, check=True)
+                else:
+                    print("No owlbot.py found in " + str(dest))
+            else:
+                print("Entry is not directory: " + str(entry))
+        # The staging directory should never be merged into the main branch.
+        shutil.rmtree(staging)
+        print("Removed staging directory: " + str(staging))
+    else:
+        print("Staging dir not found. Probably it's processed by previous "
+              "invocation on the same pull request.")
+
+
+if __name__ == "__main__":
+    # This runs for monorepo, in which we invoke
+    owlbot_entrypoint()

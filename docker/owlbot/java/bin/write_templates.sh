@@ -23,5 +23,9 @@ fi
 
 if [ -f "owlbot.py" ]
 then
+  # For split-repo
   python3 owlbot.py
+else
+  # For monorepo
+  python3 -m synthtool.languages.java
 fi
