@@ -847,10 +847,11 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                 if owlbot_py.is_file():
                     print("Calling " + str(owlbot_py)
                           + " with cwd : " + str(dest))
-                    ret = subprocess.run(["python", owlbot_py],
-                                         check=True, stdout=subprocess.PIPE,
-                                         stderr=subprocess.PIPE)
+                    try:
 
+                        ret = subprocess.run(["python", owlbot_py],
+                                             check=False, stdout=subprocess.PIPE,
+                                             stderr=subprocess.PIPE)
                     print("Return code: " + str(ret.returncode))
                     print('Subprocess stdout:')
                     print(ret.stdout)
