@@ -849,7 +849,7 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                     ret = subprocess.run(["python3", owlbot_py], cwd=dest,
                                          check=True)
 
-                    print("Return code: " + ret.returncode + str(ret))
+                    print("Return code: " + str(ret.returncode) + str(ret))
                     if ret.returncode != 0:
                         print(ret.stdout)
                         print(ret.stderr)
