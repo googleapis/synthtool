@@ -848,7 +848,8 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                     print("Calling " + str(owlbot_py)
                           + " with cwd : " + str(dest))
                     ret = subprocess.run(["python", owlbot_py], cwd=dest,
-                                         check=True, capture_output=True)
+                                         check=True, stdout=subprocess.PIPE,
+                                         stderr=subprocess.PIPE)
 
                     print("Return code: " + str(ret.returncode))
                     print('Subprocess stdout:')
