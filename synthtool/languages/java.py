@@ -849,10 +849,11 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                     ret = subprocess.run(["python3", owlbot_py], cwd=dest,
                                          check=True)
 
-                    print("Return code: " + str(ret.returncode) + str(ret))
-                    if ret.returncode != 0:
-                        print(ret.stdout)
-                        print(ret.stderr)
+                    print("Return code: " + str(ret.returncode))
+                    print('Subprocess stdout:')
+                    print(ret.stdout)
+                    print('Subprocess stderr:')
+                    print(ret.stderr)
                 else:
                     print("No owlbot.py found in " + str(dest))
             else:
