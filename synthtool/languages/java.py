@@ -845,7 +845,8 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                 dest = Path(src.parts[-1]).resolve()
                 owlbot_py = dest / OWLBOT_PY_FILENAME
                 if owlbot_py.is_file():
-                    print("Calling " + str(owlbot_py))
+                    print("Calling " + str(owlbot_py)
+                          + " with cwd : " + str(dest))
                     ret = subprocess.run(["python", owlbot_py], cwd=dest,
                                          check=True)
 
