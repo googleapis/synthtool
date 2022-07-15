@@ -846,7 +846,7 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                 owlbot_py = dest / OWLBOT_PY_FILENAME
                 if owlbot_py.is_file():
                     print("Calling " + str(owlbot_py))
-                    ret = subprocess.run(["python3", owlbot_py], cwd=dest,
+                    ret = subprocess.run(["python", owlbot_py], cwd=dest,
                                          check=True)
 
                     print("Return code: " + str(ret.returncode))
