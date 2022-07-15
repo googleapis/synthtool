@@ -835,8 +835,8 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
 
     staging = Path(staging_dir)
     if staging.is_dir():
+        print("Found the staging dir: " + str(staging))
         entries = os.scandir(staging)
-        print("Found the staging dir. Entry size: " + len(entries))
         for entry in entries:
             if entry.is_dir():
                 # We use the same directory name for destination.
