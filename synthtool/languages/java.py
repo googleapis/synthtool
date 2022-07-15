@@ -845,7 +845,14 @@ def owlbot_entrypoint(staging_dir: str = STAGING_DIR) -> None:
                 dest = Path(src.parts[-1]).resolve()
                 owlbot_py = dest / OWLBOT_PY_FILENAME
                 if owlbot_py.is_file():
-                    subprocess.run(["python3", owlbot_py], cwd=dest, check=True)
+                    print("Calling " + str(owlbot_py))
+                    ret = subprocess.run(["python3", owlbot_py], cwd=dest,
+                                         check=True)
+
+                    print("Return code: " + ret.returncode + str(ret))
+                    if ret.returncode != 0:
+                        print(ret.stdout)
+                        print(ret.stderr)
                 else:
                     print("No owlbot.py found in " + str(dest))
             else:
