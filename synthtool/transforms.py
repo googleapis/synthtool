@@ -304,7 +304,7 @@ def get_staging_dirs(default_version: Optional[str] = None) -> List[Path]:
     Returns: the empty list if no file were copied.
     """
 
-    staging = Path("owl-bot-staging")
+    staging = Path("owl-bot-staging/java-dataplex")
     if staging.is_dir():
         # Collect the subdirectories of the staging directory.
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
