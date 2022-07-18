@@ -15,33 +15,54 @@
 
 set -e
 
-# templates
-echo "Generating templates..."
-/owlbot/bin/write_templates.sh
-echo "...done"
+# Runs template and etc in current working directory
+function processModule() {
+  # templates
+  echo "Generating templates..."
+  /owlbot/bin/write_templates.sh
+  echo "...done"
 
-# write or restore pom.xml files
-echo "Generating missing pom.xml..."
-/owlbot/bin/write_missing_pom_files.sh
-echo "...done"
+  # write or restore pom.xml files
+  echo "Generating missing pom.xml..."
+  /owlbot/bin/write_missing_pom_files.sh
+  echo "...done"
 
-# write or restore clirr-ignored-differences.xml
-echo "Generating clirr-ignored-differences.xml..."
-/owlbot/bin/write_clirr_ignore.sh
-echo "...done"
+  # write or restore clirr-ignored-differences.xml
+  echo "Generating clirr-ignored-differences.xml..."
+  /owlbot/bin/write_clirr_ignore.sh
+  echo "...done"
 
-# fix license headers
-echo "Fixing missing license headers..."
-/owlbot/bin/fix_license_headers.sh
-echo "...done"
+  # fix license headers
+  echo "Fixing missing license headers..."
+  /owlbot/bin/fix_license_headers.sh
+  echo "...done"
 
-# TODO: re-enable this once we resolve thrashing
-# restore license headers years
-# echo "Restoring copyright years..."
-# /owlbot/bin/restore_license_headers.sh
-# echo "...done"
+  # TODO: re-enable this once we resolve thrashing
+  # restore license headers years
+  # echo "Restoring copyright years..."
+  # /owlbot/bin/restore_license_headers.sh
+  # echo "...done"
 
-# ensure formatting on all .java files in the repository
-echo "Reformatting source..."
-/owlbot/bin/format_source.sh
-echo "...done"
+  # ensure formatting on all .java files in the repository
+  echo "Reformatting source..."
+  /owlbot/bin/format_source.sh
+  echo "...done"
+}
+
+if [ $(find . -type d -name 'java-*' |wc -l) -gt 10 ];then
+  # Monorepo
+  if [ -d owl-bot-staging ]; then
+    for module in $(ls owl-bot-staging); do
+      mv "owl-bot-staging/$module" "$module/owl-bot-staging"
+      cd $module
+      processModule
+    done
+    rm -r owl-bot-staging
+  else
+    echo "In monorepo but no owl-bot-staging. Not sure which module to process"
+    # Find the files that were touched by the last commit.
+  fi
+else
+  # Individual repository
+  processModule
+fi
