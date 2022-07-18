@@ -58,3 +58,6 @@ permissionRules:
   permission: admin
 - team: yoshi-java
   permission: push
+- team: java-samples-reviewers
+  permission: push
+
