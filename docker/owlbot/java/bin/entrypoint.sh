@@ -54,8 +54,9 @@ if [ $(find . -type d -name 'java-*' |wc -l) -gt 10 ];then
   if [ -d owl-bot-staging ]; then
     for module in $(ls owl-bot-staging); do
       mv "owl-bot-staging/$module" "$module/owl-bot-staging"
-      cd $module
+      pushd $module
       processModule
+      popd
     done
     rm -r owl-bot-staging
   else
