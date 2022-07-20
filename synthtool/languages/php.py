@@ -83,7 +83,7 @@ def owlbot_copy_version(
     src: Path,
     dest: Path,
     copy_excludes: typing.Optional[typing.List[str]] = None,
-    version_string: None,
+    version_string: str = None,
 ) -> None:
     """Copies files from a version subdirectory."""
     logger.debug("owlbot_copy_version called from %s to %s", src, dest)
