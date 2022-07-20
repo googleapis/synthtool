@@ -49,21 +49,35 @@ function processModule() {
   echo "...done"
 }
 
-if [ $(find . -type d -name 'java-*' |wc -l) -gt 10 ];then
+if [ "$(find . -type d -name 'java-*' |wc -l)" -gt 10 ];then
   # Monorepo
+  ehco "Processing monorepo"
   if [ -d owl-bot-staging ]; then
     for module in $(ls owl-bot-staging); do
       mv "owl-bot-staging/$module" "$module/owl-bot-staging"
-      pushd $module
+      pushd "$module"
       processModule
       popd
     done
     rm -r owl-bot-staging
   else
-    echo "In monorepo but no owl-bot-staging. Not sure which module to process"
+    echo "In monorepo but no owl-bot-staging." \
+        "Formatting changes in the last commit"
     # Find the files that were touched by the last commit.
+    last_commit=$(git log -1 --format=%H)
+    # Added, Created, Modified, and Renamed
+    changed_files=$(git show --name-only --no-renames --diff-filter=ACMR \
+        "${last_commit}")
+    changed_modules=$(echo "$changed_files" |grep -E '.java$' |cut -d '/' -f 1 \
+        |sort -u)
+    for module in ${changed_modules}; do
+      pushd "$module"
+      processModule
+      popd
+    done
   fi
 else
   # Individual repository
+  ehco "Processing a single repo"
   processModule
 fi
