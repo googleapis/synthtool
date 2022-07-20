@@ -51,7 +51,7 @@ function processModule() {
 
 if [ "$(find . -type d -name 'java-*' |wc -l)" -gt 10 ];then
   # Monorepo
-  ehco "Processing monorepo"
+  echo "Processing monorepo"
   if [ -d owl-bot-staging ]; then
     for module in $(ls owl-bot-staging); do
       mv "owl-bot-staging/$module" "$module/owl-bot-staging"
@@ -78,6 +78,6 @@ if [ "$(find . -type d -name 'java-*' |wc -l)" -gt 10 ];then
   fi
 else
   # Individual repository
-  ehco "Processing a single repo"
+  echo "Processing a single repo"
   processModule
 fi
