@@ -50,10 +50,18 @@ function processModule() {
 }
 
 if [ "$(find . -type d -name 'java-*' |wc -l)" -gt 10 ];then
-  # Monorepo
+  # Monorepo (googleapis/google-cloud-java)
   echo "Processing monorepo"
   if [ -d owl-bot-staging ]; then
+    # The content of owl-bot-staging is controlled by Owlbot.yaml files in
+    # each module in the monorepo
+    echo "Extracting contents from owl-bot-staging"
     for module in $(ls owl-bot-staging); do
+      if [ ! -d "$module" ]; then
+        continue
+      fi
+      # This relocation allows us continue to use owlbot.py without modification
+      # after monorepo migration.
       mv "owl-bot-staging/$module" "$module/owl-bot-staging"
       pushd "$module"
       processModule
@@ -65,12 +73,17 @@ if [ "$(find . -type d -name 'java-*' |wc -l)" -gt 10 ];then
         "Formatting changes in the last commit"
     # Find the files that were touched by the last commit.
     last_commit=$(git log -1 --format=%H)
-    # Added, Created, Modified, and Renamed
+    # [A]dded, [C]reated, [M]odified, and [R]enamed
     changed_files=$(git show --name-only --no-renames --diff-filter=ACMR \
         "${last_commit}")
     changed_modules=$(echo "$changed_files" |grep -E '.java$' |cut -d '/' -f 1 \
         |sort -u)
     for module in ${changed_modules}; do
+      if [ ! -f "$module/.OwlBot.yaml" ]; then
+        # Changes irrelevant to Owlbot-generated module (such as .github) do not
+        # need formatting
+        continue
+      fi
       pushd "$module"
       processModule
       popd
