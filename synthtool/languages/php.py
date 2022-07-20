@@ -83,6 +83,7 @@ def owlbot_copy_version(
     src: Path,
     dest: Path,
     copy_excludes: typing.Optional[typing.List[str]] = None,
+    version_string = None,
 ) -> None:
     """Copies files from a version subdirectory."""
     logger.debug("owlbot_copy_version called from %s to %s", src, dest)
@@ -95,8 +96,9 @@ def owlbot_copy_version(
     if not entries:
         logger.info("there is no src directory '%s' to copy", src_dir)
         return
-    version_string = os.path.basename(os.path.basename(next(entries))).lower()
-    logger.debug("version_string detected: %s", version_string)
+    if not version_string:
+        version_string = os.path.basename(os.path.basename(next(entries))).lower()
+        logger.debug("version_string detected: %s", version_string)
 
     # copy all src including partial veneer classes
     s.move([src / "src"], dest / "src", merge=_merge, excludes=copy_excludes)
