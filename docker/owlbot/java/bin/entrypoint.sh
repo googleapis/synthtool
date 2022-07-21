@@ -49,8 +49,9 @@ function processModule() {
   echo "...done"
 }
 
-if [ "$(find . -type d -name 'java-*' |wc -l)" -gt 10 ];then
-  # Monorepo (googleapis/google-cloud-java)
+if [ "$(ls */.OwlBot.yaml|wc -l)" -gt 1 ];then
+  # Monorepo (googleapis/google-cloud-java) has multiple OwlBot.yaml config
+  # files in the modules.
   echo "Processing monorepo"
   if [ -d owl-bot-staging ]; then
     # The content of owl-bot-staging is controlled by Owlbot.yaml files in
@@ -90,7 +91,7 @@ if [ "$(find . -type d -name 'java-*' |wc -l)" -gt 10 ];then
     done
   fi
 else
-  # Individual repository
-  echo "Processing a single repo"
+  # Split repository
+  echo "Processing a split repo"
   processModule
 fi
