@@ -41,7 +41,6 @@ branchProtectionRules:
   requiresStrictStatusChecks: false
   # List of required status check contexts that must pass for commits to be accepted to matching branches.
   requiredStatusCheckContexts:
-  - "dependencies (8)"
   - "dependencies (11)"
   - "lint"
   - "units (8)"
@@ -59,3 +58,6 @@ permissionRules:
   permission: admin
 - team: yoshi-java
   permission: push
+- team: java-samples-reviewers
+  permission: push
+
