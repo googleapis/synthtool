@@ -3,7 +3,6 @@
   "api_id": "dlp.googleapis.com",
   "distribution_name": "@google-cloud/dlp",
   "release_level": "stable",
-  "default_version": "v2",
   "language": "nodejs",
   "name_pretty": "Cloud Data Loss Prevention",
   "repo": "googleapis/nodejs-dlp",

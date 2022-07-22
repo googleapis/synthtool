@@ -99,7 +99,7 @@ def test_extract_clients_no_file():
 
 def test_extract_single_clients():
     index_ts_path = pathlib.Path(
-        FIXTURES / "node_templates" / "index_samples" / "single_index.ts"
+        FIXTURES / "node_templates" / "index_samples_no_default" / "single_index.ts"
     )
 
     clients = node_mono_repo.extract_clients(index_ts_path)
@@ -110,7 +110,7 @@ def test_extract_single_clients():
 
 def test_extract_multiple_clients():
     index_ts_path = pathlib.Path(
-        FIXTURES / "node_templates" / "index_samples" / "multiple_index.ts"
+        FIXTURES / "node_templates" / "index_samples_no_default" / "multiple_index.ts"
     )
 
     clients = node_mono_repo.extract_clients(index_ts_path)
@@ -122,17 +122,20 @@ def test_extract_multiple_clients():
 
 def test_generate_index_ts():
     # use a non-nodejs template directory
-    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
+    with util.chdir(FIXTURES / "node_templates" / "index_samples_no_default"):
         node_mono_repo.generate_index_ts(
             ["v1", "v1beta1"],
-            "v1",
-            relative_dir=(FIXTURES / "node_templates" / "index_samples"),
+            relative_dir=(FIXTURES / "node_templates" / "index_samples_no_default"),
         )
         generated_index_path = pathlib.Path(
-            FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
+            FIXTURES
+            / "node_templates"
+            / "index_samples_no_default"
+            / "src"
+            / "index.ts"
         )
         sample_index_path = pathlib.Path(
-            FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
+            FIXTURES / "node_templates" / "index_samples_no_default" / "sample_index.ts"
         )
         assert filecmp.cmp(generated_index_path, sample_index_path)
 
@@ -142,42 +145,9 @@ def test_generate_index_ts_empty_versions():
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):
         with pytest.raises(AttributeError) as err:
             node_mono_repo.generate_index_ts(
-                [], "v1", relative_dir=(FIXTURES / "node_templates" / "index_samples")
+                [], relative_dir=(FIXTURES / "node_templates" / "index_samples")
             )
             assert "can't be empty" in err.args
-
-
-def test_generate_index_ts_invalid_default_version():
-    # use a non-nodejs template directory
-    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
-        versions = ["v1beta1"]
-        default_version = "v1"
-
-        with pytest.raises(AttributeError) as err:
-            node_mono_repo.generate_index_ts(
-                versions,
-                default_version,
-                relative_dir=(FIXTURES / "node_templates" / "index_samples"),
-            )
-            assert f"must contain default version {default_version}" in err.args
-
-
-def test_generate_index_ts_no_clients():
-    # use a non-nodejs template directory
-    with util.chdir(FIXTURES / "node_templates" / "index_samples"):
-        versions = ["v1", "v1beta1", "invalid_index"]
-        default_version = "invalid_index"
-
-        with pytest.raises(AttributeError) as err:
-            node_mono_repo.generate_index_ts(
-                versions,
-                default_version,
-                relative_dir=(FIXTURES / "node_templates" / "index_samples"),
-            )
-            assert (
-                f"No client is exported in the default version's({default_version}) index.ts ."
-                in err.args
-            )
 
 
 class TestPostprocess(TestCase):

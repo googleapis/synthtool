@@ -340,14 +340,9 @@ class CommonTemplates:
             "yes" for f in self.excludes if fnmatch.fnmatch("src/index.ts", f)
         ]
         # generate root-level `src/index.ts` to export multiple versions and its default clients
-        if (
-            "versions" in kwargs
-            and "default_version" in kwargs
-            and not ignore_src_index
-        ):
+        if "versions" in kwargs and not ignore_src_index:
             node_mono_repo.generate_index_ts(
                 versions=kwargs["versions"],
-                default_version=kwargs["default_version"],
                 relative_dir=relative_dir,
             )
 

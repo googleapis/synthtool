@@ -107,55 +107,34 @@ def extract_clients(filePath: Path) -> List[str]:
     return re.findall(r"\{(.*Client)\}", content)
 
 
-def generate_index_ts(
-    versions: List[str], default_version: str, relative_dir: str
-) -> None:
+def generate_index_ts(versions: List[str], relative_dir: str) -> None:
     """
     generate src/index.ts to export the client name and versions in the client library.
 
     Args:
       versions: the list of versions, like: ['v1', 'v1beta1', ...]
-      default_version: a stable version provided by API producer. It must exist in argument versions.
     Return:
       True/False: return true if successfully generate src/index.ts, vice versa.
     """
     # sanitizer the input arguments
     if len(versions) < 1:
-        err_msg = (
-            "List of version can't be empty, it must contain default version at least."
-        )
-        logger.error(err_msg)
-        raise AttributeError(err_msg)
-    if default_version not in versions:
-        err_msg = f"Version {versions} must contain default version {default_version}."
+        err_msg = "List of version can't be empty, it must contain at least one."
         logger.error(err_msg)
         raise AttributeError(err_msg)
 
     # To make sure the output is always deterministic.
     versions = sorted(versions)
 
-    # compose default version's index.ts file path
-    versioned_index_ts_path = (
-        Path(relative_dir) / Path("src") / default_version / "index.ts"
-    )
-    clients = extract_clients(versioned_index_ts_path)
-    if not clients:
-        err_msg = f"No client is exported in the default version's({default_version}) index.ts ."
-        logger.error(err_msg)
-        raise AttributeError(err_msg)
-
     # compose template directory
     template_path = (
-        Path(__file__).parent.parent / "gcp" / "templates" / "node_split_library"
+        Path(__file__).parent.parent / "gcp" / "templates" / "node_mono_repo_no_default"
     )
     template_loader = FileSystemLoader(searchpath=str(template_path))
     template_env = Environment(loader=template_loader, keep_trailing_newline=True)
     TEMPLATE_FILE = "index.ts.j2"
     index_template = template_env.get_template(TEMPLATE_FILE)
     # render index.ts content
-    output_text = index_template.render(
-        versions=versions, default_version=default_version, clients=clients
-    )
+    output_text = index_template.render(versions=versions)
     with open(Path(relative_dir, "src/index.ts").resolve(), "w") as fh:
         fh.write(output_text)
     logger.info("successfully generate `src/index.ts`")
@@ -296,9 +275,6 @@ def owlbot_main(
         deep-copy-regex:
             - source: /google/cloud/video/transcoder/(.*)/.*-nodejs/(.*)
               dest: /owl-bot-staging/$1/$2
-
-    Also, this function requires a default_version in your .repo-metadata.json.  Ex:
-        "default_version": "v1",
     """
     if staging_excludes is None:
         staging_excludes = default_staging_excludes
@@ -306,20 +282,14 @@ def owlbot_main(
         templates_excludes = default_templates_excludes
 
     logging.basicConfig(level=logging.DEBUG)
-    # Load the default version defined in .repo-metadata.json.
-    default_version = json.load(
-        open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
-    ).get("default_version")
     staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
     s_copy = transforms.move
-    if default_version is None:
-        logger.info("No default version found in .repo-metadata.json.  Ok.")
-    elif staging.is_dir():
+    if staging.is_dir():
         logger.info(f"Copying files from staging directory ${staging}.")
         # Collect the subdirectories of the staging directory.
         versions = [v.name for v in staging.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        versions = [v for v in versions]
         logger.info(f"Collected versions ${versions} from ${staging}")
 
         # Copy each version directory into the root.
@@ -335,25 +305,18 @@ def owlbot_main(
         src = Path(Path(relative_dir), "src").resolve()
         versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
+        versions = [v for v in versions]
         logger.info(f"Collected versions ${versions} from ${src}")
 
     common_templates = gcp.CommonTemplates(template_path)
     common_templates.excludes.extend(templates_excludes)
-    if default_version:
-        templates = common_templates.node_mono_repo_library(
-            relative_dir=relative_dir,
-            source_location="build/src",
-            versions=versions,
-            default_version=default_version,
-        )
-        s_copy([templates], destination=relative_dir, excludes=templates_excludes)
-        postprocess_gapic_library_hermetic()
-    else:
-        templates = common_templates.node_mono_repo_library(
-            relative_dir=relative_dir, source_location="build/src"
-        )
-        s_copy([templates], destination=relative_dir, excludes=templates_excludes)
+    templates = common_templates.node_mono_repo_library(
+        relative_dir=relative_dir,
+        source_location="build/src",
+        versions=versions,
+    )
+    s_copy([templates], destination=relative_dir, excludes=templates_excludes)
+    postprocess_gapic_library_hermetic()
 
     library_version = template_metadata(str(Path(relative_dir))).get("version")
     if library_version:
