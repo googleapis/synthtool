@@ -181,14 +181,14 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
 
-def fix_hermetic(hide_output=False):
+def fix_hermetic(relative_dir, hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
     is already installed in a well known location on disk:
     """
     logger.debug("Copy eslint config")
     shell.run(
-        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", f"packages/{relative_dir}/"],
         check=True,
         hide_output=hide_output,
     )
@@ -209,14 +209,14 @@ def compile_protos(hide_output=False):
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
-def compile_protos_hermetic(hide_output=False):
+def compile_protos_hermetic(relative_dir, hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
     compileProtos script from google-gax.
     """
     logger.debug("Compiling protos...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", f"packages/{relative_dir}/src"],
         check=True,
         hide_output=hide_output,
     )
@@ -230,10 +230,10 @@ def postprocess_gapic_library(hide_output=False):
     logger.debug("Post-processing completed")
 
 
-def postprocess_gapic_library_hermetic(hide_output=False):
+def postprocess_gapic_library_hermetic(relative_dir, hide_output=False):
     logger.debug("Post-processing GAPIC library...")
-    fix_hermetic(hide_output=hide_output)
-    compile_protos_hermetic(hide_output=hide_output)
+    fix_hermetic(relative_dir, hide_output=hide_output)
+    compile_protos_hermetic(relative_dir, hide_output=hide_output)
     logger.debug("Post-processing completed")
 
 
@@ -348,7 +348,7 @@ def owlbot_main(
             default_version=default_version,
         )
         s_copy([templates], destination=relative_dir, excludes=templates_excludes)
-        postprocess_gapic_library_hermetic()
+        postprocess_gapic_library_hermetic(relative_dir=relative_dir)
     else:
         templates = common_templates.node_mono_repo_library(
             relative_dir=relative_dir, source_location="build/src"
