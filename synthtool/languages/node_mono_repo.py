@@ -188,7 +188,7 @@ def fix_hermetic(relative_dir, hide_output=False):
     """
     logger.debug("Copy eslint config")
     shell.run(
-        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", f"packages/{relative_dir}/"],
+        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", relative_dir],
         check=True,
         hide_output=hide_output,
     )
@@ -216,7 +216,7 @@ def compile_protos_hermetic(relative_dir, hide_output=False):
     """
     logger.debug("Compiling protos...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", f"packages/{relative_dir}/src"],
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", f"{relative_dir}/src"],
         check=True,
         hide_output=hide_output,
     )
