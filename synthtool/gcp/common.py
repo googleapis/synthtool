@@ -21,6 +21,7 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
 import jinja2
+from datetime import date
 
 from synthtool import shell, _tracked_paths
 from synthtool.gcp import partials
@@ -349,6 +350,7 @@ class CommonTemplates:
                 versions=kwargs["versions"],
                 default_version=kwargs["default_version"],
                 relative_dir=relative_dir,
+                year=date.today().year,
             )
 
         return self._generic_library("node_mono_repo_library", **kwargs)

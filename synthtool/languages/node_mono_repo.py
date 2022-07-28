@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
 from synthtool.languages import common
+from datetime import date
 
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
@@ -90,6 +91,7 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
             all_samples,
         )
     )
+    metadata["year"] = date.today().year
     return metadata
 
 
@@ -108,7 +110,7 @@ def extract_clients(filePath: Path) -> List[str]:
 
 
 def generate_index_ts(
-    versions: List[str], default_version: str, relative_dir: str
+    versions: List[str], default_version: str, relative_dir: str, year: str
 ) -> None:
     """
     generate src/index.ts to export the client name and versions in the client library.
@@ -154,7 +156,7 @@ def generate_index_ts(
     index_template = template_env.get_template(TEMPLATE_FILE)
     # render index.ts content
     output_text = index_template.render(
-        versions=versions, default_version=default_version, clients=clients
+        versions=versions, default_version=default_version, clients=clients, year=year
     )
     with open(Path(relative_dir, "src/index.ts").resolve(), "w") as fh:
         fh.write(output_text)

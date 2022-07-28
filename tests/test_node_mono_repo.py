@@ -18,6 +18,7 @@ import re
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
+from datetime import date
 
 import pytest
 
@@ -127,6 +128,7 @@ def test_generate_index_ts():
             ["v1", "v1beta1"],
             "v1",
             relative_dir=(FIXTURES / "node_templates" / "index_samples"),
+            year="2020",
         )
         generated_index_path = pathlib.Path(
             FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
@@ -134,6 +136,7 @@ def test_generate_index_ts():
         sample_index_path = pathlib.Path(
             FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
         )
+        print(generated_index_path)
         assert filecmp.cmp(generated_index_path, sample_index_path)
 
 
@@ -142,7 +145,10 @@ def test_generate_index_ts_empty_versions():
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):
         with pytest.raises(AttributeError) as err:
             node_mono_repo.generate_index_ts(
-                [], "v1", relative_dir=(FIXTURES / "node_templates" / "index_samples")
+                [],
+                "v1",
+                relative_dir=(FIXTURES / "node_templates" / "index_samples",),
+                year=date.today().year,
             )
             assert "can't be empty" in err.args
 
@@ -158,6 +164,7 @@ def test_generate_index_ts_invalid_default_version():
                 versions,
                 default_version,
                 relative_dir=(FIXTURES / "node_templates" / "index_samples"),
+                year=date.today().year,
             )
             assert f"must contain default version {default_version}" in err.args
 
@@ -173,6 +180,7 @@ def test_generate_index_ts_no_clients():
                 versions,
                 default_version,
                 relative_dir=(FIXTURES / "node_templates" / "index_samples"),
+                year=date.today().year,
             )
             assert (
                 f"No client is exported in the default version's({default_version}) index.ts ."
