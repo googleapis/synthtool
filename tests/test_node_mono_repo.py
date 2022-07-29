@@ -136,7 +136,6 @@ def test_generate_index_ts():
         sample_index_path = pathlib.Path(
             FIXTURES / "node_templates" / "index_samples" / "sample_index.ts"
         )
-        print(generated_index_path)
         assert filecmp.cmp(generated_index_path, sample_index_path)
 
 
