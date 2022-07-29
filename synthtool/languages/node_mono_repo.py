@@ -148,7 +148,10 @@ def generate_index_ts(
 
     # compose template directory
     template_path = (
-        Path(__file__).parent.parent / "gcp" / "templates" / "node_split_library"
+        Path(__file__).parent.parent
+        / "gcp"
+        / "templates"
+        / "node_mono_repo_split_library"
     )
     template_loader = FileSystemLoader(searchpath=str(template_path))
     template_env = Environment(loader=template_loader, keep_trailing_newline=True)
