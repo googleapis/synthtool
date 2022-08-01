@@ -1,1 +1,1 @@
-google-cloud-aiplatform==1.15.0
+google-cloud-aiplatform==1.16.0
