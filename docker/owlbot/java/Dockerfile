@@ -15,6 +15,10 @@
 # build from the root of this repo:
 FROM gcr.io/cloud-devrel-public-resources/java8
 
+# The OwlBot Java postprocessor does not rely on project's Java formatter.
+# When you upgrade the formatter version, see the issue below for the required
+# changes:
+# https://github.com/googleapis/synthtool/issues/1502
 ARG JAVA_FORMAT_VERSION=1.7
 
 RUN apt-get install -y --no-install-recommends jq
