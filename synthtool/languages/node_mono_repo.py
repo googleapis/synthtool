@@ -60,14 +60,15 @@ def read_metadata(relative_dir: str):
 
 
 def write_release_please_config(owlbot_dirs):
-    with open("release-please-config.json", "r+") as f:
+    with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in owlbot_dirs:
             result = re.search(r"(packages/.*)", dir)
             assert result is not None
             data["packages"][result.group()] = {}
+    with open("release-please-config.json", "w") as f:
         f.seek(0)
-        json.dump(data, f, indent=4)
+        json.dump(data, f, indent=2)
         f.truncate()
 
 

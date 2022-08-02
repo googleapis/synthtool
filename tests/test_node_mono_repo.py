@@ -141,7 +141,7 @@ def test_generate_index_ts():
 
 def test_write_release_please_config():
     # use a non-nodejs template directory
-    with util.chdir(FIXTURES / "node_templates" / "release_please"):
+    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
         node_mono_repo.write_release_please_config(
             [
                 "google-cloud-node/packages/gapic-node-templating",
@@ -150,19 +150,8 @@ def test_write_release_please_config():
                 "packages/bigquery-migration",
             ]
         )
-        generated_release_please_path = pathlib.Path(
-            FIXTURES
-            / "node_templates"
-            / "release_please"
-            / "release-please-config.json"
-        )
-        sample_release_please_path = pathlib.Path(
-            FIXTURES
-            / "node_templates"
-            / "release_please"
-            / "release-please-config-post.json"
-        )
-        assert filecmp.cmp(generated_release_please_path, sample_release_please_path)
+        
+        assert filecmp.cmp(pathlib.Path("release-please-config.json"), pathlib.Path("release-please-config-post.json"))
 
 
 def test_generate_index_ts_empty_versions():
