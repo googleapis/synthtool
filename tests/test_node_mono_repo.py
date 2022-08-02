@@ -150,8 +150,11 @@ def test_write_release_please_config():
                 "packages/bigquery-migration",
             ]
         )
-        
-        assert filecmp.cmp(pathlib.Path("release-please-config.json"), pathlib.Path("release-please-config-post.json"))
+
+        assert filecmp.cmp(
+            pathlib.Path("release-please-config.json"),
+            pathlib.Path("release-please-config-post.json"),
+        )
 
 
 def test_generate_index_ts_empty_versions():

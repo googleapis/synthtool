@@ -67,9 +67,7 @@ def write_release_please_config(owlbot_dirs):
             assert result is not None
             data["packages"][result.group()] = {}
     with open("release-please-config.json", "w") as f:
-        f.seek(0)
         json.dump(data, f, indent=2)
-        f.truncate()
 
 
 def template_metadata(relative_dir: str) -> Dict[str, Any]:
