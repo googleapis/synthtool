@@ -139,6 +139,32 @@ def test_generate_index_ts():
         assert filecmp.cmp(generated_index_path, sample_index_path)
 
 
+def test_write_release_please_config():
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "release_please"):
+        node_mono_repo.write_release_please_config(
+            [
+                "google-cloud-node/packages/gapic-node-templating",
+                "Users/person/google-cloud-node/packages/dlp",
+                "Users/person/google-cloud-node/packages/asset",
+                "packages/bigquery-migration",
+            ]
+        )
+        generated_release_please_path = pathlib.Path(
+            FIXTURES
+            / "node_templates"
+            / "release_please"
+            / "release-please-config.json"
+        )
+        sample_release_please_path = pathlib.Path(
+            FIXTURES
+            / "node_templates"
+            / "release_please"
+            / "release-please-config-post.json"
+        )
+        assert filecmp.cmp(generated_release_please_path, sample_release_please_path)
+
+
 def test_generate_index_ts_empty_versions():
     # use a non-nodejs template directory
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):

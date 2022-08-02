@@ -59,6 +59,18 @@ def read_metadata(relative_dir: str):
         return data
 
 
+def write_release_please_config(owlbot_dirs):
+    with open("release-please-config.json", "r+") as f:
+        data = json.load(f)
+        for dir in owlbot_dirs:
+            result = re.search(r"(packages/.*)", dir)
+            assert result is not None
+            data["packages"][result.group()] = {}
+        f.seek(0)
+        json.dump(data, f, indent=4)
+        f.truncate()
+
+
 def template_metadata(relative_dir: str) -> Dict[str, Any]:
     """Load node specific template metadata.
 
@@ -382,6 +394,8 @@ def owlbot_entrypoint(
         owlbot_main(
             dir, template_path, staging_excludes, templates_excludes, patch_staging
         )
+    if Path("release-please-config.json").is_file():
+        write_release_please_config(owlbot_dirs)
 
 
 if __name__ == "__main__":
