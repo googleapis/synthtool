@@ -256,7 +256,7 @@ def postprocess_gapic_library_hermetic(relative_dir, hide_output=False):
     logger.debug("Post-processing completed")
 
 
-default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
+default_staging_excludes = ["package.json", "src/index.ts"]
 default_templates_excludes: List[str] = []
 
 
