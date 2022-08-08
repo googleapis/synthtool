@@ -371,7 +371,7 @@ class CommonTemplates:
         _tracked_paths.add(template)
         return template
 
-    def _load_generic_metadata(self, metadata: Dict, relative_dir: str):
+    def _load_generic_metadata(self, metadata: Dict, relative_dir=''):
         """
         loads additional meta information from .repo-metadata.json.
         """
