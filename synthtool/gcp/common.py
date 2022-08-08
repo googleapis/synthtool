@@ -49,7 +49,7 @@ class CommonTemplates:
         self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
-    def _generic_library(self, directory: str, relative_dir="", **kwargs) -> Path:
+    def _generic_library(self, directory: str, relative_dir=None, **kwargs) -> Path:
         # load common repo meta information (metadata that's not language specific).
         if "metadata" in kwargs:
             self._load_generic_metadata(kwargs["metadata"], relative_dir=relative_dir)
@@ -371,7 +371,7 @@ class CommonTemplates:
         _tracked_paths.add(template)
         return template
 
-    def _load_generic_metadata(self, metadata: Dict, relative_dir=""):
+    def _load_generic_metadata(self, metadata: Dict, relative_dir=None):
         """
         loads additional meta information from .repo-metadata.json.
         """
@@ -465,7 +465,7 @@ def decamelize(value: str):
 
 
 def _load_repo_metadata(
-    relative_dir="", metadata_file: str = "./.repo-metadata.json"
+    relative_dir=None, metadata_file: str = "./.repo-metadata.json"
 ) -> Dict:
     """Parse a metadata JSON file into a Dict.
 
@@ -491,9 +491,10 @@ def _load_repo_metadata(
     Returns:
         A dictionary of metadata. This may not necessarily include all the defined fields above.
     """
-    if os.path.exists(Path(relative_dir, metadata_file).resolve()):
-        with open(Path(relative_dir, metadata_file).resolve()) as f:
-            return json.load(f)
+    if relative_dir is not None:
+        if os.path.exists(Path(relative_dir, metadata_file).resolve()):
+            with open(Path(relative_dir, metadata_file).resolve()) as f:
+                return json.load(f)
     elif os.path.exists(metadata_file):
         with open(metadata_file) as f:
             return json.load(f)
