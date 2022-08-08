@@ -49,7 +49,7 @@ class CommonTemplates:
         self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
-    def _generic_library(self, directory: str, relative_dir='', **kwargs) -> Path:
+    def _generic_library(self, directory: str, relative_dir="", **kwargs) -> Path:
         # load common repo meta information (metadata that's not language specific).
         if "metadata" in kwargs:
             self._load_generic_metadata(kwargs["metadata"], relative_dir=relative_dir)
@@ -371,7 +371,7 @@ class CommonTemplates:
         _tracked_paths.add(template)
         return template
 
-    def _load_generic_metadata(self, metadata: Dict, relative_dir=''):
+    def _load_generic_metadata(self, metadata: Dict, relative_dir=""):
         """
         loads additional meta information from .repo-metadata.json.
         """
@@ -465,7 +465,7 @@ def decamelize(value: str):
 
 
 def _load_repo_metadata(
-    relative_dir='', metadata_file: str = "./.repo-metadata.json"
+    relative_dir="", metadata_file: str = "./.repo-metadata.json"
 ) -> Dict:
     """Parse a metadata JSON file into a Dict.
 
