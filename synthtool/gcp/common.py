@@ -49,10 +49,10 @@ class CommonTemplates:
         self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
-    def _generic_library(self, directory: str, **kwargs) -> Path:
+    def _generic_library(self, directory: str, relative_dir: str, **kwargs) -> Path:
         # load common repo meta information (metadata that's not language specific).
         if "metadata" in kwargs:
-            self._load_generic_metadata(kwargs["metadata"])
+            self._load_generic_metadata(kwargs["metadata"], relative_dir=relative_dir)
             # if no samples were found, don't attempt to render a
             # samples/README.md.
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
@@ -330,7 +330,7 @@ class CommonTemplates:
     def node_mono_repo_library(self, relative_dir, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
         #  .repo-metadata.json, or excluding README.md, we can remove this.
-        if not os.path.exists(Path(relative_dir, "/.repo-metadata.json").resolve()):
+        if not os.path.exists(Path(relative_dir, ".repo-metadata.json").resolve()):
             self.excludes.append("README.md")
             if "samples/README.md" not in self.excludes:
                 self.excludes.append("samples/README.md")
@@ -353,7 +353,7 @@ class CommonTemplates:
                 year=str(date.today().year),
             )
 
-        return self._generic_library("node_mono_repo_library", **kwargs)
+        return self._generic_library("node_mono_repo_library", relative_dir=relative_dir, **kwargs)
 
     def php_library(self, **kwargs) -> Path:
         return self._generic_library("php_library", **kwargs)
@@ -369,7 +369,7 @@ class CommonTemplates:
         _tracked_paths.add(template)
         return template
 
-    def _load_generic_metadata(self, metadata: Dict):
+    def _load_generic_metadata(self, metadata: Dict, relative_dir: str):
         """
         loads additional meta information from .repo-metadata.json.
         """
@@ -380,7 +380,7 @@ class CommonTemplates:
         # metadata, so we don't need to do it again or overwrite it. Also, only
         # set the "repo" key.
         if "repo" not in metadata:
-            metadata["repo"] = _load_repo_metadata()
+            metadata["repo"] = _load_repo_metadata(relative_dir=relative_dir)
 
 
 def detect_versions(
@@ -462,7 +462,7 @@ def decamelize(value: str):
     return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.
 
 
-def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
+def _load_repo_metadata(relative_dir: str, metadata_file: str = "./.repo-metadata.json") -> Dict:
     """Parse a metadata JSON file into a Dict.
 
     Currently, the defined fields are:
@@ -487,7 +487,10 @@ def _load_repo_metadata(metadata_file: str = "./.repo-metadata.json") -> Dict:
     Returns:
         A dictionary of metadata. This may not necessarily include all the defined fields above.
     """
-    if os.path.exists(metadata_file):
+    if os.path.exists(Path(relative_dir, metadata_file).resolve()):
+        with open(Path(relative_dir, metadata_file).resolve()) as f:
+            return json.load(f)
+    elif os.path.exists(metadata_file):
         with open(metadata_file) as f:
             return json.load(f)
     return {}
