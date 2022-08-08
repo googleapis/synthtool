@@ -353,7 +353,9 @@ class CommonTemplates:
                 year=str(date.today().year),
             )
 
-        return self._generic_library("node_mono_repo_library", relative_dir=relative_dir, **kwargs)
+        return self._generic_library(
+            "node_mono_repo_library", relative_dir=relative_dir, **kwargs
+        )
 
     def php_library(self, **kwargs) -> Path:
         return self._generic_library("php_library", **kwargs)
@@ -462,7 +464,9 @@ def decamelize(value: str):
     return re.sub("([a-z0-9])([A-Z])", r"\1 \2", str_decamelize)  # FooBar -> Foo Bar.
 
 
-def _load_repo_metadata(relative_dir: str, metadata_file: str = "./.repo-metadata.json") -> Dict:
+def _load_repo_metadata(
+    relative_dir: str, metadata_file: str = "./.repo-metadata.json"
+) -> Dict:
     """Parse a metadata JSON file into a Dict.
 
     Currently, the defined fields are:
