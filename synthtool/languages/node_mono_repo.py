@@ -60,7 +60,7 @@ def read_metadata(relative_dir: str):
 
 
 def copy_sample_to_quickstart(relative_dir):
-    # Check if the quickstart exists, so we don't override it.
+    # Check if the quickstart exists, so we don't overwrite it.
     if not Path(relative_dir, "samples", "quickstart.js").resolve().exists():
         # Look for samples that contain 'list', since we don't need to set up resources for tests
         samples = common.get_sample_metadata_files(
