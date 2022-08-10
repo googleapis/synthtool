@@ -60,19 +60,24 @@ def read_metadata(relative_dir: str):
 
 
 def copy_sample_to_quickstart(relative_dir):
+    # Check if the quickstart exists, so we don't override it.
     if not Path(relative_dir, "samples", "quickstart.js").resolve().exists():
+        # Look for samples that contain 'list', since we don't need to set up resources for tests
         samples = common.get_sample_metadata_files(
             Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"list"
         )
+        # If there aren't any list-methods, just pick the first generated sample
         if not samples:
             samples = common.get_sample_metadata_files(
                 Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"*"
             )
+        # Confirm that the file exists (array could be empty)
         if Path(relative_dir, samples[0]).resolve():
             shutil.copyfile(
                 Path(relative_dir, samples[0]).resolve(),
                 Path(relative_dir, "samples", "quickstart.js").resolve(),
             )
+            # Fix the sample tag
             with open(
                 Path(relative_dir, "samples", "quickstart.js").resolve(), "r"
             ) as f:
@@ -83,6 +88,7 @@ def copy_sample_to_quickstart(relative_dir):
             ) as f:
                 f.write(data)
                 f.close()
+        # If there are no generated samples, just write to an empty file
         else:
             with open(
                 Path(relative_dir, "samples", "quickstart.js").resolve(), "w+"
