@@ -294,7 +294,7 @@ def postprocess_gapic_library_hermetic(relative_dir, hide_output=False):
     logger.debug("Post-processing completed")
 
 
-default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
+default_staging_excludes = ["package.json", "src/index.ts"]
 default_templates_excludes: List[str] = []
 
 
@@ -310,7 +310,7 @@ def walk_through_owlbot_dirs(dir: Path):
     A list of client libs
     """
     owlbot_dirs = []
-    packages_to_exclude = [r"gapic-node-templating"]
+    packages_to_exclude = [r"gapic-node-templating", r"node_modules"]
     for path_object in dir.glob("packages/**/.OwlBot.yaml"):
         if path_object.is_file() and not re.search(
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
