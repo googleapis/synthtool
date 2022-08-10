@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from copy import copy
 import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
@@ -57,6 +58,38 @@ def read_metadata(relative_dir: str):
         data["engine"] = engines_field.group()
 
         return data
+
+
+def copy_sample_to_quickstart(relative_dir):
+    if not Path(relative_dir, "samples", "quickstart.js").resolve().exists():
+        samples = common.get_sample_metadata_files(
+            Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"list"
+        )
+        if not samples:
+            samples = common.get_sample_metadata_files(
+                Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"*"
+            )
+        if Path(relative_dir, samples[0]).resolve():
+            shutil.copyfile(
+                Path(relative_dir, samples[0]).resolve(),
+                Path(relative_dir, "samples", "quickstart.js").resolve(),
+            )
+            with open(
+                Path(relative_dir, "samples", "quickstart.js").resolve(), "r"
+            ) as f:
+                data = str(f.read())
+                data = re.sub(r"_.*]", r"_quickstart]", data, 2)
+            with open(
+                Path(relative_dir, "samples", "quickstart.js").resolve(), "w"
+            ) as f:
+                f.write(data)
+                f.close()
+        else:
+            with open(
+                Path(relative_dir, "samples", "quickstart.js").resolve(), "w+"
+            ) as f:
+                f.write("No sample available")
+                f.close()
 
 
 def write_release_please_config(owlbot_dirs):
@@ -380,6 +413,7 @@ def owlbot_main(
             library_version,
             str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
         )
+    copy_sample_to_quickstart(relative_dir=relative_dir)
 
 
 def owlbot_entrypoint(
