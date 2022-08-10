@@ -34,7 +34,7 @@ def update_library_version(version: str, root_dir: str):
             f.truncate()
 
 
-def get_sample_metadata_files(dir: Path, regex=r"snippet_metadata"):
+def get_sample_metadata_files(dir: Path, regex: str = r"snippet_metadata"):
     """
     Walks through samples/generated to find all snippet metadata files, appends them to a list
 
