@@ -159,7 +159,7 @@ def test_write_release_please_config():
 
 def test_copy_quickstart():
     with util.copied_fixtures_dir(FIXTURES):
-        node_mono_repo.copy_sample_to_quickstart(FIXTURES)
+        node_mono_repo.copy_list_sample_to_quickstart(FIXTURES)
 
         assert filecmp.cmp(
             pathlib.Path(FIXTURES / "samples" / "quickstart.js"),
