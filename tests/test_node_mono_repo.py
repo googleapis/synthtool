@@ -157,6 +157,33 @@ def test_write_release_please_config():
         )
 
 
+def test_copy_quickstart():
+    with util.copied_fixtures_dir(FIXTURES):
+        node_mono_repo.copy_list_sample_to_quickstart(
+            FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
+        )
+
+        assert filecmp.cmp(
+            pathlib.Path(
+                FIXTURES
+                / "nodejs_mono_repo_with_samples"
+                / "packages"
+                / "datastore"
+                / "samples"
+                / "quickstart.js"
+            ),
+            pathlib.Path(
+                FIXTURES
+                / "nodejs_mono_repo_with_samples"
+                / "packages"
+                / "datastore"
+                / "samples"
+                / "generated"
+                / "compare_to_quickstart.js"
+            ),
+        )
+
+
 def test_generate_index_ts_empty_versions():
     # use a non-nodejs template directory
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):
