@@ -34,7 +34,7 @@ def update_library_version(version: str, root_dir: str):
             f.truncate()
 
 
-def get_sample_metadata_files(dir: Path):
+def get_sample_metadata_files(dir: Path, regex: str = r"snippet_metadata"):
     """
     Walks through samples/generated to find all snippet metadata files, appends them to a list
 
@@ -44,8 +44,8 @@ def get_sample_metadata_files(dir: Path):
     metadata_files = []
     for path_object in dir.glob("**/*"):
         if path_object.is_file():
-            if re.search(r"snippet_metadata", str(path_object)):
-                metadata_files.append(str(Path.resolve(path_object)))
+            if re.search(regex, str(path_object)):
+                metadata_files.append(str(Path(path_object).resolve()))
         if path_object.is_dir():
             get_sample_metadata_files(path_object)
 

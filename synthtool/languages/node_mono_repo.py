@@ -59,6 +59,37 @@ def read_metadata(relative_dir: str):
         return data
 
 
+def copy_list_sample_to_quickstart(relative_dir: str):
+    # Check if the quickstart exists, so we don't overwrite it.
+    if Path(relative_dir, "samples", "quickstart.js").resolve().exists():
+        return
+    # Look for samples that contain 'list', since we don't need to set up resources for tests
+    samples = common.get_sample_metadata_files(
+        Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"list"
+    )
+    # If there aren't any list-methods, just pick the first generated sample
+    if not samples:
+        samples = common.get_sample_metadata_files(
+            Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"*"
+        )
+    # Confirm that the file exists (array could be empty)
+    if Path(relative_dir, samples[0]).resolve():
+        shutil.copyfile(
+            Path(relative_dir, samples[0]).resolve(),
+            Path(relative_dir, "samples", "quickstart.js").resolve(),
+        )
+        # Fix the sample tag
+        with open(Path(relative_dir, "samples", "quickstart.js").resolve(), "r") as f:
+            data = str(f.read())
+            data = re.sub(r"_.*]", r"_quickstart]", data, 2)
+        with open(Path(relative_dir, "samples", "quickstart.js").resolve(), "w") as f:
+            f.write(data)
+    # If there are no generated samples, just write to an empty file
+    else:
+        with open(Path(relative_dir, "samples", "quickstart.js").resolve(), "w+") as f:
+            f.write("No sample available")
+
+
 def write_release_please_config(owlbot_dirs):
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
@@ -380,6 +411,7 @@ def owlbot_main(
             library_version,
             str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
         )
+    copy_list_sample_to_quickstart(relative_dir=relative_dir)
 
 
 def owlbot_entrypoint(
