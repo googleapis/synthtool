@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Optional, Callable
 import logging
 import shutil
 from synthtool.languages import common
+from datetime import date
 
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
@@ -58,6 +59,48 @@ def read_metadata(relative_dir: str):
         return data
 
 
+def copy_list_sample_to_quickstart(relative_dir: str):
+    # Check if the quickstart exists, so we don't overwrite it.
+    if Path(relative_dir, "samples", "quickstart.js").resolve().exists():
+        return
+    # Look for samples that contain 'list', since we don't need to set up resources for tests
+    samples = common.get_sample_metadata_files(
+        Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"list"
+    )
+    # If there aren't any list-methods, just pick the first generated sample
+    if not samples:
+        samples = common.get_sample_metadata_files(
+            Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"*"
+        )
+    # Confirm that the file exists (array could be empty)
+    if Path(relative_dir, samples[0]).resolve():
+        shutil.copyfile(
+            Path(relative_dir, samples[0]).resolve(),
+            Path(relative_dir, "samples", "quickstart.js").resolve(),
+        )
+        # Fix the sample tag
+        with open(Path(relative_dir, "samples", "quickstart.js").resolve(), "r") as f:
+            data = str(f.read())
+            data = re.sub(r"_.*]", r"_quickstart]", data, 2)
+        with open(Path(relative_dir, "samples", "quickstart.js").resolve(), "w") as f:
+            f.write(data)
+    # If there are no generated samples, just write to an empty file
+    else:
+        with open(Path(relative_dir, "samples", "quickstart.js").resolve(), "w+") as f:
+            f.write("No sample available")
+
+
+def write_release_please_config(owlbot_dirs):
+    with open("release-please-config.json", "r") as f:
+        data = json.load(f)
+        for dir in owlbot_dirs:
+            result = re.search(r"(packages/.*)", dir)
+            assert result is not None
+            data["packages"][result.group()] = {}
+    with open("release-please-config.json", "w") as f:
+        json.dump(data, f, indent=2)
+
+
 def template_metadata(relative_dir: str) -> Dict[str, Any]:
     """Load node specific template metadata.
 
@@ -90,6 +133,7 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
             all_samples,
         )
     )
+    metadata["year"] = date.today().year
     return metadata
 
 
@@ -108,7 +152,7 @@ def extract_clients(filePath: Path) -> List[str]:
 
 
 def generate_index_ts(
-    versions: List[str], default_version: str, relative_dir: str
+    versions: List[str], default_version: str, relative_dir: str, year: str
 ) -> None:
     """
     generate src/index.ts to export the client name and versions in the client library.
@@ -146,7 +190,10 @@ def generate_index_ts(
 
     # compose template directory
     template_path = (
-        Path(__file__).parent.parent / "gcp" / "templates" / "node_split_library"
+        Path(__file__).parent.parent
+        / "gcp"
+        / "templates"
+        / "node_mono_repo_split_library"
     )
     template_loader = FileSystemLoader(searchpath=str(template_path))
     template_env = Environment(loader=template_loader, keep_trailing_newline=True)
@@ -154,7 +201,7 @@ def generate_index_ts(
     index_template = template_env.get_template(TEMPLATE_FILE)
     # render index.ts content
     output_text = index_template.render(
-        versions=versions, default_version=default_version, clients=clients
+        versions=versions, default_version=default_version, clients=clients, year=year
     )
     with open(Path(relative_dir, "src/index.ts").resolve(), "w") as fh:
         fh.write(output_text)
@@ -240,7 +287,7 @@ def postprocess_gapic_library_hermetic(relative_dir, hide_output=False):
     logger.debug("Post-processing completed")
 
 
-default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
+default_staging_excludes = ["package.json", "src/index.ts"]
 default_templates_excludes: List[str] = []
 
 
@@ -256,7 +303,7 @@ def walk_through_owlbot_dirs(dir: Path):
     A list of client libs
     """
     owlbot_dirs = []
-    packages_to_exclude = [r"gapic-node-templating"]
+    packages_to_exclude = [r"gapic-node-templating", r"node_modules"]
     for path_object in dir.glob("packages/**/.OwlBot.yaml"):
         if path_object.is_file() and not re.search(
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
@@ -364,6 +411,7 @@ def owlbot_main(
             library_version,
             str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
         )
+    copy_list_sample_to_quickstart(relative_dir=relative_dir)
 
 
 def owlbot_entrypoint(
@@ -377,6 +425,8 @@ def owlbot_entrypoint(
         owlbot_main(
             dir, template_path, staging_excludes, templates_excludes, patch_staging
         )
+    if Path("release-please-config.json").is_file():
+        write_release_please_config(owlbot_dirs)
 
 
 if __name__ == "__main__":

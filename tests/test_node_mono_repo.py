@@ -18,6 +18,7 @@ import re
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
+from datetime import date
 
 import pytest
 
@@ -127,6 +128,7 @@ def test_generate_index_ts():
             ["v1", "v1beta1"],
             "v1",
             relative_dir=(FIXTURES / "node_templates" / "index_samples"),
+            year="2020",
         )
         generated_index_path = pathlib.Path(
             FIXTURES / "node_templates" / "index_samples" / "src" / "index.ts"
@@ -137,12 +139,60 @@ def test_generate_index_ts():
         assert filecmp.cmp(generated_index_path, sample_index_path)
 
 
+def test_write_release_please_config():
+    # use a non-nodejs template directory
+    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
+        node_mono_repo.write_release_please_config(
+            [
+                "google-cloud-node/packages/gapic-node-templating",
+                "Users/person/google-cloud-node/packages/dlp",
+                "Users/person/google-cloud-node/packages/asset",
+                "packages/bigquery-migration",
+            ]
+        )
+
+        assert filecmp.cmp(
+            pathlib.Path("release-please-config.json"),
+            pathlib.Path("release-please-config-post.json"),
+        )
+
+
+def test_copy_quickstart():
+    with util.copied_fixtures_dir(FIXTURES):
+        node_mono_repo.copy_list_sample_to_quickstart(
+            FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
+        )
+
+        assert filecmp.cmp(
+            pathlib.Path(
+                FIXTURES
+                / "nodejs_mono_repo_with_samples"
+                / "packages"
+                / "datastore"
+                / "samples"
+                / "quickstart.js"
+            ),
+            pathlib.Path(
+                FIXTURES
+                / "nodejs_mono_repo_with_samples"
+                / "packages"
+                / "datastore"
+                / "samples"
+                / "generated"
+                / "compare_to_quickstart.js"
+            ),
+        )
+
+
 def test_generate_index_ts_empty_versions():
     # use a non-nodejs template directory
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):
         with pytest.raises(AttributeError) as err:
             node_mono_repo.generate_index_ts(
-                [], "v1", relative_dir=(FIXTURES / "node_templates" / "index_samples")
+                [],
+                "v1",
+                relative_dir=(FIXTURES / "node_templates" / "index_samples",),
+                year=date.today().year,
             )
             assert "can't be empty" in err.args
 
@@ -158,6 +208,7 @@ def test_generate_index_ts_invalid_default_version():
                 versions,
                 default_version,
                 relative_dir=(FIXTURES / "node_templates" / "index_samples"),
+                year=date.today().year,
             )
             assert f"must contain default version {default_version}" in err.args
 
@@ -173,6 +224,7 @@ def test_generate_index_ts_no_clients():
                 versions,
                 default_version,
                 relative_dir=(FIXTURES / "node_templates" / "index_samples"),
+                year=date.today().year,
             )
             assert (
                 f"No client is exported in the default version's({default_version}) index.ts ."

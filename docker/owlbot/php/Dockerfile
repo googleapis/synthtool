@@ -16,7 +16,7 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-php -f docker/owlbot/php/Dockerfile .
-FROM python:3.10.5-buster
+FROM python:3.10.6-buster
 
 WORKDIR /
 

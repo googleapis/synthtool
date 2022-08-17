@@ -1,10 +1,10 @@
 ipython==8.4.0
 jupyter==1.0
-nbconvert==6.5.0
-papermill==2.3
-numpy==1.23.0
+nbconvert==6.5.3
+papermill==2.4.0
+numpy==1.23.1
 pandas==1.4.3
-matplotlib==3.5.2
+matplotlib==3.5.3
 tabulate==0.8.10
 google-cloud-aiplatform
 google-cloud-storage

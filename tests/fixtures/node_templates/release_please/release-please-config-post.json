@@ -1,0 +1,9 @@
+{
+  "release-type": "node",
+  "packages": {
+    "packages/gapic-node-templating": {},
+    "packages/dlp": {},
+    "packages/asset": {},
+    "packages/bigquery-migration": {}
+  }
+}
