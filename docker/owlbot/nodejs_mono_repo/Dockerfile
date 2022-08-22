@@ -47,9 +47,7 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
 # * google-gax is used for compiling protos.
-RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@3.1.4 typescript@4.6.4 \
-    chalk@4.1.2 escodegen@2.0.0 espree@7.3.1 estraverse@5.2.0 glob@7.2.0 jsdoc@3.6.7 \
-    minimist@1.2.5 semver@7.3.5 tmp@0.2.1 uglify-js@3.14.2
+RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@3.2.1 typescript@4.7.4
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
