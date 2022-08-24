@@ -308,7 +308,7 @@ def walk_through_owlbot_dirs(dir: Path):
         if path_object.is_file() and not re.search(
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
         ):
-            owlbot_dirs.append(str(Path(path_object).parents[1]))
+            owlbot_dirs.append(str(Path(path_object).parents[0]))
 
     return owlbot_dirs
 
