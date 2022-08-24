@@ -26,7 +26,7 @@ RUN apt-get install -y nodejs
 
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
-RUN pip install -r /synthtool/requirements.txt
+RUN pip install --require-hashes -r /synthtool/requirements.txt
 
 # Put synthtool in the PYTHONPATH so owlbot.py scripts will find it.
 ENV PYTHONPATH="/synthtool"
