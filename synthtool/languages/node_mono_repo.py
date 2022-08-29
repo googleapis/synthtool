@@ -70,7 +70,7 @@ def copy_list_sample_to_quickstart(relative_dir: str):
     # If there aren't any list-methods, just pick the first generated sample
     if not samples:
         samples = common.get_sample_metadata_files(
-            Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"*"
+            Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r".*"
         )
     # Confirm that the file exists (array could be empty)
     if Path(relative_dir, samples[0]).resolve():
