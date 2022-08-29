@@ -100,9 +100,9 @@ click==8.0.4 \
     # via
     #   gcp-docuploader
     #   gcp-releasetool
-colorlog==6.6.0 \
-    --hash=sha256:344f73204009e4c83c5b6beb00b3c45dc70fcdae3c80db919e0a4171d006fde8 \
-    --hash=sha256:351c51e866c86c3217f08e4b067a7974a678be78f07f85fc2d55b8babde6d94e
+colorlog==6.7.0 \
+    --hash=sha256:0d33ca236784a1ba3ff9c532d4964126d8a2c44f1f0cb1d2b0728196f512f662 \
+    --hash=sha256:bd94bd21c1e13fac7bd3153f4bc3a7dc0eb0974b8bc2fdf1a989e474f6e582e5
     # via
     #   gcp-docuploader
     #   nox
