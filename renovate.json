@@ -1,6 +1,8 @@
 {
+  "extends": [
+    "schedule:weekly"
+  ],
   "internalChecksFilter": "strict",
   "stabilityDays": 90,
-  "timezone": "America/Los_Angeles",
-  "schedule": "weekly"
+  "timezone": "America/Los_Angeles"
 }
