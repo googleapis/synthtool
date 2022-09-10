@@ -1,6 +1,8 @@
 {
   "extends": [
-    "config:base",
-    ":disableDependencyDashboard"
-  ]
+    "schedule:weekly"
+  ],
+  "internalChecksFilter": "strict",
+  "stabilityDays": 90,
+  "timezone": "America/Los_Angeles"
 }
