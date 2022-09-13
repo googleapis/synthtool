@@ -87,13 +87,15 @@ def test_no_samples():
         assert isinstance(metadata["samples"], list)
         assert len(metadata["samples"]) == 0
 
+
 def test_fix_sample_path():
     with util.copied_fixtures_dir(FIXTURES):
         metadata = node_mono_repo.template_metadata(
             FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
         )
         for sample in metadata["samples"]:
-            assert "/workspace/google-cloud-node/" not in sample['file'] 
+            assert "/workspace/google-cloud-node/" not in sample["file"]
+
 
 def test_extract_clients_no_file():
     index_ts_path = pathlib.Path(
