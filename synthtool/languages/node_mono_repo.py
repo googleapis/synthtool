@@ -125,7 +125,9 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     )
 
     for sample in all_samples:
-        sample["file"] = re.sub(r"/workspace/google-cloud-node/", "", sample["file"])
+        rel_file_path = re.search(r"(packages\/.*)", sample["file"])
+        if rel_file_path:
+            sample["file"] = rel_file_path.group()
 
     # quickstart.js sample is special - only include it in the samples list if there is
     # a quickstart snippet present in the file
