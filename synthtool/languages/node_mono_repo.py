@@ -116,13 +116,7 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     except FileNotFoundError:
         pass
 
-    all_samples = samples.all_samples(
-        [
-            str(Path(relative_dir, "samples/*.js")),
-            str(Path(relative_dir, "samples/*/*.js")),
-            str(Path(relative_dir, "samples/*/*/*.js")),
-        ]
-    )
+    all_samples = samples.all_samples([str(Path(relative_dir, "samples/**/*.js"))])
 
     for sample in all_samples:
         rel_file_path = re.search(r"(packages\/.*)", sample["file"])

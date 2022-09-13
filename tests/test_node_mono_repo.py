@@ -89,12 +89,26 @@ def test_no_samples():
 
 
 def test_fix_sample_file_path():
-    with util.copied_fixtures_dir(FIXTURES):
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_with_samples"):
         metadata = node_mono_repo.template_metadata(
             FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
         )
-        for sample in metadata["samples"]:
-            assert re.match("^packages/.*", sample["file"])
+
+        assert metadata["samples"] == [
+            {
+                "title": "Compare_to_quickstart",
+                "file": "packages/datastore/samples/generated/compare_to_quickstart.js",
+            },
+            {
+                "title": "Dataproc_metastore.create_backup",
+                "file": "packages/datastore/samples/generated/v1/dataproc_metastore.create_backup.js",
+            },
+            {
+                "title": "Dataproc_metastore.list_backups",
+                "file": "packages/datastore/samples/generated/v1/dataproc_metastore.list_backups.js",
+            },
+            {"title": "Quickstart", "file": "packages/datastore/samples/quickstart.js"},
+        ]
 
 
 def test_extract_clients_no_file():
