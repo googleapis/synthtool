@@ -107,7 +107,6 @@ def test_fix_sample_file_path():
                 "title": "Dataproc_metastore.list_backups",
                 "file": "packages/datastore/samples/generated/v1/dataproc_metastore.list_backups.js",
             },
-            {"title": "Quickstart", "file": "packages/datastore/samples/quickstart.js"},
         ]
 
 
