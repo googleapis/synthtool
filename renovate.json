@@ -3,6 +3,6 @@
     "schedule:weekly"
   ],
   "internalChecksFilter": "strict",
-  "stabilityDays": 90,
+  "stabilityDays": 30,
   "timezone": "America/Los_Angeles"
 }

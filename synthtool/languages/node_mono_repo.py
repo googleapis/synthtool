@@ -116,7 +116,12 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     except FileNotFoundError:
         pass
 
-    all_samples = samples.all_samples([str(Path(relative_dir, "samples/*.js"))])
+    all_samples = samples.all_samples([str(Path(relative_dir, "samples/**/*.js"))])
+
+    for sample in all_samples:
+        rel_file_path = re.search(r"(packages\/.*)", sample["file"])
+        if rel_file_path:
+            sample["file"] = rel_file_path.group()
 
     # quickstart.js sample is special - only include it in the samples list if there is
     # a quickstart snippet present in the file
