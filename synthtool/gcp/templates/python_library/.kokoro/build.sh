@@ -36,7 +36,7 @@ export PROJECT_ID=$(cat "${KOKORO_GFILE_DIR}/project-id.json")
 # Remove old nox
 python3 -m pip uninstall --yes --quiet nox-automation
 
-# Install nox
+# Install dependencies
 python3 -m pip install --require-hashes -r .kokoro/requirements.txt
 python3 -m nox --version
 
