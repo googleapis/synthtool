@@ -33,7 +33,7 @@ export PYTHONUNBUFFERED=1
 env | grep KOKORO
 
 # Install dependencies
-python3.9 -m pip install --require-hashes -r .kokoro/requirements.txt
+python3.9 -m pip install --require-hashes -r ./.kokoro/requirements.txt
 
 # Use secrets acessor service account to get secrets
 if [[ -f "${KOKORO_GFILE_DIR}/secrets_viewer_service_account.json" ]]; then
