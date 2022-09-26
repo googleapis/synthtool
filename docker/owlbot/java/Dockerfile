@@ -29,7 +29,7 @@ COPY docker/owlbot/java/templates /owlbot/templates
 COPY post-processor-changes.txt /post-processor-changes.txt
 RUN cd /owlbot/src && \
     python3 -m pip install -r requirements.txt
-
+RUN python3 --version
 ADD https://repo1.maven.org/maven2/com/google/googlejavaformat/google-java-format/${JAVA_FORMAT_VERSION}/google-java-format-${JAVA_FORMAT_VERSION}-all-deps.jar /owlbot/google-java-format.jar
 
 ###################### Install synthtool's requirements.
