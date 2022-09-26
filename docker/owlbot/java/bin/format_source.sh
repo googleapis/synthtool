@@ -15,9 +15,14 @@
 
 set -e
 
+# Why OwlBot Java postprocessor does not use the formatter defined in pom.xml?
+# It's because the postprocessor runs in a privileged (albeit limited)
+# environment. We limit the risk of running somebody else's malicious Maven
+# plugin code in the environment.
+
 # Find all the java files relative to the current directory and format them
 # using google-java-format
-list="$(find . -name '*.java' )"
+list="$(find . -name '*.java' -not -path ".*/samples/snippets/generated/**/*" )"
 tmpfile=$(mktemp)
 
 for file in $list;
@@ -33,6 +38,7 @@ do
   fi
 done
 
+# This JAR file is downloaded by Dockerfile
 cat $tmpfile | xargs java -jar /owlbot/google-java-format.jar --replace
 
 rm $tmpfile
