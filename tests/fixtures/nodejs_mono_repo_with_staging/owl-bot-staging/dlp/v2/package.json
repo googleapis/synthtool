@@ -40,7 +40,7 @@
     "google-gax": "^2.10.3"
   },
   "devDependencies": {
-    "@types/mocha": "^8.2.1",
+    "@types/mocha": "^9.0.0",
     "@types/node": "^14.14.32",
     "@types/sinon": "^9.0.11",
     "c8": "^7.6.0",
