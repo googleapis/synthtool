@@ -276,3 +276,9 @@ def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_dlp):
     assert "import * as v2" in staging_text
     assert "export * as v2" not in staging_text
     assert "export * as v2" in text
+
+
+def test_owlbot_main_without_version():
+    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "no_version"):
+        # just confirm it doesn't throw an exception.
+        node.owlbot_main(TEMPLATES)

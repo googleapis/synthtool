@@ -16,7 +16,8 @@
 set -eo pipefail
 
 # Start the releasetool reporter
-python3 -m pip install gcp-releasetool
+requirementsFile=$(realpath $(dirname "${BASH_SOURCE[0]}")/../requirements.txt)
+python3 -m pip install --require-hashes -r $requirementsFile
 python3 -m releasetool publish-reporter-script > /tmp/publisher-script; source /tmp/publisher-script
 
 source $(dirname "$0")/common.sh
@@ -32,6 +33,7 @@ retry_with_backoff 3 10 \
   mvn clean deploy -B \
     --settings ${MAVEN_SETTINGS_FILE} \
     -DskipTests=true \
+    -Dclirr.skip=true \
     -DperformRelease=true \
     -Dgpg.executable=gpg \
     -Dgpg.passphrase=${GPG_PASSPHRASE} \
