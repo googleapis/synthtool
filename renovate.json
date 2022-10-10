@@ -2,7 +2,7 @@
   "extends": [
     "schedule:weekly"
   ],
-  "ignorePaths": ["/*/**"],
+  "ignorePaths": ["/*/**", "synthtool/gcp/templates/java_library/.kokoro/requirements.txt", "https://github.com/googleapis/synthtool/blob/master/docker/owlbot/java/src/requirements.txt"],
   "internalChecksFilter": "strict",
   "stabilityDays": 30,
   "timezone": "America/Los_Angeles"
