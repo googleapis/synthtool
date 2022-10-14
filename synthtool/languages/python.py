@@ -16,6 +16,7 @@ import re
 import sys
 
 import json
+from packaging import version as packaging_version
 from pathlib import Path
 import shutil
 from typing import Any, Dict, List
@@ -24,6 +25,7 @@ import yaml
 import synthtool as s
 from synthtool import _tracked_paths, log, shell
 from synthtool.gcp.common import CommonTemplates, detect_versions
+from synthtool.languages import common
 from synthtool.sources import templates
 
 PathOrStr = templates.PathOrStr
@@ -50,6 +52,7 @@ LICENSE = """
 IGNORED_VERSIONS: List[str] = []
 
 SAMPLES_TEMPLATE_PATH = Path(CommonTemplates()._template_root) / "python_samples"
+_GENERATED_SAMPLES_DIRECTORY = "./samples/generated_samples"
 
 NOTEBOOK_TEMPLATE_PATH = (
     Path(CommonTemplates()._template_root) / "python_notebooks_testing_pipeline"
@@ -160,40 +163,51 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         s.copy([result], excludes=excludes)
 
 
-def configure_previous_major_version_branches() -> None:
-    """Configure releases from previous major version branches by editing
-    `.github/release-please.yml`.
+def get_library_version() -> packaging_version.Version:
+    """Returns the current library version.
 
     The current library version is obtained from `version.py` in `google/**/version.py`,
     or the `setup.py`.
+
+    Raises:
+        RuntimeError: If no version string found.
+    """
+    version_paths = list(Path(".").glob("google/**/version.py")) + [Path("setup.py")]
+
+    # In version.py:    __version__ = "1.5.2"
+    # In setup.py:      version = "1.5.2"
+    VERSION_REGEX = (
+        r"(?:__)?version(?:__)?\s*=\s*[\"'](?P<library_version_string>\d\.[\d\.]+)[\"']"
+    )
+
+    for p in version_paths:
+        match = re.search(VERSION_REGEX, Path(p).read_text())
+
+        if match is not None:
+            library_version = packaging_version.Version(match.group("library_version_string"))
+            break
+
+    else:
+        raise RuntimeError(
+            "Unable to find library version in files {} with regex {}".format(
+                version_paths, VERSION_REGEX
+            )
+        )
+
+    return library_version
+
+
+def configure_previous_major_version_branches() -> None:
+    """Configure releases from previous major version branches by editing
+    `.github/release-please.yml`.
 
     Releases are configured for all previous major versions. For example,
     if the library version is currently 3.5.1, the release-please config
     will include v2, v1, and v0.
     """
 
-    # In version.py:    __version__ = "1.5.2"
-    # In setup.py:      version = "1.5.2"
-    VERSION_REGEX = (
-        r"(?:__)?version(?:__)?\s*=\s*[\"'](?P<major_version>\d)\.[\d\.]+[\"']"
-    )
-    version_paths = list(Path(".").glob("google/**/version.py")) + [Path("setup.py")]
-
-    major_version = None
-
-    for p in version_paths:
-        match = re.search(VERSION_REGEX, Path(p).read_text())
-
-        if match is not None:
-            major_version = int(match.group("major_version"))
-            break
-
-    if major_version is None:
-        raise RuntimeError(
-            "Unable to find library version in files {} with regex {}".format(
-                version_paths, VERSION_REGEX
-            )
-        )
+    library_version = get_library_version()
+    major_version = library_version.major
 
     with open(".github/release-please.yml") as f:
         release_please_yml = yaml.load(f, Loader=yaml.SafeLoader)
@@ -273,6 +287,8 @@ def owlbot_main() -> None:
             s.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
 
     configure_previous_major_version_branches()
+    library_version_string = str(get_library_version())
+    common.update_library_version(library_version_string, _GENERATED_SAMPLES_DIRECTORY)
 
 
 if __name__ == "__main__":
