@@ -1,6 +1,9 @@
 {
   "extends": [
-    "config:base",
-    ":disableDependencyDashboard"
-  ]
+    "schedule:weekly"
+  ],
+  "ignorePaths": ["/*/**"],
+  "internalChecksFilter": "strict",
+  "stabilityDays": 30,
+  "timezone": "America/Los_Angeles"
 }

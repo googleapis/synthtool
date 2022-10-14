@@ -16,7 +16,7 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python/Dockerfile .
-FROM python:3.10.4-buster
+FROM python:3.10.6-buster
 
 WORKDIR /
 
@@ -34,7 +34,7 @@ RUN make altinstall
 
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
-RUN pip install -r /synthtool/requirements.txt
+RUN pip install --require-hashes -r /synthtool/requirements.txt
 
 # Put synthtool in the PYTHONPATH so owlbot.py scripts will find it.
 ENV PYTHONPATH="/synthtool"
