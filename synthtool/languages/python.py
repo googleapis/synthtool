@@ -184,7 +184,9 @@ def get_library_version() -> packaging_version.Version:
         match = re.search(VERSION_REGEX, Path(p).read_text())
 
         if match is not None:
-            library_version = packaging_version.Version(match.group("library_version_string"))
+            library_version = packaging_version.Version(
+                match.group("library_version_string")
+            )
             break
 
     else:
