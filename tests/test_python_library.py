@@ -192,7 +192,7 @@ def test_get_library_version(fixtures_dir):
         shutil.copy(result, Path(".github/release-please.yml"))
 
         version = python.get_library_version()
-        assert version == packaging_version.Version('2.11.0')
+        assert version == packaging_version.Version("2.11.0")
 
 
 @pytest.mark.parametrize(
