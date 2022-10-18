@@ -16,6 +16,7 @@ import os
 import shutil
 from pathlib import Path
 
+from packaging import version as packaging_version
 import pytest
 
 from synthtool import gcp
@@ -173,6 +174,25 @@ def test_split_system_tests():
         with open(templated_files / ".kokoro/presubmit/system-3.8.cfg", "r") as f:
             contents = f.read()
             assert "system-3.8" in contents
+
+
+@pytest.mark.parametrize(
+    "fixtures_dir",
+    [
+        Path(__file__).parent / "fixtures/python_library",  # just setup.py
+        Path(__file__).parent
+        / "fixtures/python_library_w_version_py",  # has google/cloud/texttospeech/version.py
+    ],
+)
+def test_get_library_version(fixtures_dir):
+    with util.copied_fixtures_dir(fixtures_dir):
+        t = templates.Templates(PYTHON_LIBRARY)
+        result = t.render(".github/release-please.yml")
+        os.makedirs(".github")
+        shutil.copy(result, Path(".github/release-please.yml"))
+
+        version = python.get_library_version()
+        assert version == packaging_version.Version('2.11.0')
 
 
 @pytest.mark.parametrize(
