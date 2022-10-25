@@ -172,10 +172,11 @@ def get_library_version() -> packaging_version.Version:
     Raises:
         RuntimeError: If no version string found.
     """
-    version_paths = list(Path(".").glob("google/**/version.py")) + [Path("setup.py")]
+    version_paths = list(Path(".").glob("google/**/*version.py")) + [Path("setup.py")]
 
-    # In version.py:    __version__ = "1.5.2"
-    # In setup.py:      version = "1.5.2"
+    # In version.py:       __version__ = "1.5.2"
+    # In gapic_version.py: __version__ = "1.5.2"
+    # In setup.py:             version = "1.5.2"
     VERSION_REGEX = (
         r"(?:__)?version(?:__)?\s*=\s*[\"'](?P<library_version_string>\d\.[\d\.]+)[\"']"
     )
@@ -290,6 +291,10 @@ def owlbot_main() -> None:
 
     configure_previous_major_version_branches()
     library_version_string = str(get_library_version())
+
+    # The library version number added here is the most recently released version.
+    # At the next library release time, release-please updates the version number
+    # to the correct one.
     common.update_library_version(library_version_string, _GENERATED_SAMPLES_DIRECTORY)
 
 
