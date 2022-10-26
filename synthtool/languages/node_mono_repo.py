@@ -221,6 +221,21 @@ def install(hide_output=False):
     shell.run(["npm", "install"], hide_output=hide_output)
 
 
+def typeless_samples_hermetic(hide_output=False):
+    """
+    Converts TypeScript samples in the current Node.js library
+    to JavaScript samples. Run this step before fix() and friends.
+    Assumes that typeless-sample-bot is already installed in a well
+    known location on disk.
+    """
+    logger.debug("Run typeless sample bot")
+    shell.run(
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot", "-t", "samples", "-r"],
+        check=False,
+        hide_output=hide_output
+    )
+
+
 def fix(hide_output=False):
     """
     Fixes the formatting in the current Node.js library.
