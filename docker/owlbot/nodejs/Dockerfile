@@ -21,7 +21,7 @@ FROM python:3.10.6-buster
 WORKDIR /
 
 ###################### Install nodejs.
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
 
 ###################### Install synthtool's requirements.
