@@ -34,4 +34,4 @@ For a list of all ``{{ metadata['repo']['distribution_name'] }}`` releases:
 .. toctree::
     :maxdepth: 2
 
-    changelog
+    CHANGELOG
