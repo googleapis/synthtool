@@ -221,12 +221,14 @@ def install(hide_output=False):
     shell.run(["npm", "install"], hide_output=hide_output)
 
 
+# This is currently an optional, opt-in part of an individual repo's
+# OwlBot.py, and must be called from there before calling owlbot_main.
 def typeless_samples_hermetic(hide_output=False):
     """
     Converts TypeScript samples in the current Node.js library
     to JavaScript samples. Run this step before fix() and friends.
     Assumes that typeless-sample-bot is already installed in a well
-    known location on disk.
+    known location on disk (node_modules/.bin).
     """
     logger.debug("Run typeless sample bot")
     shell.run(
@@ -256,7 +258,7 @@ def fix(hide_output=False):
 def fix_hermetic(relative_dir, hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
-    is already installed in a well known location on disk:
+    is already installed in a well known location on disk (node_modules/.bin).
     """
     logger.debug("Copy eslint config")
     shell.run(
@@ -286,7 +288,8 @@ def compile_protos(hide_output=False):
 def compile_protos_hermetic(relative_dir, hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
-    compileProtos script from google-gax.
+    compileProtos script from google-gax. Assumes that compileProtos
+    is already installed in a well known location on disk (node_modules/.bin).
     """
     logger.debug("Compiling protos...")
     shell.run(
