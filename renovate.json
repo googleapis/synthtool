@@ -2,7 +2,7 @@
   "extends": [
     "schedule:weekly"
   ],
-  "ignorePaths": ["/*/**"],
+  "ignorePaths": ["*/**"],
   "internalChecksFilter": "strict",
   "stabilityDays": 30,
   "timezone": "America/Los_Angeles"
