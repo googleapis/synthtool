@@ -3,7 +3,7 @@ Python Client for {{ metadata['repo']['name_pretty'] }} API
 
 |{{ metadata['repo']['release_level'] }}| |pypi| |versions|
 
-`{{ metadata['repo']['name_pretty'] }} API`_: {% if metadata['repo']['api_description'] %}{{metadata['repo']['api_description'] }}{% endif %}
+`{{ metadata['repo']['name_pretty'] }}`_: {% if metadata['repo']['api_description'] %}{{metadata['repo']['api_description'] }}{% endif %}
 
 - `Client Library Documentation`_
 - `Product Documentation`_
@@ -14,7 +14,7 @@ Python Client for {{ metadata['repo']['name_pretty'] }} API
    :target: https://pypi.org/project/{{ metadata['repo']['distribution_name'] }}/
 .. |versions| image:: https://img.shields.io/pypi/pyversions/{{ metadata['repo']['distribution_name'] }}.svg
    :target: https://pypi.org/project/{{ metadata['repo']['distribution_name'] }}/
-.. _{{ metadata['repo']['name_pretty'] }} API: {{ metadata['repo']['product_documentation'] }}
+.. _{{ metadata['repo']['name_pretty'] }}: {{ metadata['repo']['product_documentation'] }}
 .. _Client Library Documentation: {{ metadata['repo']['client_documentation'] }}
 .. _Product Documentation:  {{ metadata['repo']['product_documentation'] }}
 
@@ -25,12 +25,12 @@ In order to use this library, you first need to go through the following steps:
 
 1. `Select or create a Cloud Platform project.`_
 2. `Enable billing for your project.`_
-3. `Enable the {{ metadata['repo']['name_pretty'] }} API.`_
+3. `Enable the {{ metadata['repo']['name_pretty'] }}.`_
 4. `Setup Authentication.`_
 
 .. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
-.. _Enable the {{ metadata['repo']['name_pretty'] }} API.:  {{ metadata['repo']['product_documentation'] }}
+.. _Enable the {{ metadata['repo']['name_pretty'] }}.:  {{ metadata['repo']['product_documentation'] }}
 .. _Setup Authentication.: https://googleapis.dev/python/google-api-core/latest/auth.html
 
 Installation
@@ -96,12 +96,12 @@ Windows
 Next Steps
 ~~~~~~~~~~
 
--  Read the `Client Library Documentation`_ for {{ metadata['repo']['name_pretty'] }} API
+-  Read the `Client Library Documentation`_ for {{ metadata['repo']['name_pretty'] }}
    to see other available methods on the client.
--  Read the `{{ metadata['repo']['name_pretty'] }} API Product documentation`_ to learn
+-  Read the `{{ metadata['repo']['name_pretty'] }} Product documentation`_ to learn
    more about the product and see How-to Guides.
 -  View this `README`_ to see the full list of Cloud
    APIs that we cover.
 
-.. _{{ metadata['repo']['name_pretty'] }} API Product documentation:  {{ metadata['repo']['product_documentation'] }}
+.. _{{ metadata['repo']['name_pretty'] }} Product documentation:  {{ metadata['repo']['product_documentation'] }}
 .. _README: https://github.com/googleapis/google-cloud-python/blob/main/README.rst

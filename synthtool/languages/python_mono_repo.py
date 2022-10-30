@@ -49,9 +49,7 @@ def create_gapic_version_py(package_dir: str):
 # limitations under the License.
 #
 
-# x-release-please-start-version
-__version__ = "0.1.0"
-# x-release-please-end
+__version__ = "0.0.0"  # {x-release-please-version}
 """
 
     if not gapic_version_path.exists():
@@ -198,7 +196,35 @@ def owlbot_main(package_dir: str) -> None:
             s.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
 
 
+def configure_release_please(owlbot_dirs: str):
+    # add all packages to the .release-please-manifest.json 
+    # and release-please-config.json files if they don't exist
+    release_please_manifest = Path(".release-please-manifest.json")
+    release_please_config = Path("release-please-config.json")
+
+    with open(release_please_manifest, "r") as f:
+        manifest_json = json.load(f)
+        for package_dir in owlbot_dirs:
+            package_name = Path(package_dir).name
+            if f"packages/{package_name}" not in manifest_json:
+                manifest_json[f"packages/{package_name}"] = "0.0.0"
+
+    with open(release_please_manifest, "w") as f:
+        json.dump(manifest_json, f, indent=4)
+
+    with open(release_please_config, "r") as f:
+        config_json = json.load(f)
+        for package_dir in owlbot_dirs:
+            package_name = Path(package_dir).name
+            #if package_name not in config_json["packages"]:
+            path_to_version_file = "{}/gapic_version.py".format(package_name.replace("-","/"))
+            config_json["packages"][f"packages/{package_name}"] = {"component": f"{package_name}", "release-type": "python", "extra-files": [path_to_version_file],}
+
+    with open(release_please_config, "w") as f:
+        json.dump(config_json, f, indent=4)
+
 if __name__ == "__main__":
     owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
+    configure_release_please(owlbot_dirs)
     for package_dir in owlbot_dirs:
         owlbot_main(package_dir)
