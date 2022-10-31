@@ -1,9 +1,8 @@
 {% if metadata['repo']['library_type'] == 'GAPIC_AUTO'
-    or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager']) %}
-{
+    or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager'])
+%}{
   "enabled": false,
-{% else %}
-{
+{% else %}{
 {% endif %}  "extends": [
     ":separateMajorReleases",
     ":combinePatchMinorReleases",
