@@ -61,7 +61,6 @@ BAD_LICENSE = """/\\*
 """
 DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 8
 
-
 def format_code(
     path: str, version: str = DEFAULT_FORMAT_VERSION, times: int = 2
 ) -> None:
