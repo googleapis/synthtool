@@ -19,6 +19,33 @@ docker run --rm -v $(pwd):/workspace --user "$(id -u):$(id -g)" gcr.io/repo-auto
 
 ### Building the image
 
+#### Local Docker
+
+From the root of the synthtool repository, run:
+
+```bash
+suztomo@suztomo:~/synthtool$ docker build -f docker/owlbot/java/Dockerfile .
+...
+Removing intermediate container e6d071e39d1b
+ ---> a7d7e0c80b00
+Successfully built a7d7e0c80b00
+```
+
+The "a7d7e0c80b00" is the ID of the container image build. Try running the
+postprocessor with a repository:
+
+```bash
+suztomo@suztomo:~/java-aiplatform$ git checkout -b test_postprocessor origin/main
+branch 'test_postprocessor' set up to track 'origin/main'.
+Switched to a new branch 'test_postprocessor'
+```
+
+```
+suztomo@suztomo:~/java-aiplatform$ docker run --rm -v $(pwd):/workspace a7d7e0c80b00
+```
+
+
+#### Cloud Build
 This image is built via Cloud Build. From the root of this repository, run:
 
 ```bash
