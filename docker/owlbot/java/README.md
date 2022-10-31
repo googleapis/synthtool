@@ -32,7 +32,7 @@ Successfully built a7d7e0c80b00
 ```
 
 The "a7d7e0c80b00" is the ID of the container image build. Try running the
-postprocessor with a repository:
+postprocessor with a target repository. Example with java-aiplatform below:
 
 ```bash
 suztomo@suztomo:~/java-aiplatform$ git checkout -b test_postprocessor origin/main
@@ -40,6 +40,10 @@ branch 'test_postprocessor' set up to track 'origin/main'.
 Switched to a new branch 'test_postprocessor'
 suztomo@suztomo:~/java-aiplatform$ docker run --rm -v $(pwd):/workspace a7d7e0c80b00
 ...
+Reformatting source...
+...done
+suztomo@suztomo:~/java-aiplatform$ git diff
+... (shows the generated file differences) ...
 ```
 
 
