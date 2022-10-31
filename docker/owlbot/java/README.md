@@ -38,10 +38,8 @@ postprocessor with a repository:
 suztomo@suztomo:~/java-aiplatform$ git checkout -b test_postprocessor origin/main
 branch 'test_postprocessor' set up to track 'origin/main'.
 Switched to a new branch 'test_postprocessor'
-```
-
-```
 suztomo@suztomo:~/java-aiplatform$ docker run --rm -v $(pwd):/workspace a7d7e0c80b00
+...
 ```
 
 

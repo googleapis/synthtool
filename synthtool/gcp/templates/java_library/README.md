@@ -17,7 +17,6 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
-
 {% if metadata['repo']['library_type'] == 'GAPIC_AUTO'
     or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager']) %}
 :bus: In October 2022, this library has moved to
@@ -27,7 +26,6 @@ This repository will be archived in the future.
 The future releases will appear in https://github.com/googleapis/google-cloud-java/releases.
 The Maven artifact coordinates (`{{ group_id }}:{{ artifact_id }}`) remain the same.
 {% endif %}
-
 ## Quickstart
 
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] -%}
