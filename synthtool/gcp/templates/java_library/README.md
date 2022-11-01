@@ -23,7 +23,7 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 [google-cloud-java/{{ repo_short }}](
 https://github.com/googleapis/google-cloud-java/tree/main/{{ repo_short }}).
 This repository will be archived in the future.
-The future releases will appear in https://github.com/googleapis/google-cloud-java/releases.
+Future releases will appear in the new repository (https://github.com/googleapis/google-cloud-java/releases).
 The Maven artifact coordinates (`{{ group_id }}:{{ artifact_id }}`) remain the same.
 {% endif %}
 ## Quickstart
