@@ -79,5 +79,6 @@ Oh no! 💥 💔 💥
 ```
 
 In this case, install [nox](https://nox.thea.codes/en/stable/) and run
-`nox -s lint` to reproduce the lint problems.
+`nox -s lint` to reproduce the lint problems and `black synthtool` applies
+the suggested formatting.
 
