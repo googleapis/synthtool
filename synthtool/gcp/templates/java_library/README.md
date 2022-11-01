@@ -17,7 +17,7 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
-{% if !monorepo and (metadata['repo']['library_type'] == 'GAPIC_AUTO'
+{% if (not monorepo) and (metadata['repo']['library_type'] == 'GAPIC_AUTO'
     or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager'])) %}
 :bus: In October 2022, this library has moved to
 [google-cloud-java/{{ metadata['repo']['repo_short'] }}](
