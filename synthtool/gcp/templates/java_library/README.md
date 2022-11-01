@@ -17,8 +17,7 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
-{% if split_repo and (metadata['repo']['library_type'] == 'GAPIC_AUTO'
-    or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager'])) %}
+{% if migrated_split_repo %}
 :bus: In October 2022, this library has moved to
 [google-cloud-java/{{ metadata['repo']['repo_short'] }}](
 https://github.com/googleapis/google-cloud-java/tree/main/{{ metadata['repo']['repo_short'] }}).

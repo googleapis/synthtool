@@ -3,8 +3,7 @@ name: Bug report
 about: Create a report to help us improve
 
 ---
-{% if metadata['repo']['library_type'] == 'GAPIC_AUTO'
-or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager']) %}
+{% if migrated_split_repo %}
 :bus: This library has moved to
 [google-cloud-java/{{ metadata['repo']['repo_short'] }}](
 https://github.com/googleapis/google-cloud-java/tree/main/{{ metadata['repo']['repo_short'] }}).
