@@ -487,6 +487,7 @@ def common_templates(
     kwargs["metadata"] = _common_template_metadata()
     # MONOREPO environment variable is set in entrypoint.sh
     kwargs["monorepo"] = os.environ.get('MONOREPO') == 'true'
+    kwargs["split_repo"] = os.environ.get('MONOREPO') != 'true'
     templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
 
     # skip README generation on Kokoro (autosynth)
