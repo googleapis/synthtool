@@ -24,7 +24,7 @@ docker run --rm -v $(pwd):/workspace --user "$(id -u):$(id -g)" gcr.io/repo-auto
 From the root of the synthtool repository, run:
 
 ```bash
-suztomo@suztomo:~/synthtool$ docker build -f docker/owlbot/java/Dockerfile .
+synthtool$ docker build -f docker/owlbot/java/Dockerfile .
 ...
 Removing intermediate container e6d071e39d1b
  ---> a7d7e0c80b00
@@ -36,14 +36,14 @@ postprocessor image with a target repository.
 Here is an example with java-aiplatform repository  below:
 
 ```bash
-suztomo@suztomo:~/java-aiplatform$ git checkout -b test_postprocessor origin/main
+java-aiplatform$ git checkout -b test_postprocessor origin/main
 branch 'test_postprocessor' set up to track 'origin/main'.
 Switched to a new branch 'test_postprocessor'
-suztomo@suztomo:~/java-aiplatform$ docker run --rm -v $(pwd):/workspace a7d7e0c80b00
+java-aiplatform$ docker run --rm -v $(pwd):/workspace a7d7e0c80b00
 ...
 Reformatting source...
 ...done
-suztomo@suztomo:~/java-aiplatform$ git diff
+java-aiplatform$ git diff
 ... (shows the generated file differences) ...
 ```
 
