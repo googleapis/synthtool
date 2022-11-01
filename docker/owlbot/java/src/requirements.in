@@ -5,3 +5,4 @@ lxml==4.6.5
 typing==3.7.4.3
 markupsafe==2.0.1
 colorlog==6.7.0
+protobuf==3.19.5
