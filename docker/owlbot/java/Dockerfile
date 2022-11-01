@@ -36,7 +36,7 @@ COPY . /synthtool/
 
 WORKDIR /synthtool
 RUN python3 -m pip install --no-deps -e .
-RUN python3 -m pip install --require-hashes -r docker/owlbot/src/requirements.txt
+RUN python3 -m pip install --require-hashes -r docker/owlbot/java/src/requirements.txt
 
 # Allow non-root users to run python
 RUN chmod +rx /root/ /root/.pyenv && chmod +r /owlbot/google-java-format.jar
