@@ -70,7 +70,7 @@ def copy_list_sample_to_quickstart(relative_dir: str):
     # If there aren't any list-methods, just pick the first generated sample
     if not samples:
         samples = common.get_sample_metadata_files(
-            Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r"*"
+            Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve(), regex=r".*"
         )
     # Confirm that the file exists (array could be empty)
     if Path(relative_dir, samples[0]).resolve():
@@ -116,7 +116,12 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     except FileNotFoundError:
         pass
 
-    all_samples = samples.all_samples([str(Path(relative_dir, "samples/*.js"))])
+    all_samples = samples.all_samples([str(Path(relative_dir, "samples/**/*.js"))])
+
+    for sample in all_samples:
+        rel_file_path = re.search(r"(packages\/.*)", sample["file"])
+        if rel_file_path:
+            sample["file"] = rel_file_path.group()
 
     # quickstart.js sample is special - only include it in the samples list if there is
     # a quickstart snippet present in the file
@@ -216,6 +221,28 @@ def install(hide_output=False):
     shell.run(["npm", "install"], hide_output=hide_output)
 
 
+# This is currently an optional, opt-in part of an individual repo's
+# OwlBot.py, and must be called from there before calling owlbot_main.
+def typeless_samples_hermetic(hide_output=False):
+    """
+    Converts TypeScript samples in the current Node.js library
+    to JavaScript samples. Run this step before fix() and friends.
+    Assumes that typeless-sample-bot is already installed in a well
+    known location on disk (node_modules/.bin).
+    """
+    logger.debug("Run typeless sample bot")
+    shell.run(
+        [
+            f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
+            "-t",
+            "samples",
+            "-r",
+        ],
+        check=False,
+        hide_output=hide_output,
+    )
+
+
 def fix(hide_output=False):
     """
     Fixes the formatting in the current Node.js library.
@@ -231,7 +258,7 @@ def fix(hide_output=False):
 def fix_hermetic(relative_dir, hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
-    is already installed in a well known location on disk:
+    is already installed in a well known location on disk (node_modules/.bin).
     """
     logger.debug("Copy eslint config")
     shell.run(
@@ -261,7 +288,8 @@ def compile_protos(hide_output=False):
 def compile_protos_hermetic(relative_dir, hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
-    compileProtos script from google-gax.
+    compileProtos script from google-gax. Assumes that compileProtos
+    is already installed in a well known location on disk (node_modules/.bin).
     """
     logger.debug("Compiling protos...")
     shell.run(
