@@ -31,8 +31,9 @@ Removing intermediate container e6d071e39d1b
 Successfully built a7d7e0c80b00
 ```
 
-The "a7d7e0c80b00" is the ID of the container image build. Try running the
-postprocessor with a target repository. Example with java-aiplatform below:
+"a7d7e0c80b00" is the ID of the container image build. Try running the
+postprocessor image with a target repository.
+Here is an example with java-aiplatform repository  below:
 
 ```bash
 suztomo@suztomo:~/java-aiplatform$ git checkout -b test_postprocessor origin/main
@@ -46,6 +47,8 @@ suztomo@suztomo:~/java-aiplatform$ git diff
 ... (shows the generated file differences) ...
 ```
 
+This manual confirmation identifies syntax errors in Python scripts and the
+templates.
 
 #### Cloud Build
 This image is built via Cloud Build. From the root of this repository, run:
