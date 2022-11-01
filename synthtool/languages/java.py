@@ -491,11 +491,16 @@ def common_templates(
     repo_metadata = metadata["repo"]
     repo_short = repo_metadata["repo_short"]
     # Libraries that are not GAPIC_AUTO but in the monorepo
-    special_libs_in_monorepo = ["java-translate", "java-dns",
-                                "java-notification", "java-resourcemanager"]
+    special_libs_in_monorepo = [
+        "java-translate",
+        "java-dns",
+        "java-notification",
+        "java-resourcemanager",
+    ]
     kwargs["migrated_split_repo"] = split_repo and (
-        repo_metadata["library_type"] == "GAPIC_AUTO" or (
-          repo_short and repo_short in special_libs_in_monorepo))
+        repo_metadata["library_type"] == "GAPIC_AUTO"
+        or (repo_short and repo_short in special_libs_in_monorepo)
+    )
 
     templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
 
