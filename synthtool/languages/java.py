@@ -485,6 +485,7 @@ def common_templates(
         **kwargs: Additional options for CommonTemplates.java_library()
     """
     kwargs["metadata"] = _common_template_metadata()
+    kwargs["monorepo"] = os.environ.get('MONOREPO') == 'true'
     templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
 
     # skip README generation on Kokoro (autosynth)

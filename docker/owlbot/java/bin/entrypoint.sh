@@ -53,6 +53,8 @@ if [ "$(ls */.OwlBot.yaml|wc -l)" -gt 1 ];then
   # Monorepo (googleapis/google-cloud-java) has multiple OwlBot.yaml config
   # files in the modules.
   echo "Processing monorepo"
+  # Tell the python scripts that we're processing monorepo
+  export MONOREPO=true
   if [ -d owl-bot-staging ]; then
     # The content of owl-bot-staging is controlled by Owlbot.yaml files in
     # each module in the monorepo

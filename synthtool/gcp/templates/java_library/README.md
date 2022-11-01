@@ -17,11 +17,11 @@ Java idiomatic client for [{{metadata['repo']['name_pretty']}}][product-docs].
 > Note: This client is a work-in-progress, and may occasionally
 > make backwards-incompatible changes.
 {% endif %}
-{% if metadata['repo']['library_type'] == 'GAPIC_AUTO'
-    or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager']) %}
+{% if !monorepo and (metadata['repo']['library_type'] == 'GAPIC_AUTO'
+    or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager'])) %}
 :bus: In October 2022, this library has moved to
-[google-cloud-java/{{ repo_short }}](
-https://github.com/googleapis/google-cloud-java/tree/main/{{ repo_short }}).
+[google-cloud-java/{{ metadata['repo']['repo_short'] }}](
+https://github.com/googleapis/google-cloud-java/tree/main/{{ metadata['repo']['repo_short'] }}).
 This repository will be archived in the future.
 Future releases will appear in the new repository (https://github.com/googleapis/google-cloud-java/releases).
 The Maven artifact coordinates (`{{ group_id }}:{{ artifact_id }}`) remain the same.
