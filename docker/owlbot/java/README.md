@@ -64,3 +64,20 @@ To rebuild the golden test fixtures:
 1. Delete the `golden` directory.
 2. Copy the `input` directory recursively to `golden`
 3. [Run the latest owlbot image](#running-locally) against the `golden` directory.
+
+### Lint error
+
+When you modify Python scripts, you may encounter lint errors
+Kokoro build:
+
+```
+nox > black --check synthtool tests
+would reformat synthtool/languages/java.py
+
+Oh no! 💥 💔 💥
+1 file would be reformatted, 78 files would be left unchanged.
+```
+
+In this case, install [nox](https://nox.thea.codes/en/stable/) and run
+`nox -s lint` to reproduce the lint problems.
+
