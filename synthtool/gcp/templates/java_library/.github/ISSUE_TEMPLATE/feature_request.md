@@ -3,7 +3,6 @@ name: Feature request
 about: Suggest an idea for this library
 
 ---
-
 {% if metadata['repo']['library_type'] == 'GAPIC_AUTO'
 or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-translate', 'java-dns', 'java-notification', 'java-resourcemanager']) %}
 :bus: This library has moved to
@@ -11,5 +10,18 @@ or (metadata['repo']['repo_short'] and metadata['repo']['repo_short'] in ['java-
 https://github.com/googleapis/google-cloud-java/tree/main/{{ metadata['repo']['repo_short'] }}).
 This repository will be archived in the future.
 {% endif %}
+Thanks for stopping by to let us know something could be better!
+
 **PLEASE READ**: If you have a support contract with Google, please create an issue in the [support console](https://cloud.google.com/support/) instead of filing on GitHub. This will ensure a timely response.
 
+**Is your feature request related to a problem? Please describe.**
+What the problem is. Example: I'm always frustrated when [...]
+
+**Describe the solution you'd like**
+What you want to happen.
+
+**Describe alternatives you've considered**
+Any alternative solutions or features you've considered.
+
+**Additional context**
+Any other context or screenshots about the feature request.
