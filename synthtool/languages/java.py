@@ -486,11 +486,13 @@ def common_templates(
     """
     metadata = _common_template_metadata()
     kwargs["metadata"] = metadata
-    # MONOREPO environment variable is set in entrypoint.sh
-    split_repo = os.environ.get("MONOREPO") != "true"
+
+    # Generate flat to tell this repository is a split repo that have migrated
+    # to monorepo. The owlbot.py in the monorepo sets monorepo=True.
+    split_repo = kwargs["monorepo"] is not True
     repo_metadata = metadata["repo"]
     repo_short = repo_metadata["repo_short"]
-    # Libraries that are not GAPIC_AUTO but in the monorepo
+    # Special libraries that are not GAPIC_AUTO but in the monorepo
     special_libs_in_monorepo = [
         "java-translate",
         "java-dns",
@@ -500,6 +502,16 @@ def common_templates(
     kwargs["migrated_split_repo"] = split_repo and (
         repo_metadata["library_type"] == "GAPIC_AUTO"
         or (repo_short and repo_short in special_libs_in_monorepo)
+    )
+    logger.info(
+        "monorepo: {}, split_repo: {}, library_type: {},"
+        " repo_short: {}, migrated_split_repo: {}".format(
+            kwargs["monorepo"],
+            split_repo,
+            repo_metadata["library_type"],
+            repo_short,
+            kwargs["migrated_split_repo"],
+        )
     )
 
     templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
