@@ -490,7 +490,7 @@ def common_templates(
     # Generate flat to tell this repository is a split repo that have migrated
     # to monorepo. The owlbot.py in the monorepo sets monorepo=True.
     monorepo = kwargs.get("monorepo", False)
-    split_repo = monorepo
+    split_repo = not monorepo
     repo_metadata = metadata["repo"]
     repo_short = repo_metadata["repo_short"]
     # Special libraries that are not GAPIC_AUTO but in the monorepo
