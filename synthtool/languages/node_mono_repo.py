@@ -360,7 +360,7 @@ def owlbot_main(
           here.
 
     When there is no owlbot.py file, run this function instead.  Also, when an
-    owlbot.py file is necessary, the first statement of owlbot.py smetuld probably
+    owlbot.py file is necessary, the first statement of owlbot.py should probably
     call this function.
 
     Depends on owl-bot copying into a staging directory, so your .Owlbot.yaml should
