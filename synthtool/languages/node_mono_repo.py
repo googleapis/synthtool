@@ -55,7 +55,6 @@ def read_metadata(relative_dir: str):
         engines_field = re.search(r"([0-9][0-9])", data["engines"]["node"])
         assert engines_field is not None
         data["engine"] = engines_field.group()
-        data["homepage"] = data["homepage"]
 
         return data
 
