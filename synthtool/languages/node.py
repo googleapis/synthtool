@@ -176,14 +176,15 @@ def install(hide_output=False):
     shell.run(["npm", "install"], hide_output=hide_output)
 
 
-# This is currently an optional, opt-in part of an individual repo's
-# OwlBot.py, and must be called from there before calling owlbot_main.
 def typeless_samples_hermetic(hide_output=False):
     """
     Converts TypeScript samples in the current Node.js library
     to JavaScript samples. Run this step before fix() and friends.
     Assumes that typeless-sample-bot is already installed in a well
     known location on disk (node_modules/.bin).
+
+    This is currently an optional, opt-in part of an individual repo's
+    OwlBot.py, and must be called from there before calling owlbot_main.
     """
     logger.debug("Run typeless sample bot")
     shell.run(

@@ -17,15 +17,17 @@ steps:
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build'
     args: [ 'build',
-      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA',
-      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest',
-      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
-      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
-      '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
-# Push the docker image.
-images:
-  - gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA
-  - gcr.io/repo-automation-bots/owlbot-nodejs:latest
-  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA
-  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest
-
+      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA',
+      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest',
+      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:$SHORT_SHA',
+      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest',
+      '-f', 'docker/owlbot/nodejs_mono_repo/Dockerfile', '.' ]
+  # Run container tests
+  - name: gcr.io/gcp-runtimes/container-structure-test
+    args:
+      - 'test'
+      - '--image'
+      - 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA'
+      - '--config'
+      - 'docker/owlbot/nodejs_mono_repo/container_test.yaml'
+    waitFor: ['build']
