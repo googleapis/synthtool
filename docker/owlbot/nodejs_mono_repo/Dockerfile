@@ -48,7 +48,7 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # * gts/typescript are used for linting.
 # * google-gax is used for compiling protos.
 RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@3.5.2 \
-    typescript@4.7.4 @google-cloud/typeless-sample-bot@1.0.2
+    typescript@4.7.4 @google-cloud/typeless-sample-bot@1.0.3
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
