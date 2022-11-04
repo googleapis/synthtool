@@ -24,11 +24,11 @@
 {% endif %}
 
 A comprehensive list of changes in each version may be found in
-[the CHANGELOG](https://github.com/{{ metadata['repo']['homepage'] }}/blob/{{metadata['repo']['default_branch']}}/CHANGELOG.md).
+[the CHANGELOG]({{ metadata['homepage'] }}/CHANGELOG.md).
 
 {% if metadata['repo']['client_documentation'] %}* [{{ metadata['repo']['name_pretty'] }} {{ metadata['repo']['language']|language_pretty }} Client API Reference][client-docs]{% endif %}
 {% if metadata['repo']['product_documentation'] %}* [{{ metadata['repo']['name_pretty'] }} Documentation][product-docs]{% endif %}
-* [github.com/{{ metadata['repo']['homepage'] }}](https://github.com/{{ metadata['repo']['homepage'] }})
+* [github.com/{{ metadata['full_directory_path'] }}]({{ metadata['homepage'] }})
 
 Read more about the client libraries for Cloud APIs, including the older
 Google APIs Client Libraries, in [Client Libraries Explained][explained].
