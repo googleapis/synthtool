@@ -15,6 +15,7 @@ steps:
           sed -i "s/\!:/:/g" post-processor-changes.txt
   # Build the docker image.
   - name: 'gcr.io/cloud-builders/docker'
+    id: 'build'
     args: [ 'build',
       '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA',
       '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest',
