@@ -22,10 +22,12 @@ steps:
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
       '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
-# Push the docker image.
-images:
-  - gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA
-  - gcr.io/repo-automation-bots/owlbot-nodejs:latest
-  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA
-  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest
-
+  # Run container tests
+  - name: gcr.io/gcp-runtimes/container-structure-test
+    args:
+      - 'test'
+      - '--image'
+      - 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA'
+      - '--config'
+      - 'docker/owlbot/nodejs/container_test.yaml'
+    waitFor: ['build']
