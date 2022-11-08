@@ -55,7 +55,7 @@ def read_metadata(relative_dir: str):
         data["full_directory_path"] = (
             data["repository"]
             if isinstance(data["repository"], str)
-            else f'{repo["owner"]}/{repo["name"]}/{data["repository"]["directory"]}'
+            else f'{repo_url}/{data["repository"]["directory"]}'
         )
 
         repo = git.parse_repo_url(repo_url)
