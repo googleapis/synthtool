@@ -55,3 +55,8 @@ steps:
     args: ["diff", "-rw", "input", "golden"]
     dir: docker/owlbot/java/tests/fix-poms
     waitFor: ["fix-poms-run"]
+  - name: "gcr.io/cloud-devrel-public-resources/java8"
+    dir: synthtool/gcp/templates/java_library/.kokoro
+    waitFor: ["-"]
+    entrypoint: 'python'
+    args: [ "-m", "pip", "install", "-r", "requirements.txt" ]
