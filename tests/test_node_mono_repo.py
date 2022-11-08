@@ -15,6 +15,7 @@
 import filecmp
 import pathlib
 import re
+import os
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
@@ -49,6 +50,21 @@ def test_quickstart_metadata_with_snippet():
                 list(filter((re.compile("samples/quickstart.js$")).match, sample_names))
             )
             == 0
+        )
+
+
+def test_metadata_engines_field():
+    with util.chdir(FIXTURES / "node_templates" / "package_json_mono_repo"):
+        metadata = node_mono_repo.template_metadata(
+            FIXTURES / "node_templates" / "package_json_mono_repo"
+        )
+        assert (
+            "https://github.com/googleapis/google-cloud-node/tree/main/packages/google-cloud-dlp"
+            in metadata["homepage"]
+        )
+        assert (
+            "google-cloud-node/packages/google-cloud-dlp"
+            in metadata["full_directory_path"]
         )
 
 
@@ -180,7 +196,9 @@ def test_write_release_please_config():
 
 
 def test_copy_quickstart():
-    with util.copied_fixtures_dir(FIXTURES):
+    with util.copied_fixtures_dir(
+        FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
+    ):
         node_mono_repo.copy_list_sample_to_quickstart(
             FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
         )
@@ -204,6 +222,14 @@ def test_copy_quickstart():
                 / "compare_to_quickstart.js"
             ),
         )
+    os.remove(
+        FIXTURES
+        / "nodejs_mono_repo_with_samples"
+        / "packages"
+        / "datastore"
+        / "samples"
+        / "quickstart.js"
+    )
 
 
 def test_generate_index_ts_empty_versions():
