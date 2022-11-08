@@ -53,7 +53,7 @@ def test_quickstart_metadata_with_snippet():
         )
 
 
-def test_metadata_engines_field():
+def test_package_json_mono_repo():
     with util.chdir(FIXTURES / "node_templates" / "package_json_mono_repo"):
         metadata = node_mono_repo.template_metadata(
             FIXTURES / "node_templates" / "package_json_mono_repo"
