@@ -62,6 +62,7 @@ def test_package_json_mono_repo():
             "https://github.com/googleapis/google-cloud-node/tree/main/packages/google-cloud-dlp"
             in metadata["homepage"]
         )
+        print(metadata["full_directory_path"])
         assert (
             "google-cloud-node/packages/google-cloud-dlp"
             in metadata["full_directory_path"]

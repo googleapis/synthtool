@@ -52,14 +52,14 @@ def read_metadata(relative_dir: str):
             if isinstance(data["repository"], str)
             else data["repository"]["url"]
         )
-        data["full_directory_path"] = (
-            data["repository"]
-            if isinstance(data["repository"], str)
-            else f'{repo_url}/{data["repository"]["directory"]}'
-        )
 
         repo = git.parse_repo_url(repo_url)
 
+        data["full_directory_path"] = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else f'{repo["owner"]}/{repo["name"]}/{data["repository"]["directory"]}'
+        )
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
