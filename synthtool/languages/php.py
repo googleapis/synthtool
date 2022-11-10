@@ -93,6 +93,7 @@ def owlbot_copy_version(
     # detect the version string for later use
     src_dir = src / "src"
     entries = os.scandir(src_dir)
+    snippet_dir = src / "samples"
     if not entries:
         logger.info("there is no src directory '%s' to copy", src_dir)
         return
@@ -105,6 +106,10 @@ def owlbot_copy_version(
 
     # copy tests
     s.move([src / "tests"], dest / "tests", merge=_merge, excludes=copy_excludes)
+
+    # copy snippets
+    if os.path.isdir(snippet_dir):
+        s.move([snippet_dir], dest / "samples", merge=_merge, excludes=copy_excludes)
 
     # detect the directory containing proto generated PHP source and metadata.
     proto_src = src / "proto/src"
