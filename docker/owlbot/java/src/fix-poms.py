@@ -281,6 +281,14 @@ def main():
     group_id, artifact_id = repo_metadata["distribution_name"].split(":")
     name = repo_metadata["name_pretty"]
     existing_modules = load_versions("versions.txt", group_id)
+    monorepo = False
+    if not existing_modules:
+        # For single-component Release Please setup, the root versions.txt
+        # manages the versions of all submodules.
+        existing_modules = load_versions("../versions.txt", group_id)
+        if existing_modules:
+            monorepo = True
+    print(f"monoreop? {monorepo}")
 
     # extra modules that need to be manages in versions.txt
     if "extra_versioned_modules" in repo_metadata:
@@ -463,10 +471,12 @@ def main():
             name=name,
         )
 
-    if os.path.isfile("versions.txt"):
-        print("updating modules in versions.txt")
+    # For monorepo, we use the versions.txt at the root
+    versions_txt_file = "../versions.txt" if monorepo else "versions.txt"
+    if os.path.isfile(versions_txt_file):
+        print(f"updating modules in {versions_txt_file}")
     else:
-        print("creating missing versions.txt")
+        print(f"creating missing {versions_txt_file}")
     existing_modules.pop(parent_artifact_id)
 
     # add extra modules to versions.txt
@@ -479,7 +489,7 @@ def main():
                 release_version=main_module.release_version,
             )
     templates.render(
-        template_name="versions.txt.j2", output_name="./versions.txt", modules=existing_modules.values(),
+        template_name="versions.txt.j2", output_name=versions_txt_file, modules=existing_modules.values(),
     )
 
 if __name__ == "__main__":
