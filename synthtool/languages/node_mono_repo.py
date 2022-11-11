@@ -47,8 +47,24 @@ def read_metadata(relative_dir: str):
                 f"package.json is missing required fields {_REQUIRED_FIELDS}"
             )
 
-        repo = git.parse_repo_url(data["repository"])
+        repo_url = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else data["repository"]["url"]
+        )
 
+        repo = git.parse_repo_url(repo_url)
+
+        data["full_directory_path"] = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else f'{repo["owner"]}/{repo["name"]}/{data["repository"]["directory"]}'
+        )
+        data["homepage"] = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else data["homepage"]
+        )
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
