@@ -1,0 +1,33 @@
+steps:
+  # Write the latest commit message to a file in the workspace.
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: '/bin/sh'
+    args:
+      - '-c'
+      # Get the last commit in synthtool and write it to post-processor-changes.txt.
+      # If the commit message ends with parenthesis, remove them.
+      # If the commit message starts with feat or fix, replace it with chore.
+      # If the commit message includes ! followed by a colon to signal a breaking change, remove the !.
+      - >
+          git log -1 --format="%B%n%nSource-Link: https://github.com/googleapis/synthtool/commit/%H" > post-processor-changes.txt &&
+          sed -i "s/([^()]*)$//g" post-processor-changes.txt &&
+          sed -i "s/^\(feat\|fix\)/chore/g" post-processor-changes.txt &&
+          sed -i "s/\!:/:/g" post-processor-changes.txt
+  # Build the docker image.
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build'
+    args: [ 'build',
+      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA',
+      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs:latest',
+      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
+      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
+      '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
+  # Run container tests
+  - name: gcr.io/gcp-runtimes/container-structure-test
+    args:
+      - 'test'
+      - '--image'
+      - 'gcr.io/repo-automation-bots/owlbot-nodejs:$SHORT_SHA'
+      - '--config'
+      - 'docker/owlbot/nodejs/container_test.yaml'
+    waitFor: ['build']
