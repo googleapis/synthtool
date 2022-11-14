@@ -17,8 +17,8 @@ set -e
 
 # Runs template and etc in current working directory
 function processModule() {
-  # templates
-  echo "Generating templates..."
+  # templates as well as retrieving files from owl-bot-staging
+  echo "Generating templates and retrieving files from owl-bot-staging directory..."
   /owlbot/bin/write_templates.sh
   echo "...done"
 

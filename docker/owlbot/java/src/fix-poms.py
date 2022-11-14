@@ -308,6 +308,7 @@ def main():
     else:
         excluded_poms_list = ""
 
+    # Missing Case 1: When this library ('java-XXX' module) is new.
     if artifact_id not in existing_modules:
         existing_modules[artifact_id] = module.Module(
             group_id=group_id,
@@ -330,9 +331,18 @@ def main():
 
     required_dependencies = {}
     for dependency_module in existing_modules:
-        if dependency_module not in excluded_dependencies_list:
-            required_dependencies[dependency_module] = existing_modules[dependency_module]
+        if dependency_module in excluded_dependencies_list:
+            continue
+        artifact_id = existing_modules[dependency_module].artifact_id
+        if monorepo and not os.path.isdir(artifact_id):
+            # In monorepo, existing_modules are loaded form the root
+            # versions.txt and thus includes irrelevant artifacts
+            continue
+        required_dependencies[dependency_module] = existing_modules[dependency_module]
 
+    # Missing Case 2: There's a new proto-XXX and grpc-XXX directory. It's a new
+    # version in the proto file to a library. Both a new library and existing
+    # library.
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
