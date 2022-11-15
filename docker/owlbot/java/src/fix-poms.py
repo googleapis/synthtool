@@ -333,8 +333,8 @@ def main():
     for dependency_module in existing_modules:
         if dependency_module in excluded_dependencies_list:
             continue
-        artifact_id = existing_modules[dependency_module].artifact_id
-        if monorepo and not os.path.isdir(artifact_id):
+        dep_artifact_id = existing_modules[dependency_module].artifact_id
+        if monorepo and not os.path.isdir(dep_artifact_id):
             # In monorepo, existing_modules are loaded form the root
             # versions.txt and thus includes irrelevant artifacts
             continue
