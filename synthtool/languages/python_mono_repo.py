@@ -18,6 +18,7 @@ from pathlib import Path
 import shutil
 import synthtool as s
 import synthtool.gcp as gcp
+from typing import Union, Dict, List
 
 
 def create_gapic_version_py(package_dir: str):
@@ -246,7 +247,7 @@ def configure_release_please(owlbot_dirs: str):
                 package_name.replace("-", "/")
             )
 
-            output = []
+            output: List[Union[str, Dict[str, str]]] = []
             output.append(path_to_version_file)
             for file in Path(package_dir).glob("samples/**/*.json"):
                 sample_json = {}
