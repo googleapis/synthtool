@@ -228,6 +228,7 @@ class CommonTemplates:
         if (
             "versions" not in kwargs
             or not kwargs["metadata"]["repo"]["default_version"]
+            or kwargs["metadata"]["repo"]["default_version"] == "apiVersion"
         ):
             self.excludes += ["docs/index.rst"]
 

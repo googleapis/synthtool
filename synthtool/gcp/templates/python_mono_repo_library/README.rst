@@ -1,5 +1,5 @@
-Python Client for {{ metadata['repo']['name_pretty'] }} API
-======================{% for i in range(metadata['repo']['name_pretty']|length) %}={% endfor %}
+Python Client for {{ metadata['repo']['name_pretty'] }}
+=================={% for i in range(metadata['repo']['name_pretty']|length) %}={% endfor %}
 
 |{{ metadata['repo']['release_level'] }}| |pypi| |versions|
 

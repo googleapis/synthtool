@@ -112,6 +112,29 @@ def create_changelog_and_symlink_to_docs_changelog(package_dir: str):
     create_symlink_in_docs_dir(package_dir, "CHANGELOG.md")
 
 
+def update_url_in_setup_py(package_dir: str):
+    """Update the url in setup.py to point to the mono repo google-cloud-python
+
+    Args:
+        package_dir (str): path to the directory for a specific package. For example
+            'packages/google-cloud-video-transcoder'
+    """
+    path_to_setup_py = Path(f"{package_dir}/setup.py")
+
+    with open(path_to_setup_py, "r") as f:
+        new_setup_py = []
+        for line in f:
+            if line.startswith("""url = \"https://github.com/googleapis/python-"""):
+                new_setup_py.append(
+                    """url = \"https://github.com/googleapis/google-cloud-python\"\n"""
+                )
+            else:
+                new_setup_py.append(line)
+
+    with open(path_to_setup_py, "w") as f:
+        f.writelines(new_setup_py)
+
+
 def walk_through_owlbot_dirs(dir: Path):
     """
     Walks through all API packages in google-cloud-python/packages
@@ -154,9 +177,9 @@ def owlbot_main(package_dir: str) -> None:
             open(f"{Path(package_dir)}/.repo-metadata.json", "rt")
         ).get("default_version")
     except FileNotFoundError:
-        default_version = None
+        raise Exception("Could not find the default version")
 
-    if default_version:
+    if Path(f"owl-bot-staging/{Path(package_dir).name}").exists():
         for library in s.get_staging_dirs(
             default_version, f"owl-bot-staging/{Path(package_dir).name}"
         ):
@@ -166,7 +189,6 @@ def owlbot_main(package_dir: str) -> None:
                 )
                 clean_up_generated_samples = False
             s.move([library], package_dir, excludes=["**/gapic_version.py"])
-        s.remove_staging_dirs()
 
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
             relative_dir=f"packages/{Path(package_dir).name}",
@@ -189,6 +211,9 @@ def owlbot_main(package_dir: str) -> None:
         # create CHANGELOG.md and symlink to docs/CHANGELOG.md if it doesn't exist
         create_changelog_and_symlink_to_docs_changelog(package_dir)
 
+        # update the url in setup.py to point to google-cloud-python
+        update_url_in_setup_py(package_dir)
+
         # run format nox session for all directories which have a noxfile
         for noxfile in Path(".").glob(
             f"packages/{Path(package_dir).name}/**/noxfile.py"
@@ -197,7 +222,7 @@ def owlbot_main(package_dir: str) -> None:
 
 
 def configure_release_please(owlbot_dirs: str):
-    # add all packages to the .release-please-manifest.json 
+    # add all packages to the .release-please-manifest.json
     # and release-please-config.json files if they don't exist
     release_please_manifest = Path(".release-please-manifest.json")
     release_please_config = Path("release-please-config.json")
@@ -216,15 +241,36 @@ def configure_release_please(owlbot_dirs: str):
         config_json = json.load(f)
         for package_dir in owlbot_dirs:
             package_name = Path(package_dir).name
-            #if package_name not in config_json["packages"]:
-            path_to_version_file = "{}/gapic_version.py".format(package_name.replace("-","/"))
-            config_json["packages"][f"packages/{package_name}"] = {"component": f"{package_name}", "release-type": "python", "extra-files": [path_to_version_file],}
+            # if package_name not in config_json["packages"]:
+            path_to_version_file = "{}/gapic_version.py".format(
+                package_name.replace("-", "/")
+            )
+
+            output = []
+            output.append(path_to_version_file)
+            for file in Path(package_dir).glob("samples/**/*.json"):
+                sample_json = {}
+                sample_json["type"] = "json"
+                sample_json["path"] = str(file).replace(
+                    f"/workspace/google-cloud-python/packages/{package_name}/", ""
+                )
+                sample_json["jsonpath"] = "$.clientLibrary.version"
+                output.append(sample_json)
+
+            config_json["packages"][f"packages/{package_name}"] = {
+                "component": f"{package_name}",
+                "release-type": "python",
+                "extra-files": output,
+            }
 
     with open(release_please_config, "w") as f:
         json.dump(config_json, f, indent=4)
+
 
 if __name__ == "__main__":
     owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
     configure_release_please(owlbot_dirs)
     for package_dir in owlbot_dirs:
         owlbot_main(package_dir)
+
+    s.remove_staging_dirs()
