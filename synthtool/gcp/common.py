@@ -212,6 +212,32 @@ class CommonTemplates:
             kwargs["metadata"] = {}
         return self._generic_library("python_notebooks", **kwargs)
 
+    def py_mono_repo_library(self, relative_dir, **kwargs) -> Path:
+        # kwargs["metadata"] is required to load values from .repo-metadata.json
+        if "metadata" not in kwargs:
+            kwargs["metadata"] = {}
+
+        # load common repo meta information (metadata that's not language specific).
+        self._load_generic_metadata(kwargs["metadata"], relative_dir)
+
+        # initialize default_version if it doesn't exist in kwargs["metadata"]['repo']
+        if "default_version" not in kwargs["metadata"]["repo"]:
+            kwargs["metadata"]["repo"]["default_version"] = ""
+
+        # Don't add `docs/index.rst` if `versions` is not provided or `default_version` is empty
+        if (
+            "versions" not in kwargs
+            or not kwargs["metadata"]["repo"]["default_version"]
+            or kwargs["metadata"]["repo"]["default_version"] == "apiVersion"
+        ):
+            self.excludes += ["docs/index.rst"]
+
+        # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
+        if Path("google/cloud").exists():
+            kwargs["is_google_cloud_api"] = True
+
+        return self._generic_library("python_mono_repo_library", relative_dir, **kwargs)
+
     def py_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
