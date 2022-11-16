@@ -275,12 +275,20 @@ def update_bom_pom(filename: str, modules: List[module.Module]):
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
 def main():
+    print(f"working directory: {os.getcwd()}")
     with open(".repo-metadata.json", "r") as fp:
         repo_metadata = json.load(fp)
-
     group_id, artifact_id = repo_metadata["distribution_name"].split(":")
     name = repo_metadata["name_pretty"]
     existing_modules = load_versions("versions.txt", group_id)
+    monorepo = False
+    if not existing_modules:
+        # For single-component Release Please setup, the root versions.txt
+        # manages the versions of all submodules.
+        existing_modules = load_versions("../versions.txt", group_id)
+        if existing_modules:
+            monorepo = True
+    print(f"monorepo? {monorepo}")
 
     # extra modules that need to be manages in versions.txt
     if "extra_versioned_modules" in repo_metadata:
@@ -300,6 +308,7 @@ def main():
     else:
         excluded_poms_list = ""
 
+    # Missing Case 1: When this library ('java-XXX' module) is new.
     if artifact_id not in existing_modules:
         existing_modules[artifact_id] = module.Module(
             group_id=group_id,
@@ -322,9 +331,18 @@ def main():
 
     required_dependencies = {}
     for dependency_module in existing_modules:
-        if dependency_module not in excluded_dependencies_list:
-            required_dependencies[dependency_module] = existing_modules[dependency_module]
+        if dependency_module in excluded_dependencies_list:
+            continue
+        dep_artifact_id = existing_modules[dependency_module].artifact_id
+        if monorepo and not os.path.isdir(dep_artifact_id):
+            # In monorepo, existing_modules are loaded from the root
+            # versions.txt and thus includes irrelevant artifacts
+            continue
+        required_dependencies[dependency_module] = existing_modules[dependency_module]
 
+    # Missing Case 2: There's a new proto-XXX and grpc-XXX directory. It's a new
+    # version in the proto file to a library. Both a new library and existing
+    # library.
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
@@ -463,10 +481,10 @@ def main():
             name=name,
         )
 
-    if os.path.isfile("versions.txt"):
-        print("updating modules in versions.txt")
-    else:
-        print("creating missing versions.txt")
+    # For monorepo, we use the versions.txt at the root. The "./" is needed
+    # for the templates.render(), which tries to create a directory.
+    versions_txt_file = "../versions.txt" if monorepo else "./versions.txt"
+    print(f"updating modules in {versions_txt_file}")
     existing_modules.pop(parent_artifact_id)
 
     # add extra modules to versions.txt
@@ -479,7 +497,7 @@ def main():
                 release_version=main_module.release_version,
             )
     templates.render(
-        template_name="versions.txt.j2", output_name="./versions.txt", modules=existing_modules.values(),
+        template_name="versions.txt.j2", output_name=versions_txt_file, modules=existing_modules.values(),
     )
 
 if __name__ == "__main__":
