@@ -335,7 +335,7 @@ def main():
             continue
         dep_artifact_id = existing_modules[dependency_module].artifact_id
         if monorepo and not os.path.isdir(dep_artifact_id):
-            # In monorepo, existing_modules are loaded form the root
+            # In monorepo, existing_modules are loaded from the root
             # versions.txt and thus includes irrelevant artifacts
             continue
         required_dependencies[dependency_module] = existing_modules[dependency_module]
