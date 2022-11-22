@@ -485,7 +485,6 @@ def owlbot_entrypoint(
         owlbot_dirs = walk_through_owlbot_dirs(
             Path.cwd(), search_for_changed_files=False
         )
-        print(owlbot_dirs)
         for dir in owlbot_dirs:
             owlbot_main(
                 dir, template_path, staging_excludes, templates_excludes, patch_staging
