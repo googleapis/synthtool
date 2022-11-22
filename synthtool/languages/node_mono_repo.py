@@ -504,7 +504,7 @@ def owlbot_entrypoint(
             )
     if Path("release-please-config.json").is_file():
         write_release_please_config(
-            walk_through_owlbot_dirs(Path.cwd(), search_for_changed_file=False)
+            walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=False)
         )
 
 
