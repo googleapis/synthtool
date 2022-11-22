@@ -465,6 +465,14 @@ def test_owlbot_main_without_version():
         )
 
 
+def test_entrypoint_args_with_specified_dirs():
+    node_mono_repo.owlbot_main = MagicMock()
+    node_mono_repo.owlbot_entrypoint(
+        specified_owlbot_dirs="packages/google-cloud-compute"
+    )
+    assert node_mono_repo.owlbot_main.called_with(dir="packages/google-cloud-compute")
+
+
 def test_entrypoint_args_with_arg():
     node_mono_repo.walk_through_owlbot_dirs = MagicMock()
     node_mono_repo.owlbot_entrypoint(specified_owlbot_dirs=["all"])
