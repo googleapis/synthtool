@@ -358,12 +358,25 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
         ):
             if search_for_changed_files:
-                if subprocess.run(["git", "diff", "--quiet", "origin/main...", Path(path_object).parents[0]]).returncode == 1:
+                if (
+                    subprocess.run(
+                        [
+                            "git",
+                            "diff",
+                            "--quiet",
+                            "origin/main...",
+                            Path(path_object).parents[0],
+                        ]
+                    ).returncode
+                    == 1
+                ):
                     owlbot_dirs.append(str(Path(path_object).parents[0]))
             else:
                 owlbot_dirs.append(str(Path(path_object).parents[0]))
     for path_object in dir.glob("owl-bot-staging/*"):
-        owlbot_dirs.append(f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}")
+        owlbot_dirs.append(
+            f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}"
+        )
     return owlbot_dirs
 
 
@@ -468,8 +481,10 @@ def owlbot_entrypoint(
     templates_excludes: Optional[List[str]] = None,
     patch_staging: Callable[[Path], None] = _noop,
 ):
-    if specified_owlbot_dirs[0] == "all":
-        owlbot_dirs = walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=False)
+    if specified_owlbot_dirs and specified_owlbot_dirs[0] == "all":
+        owlbot_dirs = walk_through_owlbot_dirs(
+            Path.cwd(), search_for_changed_files=False
+        )
         print(owlbot_dirs)
         for dir in owlbot_dirs:
             owlbot_main(
@@ -481,18 +496,22 @@ def owlbot_entrypoint(
                 dir, template_path, staging_excludes, templates_excludes, patch_staging
             )
     else:
-        owlbot_dirs = walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=True)
+        owlbot_dirs = walk_through_owlbot_dirs(
+            Path.cwd(), search_for_changed_files=True
+        )
         for dir in owlbot_dirs:
             owlbot_main(
                 dir, template_path, staging_excludes, templates_excludes, patch_staging
             )
     if Path("release-please-config.json").is_file():
-        write_release_please_config(walk_through_owlbot_dirs(Path.cwd(), search_for_changed_file=False))
+        write_release_please_config(
+            walk_through_owlbot_dirs(Path.cwd(), search_for_changed_file=False)
+        )
 
 
 if __name__ == "__main__":
     # special arg available when using command-line: "all", searches through all packages
-    # otherwise, specify package names you wish to run in command line, i.e., 
+    # otherwise, specify package names you wish to run in command line, i.e.,
     # python -m synthtool.languages.node_mono_repo packages/google-cloud-compute,packages/google-cloud-asset
     # if nothing is specified, it will default to only search for changed files
     specified_owlbot_dirs = (sys.argv[1]).split(",")
