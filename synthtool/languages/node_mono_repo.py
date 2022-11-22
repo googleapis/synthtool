@@ -78,6 +78,9 @@ def read_metadata(relative_dir: str):
 
 
 def copy_list_sample_to_quickstart(relative_dir: str):
+    # If there is no samples directory, return early
+    if not Path(relative_dir, "samples").resolve().exists():
+        return
     # Check if the quickstart exists, so we don't overwrite it.
     if Path(relative_dir, "samples", "quickstart.js").resolve().exists():
         return
@@ -481,15 +484,7 @@ def owlbot_entrypoint(
     templates_excludes: Optional[List[str]] = None,
     patch_staging: Callable[[Path], None] = _noop,
 ):
-    if specified_owlbot_dirs and specified_owlbot_dirs[0] == "all":
-        owlbot_dirs = walk_through_owlbot_dirs(
-            Path.cwd(), search_for_changed_files=False
-        )
-        for dir in owlbot_dirs:
-            owlbot_main(
-                dir, template_path, staging_excludes, templates_excludes, patch_staging
-            )
-    elif specified_owlbot_dirs:
+    if specified_owlbot_dirs:
         for dir in specified_owlbot_dirs:
             owlbot_main(
                 dir, template_path, staging_excludes, templates_excludes, patch_staging
@@ -509,8 +504,8 @@ def owlbot_entrypoint(
 
 
 if __name__ == "__main__":
-    # special arg available when using command-line: "all", searches through all packages
-    # otherwise, specify package names you wish to run in command line, i.e.,
+    # TODO: support iterating through 'all' packages
+    # if you want to specify package names you wish to run in command line, i.e.,
     # python -m synthtool.languages.node_mono_repo packages/google-cloud-compute,packages/google-cloud-asset
     # if nothing is specified, it will default to only search for changed files
     specified_owlbot_dirs = (sys.argv[1]).split(",")

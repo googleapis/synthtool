@@ -316,7 +316,7 @@ def test_owlbot_main(hermetic_mock):
     with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_with_staging"):
         # just confirm it doesn't throw an exception.
         node_mono_repo.owlbot_entrypoint(
-            template_path=TEMPLATES, specified_owlbot_dirs=["all"]
+            template_path=TEMPLATES, specified_owlbot_dirs=["packages/dlp"]
         )
 
 
@@ -341,7 +341,7 @@ def test_owlbot_main_with_staging(hermetic_mock, nodejs_mono_repo):
         "rt",
     ).read()
     node_mono_repo.owlbot_entrypoint(
-        template_path=TEMPLATES, specified_owlbot_dirs=["all"]
+        template_path=TEMPLATES, specified_owlbot_dirs=["packages/dlp"]
     )
     # confirm index.ts was overwritten by template-generated index.ts.
     staging_text = open(
@@ -365,7 +365,7 @@ def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_mono_
         template_path=TEMPLATES,
         staging_excludes=["README.md", "package.json"],
         templates_excludes=["src/index.ts"],
-        specified_owlbot_dirs=["all"],
+        specified_owlbot_dirs=["packages/dlp"],
     )
     # confirm index.ts was overwritten by staging index.ts.
     staging_text = open(
@@ -396,7 +396,7 @@ def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_mono_repo):
     node_mono_repo.owlbot_entrypoint(
         template_path=TEMPLATES,
         templates_excludes=["src/index.ts"],
-        specified_owlbot_dirs=["all"],
+        specified_owlbot_dirs=["packages/dlp"],
     )
     # confirm index.ts was overwritten by staging index.ts.
     text = open("./packages/dlp/src/index.ts", "rt").read()
@@ -438,7 +438,7 @@ def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_mono_repo)
         staging_excludes=["README.md", "package.json"],
         templates_excludes=["src/index.ts"],
         patch_staging=patch,
-        specified_owlbot_dirs=["all"],
+        specified_owlbot_dirs=["packages/dlp"],
     )
     # confirm index.ts was overwritten by staging index.ts.
     staging_text = open(
@@ -458,10 +458,10 @@ def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_mono_repo)
 
 
 def test_owlbot_main_without_version():
-    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "no_version"):
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_without_version"):
         # just confirm it doesn't throw an exception.
         node_mono_repo.owlbot_entrypoint(
-            template_path=TEMPLATES, specified_owlbot_dirs=["all"]
+            template_path=TEMPLATES, specified_owlbot_dirs=["packages/no_version"]
         )
 
 
@@ -471,14 +471,6 @@ def test_entrypoint_args_with_specified_dirs():
         specified_owlbot_dirs="packages/google-cloud-compute"
     )
     assert node_mono_repo.owlbot_main.called_with(dir="packages/google-cloud-compute")
-
-
-def test_entrypoint_args_with_arg():
-    node_mono_repo.walk_through_owlbot_dirs = MagicMock()
-    node_mono_repo.owlbot_entrypoint(specified_owlbot_dirs=["all"])
-    node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
-        Path.cwd(), search_for_changed_files=False
-    )
 
 
 def test_entrypoint_args_with_no_arg():
