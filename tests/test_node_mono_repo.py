@@ -465,15 +465,7 @@ def test_owlbot_main_without_version():
         )
 
 
-def test_owlbot_main_without_version():
-    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "no_version"):
-        # just confirm it doesn't throw an exception.
-        node_mono_repo.owlbot_entrypoint(
-            template_path=TEMPLATES, specified_owlbot_dirs=["all"]
-        )
-
-
-def test_entrypoint_args():
+def test_entrypoint_args_with_arg():
     node_mono_repo.walk_through_owlbot_dirs = MagicMock()
     node_mono_repo.owlbot_entrypoint(specified_owlbot_dirs=["all"])
     node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
@@ -481,7 +473,7 @@ def test_entrypoint_args():
     )
 
 
-def test_entrypoint_args():
+def test_entrypoint_args_with_no_arg():
     node_mono_repo.walk_through_owlbot_dirs = MagicMock()
     node_mono_repo.owlbot_entrypoint()
     node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
