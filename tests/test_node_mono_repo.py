@@ -404,7 +404,7 @@ def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_mono_repo):
 
 
 @patch("subprocess.run")
-def test_walk_through_owlbot_dirs(mock_subproc_popen):
+def test_walk_through_owlbot_dirs_git_diff(mock_subproc_popen):
     process_mock = Mock()
     attrs = {"communicate.return_value": ("output", "error")}
     process_mock.configure_mock(**attrs)
@@ -426,18 +426,6 @@ def test_walk_through_owlbot_dirs(mock_subproc_popen):
     )
     assert not mock_subproc_popen.called
     assert re.search("packages/dlp", owlbot_dirs[0])
-
-
-@patch("synthtool.languages.node_mono_repo.walk_through_owlbot_dirs")
-def test_entrypoint_args(mock_walkthrough):
-    node_mono_repo.owlbot_entrypoint(specified_owlbot_dirs=["all"])
-    mock_walkthrough.assert_called_with(Path.cwd(), search_for_changed_files=False)
-
-
-@patch("synthtool.languages.node_mono_repo.walk_through_owlbot_dirs")
-def test_entrypoint_args(mock_walkthrough):
-    node_mono_repo.owlbot_entrypoint()
-    mock_walkthrough.assert_called_with(Path.cwd(), search_for_changed_files=True)
 
 
 @patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
@@ -483,3 +471,19 @@ def test_owlbot_main_without_version():
         node_mono_repo.owlbot_entrypoint(
             template_path=TEMPLATES, specified_owlbot_dirs=["all"]
         )
+
+
+def test_entrypoint_args():
+    node_mono_repo.walk_through_owlbot_dirs = MagicMock()
+    node_mono_repo.owlbot_entrypoint(specified_owlbot_dirs=["all"])
+    node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
+        Path.cwd(), search_for_changed_files=False
+    )
+
+
+def test_entrypoint_args():
+    node_mono_repo.walk_through_owlbot_dirs = MagicMock()
+    node_mono_repo.owlbot_entrypoint()
+    node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
+        Path.cwd(), search_for_changed_files=True
+    )
