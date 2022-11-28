@@ -361,7 +361,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
         except subprocess.CalledProcessError as e:
             if e.returncode == 128:
                 logger.info(
-                    "Skipping deep clone because we are likely running on a local copy"
+                    f"Error: ${e.output}; skipping fetching main"
                 )
             else:
                 raise e
