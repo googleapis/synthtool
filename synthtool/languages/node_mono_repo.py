@@ -355,7 +355,16 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     owlbot_dirs = []
     packages_to_exclude = [r"gapic-node-templating", r"node_modules"]
     if search_for_changed_files:
-        subprocess.run(["git", "fetch", "origin", "main", "--deepen=200"])
+        try:
+            output = subprocess.run(["git", "fetch", "origin", "main", "--deepen=200"])
+            output.check_returncode()
+        except subprocess.CalledProcessError as e:
+            if e.returncode == 128:
+                logger.info(
+                    "Skipping deep clone because we are likely running on a local copy"
+                )
+            else:
+                raise e
     for path_object in dir.glob("packages/**/.OwlBot.yaml"):
         if path_object.is_file() and not re.search(
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
@@ -508,5 +517,8 @@ if __name__ == "__main__":
     # if you want to specify package names you wish to run in command line, i.e.,
     # python -m synthtool.languages.node_mono_repo packages/google-cloud-compute,packages/google-cloud-asset
     # if nothing is specified, it will default to only search for changed files
-    specified_owlbot_dirs = (sys.argv[1]).split(",")
-    owlbot_entrypoint(specified_owlbot_dirs=specified_owlbot_dirs)
+    if len(sys.argv) > 1:
+        specified_owlbot_dirs = (sys.argv[1]).split(",")
+        owlbot_entrypoint(specified_owlbot_dirs=specified_owlbot_dirs)
+    else:
+        owlbot_entrypoint()
