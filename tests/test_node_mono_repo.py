@@ -18,7 +18,7 @@ import re
 import os
 from pathlib import Path
 from unittest import TestCase
-from unittest.mock import patch
+from unittest.mock import Mock, patch, MagicMock
 from datetime import date
 
 import pytest
@@ -315,7 +315,9 @@ class TestPostprocess(TestCase):
 def test_owlbot_main(hermetic_mock):
     with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_with_staging"):
         # just confirm it doesn't throw an exception.
-        node_mono_repo.owlbot_entrypoint(template_path=TEMPLATES)
+        node_mono_repo.owlbot_entrypoint(
+            template_path=TEMPLATES, specified_owlbot_dirs=["packages/dlp"]
+        )
 
 
 @pytest.fixture
@@ -338,7 +340,9 @@ def test_owlbot_main_with_staging(hermetic_mock, nodejs_mono_repo):
         / "index.ts",
         "rt",
     ).read()
-    node_mono_repo.owlbot_entrypoint(template_path=TEMPLATES)
+    node_mono_repo.owlbot_entrypoint(
+        template_path=TEMPLATES, specified_owlbot_dirs=["packages/dlp"]
+    )
     # confirm index.ts was overwritten by template-generated index.ts.
     staging_text = open(
         FIXTURES
@@ -361,6 +365,7 @@ def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_mono_
         template_path=TEMPLATES,
         staging_excludes=["README.md", "package.json"],
         templates_excludes=["src/index.ts"],
+        specified_owlbot_dirs=["packages/dlp"],
     )
     # confirm index.ts was overwritten by staging index.ts.
     staging_text = open(
@@ -389,11 +394,38 @@ def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_mono_repo):
         "rt",
     ).read()
     node_mono_repo.owlbot_entrypoint(
-        template_path=TEMPLATES, templates_excludes=["src/index.ts"]
+        template_path=TEMPLATES,
+        templates_excludes=["src/index.ts"],
+        specified_owlbot_dirs=["packages/dlp"],
     )
     # confirm index.ts was overwritten by staging index.ts.
     text = open("./packages/dlp/src/index.ts", "rt").read()
     assert original_text == text
+
+
+@patch("subprocess.run")
+def test_walk_through_owlbot_dirs_git_diff(mock_subproc_popen):
+    process_mock = Mock()
+    attrs = {"communicate.return_value": ("output", "error")}
+    process_mock.configure_mock(**attrs)
+    mock_subproc_popen.return_value = process_mock
+    node_mono_repo.walk_through_owlbot_dirs(
+        FIXTURES / "nodejs_mono_repo_with_staging", search_for_changed_files=True
+    )
+    assert mock_subproc_popen.called
+
+
+@patch("subprocess.run")
+def test_walk_through_owlbot_dirs(mock_subproc_popen):
+    process_mock = Mock()
+    attrs = {"communicate.return_value": ("output", "error")}
+    process_mock.configure_mock(**attrs)
+    mock_subproc_popen.return_value = process_mock
+    owlbot_dirs = node_mono_repo.walk_through_owlbot_dirs(
+        FIXTURES / "nodejs_mono_repo_with_staging", search_for_changed_files=False
+    )
+    assert not mock_subproc_popen.called
+    assert re.search("packages/dlp", owlbot_dirs[0])
 
 
 @patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
@@ -406,6 +438,7 @@ def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_mono_repo)
         staging_excludes=["README.md", "package.json"],
         templates_excludes=["src/index.ts"],
         patch_staging=patch,
+        specified_owlbot_dirs=["packages/dlp"],
     )
     # confirm index.ts was overwritten by staging index.ts.
     staging_text = open(
@@ -425,6 +458,24 @@ def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_mono_repo)
 
 
 def test_owlbot_main_without_version():
-    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "no_version"):
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_without_version"):
         # just confirm it doesn't throw an exception.
-        node_mono_repo.owlbot_entrypoint(template_path=TEMPLATES)
+        node_mono_repo.owlbot_entrypoint(
+            template_path=TEMPLATES, specified_owlbot_dirs=["packages/no_version"]
+        )
+
+
+def test_entrypoint_args_with_specified_dirs():
+    node_mono_repo.owlbot_main = MagicMock()
+    node_mono_repo.owlbot_entrypoint(
+        specified_owlbot_dirs="packages/google-cloud-compute"
+    )
+    assert node_mono_repo.owlbot_main.called_with(dir="packages/google-cloud-compute")
+
+
+def test_entrypoint_args_with_no_arg():
+    node_mono_repo.walk_through_owlbot_dirs = MagicMock()
+    node_mono_repo.owlbot_entrypoint()
+    node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
+        Path.cwd(), search_for_changed_files=True
+    )
