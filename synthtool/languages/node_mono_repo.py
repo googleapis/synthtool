@@ -356,7 +356,9 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     packages_to_exclude = [r"gapic-node-templating", r"node_modules"]
     if search_for_changed_files:
         try:
-            output = subprocess.run(["git", "fetch", "origin", "main", "--deepen=200"])
+            # Need to run this step first in the post processor since we only clone
+            # the branch the PR is on in the Docker container
+            output = subprocess.run(["git", "fetch", "origin", "main:main", "--deepen=200"])
             output.check_returncode()
         except subprocess.CalledProcessError as e:
             if e.returncode == 128:
@@ -374,7 +376,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
                             "git",
                             "diff",
                             "--quiet",
-                            "origin/main...",
+                            "main...",
                             Path(path_object).parents[0],
                         ]
                     ).returncode
