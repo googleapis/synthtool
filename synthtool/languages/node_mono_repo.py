@@ -358,7 +358,9 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
         try:
             # Need to run this step first in the post processor since we only clone
             # the branch the PR is on in the Docker container
-            output = subprocess.run(["git", "fetch", "origin", "main:main", "--deepen=200"])
+            output = subprocess.run(
+                ["git", "fetch", "origin", "main:main", "--deepen=200"]
+            )
             output.check_returncode()
         except subprocess.CalledProcessError as e:
             if e.returncode == 128:
