@@ -24,6 +24,9 @@ WORKDIR /
 RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
 RUN apt-get install -y nodejs
 
+###################### Install git.
+RUN apt-get update && apt-get install -y git
+
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install --require-hashes -r /synthtool/requirements.txt
@@ -50,5 +53,4 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 RUN cd /synthtool && mkdir node_modules && npm i gts@3.1.0 google-gax@3.5.2 \
     typescript@4.7.4 @google-cloud/typeless-sample-bot@1.0.3
 
-ENTRYPOINT [ "/bin/bash" ]
-CMD [ "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
+ENTRYPOINT [ "/bin/bash", "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]

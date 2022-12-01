@@ -16,6 +16,8 @@ import json
 from jinja2 import FileSystemLoader, Environment
 from pathlib import Path
 import re
+import sys
+import subprocess
 from synthtool import _tracked_paths, gcp, shell, transforms
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
@@ -47,8 +49,24 @@ def read_metadata(relative_dir: str):
                 f"package.json is missing required fields {_REQUIRED_FIELDS}"
             )
 
-        repo = git.parse_repo_url(data["repository"])
+        repo_url = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else data["repository"]["url"]
+        )
 
+        repo = git.parse_repo_url(repo_url)
+
+        data["full_directory_path"] = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else f'{repo["owner"]}/{repo["name"]}/{data["repository"]["directory"]}'
+        )
+        data["homepage"] = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else data["homepage"]
+        )
         data["repository"] = f'{repo["owner"]}/{repo["name"]}'
         data["repository_name"] = repo["name"]
         data["lib_install_cmd"] = f'npm install {data["name"]}'
@@ -60,6 +78,9 @@ def read_metadata(relative_dir: str):
 
 
 def copy_list_sample_to_quickstart(relative_dir: str):
+    # If there is no samples directory, return early
+    if not Path(relative_dir, "samples").resolve().exists():
+        return
     # Check if the quickstart exists, so we don't overwrite it.
     if Path(relative_dir, "samples", "quickstart.js").resolve().exists():
         return
@@ -324,7 +345,7 @@ def _noop(library: Path) -> None:
     pass
 
 
-def walk_through_owlbot_dirs(dir: Path):
+def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     """
     Walks through all API packages in google-cloud-node/packages
 
@@ -333,12 +354,43 @@ def walk_through_owlbot_dirs(dir: Path):
     """
     owlbot_dirs = []
     packages_to_exclude = [r"gapic-node-templating", r"node_modules"]
+    if search_for_changed_files:
+        try:
+            # Need to run this step first in the post processor since we only clone
+            # the branch the PR is on in the Docker container
+            output = subprocess.run(
+                ["git", "fetch", "origin", "main:main", "--deepen=200"]
+            )
+            output.check_returncode()
+        except subprocess.CalledProcessError as e:
+            if e.returncode == 128:
+                logger.info(f"Error: ${e.output}; skipping fetching main")
+            else:
+                raise e
     for path_object in dir.glob("packages/**/.OwlBot.yaml"):
         if path_object.is_file() and not re.search(
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
         ):
-            owlbot_dirs.append(str(Path(path_object).parents[0]))
-
+            if search_for_changed_files:
+                if (
+                    subprocess.run(
+                        [
+                            "git",
+                            "diff",
+                            "--quiet",
+                            "main...",
+                            Path(path_object).parents[0],
+                        ]
+                    ).returncode
+                    == 1
+                ):
+                    owlbot_dirs.append(str(Path(path_object).parents[0]))
+            else:
+                owlbot_dirs.append(str(Path(path_object).parents[0]))
+    for path_object in dir.glob("owl-bot-staging/*"):
+        owlbot_dirs.append(
+            f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}"
+        )
     return owlbot_dirs
 
 
@@ -350,7 +402,6 @@ def owlbot_main(
     patch_staging: Callable[[Path], None] = _noop,
 ) -> None:
     """Copies files from staging and template directories into current working dir.
-
     Args:
         template_path: path to template directory; omit except in tests.
         staging_excludes: paths to ignore when copying from the staging directory
@@ -358,24 +409,18 @@ def owlbot_main(
         patch_staging: callback function runs on each staging directory before
           copying it into repo root.  Add your regular expression substitution code
           here.
-
     When there is no owlbot.py file, run this function instead.  Also, when an
     owlbot.py file is necessary, the first statement of owlbot.py should probably
     call this function.
-
     Depends on owl-bot copying into a staging directory, so your .Owlbot.yaml should
     look a lot like this:
-
         docker:
             image: gcr.io/repo-automation-bots/owlbot-nodejs:latest
-
         deep-remove-regex:
             - /owl-bot-staging
-
         deep-copy-regex:
             - source: /google/cloud/video/transcoder/(.*)/.*-nodejs/(.*)
               dest: /owl-bot-staging/$1/$2
-
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
@@ -444,19 +489,38 @@ def owlbot_main(
 
 
 def owlbot_entrypoint(
+    specified_owlbot_dirs: Optional[List[str]] = None,
     template_path: Optional[Path] = None,
     staging_excludes: Optional[List[str]] = None,
     templates_excludes: Optional[List[str]] = None,
     patch_staging: Callable[[Path], None] = _noop,
 ):
-    owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
-    for dir in owlbot_dirs:
-        owlbot_main(
-            dir, template_path, staging_excludes, templates_excludes, patch_staging
+    if specified_owlbot_dirs:
+        for dir in specified_owlbot_dirs:
+            owlbot_main(
+                dir, template_path, staging_excludes, templates_excludes, patch_staging
+            )
+    else:
+        owlbot_dirs = walk_through_owlbot_dirs(
+            Path.cwd(), search_for_changed_files=True
         )
+        for dir in owlbot_dirs:
+            owlbot_main(
+                dir, template_path, staging_excludes, templates_excludes, patch_staging
+            )
     if Path("release-please-config.json").is_file():
-        write_release_please_config(owlbot_dirs)
+        write_release_please_config(
+            walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=False)
+        )
 
 
 if __name__ == "__main__":
-    owlbot_entrypoint()
+    # TODO: support iterating through 'all' packages
+    # if you want to specify package names you wish to run in command line, i.e.,
+    # python -m synthtool.languages.node_mono_repo packages/google-cloud-compute,packages/google-cloud-asset
+    # if nothing is specified, it will default to only search for changed files
+    if len(sys.argv) > 1:
+        specified_owlbot_dirs = (sys.argv[1]).split(",")
+        owlbot_entrypoint(specified_owlbot_dirs=specified_owlbot_dirs)
+    else:
+        owlbot_entrypoint()
