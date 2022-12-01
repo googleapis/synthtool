@@ -256,9 +256,11 @@ def typeless_samples_hermetic(hide_output=False):
     shell.run(
         [
             f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
-            "-t",
+            "--outputpath",
             "samples",
-            "-r",
+            "--targets",
+            "samples",
+            "--recursive",
         ],
         check=False,
         hide_output=hide_output,
