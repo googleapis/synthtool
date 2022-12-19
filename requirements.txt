@@ -176,9 +176,9 @@ packaging==21.3 \
     # via
     #   deprecation
     #   nox
-platformdirs==2.5.4 \
-    --hash=sha256:1006647646d80f16130f052404c6b901e80ee4ed6bef6792e1f238a8969106f7 \
-    --hash=sha256:af0276409f9a02373d540bf8480021a048711d572745aef4b7842dad245eba10
+platformdirs==2.6.0 \
+    --hash=sha256:1a89a12377800c81983db6be069ec068eee989748799b946cce2a6e80dcc54ca \
+    --hash=sha256:b46ffafa316e6b83b47489d240ce17173f123a9b9c83282141c3daf26ad9ac2e
     # via virtualenv
 protobuf==3.20.2 \
     --hash=sha256:03d76b7bd42ac4a6e109742a4edf81ffe26ffd87c5993126d894fe48a120396a \
