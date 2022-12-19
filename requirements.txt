@@ -301,7 +301,7 @@ watchdog==2.1.9 \
     # via -r requirements.in
 
 # The following packages are considered to be unsafe in a requirements file:
-setuptools==65.0.1 \
-    --hash=sha256:7a2e7e95c3bf33f356b4c59aee7a6848585c4219dd3e941e43cc117888f210e4 \
-    --hash=sha256:c04a012ae3a1b2cc2aeed4893377b70ea61c6c143d0acceea16ec4b60de6e40d
+setuptools==65.6.0 \
+    --hash=sha256:6211d2f5eddad8757bd0484923ca7c0a6302ebc4ab32ea5e94357176e0ca0840 \
+    --hash=sha256:d1eebf881c6114e51df1664bc2c9133d022f78d12d5f4f665b9191f084e2862d
     # via -r requirements.in
