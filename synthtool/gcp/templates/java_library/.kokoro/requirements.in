@@ -1,9 +1,5 @@
 gcp-docuploader
 gcp-releasetool
-importlib-metadata
-typing-extensions
-twine
 wheel
 setuptools
-charset-normalizer<3
 click<8.1.0
