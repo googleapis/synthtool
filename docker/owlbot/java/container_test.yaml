@@ -23,4 +23,4 @@ commandTests:
   expectedError: ["google-java-format: Version 1.7"]
 - name: "python"
   command: ["python", "--version"]
-  expectedOutput: ["Python 3.6.1"]
+  expectedOutput: ["Python 3.9.13"]
