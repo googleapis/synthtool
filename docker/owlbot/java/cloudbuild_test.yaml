@@ -59,4 +59,4 @@ steps:
     dir: synthtool/gcp/templates/java_library/.kokoro
     waitFor: ["-"]
     entrypoint: 'python'
-    args: [ "-m", "pip", "install", "-r", "requirements.txt" ]
+    args: [ "-m", "pip", "install", "--require-hashes", "-r", "requirements.txt" ]
