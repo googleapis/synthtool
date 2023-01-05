@@ -265,7 +265,7 @@ class CommonTemplates:
         if "default_python_version" not in kwargs:
             kwargs["default_python_version"] = "3.8"
         if "unit_test_python_versions" not in kwargs:
-            kwargs["unit_test_python_versions"] = ["3.7", "3.8", "3.9", "3.10"]
+            kwargs["unit_test_python_versions"] = ["3.7", "3.8", "3.9", "3.10", "3.11"]
 
         if "system_test_python_versions" not in kwargs:
             kwargs["system_test_python_versions"] = ["3.8"]
