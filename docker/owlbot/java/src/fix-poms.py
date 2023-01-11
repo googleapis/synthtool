@@ -318,6 +318,13 @@ def main():
         )
     main_module = existing_modules[artifact_id]
 
+    if artifact_id in ["grafeas", "google-cloud-dns",
+                       "google-cloud-notification"]:
+        # There are special libraries that are not automatically generated
+        print(f"Skipping a special case library {artifact_id} that do not have "
+              " the standard module structure.")
+        return
+
     parent_artifact_id = f"{artifact_id}-parent"
 
     if parent_artifact_id not in existing_modules:
