@@ -24,3 +24,6 @@ commandTests:
 - name: "python"
   command: ["python", "--version"]
   expectedOutput: ["Python 3.9.13"]
+- name: "java synthtool validation"
+  command: ["python", "-c", "'import synthtool.languages.java; print(\"Imported java synthtools\")'"]
+  expectedOutput: ["Imported java synthtool"]
