@@ -195,7 +195,7 @@ def owlbot_main(package_dir: str) -> None:
             relative_dir=f"packages/{Path(package_dir).name}",
             microgenerator=True,
             default_python_version="3.9",
-            unit_test_python_versions=["3.7", "3.8", "3.9", "3.10"],
+            unit_test_python_versions=["3.7", "3.8", "3.9", "3.10", "3.11"],
             cov_level=100,
             versions=gcp.common.detect_versions(
                 path=f"{package_dir}/google", default_first=True
