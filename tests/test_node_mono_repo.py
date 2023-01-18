@@ -474,7 +474,7 @@ def test_entrypoint_args_with_specified_dirs():
 
 
 def test_entrypoint_with_owlbot_py():
-    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_with_staging"):
+    with util.chdir(FIXTURES / "nodejs_mono_repo_with_staging"):
         node_mono_repo.owlbot_main = MagicMock()
         node_mono_repo.owlbot_entrypoint(
             specified_owlbot_dirs="packages/google-cloud-workflows-executions"
