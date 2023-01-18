@@ -27,6 +27,7 @@ import logging
 import shutil
 from synthtool.languages import common
 from datetime import date
+from os import system
 
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
@@ -499,21 +500,42 @@ def owlbot_entrypoint(
 ):
     if specified_owlbot_dirs:
         for dir in specified_owlbot_dirs:
-            owlbot_main(
-                dir, template_path, staging_excludes, templates_excludes, patch_staging
-            )
+            owlbot_py_file_path = hasOwlBotPy(dir)
+            if owlbot_py_file_path:
+                system(f"python {owlbot_py_file_path}")
+            else:
+                owlbot_main(
+                    dir,
+                    template_path,
+                    staging_excludes,
+                    templates_excludes,
+                    patch_staging,
+                )
     else:
         owlbot_dirs = walk_through_owlbot_dirs(
             Path.cwd(), search_for_changed_files=True
         )
         for dir in owlbot_dirs:
-            owlbot_main(
-                dir, template_path, staging_excludes, templates_excludes, patch_staging
-            )
+            owlbot_py_file_path = hasOwlBotPy(dir)
+            if owlbot_py_file_path:
+                system(f"python {owlbot_py_file_path}")
+            else:
+                owlbot_main(
+                    dir,
+                    template_path,
+                    staging_excludes,
+                    templates_excludes,
+                    patch_staging,
+                )
     if Path("release-please-config.json").is_file():
         write_release_please_config(
             walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=False)
         )
+
+
+def hasOwlBotPy(dir):
+    if Path(Path(dir, "owlbot.py").resolve()).exists():
+        return Path(dir, "owlbot.py").resolve()
 
 
 if __name__ == "__main__":
