@@ -21,4 +21,15 @@ import json
 import logging
 from pathlib import Path
 import shutil
-node.owlbot_main(relative_dir="packages/google-cloud-workflows-executions",templates_excludes=["src/index.ts"], staging_excludes=["src/v1/index.ts", "src/v1beta/index.ts", "src/index.ts", "README.md", "package.json"])
+
+node.owlbot_main(
+    relative_dir="packages/google-cloud-workflows-executions",
+    templates_excludes=["src/index.ts"],
+    staging_excludes=[
+        "src/v1/index.ts",
+        "src/v1beta/index.ts",
+        "src/index.ts",
+        "README.md",
+        "package.json",
+    ],
+)
