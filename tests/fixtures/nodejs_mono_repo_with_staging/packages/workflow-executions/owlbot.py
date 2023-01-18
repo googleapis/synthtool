@@ -13,14 +13,8 @@
 # limitations under the License.
 """This script is used to synthesize generated parts of this library."""
 
-import os
-import synthtool as s
-import synthtool.gcp as gcp
+
 import synthtool.languages.node_mono_repo as node
-import json
-import logging
-from pathlib import Path
-import shutil
 
 node.owlbot_main(
     relative_dir="packages/google-cloud-workflows-executions",
