@@ -468,7 +468,7 @@ def test_owlbot_main_without_version():
 def test_entrypoint_args_with_specified_dirs():
     node_mono_repo.owlbot_main = MagicMock()
     node_mono_repo.owlbot_entrypoint(
-        specified_owlbot_dirs="packages/google-cloud-compute"
+        specified_owlbot_dirs=["packages/google-cloud-compute"]
     )
     assert node_mono_repo.owlbot_main.called_with(dir="packages/google-cloud-compute")
 
@@ -477,9 +477,9 @@ def test_entrypoint_with_owlbot_py():
     with util.chdir(FIXTURES / "nodejs_mono_repo_with_staging"):
         node_mono_repo.owlbot_main = MagicMock()
         node_mono_repo.owlbot_entrypoint(
-            specified_owlbot_dirs="packages/google-cloud-workflows-executions"
+            specified_owlbot_dirs=["packages/workflow-executions"]
         )
-        node_mono_repo.owlbot_main.assert_called_with(
+        assert node_mono_repo.owlbot_main.called_with(
             relative_dir="packages/google-cloud-workflows-executions",
             templates_excludes=["src/index.ts"],
             staging_excludes=[
