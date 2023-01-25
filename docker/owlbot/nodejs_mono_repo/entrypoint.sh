@@ -15,8 +15,6 @@
 
 set -ex
 
-if [ -f owlbot.py ]; then
-    python owlbot.py
-else
-    python -m synthtool.languages.node_mono_repo
-fi
+RELATIVE_DIRS=$1
+
+python -m synthtool.languages.node_mono_repo $1

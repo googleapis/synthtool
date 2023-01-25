@@ -13,15 +13,16 @@ steps:
           sed -i "s/([^()]*)$//g" post-processor-changes.txt &&
           sed -i "s/^\(feat\|fix\)/chore/g" post-processor-changes.txt &&
           sed -i "s/\!:/:/g" post-processor-changes.txt
-    # Build the docker image.
-    - name: 'gcr.io/cloud-builders/docker'
-      args: [ 'build',
-        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA',
-        '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest',
-        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:$SHORT_SHA',
-        '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest',
-        '-f', 'docker/owlbot/nodejs_mono_repo/Dockerfile', '.' ]
-    # Push the docker image.
+  # Build the docker image.
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build'
+    args: [ 'build',
+      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA',
+      '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest',
+      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:$SHORT_SHA',
+      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest',
+      '-f', 'docker/owlbot/nodejs_mono_repo/Dockerfile', '.' ]
+# Push the docker image.
 images:
   - gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA
   - gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest
