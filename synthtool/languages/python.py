@@ -143,8 +143,7 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False, files_to_e
         sample_project_dir = req.parent
         log.info(f"Generating templates for samples project '{sample_project_dir}'")
 
-        excludes = ["**/*tmpl*"]  # .tmpl. files are partial templates
-        excludes += files_to_exclude
+        excludes.append("**/*tmpl*")  # .tmpl. files are partial templates
         sample_readme_metadata: Dict[str, Any] = {}
         if not skip_readmes:
             sample_readme_metadata = _get_sample_readme_metadata(sample_project_dir)
