@@ -107,7 +107,10 @@ def python_notebooks_testing_pipeline() -> None:
 
 
 def py_samples(
-    *, root: PathOrStr = None, skip_readmes: bool = False, files_to_exclude: list = []
+    *,
+    root: PathOrStr = None,
+    skip_readmes: bool = False,
+    files_to_exclude: List[str] = [],
 ) -> None:
     """
     Find all samples projects and render templates.
@@ -117,7 +120,7 @@ def py_samples(
     Args:
         root (Union[Path, str]): The samples directory root.
         skip_readmes (bool): If true, do not generate readmes.
-        files_to_exclude(list): defaults to empty, but if present,
+        files_to_exclude(List[str]): defaults to empty, but if present, adds files to excludes list
     """
     in_client_library = Path("samples").exists() and Path("setup.py").exists()
     if root is None:
