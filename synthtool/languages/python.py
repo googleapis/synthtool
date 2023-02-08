@@ -106,7 +106,12 @@ def python_notebooks_testing_pipeline() -> None:
         s.copy([NOTEBOOK_TEMPLATE_PATH], excludes=excludes)
 
 
-def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
+def py_samples(
+    *,
+    root: PathOrStr = None,
+    skip_readmes: bool = False,
+    files_to_exclude: List[str] = [],
+) -> None:
     """
     Find all samples projects and render templates.
     Samples projects always have a 'requirements.txt' file and may also have
@@ -115,6 +120,7 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
     Args:
         root (Union[Path, str]): The samples directory root.
         skip_readmes (bool): If true, do not generate readmes.
+        files_to_exclude(List[str]): defaults to empty, but if present, adds files to excludes list
     """
     in_client_library = Path("samples").exists() and Path("setup.py").exists()
     if root is None:
@@ -123,7 +129,7 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         else:
             root = "."
 
-    excludes = []
+    excludes = files_to_exclude
 
     # todo(kolea2): temporary exclusion until samples are ready to be migrated to new format
     excludes.append("README.md")
@@ -142,8 +148,7 @@ def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False) -> None:
         sample_project_dir = req.parent
         log.info(f"Generating templates for samples project '{sample_project_dir}'")
 
-        excludes = ["**/*tmpl*"]  # .tmpl. files are partial templates
-
+        excludes.append("**/*tmpl*")  # .tmpl. files are partial templates
         sample_readme_metadata: Dict[str, Any] = {}
         if not skip_readmes:
             sample_readme_metadata = _get_sample_readme_metadata(sample_project_dir)
