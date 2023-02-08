@@ -106,7 +106,9 @@ def python_notebooks_testing_pipeline() -> None:
         s.copy([NOTEBOOK_TEMPLATE_PATH], excludes=excludes)
 
 
-def py_samples(*, root: PathOrStr = None, skip_readmes: bool = False, files_to_exclude: list = []) -> None:
+def py_samples(
+    *, root: PathOrStr = None, skip_readmes: bool = False, files_to_exclude: list = []
+) -> None:
     """
     Find all samples projects and render templates.
     Samples projects always have a 'requirements.txt' file and may also have
