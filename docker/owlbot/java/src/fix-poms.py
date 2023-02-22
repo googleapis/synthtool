@@ -350,10 +350,11 @@ def main():
     # Missing Case 2: There's a new proto-XXX and grpc-XXX directory. It's a new
     # version in the proto file to a library. Both a new library and existing
     # library.
+    group_id_prefix = "com.google" if group_id == "com.google.cloud" else group_id
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
-                group_id="com.google.api.grpc",
+                group_id=f"{group_id_prefix}.api.grpc",
                 artifact_id=path,
                 version=main_module.version,
                 release_version=main_module.release_version,
@@ -361,7 +362,7 @@ def main():
             if path not in excluded_dependencies_list \
                     and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=f"{group_id_prefix}.api.grpc",
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -378,7 +379,7 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=f"{group_id_prefix}.api.grpc",
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -387,7 +388,7 @@ def main():
     for path in glob.glob("grpc-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
-                group_id="com.google.api.grpc",
+                group_id=f"{group_id_prefix}.api.grpc",
                 artifact_id=path,
                 version=main_module.version,
                 release_version=main_module.release_version,
@@ -395,7 +396,7 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=f"{group_id_prefix}.api.grpc",
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -415,7 +416,7 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=f"{group_id_prefix}.api.grpc",
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -498,7 +499,7 @@ def main():
     for dependency_module in extra_managed_modules:
         if dependency_module not in existing_modules:
             existing_modules[dependency_module] = module.Module(
-                group_id="com.google.api.grpc",
+                group_id=f"{group_id_prefix}.api.grpc",
                 artifact_id=dependency_module,
                 version=main_module.version,
                 release_version=main_module.release_version,
