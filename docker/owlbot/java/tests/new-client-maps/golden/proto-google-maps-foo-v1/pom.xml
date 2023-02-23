@@ -6,7 +6,7 @@
   <artifactId>proto-google-maps-foo-v1</artifactId>
   <version>0.0.1-SNAPSHOT</version><!-- {x-version-update:proto-google-maps-foo-v1:current} -->
   <name>proto-google-maps-foo-v1</name>
-  <description>Proto library for google-maps-maps</description>
+  <description>Proto library for google-maps-foo</description>
   <parent>
     <groupId>com.google.maps</groupId>
     <artifactId>google-maps-foo-parent</artifactId>
