@@ -43,7 +43,7 @@
     </dependency>
 {% for module in proto_modules %}
     <dependency>
-      <groupId>com.google.api.grpc</groupId>
+      <groupId>{{module.group_id}}</groupId>
       <artifactId>{{module.artifact_id}}</artifactId>
     </dependency>{% endfor %}
     <dependency>
