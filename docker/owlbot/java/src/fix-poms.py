@@ -39,7 +39,7 @@ def load_versions(filename: str, default_group_id: str) -> Mapping[str, module.M
                 group_id = (
                     default_group_id
                     if artifact_id.startswith("google-")
-                    else "com.google.api.grpc"
+                    else _proto_group_id(default_group_id)
                 )
                 modules[artifact_id] = module.Module(
                     group_id=group_id,
@@ -274,6 +274,12 @@ def update_bom_pom(filename: str, modules: List[module.Module]):
 
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
+
+def _proto_group_id(group_id: str) -> str:
+    prefix = "com.google" if group_id == "com.google.cloud" else group_id
+    return f"{prefix}.api.grpc"
+
+
 def main():
     print(f"working directory: {os.getcwd()}")
     with open(".repo-metadata.json", "r") as fp:
@@ -350,11 +356,10 @@ def main():
     # Missing Case 2: There's a new proto-XXX and grpc-XXX directory. It's a new
     # version in the proto file to a library. Both a new library and existing
     # library.
-    group_id_prefix = "com.google" if group_id == "com.google.cloud" else group_id
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
-                group_id=f"{group_id_prefix}.api.grpc",
+                group_id=_proto_group_id(group_id),
                 artifact_id=path,
                 version=main_module.version,
                 release_version=main_module.release_version,
@@ -362,7 +367,7 @@ def main():
             if path not in excluded_dependencies_list \
                     and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id=f"{group_id_prefix}.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -379,7 +384,7 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id=f"{group_id_prefix}.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -388,7 +393,7 @@ def main():
     for path in glob.glob("grpc-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
-                group_id=f"{group_id_prefix}.api.grpc",
+                group_id=_proto_group_id(group_id),
                 artifact_id=path,
                 version=main_module.version,
                 release_version=main_module.release_version,
@@ -396,7 +401,7 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id=f"{group_id_prefix}.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -416,7 +421,7 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id=f"{group_id_prefix}.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -499,7 +504,7 @@ def main():
     for dependency_module in extra_managed_modules:
         if dependency_module not in existing_modules:
             existing_modules[dependency_module] = module.Module(
-                group_id=f"{group_id_prefix}.api.grpc",
+                group_id=_proto_group_id(group_id),
                 artifact_id=dependency_module,
                 version=main_module.version,
                 release_version=main_module.release_version,
