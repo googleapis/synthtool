@@ -6,7 +6,7 @@
   <artifactId>proto-google-cloud-foo-v1</artifactId>
   <version>0.0.1-SNAPSHOT</version><!-- {x-version-update:proto-google-cloud-foo-v1:current} -->
   <name>proto-google-cloud-foo-v1</name>
-  <description>Proto library for google-maps-foo</description>
+  <description>Proto library for google-cloud-foo</description>
   <parent>
     <groupId>com.google.cloud</groupId>
     <artifactId>google-cloud-foo-parent</artifactId>
