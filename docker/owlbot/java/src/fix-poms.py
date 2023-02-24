@@ -275,8 +275,14 @@ def update_bom_pom(filename: str, modules: List[module.Module]):
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
 
-def _proto_group_id(group_id: str) -> str:
-    prefix = "com.google" if group_id == "com.google.cloud" else group_id
+# When generating non-cloud client library, the group id of proto/grpc artifacts
+# is prefixed with `{main_artifact_group_id}.api.grpc`, rather than
+# `com.google.api.grpc`.
+# https://github.com/googleapis/google-cloud-java/issues/9125
+def _proto_group_id(main_artifact_group_id: str) -> str:
+    prefix = "com.google" \
+        if main_artifact_group_id == "com.google.cloud" \
+        else main_artifact_group_id
     return f"{prefix}.api.grpc"
 
 
@@ -389,7 +395,7 @@ def main():
                     version=main_module.version,
                     release_version=main_module.release_version,
                 )
-          
+
     for path in glob.glob("grpc-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
@@ -406,7 +412,7 @@ def main():
                     version=main_module.version,
                     release_version=main_module.release_version,
                 )
-            
+
         if not os.path.isfile(f"{path}/pom.xml"):
             proto_artifact_id = path.replace("grpc-", "proto-")
             print(f"creating missing grpc pom: {path}")
@@ -512,6 +518,7 @@ def main():
     templates.render(
         template_name="versions.txt.j2", output_name=versions_txt_file, modules=existing_modules.values(),
     )
+
 
 if __name__ == "__main__":
     main()
