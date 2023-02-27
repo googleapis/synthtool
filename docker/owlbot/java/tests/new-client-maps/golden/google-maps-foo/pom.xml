@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>{{module.group_id}}</groupId>
-  <artifactId>{{module.artifact_id}}</artifactId>
-  <version>{{module.version}}</version><!-- {x-version-update:{{module.artifact_id}}:current} -->
+  <groupId>com.google.maps</groupId>
+  <artifactId>google-maps-foo</artifactId>
+  <version>0.0.1-SNAPSHOT</version><!-- {x-version-update:google-maps-foo:current} -->
   <packaging>jar</packaging>
-  <name>Google {{name}}</name>
-  <url>https://github.com/{{repo}}</url>
-  <description>{{name}} {{description}}</description>
+  <name>Google Example API</name>
+  <url>https://github.com/googleapis/java-maps</url>
+  <description>Example API is an example API</description>
   <parent>
-    <groupId>{{parent_module.group_id}}</groupId>
-    <artifactId>{{parent_module.artifact_id}}</artifactId>
-    <version>{{parent_module.version}}</version><!-- {x-version-update:{{module.artifact_id}}:current} -->
+    <groupId>com.google.maps</groupId>
+    <artifactId>google-maps-foo-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version><!-- {x-version-update:google-maps-foo:current} -->
   </parent>
   <properties>
-    <site.installationModule>{{module.artifact_id}}</site.installationModule>
+    <site.installationModule>google-maps-foo</site.installationModule>
   </properties>
   <dependencies>
     <dependency>
@@ -41,11 +41,11 @@
       <groupId>com.google.api.grpc</groupId>
       <artifactId>proto-google-common-protos</artifactId>
     </dependency>
-{% for module in proto_modules %}
+
     <dependency>
-      <groupId>{{module.group_id}}</groupId>
-      <artifactId>{{module.artifact_id}}</artifactId>
-    </dependency>{% endfor %}
+      <groupId>com.google.maps.api.grpc</groupId>
+      <artifactId>proto-google-maps-foo-v1</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -86,12 +86,12 @@
       <scope>test</scope>
       <version>4.13.2</version>
     </dependency>
-{% for module in grpc_modules %}
+
     <dependency>
-      <groupId>{{module.group_id}}</groupId>
-      <artifactId>{{module.artifact_id}}</artifactId>
+      <groupId>com.google.maps.api.grpc</groupId>
+      <artifactId>grpc-google-maps-foo-v1</artifactId>
       <scope>test</scope>
-    </dependency>{% endfor %}
+    </dependency>
     <!-- Need testing utility classes for generated gRPC clients tests -->
     <dependency>
       <groupId>com.google.api</groupId>
