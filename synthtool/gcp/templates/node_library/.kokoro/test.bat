@@ -21,6 +21,10 @@ cd ..
 @rem we upgrade Node.js in the image:
 SET PATH=%PATH%;/cygdrive/c/Program Files/nodejs/npm
 
+@rem setup service account credentials.
+SET GOOGLE_APPLICATION_CREDENTIALS=%KOKORO_GFILE_DIR%/secret_manager/long-door-651-kokoro-system-test-service-account
+SET GCLOUD_PROJECT={{ test_project or 'long-door-651' }}
+
 call nvm use v12.14.1
 call which node
 
