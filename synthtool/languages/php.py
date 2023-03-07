@@ -107,7 +107,9 @@ def owlbot_copy_version(
         # copy snippets
         snippet_dir = src / "samples"
         if os.path.isdir(snippet_dir):
-            s.move([snippet_dir], dest / "samples", merge=_merge, excludes=copy_excludes)
+            s.move(
+                [snippet_dir], dest / "samples", merge=_merge, excludes=copy_excludes
+            )
     else:
         logger.info("there is no src directory '%s' to copy", src_dir)
 
@@ -119,9 +121,13 @@ def owlbot_copy_version(
         metadata_dir = None
         for entry in entries:
             if os.path.basename(entry.path) == METADATA_DIR:
-                metadata_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
+                metadata_dir = _find_copy_target(
+                    Path(entry.path).resolve(), version_string
+                )
             else:
-                proto_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
+                proto_dir = _find_copy_target(
+                    Path(entry.path).resolve(), version_string
+                )
 
         # copy proto files
         if isinstance(proto_dir, Path):
@@ -131,7 +137,9 @@ def owlbot_copy_version(
         # copy metadata files
         if isinstance(metadata_dir, Path):
             logger.debug("metadata_dir detected: %s", metadata_dir)
-            s.move([metadata_dir], dest / "metadata", merge=_merge, excludes=copy_excludes)
+            s.move(
+                [metadata_dir], dest / "metadata", merge=_merge, excludes=copy_excludes
+            )
     else:
         logger.info("there is no proto generated src directory to copy: %s", proto_src)
 
