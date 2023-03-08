@@ -116,6 +116,9 @@ def owlbot_copy_version(
     # detect the directory containing proto generated PHP source and metadata.
     proto_src = src / "proto/src"
     if os.path.isdir(proto_src):
+        if not version_string:
+            logger.info("cannot move protos without a version_string provided")
+            return
         entries = os.scandir(proto_src)
         proto_dir = None
         metadata_dir = None
