@@ -117,7 +117,9 @@ def owlbot_copy_version(
     proto_src = src / "proto/src"
     if os.path.isdir(proto_src):
         if not version_string:
-            logger.info("cannot move protos without a version_string detected or provided")
+            logger.info(
+                "cannot move protos without a version_string detected or provided"
+            )
             return
         entries = os.scandir(proto_src)
         proto_dir = None
