@@ -92,48 +92,61 @@ def owlbot_copy_version(
         copy_excludes = DEFAULT_COPY_EXCLUDES
     # detect the version string for later use
     src_dir = src / "src"
-    entries = os.scandir(src_dir)
-    snippet_dir = src / "samples"
-    if not entries:
+    if os.path.isdir(src_dir):
+        entries = os.scandir(src_dir)
+        if not version_string:
+            version_string = os.path.basename(os.path.basename(next(entries))).lower()
+            logger.debug("version_string detected: %s", version_string)
+
+        # copy all src including partial veneer classes
+        s.move([src / "src"], dest / "src", merge=_merge, excludes=copy_excludes)
+
+        # copy tests
+        s.move([src / "tests"], dest / "tests", merge=_merge, excludes=copy_excludes)
+
+        # copy snippets
+        snippet_dir = src / "samples"
+        if os.path.isdir(snippet_dir):
+            s.move(
+                [snippet_dir], dest / "samples", merge=_merge, excludes=copy_excludes
+            )
+    else:
         logger.info("there is no src directory '%s' to copy", src_dir)
-        return
-    if not version_string:
-        version_string = os.path.basename(os.path.basename(next(entries))).lower()
-        logger.debug("version_string detected: %s", version_string)
-
-    # copy all src including partial veneer classes
-    s.move([src / "src"], dest / "src", merge=_merge, excludes=copy_excludes)
-
-    # copy tests
-    s.move([src / "tests"], dest / "tests", merge=_merge, excludes=copy_excludes)
-
-    # copy snippets
-    if os.path.isdir(snippet_dir):
-        s.move([snippet_dir], dest / "samples", merge=_merge, excludes=copy_excludes)
 
     # detect the directory containing proto generated PHP source and metadata.
     proto_src = src / "proto/src"
-    entries = os.scandir(proto_src)
-    proto_dir = None
-    metadata_dir = None
-    if not entries:
+    if os.path.isdir(proto_src):
+        if not version_string:
+            logger.info(
+                "cannot move protos without a version_string detected or provided"
+            )
+            return
+        entries = os.scandir(proto_src)
+        proto_dir = None
+        metadata_dir = None
+        for entry in entries:
+            if os.path.basename(entry.path) == METADATA_DIR:
+                metadata_dir = _find_copy_target(
+                    Path(entry.path).resolve(), version_string
+                )
+            else:
+                proto_dir = _find_copy_target(
+                    Path(entry.path).resolve(), version_string
+                )
+
+        # copy proto files
+        if isinstance(proto_dir, Path):
+            logger.debug("proto_dir detected: %s", proto_dir)
+            s.move([proto_dir], dest / "src", merge=_merge, excludes=copy_excludes)
+
+        # copy metadata files
+        if isinstance(metadata_dir, Path):
+            logger.debug("metadata_dir detected: %s", metadata_dir)
+            s.move(
+                [metadata_dir], dest / "metadata", merge=_merge, excludes=copy_excludes
+            )
+    else:
         logger.info("there is no proto generated src directory to copy: %s", proto_src)
-        return
-    for entry in entries:
-        if os.path.basename(entry.path) == METADATA_DIR:
-            metadata_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
-        else:
-            proto_dir = _find_copy_target(Path(entry.path).resolve(), version_string)
-
-    # copy proto files
-    if isinstance(proto_dir, Path):
-        logger.debug("proto_dir detected: %s", proto_dir)
-        s.move([proto_dir], dest / "src", merge=_merge, excludes=copy_excludes)
-
-    # copy metadata files
-    if isinstance(metadata_dir, Path):
-        logger.debug("metadata_dir detected: %s", metadata_dir)
-        s.move([metadata_dir], dest / "metadata", merge=_merge, excludes=copy_excludes)
 
 
 def owlbot_patch() -> None:
