@@ -116,3 +116,6 @@ venv.bak/
 working_repo/
 sponge_log.xml
 post-processor-changes.txt
+
+# Mac
+.DS_Store
