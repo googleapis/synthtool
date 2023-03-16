@@ -238,7 +238,7 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [kokoro-badge-link-5]: http://storage.googleapis.com/cloud-devrel-public/java/badges/{{ repo_short }}/java11.html
 [stability-image]: https://img.shields.io/badge/stability-{% if metadata['repo']['release_level'] == 'stable' %}stable-green{% elif metadata['repo']['release_level'] == 'preview' %}preview-yellow{% else %}unknown-red{% endif %}
 [maven-version-image]: https://img.shields.io/maven-central/v/{{ group_id }}/{{ artifact_id }}.svg
-[maven-version-link]: https://search.maven.org/search?q=g:{{ group_id }}%20AND%20a:{{ artifact_id }}&core=gav
+[maven-version-link]: https://central.sonatype.com/artifact/{{ group_id }}/{{ artifact_id }}/{{ metadata['latest_version'] }}
 [authentication]: https://github.com/googleapis/google-cloud-java#authentication
 [auth-scopes]: https://developers.google.com/identity/protocols/oauth2/scopes
 [predefined-iam-roles]: https://cloud.google.com/iam/docs/understanding-roles#predefined_roles
