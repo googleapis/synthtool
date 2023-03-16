@@ -330,8 +330,9 @@ def main():
         )
     main_module = existing_modules[artifact_id]
 
+    # Artifact ID is part of distribution name field in .repo-metadata.json
     if artifact_id in ["grafeas", "google-cloud-dns",
-                       "google-cloud-notification", "java-iam"]:
+                       "google-cloud-notification", "google-iam-policy"]:
         # There are special libraries that are not automatically generated
         print(f"Skipping a special case library {artifact_id} that do not have "
               " the standard module structure.")
