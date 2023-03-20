@@ -37,6 +37,7 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
 If you are using Maven without BOM, add this to your dependencies:
 {% else %}
 If you are using Maven, add this to your pom.xml file:
+<!-- {x-version-update-start:{{ artifact_id }}:released} -->
 {% endif %}
 
 ```xml
@@ -72,6 +73,7 @@ If you are using SBT, add this to your dependencies:
 ```Scala
 libraryDependencies += "{{ group_id }}" % "{{ artifact_id }}" % "{{ metadata['latest_version'] }}"
 ```
+<!-- {x-version-update-end} -->
 
 ## Authentication
 
