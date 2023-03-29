@@ -5,7 +5,7 @@
 {% if 'partials' in metadata and metadata['partials']['title'] -%}
 {{ metadata['partials']['title'] }}
 {% else -%}
-# [{{ metadata['repo']['name_pretty'] }}: {{ metadata['repo']['language']|language_pretty }} Client](https://github.com/{{ metadata['repo']['repo'] }})
+# [{{ metadata['repo']['name_pretty'] }}: {{ metadata['repo']['language']|language_pretty }} Client](https://github.com/{{ metadata['homepage'] }})
 {%- endif %}
 
 {{ metadata['repo']['release_level']|release_quality_badge }}
@@ -74,7 +74,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 {% if metadata['samples']|length %}
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/{{ metadata['repo']['default_branch'] }}/samples) directory. Each sample's `README.md` has instructions for running its sample.
+Samples are in the [`samples/`](https://github.com/{{  metadata['homepage'] }}/samples) directory. Each sample's `README.md` has instructions for running its sample.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
