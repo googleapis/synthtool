@@ -39,7 +39,7 @@ def load_versions(filename: str, default_group_id: str) -> Mapping[str, module.M
                 group_id = (
                     default_group_id
                     if artifact_id.startswith("google-")
-                    else "com.google.api.grpc"
+                    else _proto_group_id(default_group_id)
                 )
                 modules[artifact_id] = module.Module(
                     group_id=group_id,
@@ -274,6 +274,18 @@ def update_bom_pom(filename: str, modules: List[module.Module]):
 
     tree.write(filename, pretty_print=True, xml_declaration=True, encoding="utf-8")
 
+
+# When generating non-cloud client library, the group id of proto/grpc artifacts
+# is prefixed with `{main_artifact_group_id}.api.grpc`, rather than
+# `com.google.api.grpc`.
+# https://github.com/googleapis/google-cloud-java/issues/9125
+def _proto_group_id(main_artifact_group_id: str) -> str:
+    prefix = "com.google" \
+        if main_artifact_group_id == "com.google.cloud" \
+        else main_artifact_group_id
+    return f"{prefix}.api.grpc"
+
+
 def main():
     print(f"working directory: {os.getcwd()}")
     with open(".repo-metadata.json", "r") as fp:
@@ -318,6 +330,14 @@ def main():
         )
     main_module = existing_modules[artifact_id]
 
+    # Artifact ID is part of distribution name field in .repo-metadata.json
+    if artifact_id in ["grafeas", "google-cloud-dns",
+                       "google-cloud-notification", "google-iam-policy"]:
+        # There are special libraries that are not automatically generated
+        print(f"Skipping a special case library {artifact_id} that do not have "
+              " the standard module structure.")
+        return
+
     parent_artifact_id = f"{artifact_id}-parent"
 
     if parent_artifact_id not in existing_modules:
@@ -346,7 +366,7 @@ def main():
     for path in glob.glob("proto-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
-                group_id="com.google.api.grpc",
+                group_id=_proto_group_id(group_id),
                 artifact_id=path,
                 version=main_module.version,
                 release_version=main_module.release_version,
@@ -354,7 +374,7 @@ def main():
             if path not in excluded_dependencies_list \
                     and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -371,16 +391,16 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
                 )
-          
+
     for path in glob.glob("grpc-google-*"):
         if not path in existing_modules:
             existing_modules[path] = module.Module(
-                group_id="com.google.api.grpc",
+                group_id=_proto_group_id(group_id),
                 artifact_id=path,
                 version=main_module.version,
                 release_version=main_module.release_version,
@@ -388,12 +408,12 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
                 )
-            
+
         if not os.path.isfile(f"{path}/pom.xml"):
             proto_artifact_id = path.replace("grpc-", "proto-")
             print(f"creating missing grpc pom: {path}")
@@ -408,7 +428,7 @@ def main():
             if path not in excluded_dependencies_list \
                 and path not in main_module.artifact_id:
                 required_dependencies[path] = module.Module(
-                    group_id="com.google.api.grpc",
+                    group_id=_proto_group_id(group_id),
                     artifact_id=path,
                     version=main_module.version,
                     release_version=main_module.release_version,
@@ -491,7 +511,7 @@ def main():
     for dependency_module in extra_managed_modules:
         if dependency_module not in existing_modules:
             existing_modules[dependency_module] = module.Module(
-                group_id="com.google.api.grpc",
+                group_id=_proto_group_id(group_id),
                 artifact_id=dependency_module,
                 version=main_module.version,
                 release_version=main_module.release_version,
@@ -499,6 +519,7 @@ def main():
     templates.render(
         template_name="versions.txt.j2", output_name=versions_txt_file, modules=existing_modules.values(),
     )
+
 
 if __name__ == "__main__":
     main()

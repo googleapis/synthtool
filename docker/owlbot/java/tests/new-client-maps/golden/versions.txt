@@ -1,0 +1,6 @@
+# Format:
+# module:released-version:current-version
+
+google-maps-foo:0.0.0:0.0.1-SNAPSHOT
+proto-google-maps-foo-v1:0.0.0:0.0.1-SNAPSHOT
+grpc-google-maps-foo-v1:0.0.0:0.0.1-SNAPSHOT
