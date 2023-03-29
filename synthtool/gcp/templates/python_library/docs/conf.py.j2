@@ -370,7 +370,7 @@ intersphinx_mapping = {
     "protobuf": ("https://googleapis.dev/python/protobuf/latest/", None),
     {%- if intersphinx_dependencies %}
         {% for name, url in intersphinx_dependencies.items() %}
-            "{{ name }}": ("{{ url }}", None),
+    "{{ name }}": ("{{ url }}", None),
         {% endfor %}
     {% endif %}
 }
