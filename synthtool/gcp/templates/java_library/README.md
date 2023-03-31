@@ -36,8 +36,7 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
 
 If you are using Maven without the BOM, add this to your dependencies:
 {% elif monorepo %}
-If you are using Maven with [BOM][libraries-bom], add the following elements to
-your pom.xml file:
+If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
 
 ```xml
 <dependencyManagement>
