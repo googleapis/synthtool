@@ -35,6 +35,29 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
 ```
 
 If you are using Maven without BOM, add this to your dependencies:
+{% elif monorepo is defined and monorepo %}
+If you are using Maven with [BOM][libraries-bom], add the following elements to
+your pom.xml file:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>libraries-bom</artifactId>
+      <version>{{ metadata['latest_bom_version'] }}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>{{ group_id }}</groupId>
+    <artifactId>{{ artifact_id }}</artifactId>
+  </dependency>
+```
 {% else %}
 If you are using Maven, add this to your pom.xml file:
 <!-- {x-version-update-start:{{ artifact_id }}:released} -->
