@@ -34,11 +34,35 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
 {{ metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] }}
 ```
 
-If you are using Maven without BOM, add this to your dependencies:
+If you are using Maven without the BOM, add this to your dependencies:
+{% elif monorepo %}
+If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>libraries-bom</artifactId>
+      <version>{{ metadata['latest_bom_version'] }}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+
+<dependencies>
+  <dependency>
+    <groupId>{{ group_id }}</groupId>
+    <artifactId>{{ artifact_id }}</artifactId>
+  </dependency>
+```
+
+If you are using Maven without the BOM, add this to your dependencies:
 {% else %}
 If you are using Maven, add this to your pom.xml file:
-<!-- {x-version-update-start:{{ artifact_id }}:released} -->
 {% endif %}
+<!-- {x-version-update-start:{{ artifact_id }}:released} -->
 
 ```xml
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_without_bom'] -%}
@@ -248,7 +272,7 @@ Java is a registered trademark of Oracle and/or its affiliates.
 [developer-console]: https://console.developers.google.com/
 [create-project]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [cloud-cli]: https://cloud.google.com/cli
-[troubleshooting]: https://github.com/googleapis/google-cloud-common/blob/main/troubleshooting/readme.md#troubleshooting
+[troubleshooting]: https://github.com/googleapis/google-cloud-java/blob/main/TROUBLESHOOTING.md
 [contributing]: https://github.com/{{metadata['repo']['repo']}}/blob/main/CONTRIBUTING.md
 [code-of-conduct]: https://github.com/{{metadata['repo']['repo']}}/blob/main/CODE_OF_CONDUCT.md#contributor-code-of-conduct
 [license]: https://github.com/{{metadata['repo']['repo']}}/blob/main/LICENSE
