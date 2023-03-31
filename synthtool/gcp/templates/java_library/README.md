@@ -34,8 +34,8 @@ If you are using Maven with [BOM][libraries-bom], add this to your pom.xml file:
 {{ metadata['snippets'][metadata['repo']['api_shortname'] + '_install_with_bom'] }}
 ```
 
-If you are using Maven without BOM, add this to your dependencies:
-{% elif monorepo is defined and monorepo %}
+If you are using Maven without the BOM, add this to your dependencies:
+{% elif monorepo %}
 If you are using Maven with [BOM][libraries-bom], add the following elements to
 your pom.xml file:
 
@@ -58,10 +58,12 @@ your pom.xml file:
     <artifactId>{{ artifact_id }}</artifactId>
   </dependency>
 ```
+
+If you are using Maven without the BOM, add this to your dependencies:
 {% else %}
 If you are using Maven, add this to your pom.xml file:
-<!-- {x-version-update-start:{{ artifact_id }}:released} -->
 {% endif %}
+<!-- {x-version-update-start:{{ artifact_id }}:released} -->
 
 ```xml
 {% if 'snippets' in metadata and metadata['snippets'][metadata['repo']['api_shortname'] + '_install_without_bom'] -%}
