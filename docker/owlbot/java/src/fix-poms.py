@@ -283,9 +283,10 @@ def update_bom_pom(filename: str, modules: List[module.Module]):
 # https://github.com/googleapis/google-cloud-java/issues/9304
 def _proto_group_id(main_artifact_group_id: str) -> str:
     prefix = "com.google"
-    if main_artifact_group_id != "com.google.cloud" and \
-       main_artifact_group_id != "com.google.area120" and \
-       main_artifact_group_id != "com.google.analytics":
+    list_of_group_id = ["com.google.cloud",
+                        "com.google.area120",
+                        "com.google.analytics"]
+    if main_artifact_group_id not in list_of_group_id:
         prefix = main_artifact_group_id
     return f"{prefix}.api.grpc"
 
