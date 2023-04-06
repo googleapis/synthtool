@@ -2,7 +2,11 @@
   "extends": [
     "schedule:weekly"
   ],
-  "ignorePaths": ["*/**"],
+  "includePaths": [
+    "synthtool/gcp/templates/java-library/.kokoro/presubmit/graalvm-native.*.cfg",
+    "requirements.in",
+    "requirements.txt"
+  ],
   "internalChecksFilter": "strict",
   "stabilityDays": 30,
   "timezone": "America/Los_Angeles",
