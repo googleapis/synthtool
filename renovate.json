@@ -3,7 +3,7 @@
     "schedule:weekly"
   ],
   "includePaths": [
-    "synthtool/gcp/templates/java-library/.kokoro/presubmit/graalvm-native.*.cfg",
+    "synthtool/gcp/templates/java-library/.kokoro/presubmit/graalvm-native*.cfg",
     "requirements.in",
     "requirements.txt"
   ],
