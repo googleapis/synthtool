@@ -3,7 +3,7 @@
     "schedule:weekly"
   ],
   "includePaths": [
-    "synthtool/gcp/templates/java-library/.kokoro/presubmit/graalvm-native.*.cfg",
+    "synthtool/gcp/templates/java-library/.kokoro/presubmit/graalvm-native*.cfg",
     "requirements.in",
     "requirements.txt"
   ],
@@ -16,9 +16,9 @@
       "fileMatch": ["^synthtool/gcp/templates/java-library/.kokoro/presubmit/graalvm-native.*.cfg"],
       "matchStrings": ["value: \"gcr.io/cloud-devrel-kokoro-resources/graalvm:(?<currentValue>.*?)\"",
         "value: \"gcr.io/cloud-devrel-kokoro-resources/graalvm17:(?<currentValue>.*?)\""],
-      "depNameTemplate": "jdk",
-      "datasourceTemplate": "docker",
-      "packageNameTemplate": "ghcr.io/graalvm/jdk"
+      "depNameTemplate": "ghcr.io/graalvm/graalvm-ce",
+      "datasourceTemplate": "docker"
+
     }
   ]
 }
