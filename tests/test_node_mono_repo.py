@@ -111,6 +111,8 @@ def test_fix_sample_file_path():
             FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
         )
 
+        print(metadata["samples"])
+
         assert metadata["samples"] == [
             {
                 "title": "Compare_to_quickstart",
@@ -510,6 +512,6 @@ def test_generated_readme(hermetic_mock, nodejs_mono_repo):
         )
         readme_text = open("./packages/dlp/README.md", "rt").read()
         # open_in_editor link in samples list includes full path to README.
-        assert ",googleapis/nodejs-dlp/samples/README.md" in readme_text
+        assert ",googleapis-test/nodejs-dlp/samples/README.md" in readme_text
         # client_documentation from .repo-metadata.json is included in README.
         assert "https://googleapis.dev/nodejs/dlp/latest" in readme_text

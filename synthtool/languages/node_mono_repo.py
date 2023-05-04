@@ -57,11 +57,15 @@ def read_metadata(relative_dir: str):
         )
 
         repo = git.parse_repo_url(repo_url)
-
+        data["directory_path"] = (
+            data["repository"]
+            if isinstance(data["repository"], str)
+            else f'{data["repository"]["directory"]}'
+        )
         data["full_directory_path"] = (
             data["repository"]
             if isinstance(data["repository"], str)
-            else f'{repo["owner"]}/{repo["name"]}/{data["repository"]["directory"]}'
+            else f'{repo["owner"]}/{repo["name"]}/{data["directory_path"]}'
         )
         data["homepage"] = (
             data["repository"]
@@ -144,6 +148,9 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
         rel_file_path = re.search(r"(packages\/.*)", sample["file"])
         if rel_file_path:
             sample["file"] = rel_file_path.group()
+
+    # Exclude files in samples/test, samples/foo/test, etc.
+    all_samples = list(filter(lambda s: "test/" not in s["file"], all_samples))
 
     # quickstart.js sample is special - only include it in the samples list if there is
     # a quickstart snippet present in the file
