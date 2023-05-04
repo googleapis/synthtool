@@ -78,7 +78,7 @@ Samples are in the [`samples/`]({{  metadata['homepage'] }}/samples) directory. 
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
-{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/{{ metadata['repo']['default_branch'] }}/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }},{{ metadata['full_directory_path'] }}/samples/README.md) |
+{% for sample in metadata['samples'] %}| {{ sample.title }} | [source code](https://github.com/{{ metadata['repo']['repo']  }}/blob/{{ metadata['repo']['default_branch'] }}/{{ sample.file }}) | [![Open in Cloud Shell][shell_img]](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/{{ metadata['repo']['repo'] }}&page=editor&open_in_editor={{ sample.file }},{{ metadata['directory_path'] }}/samples/README.md) |
 {% endfor %}
 {% endif %}
 {% if metadata['repo']['client_documentation'] %}

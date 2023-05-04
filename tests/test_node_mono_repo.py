@@ -111,6 +111,8 @@ def test_fix_sample_file_path():
             FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
         )
 
+        print(metadata["samples"])
+
         assert metadata["samples"] == [
             {
                 "title": "Compare_to_quickstart",
@@ -465,7 +467,8 @@ def test_owlbot_main_without_version():
         )
 
 
-def test_entrypoint_args_with_specified_dirs():
+@patch("synthtool.languages.node_mono_repo.owlbot_main")
+def test_entrypoint_args_with_specified_dirs(hermetic_mock, nodejs_mono_repo):
     node_mono_repo.owlbot_main = MagicMock()
     node_mono_repo.owlbot_entrypoint(
         specified_owlbot_dirs=["packages/google-cloud-compute"]
@@ -473,9 +476,9 @@ def test_entrypoint_args_with_specified_dirs():
     assert node_mono_repo.owlbot_main.called_with(dir="packages/google-cloud-compute")
 
 
-def test_entrypoint_with_owlbot_py():
+@patch("synthtool.languages.node_mono_repo.owlbot_main")
+def test_entrypoint_with_owlbot_py(hermetic_mock, nodejs_mono_repo):
     with util.chdir(FIXTURES / "nodejs_mono_repo_with_staging"):
-        node_mono_repo.owlbot_main = MagicMock()
         node_mono_repo.owlbot_entrypoint(
             specified_owlbot_dirs=["packages/workflow-executions"]
         )
@@ -492,9 +495,23 @@ def test_entrypoint_with_owlbot_py():
         )
 
 
-def test_entrypoint_args_with_no_arg():
-    node_mono_repo.walk_through_owlbot_dirs = MagicMock()
+@patch("synthtool.languages.node_mono_repo.walk_through_owlbot_dirs")
+def test_entrypoint_args_with_no_arg(hermetic_mock, nodejs_mono_repo):
     node_mono_repo.owlbot_entrypoint()
     node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
         Path.cwd(), search_for_changed_files=True
     )
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_generated_readme(hermetic_mock, nodejs_mono_repo):
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_with_staging"):
+        node_mono_repo.owlbot_entrypoint(
+            template_path=TEMPLATES,
+            specified_owlbot_dirs=["packages/dlp"],
+        )
+        readme_text = open("./packages/dlp/README.md", "rt").read()
+        # open_in_editor link in samples list includes full path to README.
+        assert ",googleapis-test/nodejs-dlp/samples/README.md" in readme_text
+        # client_documentation from .repo-metadata.json is included in README.
+        assert "https://googleapis.dev/nodejs/dlp/latest" in readme_text
