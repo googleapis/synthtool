@@ -18,44 +18,6 @@ from pathlib import Path
 import shutil
 import synthtool as s
 import synthtool.gcp as gcp
-from typing import Union, Dict, List
-
-
-def create_gapic_version_py(package_dir: str):
-    """
-    Create a version file `gapic_version.py` if it doesn't exist.
-
-    Args:
-        package_dir (str): path to the directory for a specific package. For example
-            'packages/google-cloud-video-transcoder'
-    """
-    sub_directory_to_gapic = Path(package_dir).name.replace("-", "/")
-    gapic_version_path = Path(
-        f"{package_dir}/{sub_directory_to_gapic}/gapic_version.py"
-    )
-
-    gapic_version_text = """# -*- coding: utf-8 -*-
-# Copyright 2022 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-__version__ = "0.0.0"  # {x-release-please-version}
-"""
-
-    if not gapic_version_path.exists():
-        with open(gapic_version_path, "w") as f:
-            f.write(gapic_version_text)
 
 
 def create_symlink_in_docs_dir(package_dir: str, filename: str):
@@ -203,9 +165,6 @@ def owlbot_main(package_dir: str) -> None:
         )
         s.move([templated_files], package_dir)
 
-        # create gapic_version.py if it doesn't exist
-        create_gapic_version_py(package_dir)
-
         # create symlink docs/README.rst if it doesn't exist
         create_symlink_docs_readme(package_dir)
 
@@ -222,55 +181,8 @@ def owlbot_main(package_dir: str) -> None:
             s.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
 
 
-def configure_release_please(owlbot_dirs: str):
-    # add all packages to the .release-please-manifest.json
-    # and release-please-config.json files if they don't exist
-    release_please_manifest = Path(".release-please-manifest.json")
-    release_please_config = Path("release-please-config.json")
-
-    with open(release_please_manifest, "r") as f:
-        manifest_json = json.load(f)
-        for package_dir in owlbot_dirs:
-            package_name = Path(package_dir).name
-            if f"packages/{package_name}" not in manifest_json:
-                manifest_json[f"packages/{package_name}"] = "0.0.0"
-
-    with open(release_please_manifest, "w") as f:
-        json.dump(manifest_json, f, indent=4)
-
-    with open(release_please_config, "r") as f:
-        config_json = json.load(f)
-        for package_dir in owlbot_dirs:
-            package_name = Path(package_dir).name
-            # if package_name not in config_json["packages"]:
-            path_to_version_file = "{}/gapic_version.py".format(
-                package_name.replace("-", "/")
-            )
-
-            output: List[Union[str, Dict[str, str]]] = []
-            output.append(path_to_version_file)
-            for file in Path(package_dir).glob("samples/**/*.json"):
-                sample_json = {}
-                sample_json["type"] = "json"
-                sample_json["path"] = str(file).replace(
-                    f"/workspace/google-cloud-python/packages/{package_name}/", ""
-                )
-                sample_json["jsonpath"] = "$.clientLibrary.version"
-                output.append(sample_json)
-
-            config_json["packages"][f"packages/{package_name}"] = {
-                "component": f"{package_name}",
-                "release-type": "python",
-                "extra-files": output,
-            }
-
-    with open(release_please_config, "w") as f:
-        json.dump(config_json, f, indent=4)
-
-
 if __name__ == "__main__":
     owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
-    configure_release_please(owlbot_dirs)
     for package_dir in owlbot_dirs:
         owlbot_main(package_dir)
 
