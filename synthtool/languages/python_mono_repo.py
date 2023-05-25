@@ -151,7 +151,7 @@ def owlbot_main(package_dir: str) -> None:
                     f"{package_dir}/samples/generated_samples", ignore_errors=True
                 )
                 clean_up_generated_samples = False
-            s.move([library], package_dir, excludes=["**/gapic_version.py"])
+            s.move([library], package_dir, excludes=[])
 
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
             relative_dir=f"packages/{Path(package_dir).name}",
