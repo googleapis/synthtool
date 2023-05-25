@@ -1,7 +1,7 @@
 setuptools==65.5.1
 
 nox
-requests
+requests>=2.31.0
 pyyaml
 jinja2
 deprecation
