@@ -1,6 +1,8 @@
 gcp-docuploader
-gcp-releasetool>=1.10.5 # required for compatibility with cryptography>=39.x
+gcp-releasetool>=1.15.0
 wheel
 setuptools
 typing-extensions
 click<8.1.0
+cryptography>=41.0.0
+requests>=2.31.0 # Needed to address security vulnerability.

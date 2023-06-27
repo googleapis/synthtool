@@ -7,5 +7,5 @@ markupsafe
 colorlog
 protobuf
 watchdog
-requests
+requests>=2.31.0 # Needed to address security vulnerability.
 pyyaml
