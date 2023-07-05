@@ -43,6 +43,7 @@ branchProtectionRules:
   requiredStatusCheckContexts:
   - "dependencies (17)"
   - "lint"
+  - "javadoc"
   - "units (8)"
   - "units (11)"
   - "Kokoro - Test: Integration"
