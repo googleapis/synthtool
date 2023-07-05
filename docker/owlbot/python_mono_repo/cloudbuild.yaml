@@ -17,7 +17,7 @@ steps:
     args: [ 'build',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-python-mono-repo:$SHORT_SHA',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-python-mono-repo:latest',
-      '-f', 'docker/owlbot/python/Dockerfile', '.' ]
+      '-f', 'docker/owlbot/python_mono_repo/Dockerfile', '.' ]
 images:
   - 'gcr.io/$PROJECT_ID/owlbot-python-mono-repo:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/owlbot-python-mono-repo:latest'
