@@ -240,7 +240,7 @@ We support:
 
 Supported versions can be found in our ``noxfile.py`` `config`_.
 
-.. _config: https://github.com/{{ metadata['repo']['repo'] }}/blob/main/noxfile.py
+.. _config: https://github.com/{{ metadata['repo']['repo'] }}/blob/main/packages/{{ metadata['repo']['distribution_name'] }}/noxfile.py
 
 
 **********
