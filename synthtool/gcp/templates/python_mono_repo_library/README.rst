@@ -36,15 +36,16 @@ In order to use this library, you first need to go through the following steps:
 Installation
 ~~~~~~~~~~~~
 
-Install this library in a `virtualenv`_ using pip. `virtualenv`_ is a tool to
-create isolated Python environments. The basic problem it addresses is one of
-dependencies and versions, and indirectly permissions.
+Install this library in a virtual environment using `venv`_. `venv`_ is a tool that
+creates isolated Python environments. These isolated environments can have separate
+versions of Python packages, which allows you to isolate one project's dependencies
+from the dependencies of other projects.
 
-With `virtualenv`_, it's possible to install this library without needing system
+With `venv`_, it's possible to install this library without needing system
 install permissions, and without clashing with the installed system
 dependencies.
 
-.. _`virtualenv`: https://virtualenv.pypa.io/en/latest/
+.. _`venv`: https://docs.python.org/3/library/venv.html
 
 
 Code samples and snippets
@@ -77,10 +78,9 @@ Mac/Linux
 
 .. code-block:: console
 
-    pip install virtualenv
-    virtualenv <your-env>
+    python3 -m venv <your-env>
     source <your-env>/bin/activate
-    <your-env>/bin/pip install {{ metadata['repo']['distribution_name'] }}
+    pip install {{ metadata['repo']['distribution_name'] }}
 
 
 Windows
@@ -88,10 +88,9 @@ Windows
 
 .. code-block:: console
 
-    pip install virtualenv
-    virtualenv <your-env>
-    <your-env>\Scripts\activate
-    <your-env>\Scripts\pip.exe install {{ metadata['repo']['distribution_name'] }}
+    py -m venv <your-env>
+    .\<your-env>\Scripts\activate
+    pip install {{ metadata['repo']['distribution_name'] }}
 
 Next Steps
 ~~~~~~~~~~
