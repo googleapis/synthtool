@@ -16,6 +16,9 @@ import nox
 
 PYTHON_VERSIONS = ['3.7', '3.11']
 
+# Error if a python version is missing
+nox.options.error_on_missing_interpreters = True
+
 @nox.session(python=PYTHON_VERSIONS)
 def generate_protos(session):
     session.install("grpcio-tools")
