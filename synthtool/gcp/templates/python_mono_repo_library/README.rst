@@ -51,7 +51,9 @@ dependencies.
 Code samples and snippets
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Code samples and snippets live in the `samples/` folder.
+Code samples and snippets live in the `samples/`_ folder.
+
+.. _samples/: https://github.com/googleapis/google-cloud-python/tree/main/packages/{{ metadata['repo']['distribution_name'] }}/samples
 
 
 Supported Python Versions
