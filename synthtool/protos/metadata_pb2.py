@@ -7,6 +7,7 @@ from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
+
 # @@protoc_insertion_point(imports)
 
 _sym_db = _symbol_database.Default()
@@ -15,105 +16,141 @@ _sym_db = _symbol_database.Default()
 from google.protobuf import timestamp_pb2 as google_dot_protobuf_dot_timestamp__pb2
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0emetadata.proto\x12\x14yoshi.synth.metadata\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf6\x01\n\x08Metadata\x12\x33\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x02\x18\x01\x12-\n\x07sources\x18\x02 \x03(\x0b\x32\x1c.yoshi.synth.metadata.Source\x12\x37\n\x0c\x64\x65stinations\x18\x03 \x03(\x0b\x32!.yoshi.synth.metadata.Destination\x12\x34\n\tnew_files\x18\x04 \x03(\x0b\x32\x1d.yoshi.synth.metadata.NewFileB\x02\x18\x01\x12\x17\n\x0fgenerated_files\x18\x05 \x03(\t\"\xb8\x01\n\x06Source\x12.\n\x03git\x18\x01 \x01(\x0b\x32\x1f.yoshi.synth.metadata.GitSourceH\x00\x12:\n\tgenerator\x18\x02 \x01(\x0b\x32%.yoshi.synth.metadata.GeneratorSourceH\x00\x12\x38\n\x08template\x18\x03 \x01(\x0b\x32$.yoshi.synth.metadata.TemplateSourceH\x00\x42\x08\n\x06source\"m\n\tGitSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06remote\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\t\x12\x14\n\x0cinternal_ref\x18\x04 \x01(\t\x12\x12\n\nlocal_path\x18\x05 \x01(\t\x12\x0b\n\x03log\x18\x06 \x01(\t\"F\n\x0fGeneratorSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x14\n\x0c\x64ocker_image\x18\x03 \x01(\t\"?\n\x0eTemplateSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06origin\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t\"\x94\x01\n\x0b\x44\x65stination\x12\x39\n\x06\x63lient\x18\x01 \x01(\x0b\x32\'.yoshi.synth.metadata.ClientDestinationH\x00\x12;\n\x07\x66ileset\x18\x02 \x01(\x0b\x32(.yoshi.synth.metadata.FileSetDestinationH\x00\x42\r\n\x0b\x44\x65stination\"\x17\n\x07NewFile\x12\x0c\n\x04path\x18\x01 \x01(\t\"\x7f\n\x11\x43lientDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\x10\n\x08\x61pi_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61pi_version\x18\x03 \x01(\t\x12\x10\n\x08language\x18\x04 \x01(\t\x12\x11\n\tgenerator\x18\x05 \x01(\t\x12\x0e\n\x06\x63onfig\x18\x06 \x01(\t\"3\n\x12\x46ileSetDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\r\n\x05\x66iles\x18\x02 \x03(\tb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
+    b'\n\x0emetadata.proto\x12\x14yoshi.synth.metadata\x1a\x1fgoogle/protobuf/timestamp.proto"\xf6\x01\n\x08Metadata\x12\x33\n\x0bupdate_time\x18\x01 \x01(\x0b\x32\x1a.google.protobuf.TimestampB\x02\x18\x01\x12-\n\x07sources\x18\x02 \x03(\x0b\x32\x1c.yoshi.synth.metadata.Source\x12\x37\n\x0c\x64\x65stinations\x18\x03 \x03(\x0b\x32!.yoshi.synth.metadata.Destination\x12\x34\n\tnew_files\x18\x04 \x03(\x0b\x32\x1d.yoshi.synth.metadata.NewFileB\x02\x18\x01\x12\x17\n\x0fgenerated_files\x18\x05 \x03(\t"\xb8\x01\n\x06Source\x12.\n\x03git\x18\x01 \x01(\x0b\x32\x1f.yoshi.synth.metadata.GitSourceH\x00\x12:\n\tgenerator\x18\x02 \x01(\x0b\x32%.yoshi.synth.metadata.GeneratorSourceH\x00\x12\x38\n\x08template\x18\x03 \x01(\x0b\x32$.yoshi.synth.metadata.TemplateSourceH\x00\x42\x08\n\x06source"m\n\tGitSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06remote\x18\x02 \x01(\t\x12\x0b\n\x03sha\x18\x03 \x01(\t\x12\x14\n\x0cinternal_ref\x18\x04 \x01(\t\x12\x12\n\nlocal_path\x18\x05 \x01(\t\x12\x0b\n\x03log\x18\x06 \x01(\t"F\n\x0fGeneratorSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0f\n\x07version\x18\x02 \x01(\t\x12\x14\n\x0c\x64ocker_image\x18\x03 \x01(\t"?\n\x0eTemplateSource\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06origin\x18\x02 \x01(\t\x12\x0f\n\x07version\x18\x03 \x01(\t"\x94\x01\n\x0b\x44\x65stination\x12\x39\n\x06\x63lient\x18\x01 \x01(\x0b\x32\'.yoshi.synth.metadata.ClientDestinationH\x00\x12;\n\x07\x66ileset\x18\x02 \x01(\x0b\x32(.yoshi.synth.metadata.FileSetDestinationH\x00\x42\r\n\x0b\x44\x65stination"\x17\n\x07NewFile\x12\x0c\n\x04path\x18\x01 \x01(\t"\x7f\n\x11\x43lientDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\x10\n\x08\x61pi_name\x18\x02 \x01(\t\x12\x13\n\x0b\x61pi_version\x18\x03 \x01(\t\x12\x10\n\x08language\x18\x04 \x01(\t\x12\x11\n\tgenerator\x18\x05 \x01(\t\x12\x0e\n\x06\x63onfig\x18\x06 \x01(\t"3\n\x12\x46ileSetDestination\x12\x0e\n\x06source\x18\x01 \x01(\t\x12\r\n\x05\x66iles\x18\x02 \x03(\tb\x06proto3'
+)
 
 
-
-_METADATA = DESCRIPTOR.message_types_by_name['Metadata']
-_SOURCE = DESCRIPTOR.message_types_by_name['Source']
-_GITSOURCE = DESCRIPTOR.message_types_by_name['GitSource']
-_GENERATORSOURCE = DESCRIPTOR.message_types_by_name['GeneratorSource']
-_TEMPLATESOURCE = DESCRIPTOR.message_types_by_name['TemplateSource']
-_DESTINATION = DESCRIPTOR.message_types_by_name['Destination']
-_NEWFILE = DESCRIPTOR.message_types_by_name['NewFile']
-_CLIENTDESTINATION = DESCRIPTOR.message_types_by_name['ClientDestination']
-_FILESETDESTINATION = DESCRIPTOR.message_types_by_name['FileSetDestination']
-Metadata = _reflection.GeneratedProtocolMessageType('Metadata', (_message.Message,), {
-  'DESCRIPTOR' : _METADATA,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Metadata)
-  })
+_METADATA = DESCRIPTOR.message_types_by_name["Metadata"]
+_SOURCE = DESCRIPTOR.message_types_by_name["Source"]
+_GITSOURCE = DESCRIPTOR.message_types_by_name["GitSource"]
+_GENERATORSOURCE = DESCRIPTOR.message_types_by_name["GeneratorSource"]
+_TEMPLATESOURCE = DESCRIPTOR.message_types_by_name["TemplateSource"]
+_DESTINATION = DESCRIPTOR.message_types_by_name["Destination"]
+_NEWFILE = DESCRIPTOR.message_types_by_name["NewFile"]
+_CLIENTDESTINATION = DESCRIPTOR.message_types_by_name["ClientDestination"]
+_FILESETDESTINATION = DESCRIPTOR.message_types_by_name["FileSetDestination"]
+Metadata = _reflection.GeneratedProtocolMessageType(
+    "Metadata",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _METADATA,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Metadata)
+    },
+)
 _sym_db.RegisterMessage(Metadata)
 
-Source = _reflection.GeneratedProtocolMessageType('Source', (_message.Message,), {
-  'DESCRIPTOR' : _SOURCE,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Source)
-  })
+Source = _reflection.GeneratedProtocolMessageType(
+    "Source",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _SOURCE,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Source)
+    },
+)
 _sym_db.RegisterMessage(Source)
 
-GitSource = _reflection.GeneratedProtocolMessageType('GitSource', (_message.Message,), {
-  'DESCRIPTOR' : _GITSOURCE,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.GitSource)
-  })
+GitSource = _reflection.GeneratedProtocolMessageType(
+    "GitSource",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _GITSOURCE,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.GitSource)
+    },
+)
 _sym_db.RegisterMessage(GitSource)
 
-GeneratorSource = _reflection.GeneratedProtocolMessageType('GeneratorSource', (_message.Message,), {
-  'DESCRIPTOR' : _GENERATORSOURCE,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.GeneratorSource)
-  })
+GeneratorSource = _reflection.GeneratedProtocolMessageType(
+    "GeneratorSource",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _GENERATORSOURCE,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.GeneratorSource)
+    },
+)
 _sym_db.RegisterMessage(GeneratorSource)
 
-TemplateSource = _reflection.GeneratedProtocolMessageType('TemplateSource', (_message.Message,), {
-  'DESCRIPTOR' : _TEMPLATESOURCE,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.TemplateSource)
-  })
+TemplateSource = _reflection.GeneratedProtocolMessageType(
+    "TemplateSource",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _TEMPLATESOURCE,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.TemplateSource)
+    },
+)
 _sym_db.RegisterMessage(TemplateSource)
 
-Destination = _reflection.GeneratedProtocolMessageType('Destination', (_message.Message,), {
-  'DESCRIPTOR' : _DESTINATION,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Destination)
-  })
+Destination = _reflection.GeneratedProtocolMessageType(
+    "Destination",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _DESTINATION,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.Destination)
+    },
+)
 _sym_db.RegisterMessage(Destination)
 
-NewFile = _reflection.GeneratedProtocolMessageType('NewFile', (_message.Message,), {
-  'DESCRIPTOR' : _NEWFILE,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.NewFile)
-  })
+NewFile = _reflection.GeneratedProtocolMessageType(
+    "NewFile",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _NEWFILE,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.NewFile)
+    },
+)
 _sym_db.RegisterMessage(NewFile)
 
-ClientDestination = _reflection.GeneratedProtocolMessageType('ClientDestination', (_message.Message,), {
-  'DESCRIPTOR' : _CLIENTDESTINATION,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.ClientDestination)
-  })
+ClientDestination = _reflection.GeneratedProtocolMessageType(
+    "ClientDestination",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _CLIENTDESTINATION,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.ClientDestination)
+    },
+)
 _sym_db.RegisterMessage(ClientDestination)
 
-FileSetDestination = _reflection.GeneratedProtocolMessageType('FileSetDestination', (_message.Message,), {
-  'DESCRIPTOR' : _FILESETDESTINATION,
-  '__module__' : 'metadata_pb2'
-  # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.FileSetDestination)
-  })
+FileSetDestination = _reflection.GeneratedProtocolMessageType(
+    "FileSetDestination",
+    (_message.Message,),
+    {
+        "DESCRIPTOR": _FILESETDESTINATION,
+        "__module__": "metadata_pb2"
+        # @@protoc_insertion_point(class_scope:yoshi.synth.metadata.FileSetDestination)
+    },
+)
 _sym_db.RegisterMessage(FileSetDestination)
 
 if _descriptor._USE_C_DESCRIPTORS == False:
-
-  DESCRIPTOR._options = None
-  _METADATA.fields_by_name['update_time']._options = None
-  _METADATA.fields_by_name['update_time']._serialized_options = b'\030\001'
-  _METADATA.fields_by_name['new_files']._options = None
-  _METADATA.fields_by_name['new_files']._serialized_options = b'\030\001'
-  _METADATA._serialized_start=74
-  _METADATA._serialized_end=320
-  _SOURCE._serialized_start=323
-  _SOURCE._serialized_end=507
-  _GITSOURCE._serialized_start=509
-  _GITSOURCE._serialized_end=618
-  _GENERATORSOURCE._serialized_start=620
-  _GENERATORSOURCE._serialized_end=690
-  _TEMPLATESOURCE._serialized_start=692
-  _TEMPLATESOURCE._serialized_end=755
-  _DESTINATION._serialized_start=758
-  _DESTINATION._serialized_end=906
-  _NEWFILE._serialized_start=908
-  _NEWFILE._serialized_end=931
-  _CLIENTDESTINATION._serialized_start=933
-  _CLIENTDESTINATION._serialized_end=1060
-  _FILESETDESTINATION._serialized_start=1062
-  _FILESETDESTINATION._serialized_end=1113
+    DESCRIPTOR._options = None
+    _METADATA.fields_by_name["update_time"]._options = None
+    _METADATA.fields_by_name["update_time"]._serialized_options = b"\030\001"
+    _METADATA.fields_by_name["new_files"]._options = None
+    _METADATA.fields_by_name["new_files"]._serialized_options = b"\030\001"
+    _METADATA._serialized_start = 74
+    _METADATA._serialized_end = 320
+    _SOURCE._serialized_start = 323
+    _SOURCE._serialized_end = 507
+    _GITSOURCE._serialized_start = 509
+    _GITSOURCE._serialized_end = 618
+    _GENERATORSOURCE._serialized_start = 620
+    _GENERATORSOURCE._serialized_end = 690
+    _TEMPLATESOURCE._serialized_start = 692
+    _TEMPLATESOURCE._serialized_end = 755
+    _DESTINATION._serialized_start = 758
+    _DESTINATION._serialized_end = 906
+    _NEWFILE._serialized_start = 908
+    _NEWFILE._serialized_end = 931
+    _CLIENTDESTINATION._serialized_start = 933
+    _CLIENTDESTINATION._serialized_end = 1060
+    _FILESETDESTINATION._serialized_start = 1062
+    _FILESETDESTINATION._serialized_end = 1113
 # @@protoc_insertion_point(module_scope)
