@@ -98,7 +98,7 @@ def test_working_common_templates():
 
         # lint xml, yaml files
         # use os.walk because glob ignores hidden directories
-        for (dirpath, _, filenames) in os.walk(workdir):
+        for dirpath, _, filenames in os.walk(workdir):
             for file in filenames:
                 (_, ext) = os.path.splitext(file)
                 if ext == ".xml":
