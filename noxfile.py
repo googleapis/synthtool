@@ -14,7 +14,7 @@
 
 import nox
 
-PYTHON_VERSIONS = ['3.7', '3.11']
+PYTHON_VERSIONS = ['3.8', '3.10']
 
 # Error if a python version is missing
 nox.options.error_on_missing_interpreters = True
