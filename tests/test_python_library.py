@@ -35,7 +35,7 @@ PYTHON_LIBRARY = Path(__file__).parent.parent / "synthtool/gcp/templates/python_
             {"unit_test_local_dependencies": ["../testutils", "../unitutils"]},
             [
                 """\
-UNIT_TEST_LOCAL_DEPENDENCIES = [
+UNIT_TEST_LOCAL_DEPENDENCIES: List[str] = [
     "../testutils",
     "../unitutils",
 ]""",
@@ -45,7 +45,7 @@ UNIT_TEST_LOCAL_DEPENDENCIES = [
             {"system_test_local_dependencies": ["../testutils", "../sysutils"]},
             [
                 """\
-SYSTEM_TEST_LOCAL_DEPENDENCIES = [
+SYSTEM_TEST_LOCAL_DEPENDENCIES: List[str] = [
     "../testutils",
     "../sysutils",
 ]""",
@@ -55,7 +55,7 @@ SYSTEM_TEST_LOCAL_DEPENDENCIES = [
             {"unit_test_extras": ["abc", "def"]},
             [
                 """\
-UNIT_TEST_EXTRAS = [
+UNIT_TEST_EXTRAS: List[str] = [
     "abc",
     "def",
 ]""",
@@ -64,7 +64,7 @@ UNIT_TEST_EXTRAS = [
         (
             {"system_test_extras": ["abc", "def"]},
             """\
-SYSTEM_TEST_EXTRAS = [
+SYSTEM_TEST_EXTRAS: List[str] = [
     "abc",
     "def",
 ]""",
@@ -73,7 +73,7 @@ SYSTEM_TEST_EXTRAS = [
             {"unit_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
                 """\
-UNIT_TEST_EXTRAS_BY_PYTHON = {
+UNIT_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {
     "3.8": [
         "abc",
         "def",
@@ -85,7 +85,7 @@ UNIT_TEST_EXTRAS_BY_PYTHON = {
             {"system_test_extras_by_python": {"3.8": ["abc", "def"]}},
             [
                 """\
-SYSTEM_TEST_EXTRAS_BY_PYTHON = {
+SYSTEM_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {
     "3.8": [
         "abc",
         "def",
@@ -100,12 +100,12 @@ SYSTEM_TEST_EXTRAS_BY_PYTHON = {
             },
             [
                 """\
-UNIT_TEST_EXTRAS = [
+UNIT_TEST_EXTRAS: List[str] = [
     "tuv",
     "wxyz",
 ]""",
                 """\
-UNIT_TEST_EXTRAS_BY_PYTHON = {
+UNIT_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {
     "3.8": [
         "abc",
         "def",
@@ -120,12 +120,12 @@ UNIT_TEST_EXTRAS_BY_PYTHON = {
             },
             [
                 """\
-SYSTEM_TEST_EXTRAS = [
+SYSTEM_TEST_EXTRAS: List[str] = [
     "tuv",
     "wxyz",
 ]""",
                 """\
-SYSTEM_TEST_EXTRAS_BY_PYTHON = {
+SYSTEM_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {
     "3.8": [
         "abc",
         "def",
