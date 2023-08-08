@@ -163,7 +163,7 @@ also contains samples.
 
 ## Supported Node.js Versions
 
-Our client libraries follow the [Node.js release schedule](https://nodejs.org/en/about/releases/).
+Our client libraries follow the [Node.js release schedule](https://github.com/nodejs/release#release-schedule).
 Libraries are compatible with all current _active_ and _maintenance_ versions of
 Node.js.
 
