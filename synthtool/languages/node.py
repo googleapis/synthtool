@@ -269,6 +269,7 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     compile_protos_hermetic(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
+
 def write_release_please_config(dirs: list):
     # Make sure base package is also published
     dirs.append(".")
@@ -281,12 +282,14 @@ def write_release_please_config(dirs: list):
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
 
+
 default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
 default_templates_excludes: List[str] = []
 
 
 def _noop(library: Path) -> None:
     pass
+
 
 def walk_through_apiary(dir, glob_to_search_for):
     packages_to_exclude = [r"node_modules"]
@@ -297,6 +300,7 @@ def walk_through_apiary(dir, glob_to_search_for):
         ):
             dirs_to_return.append(str(Path(path_object)))
     return dirs_to_return
+
 
 def owlbot_main(
     template_path: Optional[Path] = None,
@@ -390,9 +394,7 @@ def owlbot_main(
     if library_version:
         common.update_library_version(library_version, _GENERATED_SAMPLES_DIRECTORY)
     if Path("release-please-config.json").is_file():
-        write_release_please_config(
-            walk_through_apiary(Path.cwd(), "src/apis/**")
-        )
+        write_release_please_config(walk_through_apiary(Path.cwd(), "src/apis/**"))
 
 
 if __name__ == "__main__":
