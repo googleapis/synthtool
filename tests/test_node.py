@@ -244,13 +244,11 @@ def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_dlp):
 
 def test_write_release_please_config():
     # use a non-nodejs template directory
-    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
+    with util.copied_fixtures_dir(FIXTURES / "node_apiary"):
         node.write_release_please_config(
             [
-                "google-cloud-node/packages/gapic-node-templating",
-                "Users/person/google-cloud-node/packages/dlp",
-                "Users/person/google-cloud-node/packages/asset",
-                "packages/bigquery-migration",
+                "Users/person/src/apis/admin",
+                "tmpfs/src/apis/docs",
             ]
         )
 
@@ -266,9 +264,11 @@ def test_walk_through_apiary(mock_subproc_popen):
     attrs = {"communicate.return_value": ("output", "error")}
     process_mock.configure_mock(**attrs)
     mock_subproc_popen.return_value = process_mock
-    dirs = node.walk_through_apiary(FIXTURES / "node_apiary", "src/apis/**")
+    dirs = node.walk_through_apiary(FIXTURES / "node_apiary", "src/apis/**/*")
     assert not mock_subproc_popen.called
-    assert dirs == ["src/apis/admin", "src/apis/docs"]
+    assert re.search("src/apis/admin", dirs[0])
+    assert re.search("src/apis/docs", dirs[1])
+    assert len(dirs) == 2
 
 
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")

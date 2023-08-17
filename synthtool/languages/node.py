@@ -271,14 +271,14 @@ def postprocess_gapic_library_hermetic(hide_output=False):
 
 
 def write_release_please_config(dirs: list):
-    # Make sure base package is also published
-    dirs.append(".")
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in dirs:
-            result = re.search(r"(src/.*)", dir)
+            result = re.search(r"(src/apis/.*)", dir)
             assert result is not None
             data["packages"][result.group()] = {}
+        # Make sure base package is also published
+        data["packages"]["."] = {}
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
 
@@ -299,6 +299,7 @@ def walk_through_apiary(dir, glob_to_search_for):
             "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
         ):
             dirs_to_return.append(str(Path(path_object)))
+    print(dirs_to_return)
     return dirs_to_return
 
 
@@ -394,7 +395,7 @@ def owlbot_main(
     if library_version:
         common.update_library_version(library_version, _GENERATED_SAMPLES_DIRECTORY)
     if Path("release-please-config.json").is_file():
-        write_release_please_config(walk_through_apiary(Path.cwd(), "src/apis/**"))
+        write_release_please_config(walk_through_apiary(Path.cwd(), "src/apis/**/*"))
 
 
 if __name__ == "__main__":
