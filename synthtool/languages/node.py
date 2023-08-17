@@ -269,6 +269,7 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     compile_protos_hermetic(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
+
 # This function writes the release-please-config.json file
 # It adds entries for each directory with a default {} to
 # make sure we are tracking them for publishing
@@ -291,6 +292,7 @@ default_templates_excludes: List[str] = []
 
 def _noop(library: Path) -> None:
     pass
+
 
 # This function walks through the apiary packages
 # specifically in google-api-nodejs-client
