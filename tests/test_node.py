@@ -256,7 +256,7 @@ def test_write_release_please_config():
 
         assert filecmp.cmp(
             pathlib.Path("release-please-config.json"),
-            pathlib.Path("release-please-config-post.json"),
+            pathlib.Path("release-please-config-post-apiary.json"),
         )
 
 

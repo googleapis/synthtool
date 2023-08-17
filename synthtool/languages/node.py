@@ -276,7 +276,7 @@ def write_release_please_config(dirs: list):
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in dirs:
-            result = re.search(r"(packages/.*)", dir)
+            result = re.search(r"(src/.*)", dir)
             assert result is not None
             data["packages"][result.group()] = {}
     with open("release-please-config.json", "w") as f:
