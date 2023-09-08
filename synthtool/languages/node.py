@@ -270,12 +270,42 @@ def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing completed")
 
 
+# This function writes the release-please-config.json file
+# It adds entries for each directory with a default {} to
+# make sure we are tracking them for publishing
+def write_release_please_config(dirs: list):
+    with open("release-please-config.json", "r") as f:
+        data = json.load(f)
+        for dir in dirs:
+            result = re.search(r"(src/apis/.*)", dir)
+            assert result is not None
+            data["packages"][result.group()] = {}
+        # Make sure base package is also published
+        data["packages"]["."] = {}
+    with open("release-please-config.json", "w") as f:
+        json.dump(data, f, indent=2)
+
+
 default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
 default_templates_excludes: List[str] = []
 
 
 def _noop(library: Path) -> None:
     pass
+
+
+# This function walks through the apiary packages
+# specifically in google-api-nodejs-client
+# This determines the current list of APIs
+def walk_through_apiary(dir, glob_to_search_for):
+    packages_to_exclude = [r"node_modules"]
+    dirs_to_return = []
+    for path_object in Path(dir).glob(glob_to_search_for):
+        if not path_object.is_file() and not re.search(
+            "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
+        ):
+            dirs_to_return.append(str(Path(path_object)))
+    return dirs_to_return
 
 
 def owlbot_main(
@@ -369,6 +399,8 @@ def owlbot_main(
     library_version = template_metadata().get("version")
     if library_version:
         common.update_library_version(library_version, _GENERATED_SAMPLES_DIRECTORY)
+    if Path("release-please-config.json").is_file():
+        write_release_please_config(walk_through_apiary(Path.cwd(), "src/apis/**/*"))
 
 
 if __name__ == "__main__":

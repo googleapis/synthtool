@@ -17,12 +17,14 @@ import pathlib
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import patch
+import re
 
 import pytest
 
 import synthtool as s
 from synthtool.languages import node
 from . import util
+from unittest.mock import Mock
 
 FIXTURES = Path(__file__).parent / "fixtures"
 TEMPLATES = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
@@ -238,6 +240,35 @@ def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_dlp):
     ).read()
     text = open("./src/index.ts", "rt").read()
     assert staging_text == text
+
+
+def test_write_release_please_config():
+    # use a non-nodejs template directory
+    with util.copied_fixtures_dir(FIXTURES / "node_apiary"):
+        node.write_release_please_config(
+            [
+                "Users/person/src/apis/admin",
+                "tmpfs/src/apis/docs",
+            ]
+        )
+
+        assert filecmp.cmp(
+            pathlib.Path("release-please-config.json"),
+            pathlib.Path("release-please-config-post-apiary.json"),
+        )
+
+
+@patch("subprocess.run")
+def test_walk_through_apiary(mock_subproc_popen):
+    process_mock = Mock()
+    attrs = {"communicate.return_value": ("output", "error")}
+    process_mock.configure_mock(**attrs)
+    mock_subproc_popen.return_value = process_mock
+    dirs = node.walk_through_apiary(FIXTURES / "node_apiary", "src/apis/**/*")
+    assert not mock_subproc_popen.called
+    assert re.search("src/apis/admin", dirs[0])
+    assert re.search("src/apis/docs", dirs[1])
+    assert len(dirs) == 2
 
 
 @patch("synthtool.languages.node.postprocess_gapic_library_hermetic")
