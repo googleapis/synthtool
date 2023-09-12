@@ -74,7 +74,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 {% if metadata['samples']|length %}
 ## Samples
 
-Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/{{ metadata['repo']['default_branch'] }}/packages/google-cloud-functions/samples) directory. Each sample's `README.md` has instructions for running its sample.
+Samples are in the [`samples/`](https://github.com/{{  metadata['repo']['repo'] }}/tree/{{ metadata['repo']['default_branch'] }}/samples) directory. Each sample's `README.md` has instructions for running its sample.
 
 | Sample                      | Source Code                       | Try it |
 | --------------------------- | --------------------------------- | ------ |
