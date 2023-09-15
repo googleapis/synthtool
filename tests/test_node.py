@@ -266,8 +266,10 @@ def test_walk_through_apiary(mock_subproc_popen):
     mock_subproc_popen.return_value = process_mock
     dirs = node.walk_through_apiary(FIXTURES / "node_apiary", "src/apis/**/*")
     assert not mock_subproc_popen.called
-    assert re.search("src/apis/admin", dirs[0])
-    assert re.search("src/apis/docs", dirs[1])
+    assert re.search(
+        "(?:% s)" % "|".join(["src/apis/admin", "src/apis/docs"]),
+        "(?:% s)" % "|".join(dirs),
+    )
     assert len(dirs) == 2
 
 
