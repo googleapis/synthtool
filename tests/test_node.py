@@ -247,8 +247,8 @@ def test_write_release_please_config_without_private_indicator():
     with util.copied_fixtures_dir(FIXTURES / "node_apiary" / "without_private"):
         node.write_release_please_config(
             [
-                "Users/person/src/apis/admin",
-                "tmpfs/src/apis/docs",
+                "src/apis/admin",
+                "src/apis/docs",
             ]
         )
 
@@ -263,8 +263,8 @@ def test_write_release_please_config_with_private_indicator():
     with util.copied_fixtures_dir(FIXTURES / "node_apiary" / "with_private"):
         node.write_release_please_config(
             [
-                "Users/person/src/apis/admin",
-                "tmpfs/src/apis/docs",
+                "src/apis/admin",
+                "src/apis/docs",
             ]
         )
 

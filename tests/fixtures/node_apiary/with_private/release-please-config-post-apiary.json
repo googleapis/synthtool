@@ -1,7 +1,6 @@
 {
   "release-type": "node",
   "packages": {
-    "src/apis/admin": {},
     "src/apis/docs": {}
   }
 }
