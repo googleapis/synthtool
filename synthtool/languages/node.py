@@ -288,7 +288,6 @@ def write_release_please_config(dirs: list):
                 data["packages"]["."] = {}
         else:
             data["packages"]["."] = {}
-    print(data)
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
 
