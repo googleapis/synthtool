@@ -242,9 +242,25 @@ def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_dlp):
     assert staging_text == text
 
 
-def test_write_release_please_config():
+def test_write_release_please_config_without_private_indicator():
     # use a non-nodejs template directory
-    with util.copied_fixtures_dir(FIXTURES / "node_apiary"):
+    with util.copied_fixtures_dir(FIXTURES / "node_apiary" / "without_private"):
+        node.write_release_please_config(
+            [
+                "Users/person/src/apis/admin",
+                "tmpfs/src/apis/docs",
+            ]
+        )
+
+        assert filecmp.cmp(
+            pathlib.Path("release-please-config.json"),
+            pathlib.Path("release-please-config-post-apiary.json"),
+        )
+
+
+def test_write_release_please_config_with_private_indicator():
+    # use a non-nodejs template directory
+    with util.copied_fixtures_dir(FIXTURES / "node_apiary" / "with_private"):
         node.write_release_please_config(
             [
                 "Users/person/src/apis/admin",
@@ -264,7 +280,9 @@ def test_walk_through_apiary(mock_subproc_popen):
     attrs = {"communicate.return_value": ("output", "error")}
     process_mock.configure_mock(**attrs)
     mock_subproc_popen.return_value = process_mock
-    dirs = node.walk_through_apiary(FIXTURES / "node_apiary", "src/apis/**/*")
+    dirs = node.walk_through_apiary(
+        FIXTURES / "node_apiary" / "without_private", "src/apis/**/*"
+    )
     assert not mock_subproc_popen.called
     assert re.search(
         "(?:% s)" % "|".join(["src/apis/admin", "src/apis/docs"]),

@@ -281,7 +281,14 @@ def write_release_please_config(dirs: list):
             assert result is not None
             data["packages"][result.group()] = {}
         # Make sure base package is also published
-        data["packages"]["."] = {}
+    with open("package.json", "r") as f:
+        packageJson = json.load(f)
+        if "private" in packageJson:
+            if packageJson["private"] != True:
+                data["packages"]["."] = {}
+        else:
+            data["packages"]["."] = {}
+    print(data)
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
 
