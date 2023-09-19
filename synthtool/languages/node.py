@@ -277,13 +277,24 @@ def write_release_please_config(dirs: list):
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in dirs:
+            isPrivate = check_if_private_package(dir)
             result = re.search(r"(src/apis/.*)", dir)
             assert result is not None
-            data["packages"][result.group()] = {}
+            if result and isPrivate is False:
+                data["packages"][result.group()] = {}
         # Make sure base package is also published
-        data["packages"]["."] = {}
+        if check_if_private_package(".") is False:
+            data["packages"]["."] = {}
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
+
+
+def check_if_private_package(path: str):
+    with open(Path(path, "package.json"), "r") as f:
+        packageJson = json.load(f)
+        if "private" in packageJson and packageJson["private"] is True:
+            return True
+    return False
 
 
 default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
