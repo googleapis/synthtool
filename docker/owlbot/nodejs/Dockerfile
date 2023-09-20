@@ -50,6 +50,7 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # * gts/typescript are used for linting.
 # * google-gax and gapic-tools are used for compiling protos.
 RUN echo $(pwd)
+RUN echo $(ls -a)
 RUN cd /synthtool && mkdir node_modules && cd ../
 RUN npm install --prefix synthtool/node_modules
 
