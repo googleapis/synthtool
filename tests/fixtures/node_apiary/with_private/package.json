@@ -1,0 +1,5 @@
+{
+    "name": "gax-nodejs",
+    "private": true,
+    "description": "Google API Extensions"
+}
