@@ -22,7 +22,6 @@ steps:
       - '100'
       - --no-single-branch
       - https://github.com/googleapis/nodejs-bigtable.git
-      - /workspace/library
   # Build the docker image.
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build'
