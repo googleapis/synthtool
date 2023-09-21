@@ -45,12 +45,10 @@ COPY post-processor-changes.txt /post-processor-changes.txt
 RUN find /synthtool -exec chmod a+r {} \;
 RUN find /synthtool -type d -exec chmod a+x {} \;
 
-# Install dependencies used for post processing:
-# * gts/typescript are used for linting.
-# * google-gax and gapic-tools are used for compiling protos.
+# Install dependencies used for post processing
+# Since we're running in a clone of the library, we'll have access to it's package.json
 COPY package.json /package.json
 RUN npm install --ignore-scripts
-RUN cd /node_modules && echo $(ls -a)
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
