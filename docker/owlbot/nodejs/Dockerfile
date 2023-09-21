@@ -55,7 +55,7 @@ RUN cd /synthtool && mkdir node_modules && cd ../
 RUN echo $(pwd)
 RUN echo $(ls -a)
 RUN npm install --ignore-scripts --prefix /synthtool
-RUN cd synthtool/node_modules && echo $(ls -a)
+RUN cd /synthtool/node_modules && echo $(ls -a)
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
