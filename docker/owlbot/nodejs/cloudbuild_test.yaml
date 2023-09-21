@@ -33,6 +33,8 @@ steps:
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
       '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
+    env:
+      - 'HOME=/workspace'
   # Run container tests
   - name: gcr.io/gcp-runtimes/container-structure-test
     args:
