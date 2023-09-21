@@ -26,7 +26,6 @@ import shutil
 from synthtool.languages import common
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
-_TOOLS_DIRECTORY = "/synthtool"
 _GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
 
 
@@ -189,7 +188,7 @@ def typeless_samples_hermetic(hide_output=False):
     logger.debug("Run typeless sample bot")
     shell.run(
         [
-            f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
+            "node_modules/.bin/typeless-sample-bot",
             "--outputpath",
             "samples",
             "--targets",
@@ -220,13 +219,13 @@ def fix_hermetic(hide_output=False):
     """
     logger.debug("Copy eslint config")
     shell.run(
-        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+        ["cp", "-r", "node_modules", "."],
         check=True,
         hide_output=hide_output,
     )
     logger.debug("Running fix...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix"],
+        ["node_modules/.bin/gts", "fix"],
         check=False,
         hide_output=hide_output,
     )
@@ -249,7 +248,7 @@ def compile_protos_hermetic(hide_output=False):
     """
     logger.debug("Compiling protos...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        ["node_modules/.bin/compileProtos", "src"],
         check=True,
         hide_output=hide_output,
     )
