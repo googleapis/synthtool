@@ -39,9 +39,6 @@ steps:
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:$SHORT_SHA',
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs:latest',
       '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
-    volumes:
-    - name: 'myvolume'
-      path: '/library'
   # Run container tests
   - name: gcr.io/gcp-runtimes/container-structure-test
     args:
