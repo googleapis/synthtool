@@ -13,13 +13,6 @@ steps:
           sed -i "s/([^()]*)$//g" post-processor-changes.txt &&
           sed -i "s/^\(feat\|fix\)/chore/g" post-processor-changes.txt &&
           sed -i "s/\!:/:/g" post-processor-changes.txt
-  # Copy any package.json to mimic the container running in a clone of a given repo
-  - name: 'gcr.io/cloud-builders/git'
-    entrypoint: '/bin/sh'
-    args:
-      - '-c'
-      - |
-        curl -LJO https://raw.githubusercontent.com/googleapis/nodejs-bigtable/main/package.json
   # Build the docker image.
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build'
