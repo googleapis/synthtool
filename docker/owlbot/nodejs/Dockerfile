@@ -50,6 +50,7 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
 # * google-gax and gapic-tools are used for compiling protos.
+COPY package.json /package.json
 RUN cd /synthtool && mkdir node_modules && cd ../
 RUN echo $(pwd)
 RUN echo $(ls -a)
