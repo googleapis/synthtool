@@ -54,7 +54,7 @@ COPY package.json /package.json
 RUN cd /synthtool && mkdir node_modules && cd ../
 RUN echo $(pwd)
 RUN echo $(ls -a)
-RUN npm install --ignore-scripts -g --prefix /synthtool
+RUN npm install --ignore-scripts --prefix /synthtool
 RUN cd synthtool/node_modules && echo $(ls -a)
 
 ENTRYPOINT [ "/bin/bash" ]
