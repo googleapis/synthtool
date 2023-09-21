@@ -54,7 +54,7 @@ COPY package.json /package.json
 RUN cd /synthtool && mkdir node_modules && cd ../
 RUN echo $(pwd)
 RUN echo $(ls -a)
-RUN npm install --prefix synthtool/node_modules
+RUN npm install --prefix synthtool/node_modules -g
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
