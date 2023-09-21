@@ -22,10 +22,10 @@ steps:
       - '100'
       - --no-single-branch
       - https://github.com/googleapis/nodejs-bigtable.git
-      - /workspace
+      - /library
     volumes:
     - name: 'myvolume'
-      path: '/workspace'
+      path: '/library'
   # Build the docker image.
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build'
@@ -37,7 +37,7 @@ steps:
       '-f', 'docker/owlbot/nodejs/Dockerfile', '.' ]
     volumes:
     - name: 'myvolume'
-      path: '/workspace'
+      path: '/library'
   # Run container tests
   - name: gcr.io/gcp-runtimes/container-structure-test
     args:
