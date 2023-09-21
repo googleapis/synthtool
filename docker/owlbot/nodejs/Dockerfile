@@ -17,8 +17,6 @@
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-nodejs -f docker/owlbot/nodejs/Dockerfile .
 FROM python:3.10.12-bookworm
-RUN echo $(pwd)
-RUN echo $(ls -a)
 WORKDIR /
 
 ###################### Install nodejs.
