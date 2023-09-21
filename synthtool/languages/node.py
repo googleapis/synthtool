@@ -188,7 +188,7 @@ def typeless_samples_hermetic(hide_output=False):
     logger.debug("Run typeless sample bot")
     shell.run(
         [
-            "/node_modules/.bin/typeless-sample-bot",
+            f"{_TOOLS_DIRECTORY}/node_modules/.bin/typeless-sample-bot",
             "--outputpath",
             "samples",
             "--targets",
