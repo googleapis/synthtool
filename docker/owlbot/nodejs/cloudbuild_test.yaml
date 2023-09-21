@@ -23,9 +23,13 @@ steps:
       - --no-single-branch
       - https://github.com/googleapis/nodejs-bigtable.git
       - /library
-    volumes:
-    - name: 'myvolume'
-      path: '/library'
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: '/bin/sh'
+    args:
+      - echo
+      - ($pwd)
+      - echo
+      - ($ls)
   # Build the docker image.
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build'
