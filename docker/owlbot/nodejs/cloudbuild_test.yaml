@@ -14,15 +14,11 @@ steps:
           sed -i "s/^\(feat\|fix\)/chore/g" post-processor-changes.txt &&
           sed -i "s/\!:/:/g" post-processor-changes.txt
   - name: 'gcr.io/cloud-builders/git'
+    entrypoint: '/bin/sh'
     args:
-      - clone
-      - -b
-      - main
-      - --depth
-      - '100'
-      - --no-single-branch
-      - https://github.com/googleapis/nodejs-bigtable.git
-      - /library
+      - '-c'
+        - |
+          curl -LJO https://raw.githubusercontent.com/googleapis/nodejs-bigtable/main/package.json
   # Build the docker image.
   - name: 'gcr.io/cloud-builders/docker'
     dir: '/library/nodejs-bigtable'
