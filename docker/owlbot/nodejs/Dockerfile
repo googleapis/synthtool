@@ -45,7 +45,7 @@ COPY post-processor-changes.txt /post-processor-changes.txt
 RUN find /synthtool -exec chmod a+r {} \;
 RUN find /synthtool -type d -exec chmod a+x {} \;
 
-RUN npm i @google-cloud/typeless-sample-bot@1.3.3
+RUN npm install @google-cloud/typeless-sample-bot@1.3.3
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
