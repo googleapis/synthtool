@@ -49,7 +49,6 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # * gts/typescript are used for linting.
 # * google-gax and gapic-tools are used for compiling protos.
 RUN cd /synthtool && mkdir node_modules && cd ../
-RUN curl -LJO https://raw.githubusercontent.com/googleapis/nodejs-bigtable/main/package.json
 RUN echo $(pwd)
 RUN echo $(ls -a)
 RUN npm install --prefix synthtool/node_modules
