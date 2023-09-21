@@ -26,6 +26,7 @@ import shutil
 from synthtool.languages import common
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
+_TOOLS_DIRECTORY = "/synthtool"
 _GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
 
 
