@@ -17,8 +17,8 @@ steps:
     entrypoint: '/bin/sh'
     args:
       - '-c'
-        - |
-          curl -LJO https://raw.githubusercontent.com/googleapis/nodejs-bigtable/main/package.json
+      - |
+        curl -LJO https://raw.githubusercontent.com/googleapis/nodejs-bigtable/main/package.json
   # Build the docker image.
   - name: 'gcr.io/cloud-builders/docker'
     dir: '/library/nodejs-bigtable'
