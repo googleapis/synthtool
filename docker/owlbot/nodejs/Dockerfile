@@ -50,7 +50,7 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # * google-gax and gapic-tools are used for compiling protos.
 COPY package.json /package.json
 RUN npm install --ignore-scripts
-RUN cd node_modules && echo $(ls -a)
+RUN cd /node_modules && echo $(ls -a)
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/nodejs/entrypoint.sh" ]
