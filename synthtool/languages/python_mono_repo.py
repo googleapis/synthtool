@@ -162,7 +162,7 @@ def owlbot_main(package_dir: str) -> None:
             versions=gcp.common.detect_versions(
                 path=f"{package_dir}/google",
                 default_version=default_version,
-                default_first=True
+                default_first=True,
             ),
         )
         s.move([templated_files], package_dir)
