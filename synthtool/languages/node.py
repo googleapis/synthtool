@@ -213,6 +213,8 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
 
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def fix_hermetic(hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
@@ -241,6 +243,8 @@ def compile_protos(hide_output=False):
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def compile_protos_hermetic(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
@@ -265,8 +269,8 @@ def postprocess_gapic_library(hide_output=False):
 
 def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
-    fix_hermetic(hide_output=hide_output)
-    compile_protos_hermetic(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
 
