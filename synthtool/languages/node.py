@@ -212,8 +212,9 @@ def fix(hide_output=False):
     logger.debug("Running fix...")
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
-#TODO: delete these functions if it turns out we no longer
-#need them to be hermetic.
+
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def fix_hermetic(hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
@@ -241,8 +242,9 @@ def compile_protos(hide_output=False):
     logger.debug("Compiling protos...")
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
-#TODO: delete these functions if it turns out we no longer
-#need them to be hermetic.
+
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def compile_protos_hermetic(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
