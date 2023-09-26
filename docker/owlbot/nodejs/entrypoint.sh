@@ -15,6 +15,8 @@
 
 set -ex
 
+npm i --only=dev --ignore-scripts
+
 if [ -f owlbot.py ]; then
     python owlbot.py
 else

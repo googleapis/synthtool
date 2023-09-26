@@ -213,6 +213,8 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
 
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def fix_hermetic(hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
@@ -220,13 +222,13 @@ def fix_hermetic(hide_output=False):
     """
     logger.debug("Copy eslint config")
     shell.run(
-        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+        ["cp", "-r", "node_modules", "."],
         check=True,
         hide_output=hide_output,
     )
     logger.debug("Running fix...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix"],
+        ["node_modules/.bin/gts", "fix"],
         check=False,
         hide_output=hide_output,
     )
@@ -241,6 +243,8 @@ def compile_protos(hide_output=False):
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def compile_protos_hermetic(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
@@ -249,7 +253,7 @@ def compile_protos_hermetic(hide_output=False):
     """
     logger.debug("Compiling protos...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        ["node_modules/.bin/compileProtos", "src"],
         check=True,
         hide_output=hide_output,
     )
@@ -265,8 +269,8 @@ def postprocess_gapic_library(hide_output=False):
 
 def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
-    fix_hermetic(hide_output=hide_output)
-    compile_protos_hermetic(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
 
@@ -277,13 +281,24 @@ def write_release_please_config(dirs: list):
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in dirs:
+            isPrivate = check_if_private_package(dir)
             result = re.search(r"(src/apis/.*)", dir)
             assert result is not None
-            data["packages"][result.group()] = {}
+            if result and isPrivate is False:
+                data["packages"][result.group()] = {}
         # Make sure base package is also published
-        data["packages"]["."] = {}
+        if check_if_private_package(".") is False:
+            data["packages"]["."] = {}
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
+
+
+def check_if_private_package(path: str):
+    with open(Path(path, "package.json"), "r") as f:
+        packageJson = json.load(f)
+        if "private" in packageJson and packageJson["private"] is True:
+            return True
+    return False
 
 
 default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
