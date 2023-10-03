@@ -1,4 +1,5 @@
-env_vars:
+# default env_vars in .kokoro/nightly/integration.cfg
+kokoro_nightly_env_vars:
   TRAMPOLINE_IMAGE: gcr.io/cloud-devrel-kokoro-resources/java8
   JOB_TYPE: integration
   GCLOUD_PROJECT: java-docs-samples-testing
