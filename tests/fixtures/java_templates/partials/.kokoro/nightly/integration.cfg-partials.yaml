@@ -1,0 +1,3 @@
+kokoro_nightly_env_vars:
+  INTEGRATION_TEST_ARGS: -P bigtable-emulator-it
+  GCLOUD_PROJECT: gcloud-devel

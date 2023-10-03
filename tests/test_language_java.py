@@ -22,9 +22,11 @@ from synthtool.languages import java
 import requests_mock
 import pytest
 from . import util
+import unittest
 
 FIXTURES = Path(__file__).parent / "fixtures"
-TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
+TEMPLATES_PATH = Path(
+  __file__).parent.parent / "synthtool" / "gcp" / "templates"
 
 SAMPLE_METADATA = """
 <metadata>
@@ -266,3 +268,18 @@ def assert_matches_golden(expected, actual):
                 if not log_line:
                     break
     assert matching_lines > 0
+
+
+class TestJava(unittest.TestCase):
+    def test_merge_partials(self):
+        os.chdir(FIXTURES / "java_templates" / "partials")
+        with util.copied_fixtures_dir(FIXTURES / "java_templates" / "partials"):
+            java.common_templates(
+              template_path=TEMPLATES_PATH,
+              partial_files=[".kokoro/nightly/integration.cfg-partials.yaml"]
+            )
+            assert os.path.isfile(".kokoro/nightly/integration.cfg")
+            os.system("cat .kokoro/nightly/integration.cfg")
+            assert_matches_golden(
+              "integration-golden.cfg", ".kokoro/nightly/integration.cfg"
+            )
