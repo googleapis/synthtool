@@ -18,12 +18,15 @@ from pathlib import Path
 from typing import Dict, List
 
 # these are the default locations to look up
-_DEFAULT_PARTIAL_FILES = [".readme-partials.yml", ".readme-partials.yaml"]
+_DEFAULT_PARTIAL_FILES = [
+    ".readme-partials.yml",
+    ".readme-partials.yaml",
+]
 
 
-def load_partials(files: List[str] = _DEFAULT_PARTIAL_FILES) -> Dict:
+def load_partials(files: List[str] = None) -> Dict:
     """
-    hand-crafted artisinal markdown can be provided in a .readme-partials.yml.
+    hand-crafted artisanal markdown can be provided in a .readme-partials.yml.
     The following fields are currently supported:
 
     body: custom body to include in the usage section of the document.
@@ -34,13 +37,15 @@ def load_partials(files: List[str] = _DEFAULT_PARTIAL_FILES) -> Dict:
     deprecation_warning: a warning to indicate that the library has been
         deprecated and a pointer to an alternate option
     """
+    if files is None:
+        files = _DEFAULT_PARTIAL_FILES
+    else:
+        files.extend(_DEFAULT_PARTIAL_FILES)
+    res = {}
     cwd_path = Path(os.getcwd())
-    partials_file = None
     for file in files:
         if os.path.exists(cwd_path / file):
             partials_file = cwd_path / file
-            break
-    if not partials_file:
-        return {}
-    with open(partials_file) as f:
-        return yaml.load(f, Loader=yaml.SafeLoader)
+            with open(partials_file) as f:
+                res.update(yaml.load(f, Loader=yaml.SafeLoader))
+    return res

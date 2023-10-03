@@ -1,0 +1,8 @@
+env_vars:
+  TRAMPOLINE_IMAGE: gcr.io/cloud-devrel-kokoro-resources/java8
+  JOB_TYPE: integration
+  GCLOUD_PROJECT: java-docs-samples-testing
+  GOOGLE_CLOUD_PROJECT: java-docs-samples-testing
+  ENABLE_FLAKYBOT: true
+  GOOGLE_APPLICATION_CREDENTIALS: secret_manager/java-it-service-account
+  SECRET_MANAGER_KEYS: java-it-service-account

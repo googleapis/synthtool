@@ -21,8 +21,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Dict, List, Optional
 import jinja2
+import yaml
 from datetime import date
-
 from synthtool import shell, _tracked_paths
 from synthtool.gcp import partials
 from synthtool.languages import node, node_mono_repo
@@ -49,10 +49,31 @@ class CommonTemplates:
         self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
-    def _generic_library(self, directory: str, relative_dir=None, **kwargs) -> Path:
-        # load common repo meta information (metadata that's not language specific).
+    def _generic_library(
+        self,
+        directory: str,
+        relative_dir=None,
+        partial_files: List[str] = None,
+        **kwargs
+    ) -> Path:
+        defaults_path = self._template_root / directory / "defaults"
+        kwargs["metadata"]["defaults"] = {}
+        for default_file in defaults_path.glob("*-default.yaml"):
+            self.excludes.append(
+                "defaults/{}".format(os.path.basename(default_file))
+            )
+            with open(default_file) as f:
+                kwargs["metadata"]["defaults"].update(
+                    yaml.load(f, Loader=yaml.SafeLoader)
+                )
+        # load common repo meta information (metadata that's not language
+        # specific).
         if "metadata" in kwargs:
-            self._load_generic_metadata(kwargs["metadata"], relative_dir=relative_dir)
+            self._load_generic_metadata(
+                kwargs["metadata"],
+                relative_dir=relative_dir,
+                partial_files=partial_files
+            )
             # if no samples were found, don't attempt to render a
             # samples/README.md.
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
@@ -321,11 +342,15 @@ class CommonTemplates:
                     f.write(content)
         return ret
 
-    def java_library(self, **kwargs) -> Path:
+    def java_library(self, partial_files: List[str] = None, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
-        return self._generic_library("java_library", **kwargs)
+        return self._generic_library(
+            "java_library",
+            partial_files=partial_files,
+            **kwargs
+        )
 
     def node_library(self, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
@@ -397,11 +422,16 @@ class CommonTemplates:
         _tracked_paths.add(template)
         return template
 
-    def _load_generic_metadata(self, metadata: Dict, relative_dir=None):
+    def _load_generic_metadata(
+        self,
+        metadata: Dict,
+        relative_dir=None,
+        partial_files: List[str] = None
+    ):
         """
         loads additional meta information from .repo-metadata.json.
         """
-        metadata["partials"] = partials.load_partials()
+        metadata["partials"] = partials.load_partials(partial_files)
 
         # Loads repo metadata information from the default location if it
         # hasn't already been set. Some callers may have already loaded repo
