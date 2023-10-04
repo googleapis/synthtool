@@ -22,6 +22,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import jinja2
 from datetime import date
+from enum import Enum
 
 from synthtool import shell, _tracked_paths
 from synthtool.gcp import partials
@@ -49,10 +50,20 @@ class CommonTemplates:
         self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
-    def _generic_library(self, directory: str, relative_dir=None, **kwargs) -> Path:
+    def _generic_library(
+        self,
+        directory: str,
+        relative_dir=None,
+        partial_files: List[str] = None,
+        **kwargs,
+    ) -> Path:
         # load common repo meta information (metadata that's not language specific).
         if "metadata" in kwargs:
-            self._load_generic_metadata(kwargs["metadata"], relative_dir=relative_dir)
+            self._load_generic_metadata(
+                kwargs["metadata"],
+                relative_dir=relative_dir,
+                partial_files=partial_files,
+            )
             # if no samples were found, don't attempt to render a
             # samples/README.md.
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
@@ -73,6 +84,8 @@ class CommonTemplates:
 
         result = t.render(**kwargs)
         _tracked_paths.add(result)
+
+        _search_and_remove(result, "{}/".format(result), **kwargs)
 
         return result
 
@@ -321,11 +334,13 @@ class CommonTemplates:
                     f.write(content)
         return ret
 
-    def java_library(self, **kwargs) -> Path:
+    def java_library(self, partial_files: List[str] = None, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
-        return self._generic_library("java_library", **kwargs)
+        return self._generic_library(
+            "java_library", partial_files=partial_files, **kwargs
+        )
 
     def node_library(self, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
@@ -397,11 +412,13 @@ class CommonTemplates:
         _tracked_paths.add(template)
         return template
 
-    def _load_generic_metadata(self, metadata: Dict, relative_dir=None):
+    def _load_generic_metadata(
+        self, metadata: Dict, relative_dir=None, partial_files: List[str] = None
+    ):
         """
         loads additional meta information from .repo-metadata.json.
         """
-        metadata["partials"] = partials.load_partials()
+        metadata["partials"] = partials.load_partials(partial_files)
 
         # Loads repo metadata information from the default location if it
         # hasn't already been set. Some callers may have already loaded repo
@@ -542,3 +559,93 @@ def _get_default_branch_name(repository_name: str) -> str:
     # This default should be switched to "main" once we've migrated
     # the majority of our repositories:
     return os.getenv("DEFAULT_BRANCH", "master")
+
+
+def _search_and_remove(path: Path, strip_prefix: str, **kwargs) -> None:
+    """
+    Search for patterns (customized key-value pairs) in templates and remove
+    the first occurrence (the defaults in templates) in the give path.
+
+    The patterns (if any) is stored in `kwargs["metadata"]["partials"]`.
+    :param path: the path of templates after rendering
+    :param strip_prefix:
+    :param kwargs:
+    :return:
+    """
+    for sub in path.iterdir():
+        if sub.is_dir():
+            # search for patterns in subdirectories recursively.
+            _search_and_remove(sub, strip_prefix, **kwargs)
+        else:
+            # search for patterns in the file.
+            _remove_first_occurrence(sub, strip_prefix, **kwargs)
+
+
+def _remove_first_occurrence(path: Path, strip_prefix: str, **kwargs) -> None:
+    partials_file = "{}".format(path).replace(strip_prefix, "")
+    if not (
+        "partials" in kwargs["metadata"]
+        and partials_file in kwargs["metadata"]["partials"]
+    ):
+        return
+    with open(path, "r") as f:
+        content = f.readlines()
+
+    for enum in TemplateEnum:
+        start_idx = enum.start
+        end_idx = enum.end
+        enum = enum.name.lower()
+        if enum in kwargs["metadata"]["partials"][partials_file]:
+            for key in kwargs["metadata"]["partials"][partials_file][enum]:
+                num = sum(key in line for line in content)
+                if num == 1:
+                    # the pattern is not a default in template since it only
+                    # has one occurrence.
+                    continue
+                first = _first_occurrence(content, key)
+                content = content[: first + start_idx] + content[first + end_idx + 1 :]
+
+    with open(path, "w") as f:
+        f.write("".join(content))
+
+
+def _first_occurrence(content: list[str], substring: str) -> int:
+    """
+    Returns the index of the first occurrence of a given substring in a list of
+    str.
+    :param content:
+    :param substring:
+    :return:
+    """
+    for index, line in enumerate(content):
+        if substring in line:
+            return index
+    return -1
+
+
+class TemplateEnum(Enum):
+    """
+    The keys in template file.
+
+    Attributes
+    ----------
+    start : int
+        the start line relative to the key
+    end: int
+        the end line relative to the key
+    """
+
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
+
+    """
+    Suppose a key of an env_vars entry is in line n, then the start line and end
+    line of this entry is n - 1 and n + 3 (empty line), respectively.
+    env_vars: { # line n - 1
+      key: example_key # line n
+      value: example_value
+    }
+    # line n + 3
+    """
+    ENV_VARS = -1, 3

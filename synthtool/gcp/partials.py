@@ -44,8 +44,10 @@ def load_partials(files: List[str] = None) -> Dict:
     res = {}
     cwd_path = Path(os.getcwd())
     for file in files:
+        key = file.partition("-")[0]
         if os.path.exists(cwd_path / file):
             partials_file = cwd_path / file
+            res[key] = {}
             with open(partials_file) as f:
-                res.update(yaml.load(f, Loader=yaml.SafeLoader))
+                res[key].update(yaml.load(f, Loader=yaml.SafeLoader))
     return res

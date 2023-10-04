@@ -472,7 +472,10 @@ def _common_template_metadata() -> Dict[str, Any]:
 
 
 def common_templates(
-    excludes: List[str] = [], template_path: Optional[Path] = None, **kwargs
+    excludes: List[str] = [],
+    template_path: Optional[Path] = None,
+    partial_files: List[str] = None,
+    **kwargs,
 ) -> None:
     """Generate common templates for a Java Library
 
@@ -481,8 +484,11 @@ def common_templates(
     their expected location.
 
     Args:
-        excludes (List[str], optional): List of template paths to ignore
-        **kwargs: Additional options for CommonTemplates.java_library()
+        :param excludes: List of template paths to ignore
+        :param template_path:
+        :param partial_files: Partial files to save customizations in the
+        templates
+        :param kwargs: Additional options for CommonTemplates.java_library()
     """
     metadata = _common_template_metadata()
     kwargs["metadata"] = metadata
@@ -516,7 +522,9 @@ def common_templates(
         )
     )
 
-    templates = gcp.CommonTemplates(template_path=template_path).java_library(**kwargs)
+    templates = gcp.CommonTemplates(template_path=template_path).java_library(
+        partial_files, **kwargs
+    )
 
     # skip README generation on Kokoro (autosynth)
     if os.environ.get("KOKORO_ROOT") is not None:
