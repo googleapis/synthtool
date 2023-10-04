@@ -576,9 +576,8 @@ def _search_and_remove(path: Path, strip_prefix: str, **kwargs) -> None:
 
     The patterns (if any) is stored in `kwargs["metadata"]["partials"]`.
     :param path: the path of templates after rendering
-    :param strip_prefix:
+    :param strip_prefix: a prefix of path
     :param kwargs:
-    :return:
     """
     for sub in path.iterdir():
         if sub.is_dir():
@@ -590,10 +589,17 @@ def _search_and_remove(path: Path, strip_prefix: str, **kwargs) -> None:
 
 
 def _remove_first_occurrence(path: Path, strip_prefix: str, **kwargs) -> None:
-    partials_file = "{}".format(path).replace(strip_prefix, "")
+    """
+    Removes the first occurrence of a pattern in a template if there are two
+    occurrences.
+    :param path: the path of templates after rendering
+    :param strip_prefix: a prefix of path
+    :param kwargs:
+    """
+    template_path = "{}".format(path).replace(strip_prefix, "")
     if not (
         "partials" in kwargs["metadata"]
-        and partials_file in kwargs["metadata"]["partials"]
+        and template_path in kwargs["metadata"]["partials"]
     ):
         return
     with open(path, "r") as f:
@@ -603,8 +609,8 @@ def _remove_first_occurrence(path: Path, strip_prefix: str, **kwargs) -> None:
         start_idx = enum.start
         end_idx = enum.end
         enum = enum.name.lower()
-        if enum in kwargs["metadata"]["partials"][partials_file]:
-            for key in kwargs["metadata"]["partials"][partials_file][enum]:
+        if enum in kwargs["metadata"]["partials"][template_path]:
+            for key in kwargs["metadata"]["partials"][template_path][enum]:
                 num = sum(key in line for line in content)
                 if num == 1:
                     # the pattern is not a default in template since it only
@@ -617,13 +623,13 @@ def _remove_first_occurrence(path: Path, strip_prefix: str, **kwargs) -> None:
         f.write("".join(content))
 
 
-def _first_occurrence(content: list[str], substring: str) -> int:
+def _first_occurrence(content: List[str], substring: str) -> int:
     """
     Returns the index of the first occurrence of a given substring in a list of
     str.
     :param content:
     :param substring:
-    :return:
+    :return: the index of the first occurrence in the given list
     """
     for index, line in enumerate(content):
         if substring in line:

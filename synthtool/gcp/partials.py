@@ -18,10 +18,7 @@ from pathlib import Path
 from typing import Dict, List
 
 # these are the default locations to look up
-_DEFAULT_PARTIAL_FILES = [
-    ".readme-partials.yml",
-    ".readme-partials.yaml",
-]
+_DEFAULT_PARTIAL_FILES = [".readme-partials.yml", ".readme-partials.yaml"]
 
 
 def load_partials(files: List[str] = None) -> Dict:
