@@ -61,7 +61,9 @@ class CommonTemplates:
         if defaults_path.exists():
             kwargs["metadata"]["defaults"] = {}
             for default_file in defaults_path.glob("*-default.yaml"):
-                self.excludes.append("defaults/{}".format(os.path.basename(default_file)))
+                self.excludes.append(
+                    "defaults/{}".format(os.path.basename(default_file))
+                )
                 with open(default_file) as f:
                     kwargs["metadata"]["defaults"].update(
                         yaml.load(f, Loader=yaml.SafeLoader)
