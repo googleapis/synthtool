@@ -50,20 +50,10 @@ class CommonTemplates:
         self._templates = templates.Templates(self._template_root)
         self.excludes = []  # type: List[str]
 
-    def _generic_library(
-        self,
-        directory: str,
-        relative_dir=None,
-        partial_files: List[str] = None,
-        **kwargs,
-    ) -> Path:
+    def _generic_library(self, directory: str, relative_dir=None, **kwargs) -> Path:
         # load common repo meta information (metadata that's not language specific).
         if "metadata" in kwargs:
-            self._load_generic_metadata(
-                kwargs["metadata"],
-                relative_dir=relative_dir,
-                partial_files=partial_files,
-            )
+            self._load_generic_metadata(kwargs["metadata"], relative_dir=relative_dir)
             # if no samples were found, don't attempt to render a
             # samples/README.md.
             if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
