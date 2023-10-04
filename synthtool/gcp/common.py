@@ -54,14 +54,12 @@ class CommonTemplates:
         directory: str,
         relative_dir=None,
         partial_files: List[str] = None,
-        **kwargs
+        **kwargs,
     ) -> Path:
         defaults_path = self._template_root / directory / "defaults"
         kwargs["metadata"]["defaults"] = {}
         for default_file in defaults_path.glob("*-default.yaml"):
-            self.excludes.append(
-                "defaults/{}".format(os.path.basename(default_file))
-            )
+            self.excludes.append("defaults/{}".format(os.path.basename(default_file)))
             with open(default_file) as f:
                 kwargs["metadata"]["defaults"].update(
                     yaml.load(f, Loader=yaml.SafeLoader)
@@ -72,7 +70,7 @@ class CommonTemplates:
             self._load_generic_metadata(
                 kwargs["metadata"],
                 relative_dir=relative_dir,
-                partial_files=partial_files
+                partial_files=partial_files,
             )
             # if no samples were found, don't attempt to render a
             # samples/README.md.
@@ -347,9 +345,7 @@ class CommonTemplates:
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
         return self._generic_library(
-            "java_library",
-            partial_files=partial_files,
-            **kwargs
+            "java_library", partial_files=partial_files, **kwargs
         )
 
     def node_library(self, **kwargs) -> Path:
@@ -423,10 +419,7 @@ class CommonTemplates:
         return template
 
     def _load_generic_metadata(
-        self,
-        metadata: Dict,
-        relative_dir=None,
-        partial_files: List[str] = None
+        self, metadata: Dict, relative_dir=None, partial_files: List[str] = None
     ):
         """
         loads additional meta information from .repo-metadata.json.

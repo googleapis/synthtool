@@ -22,11 +22,9 @@ from synthtool.languages import java
 import requests_mock
 import pytest
 from . import util
-import unittest
 
 FIXTURES = Path(__file__).parent / "fixtures"
-TEMPLATES_PATH = Path(
-  __file__).parent.parent / "synthtool" / "gcp" / "templates"
+TEMPLATES_PATH = Path(__file__).parent.parent / "synthtool" / "gcp" / "templates"
 
 SAMPLE_METADATA = """
 <metadata>
@@ -257,12 +255,10 @@ releaseType: java-yoshi
 
 
 def test_merge_partials():
-    with util.copied_fixtures_dir(
-            FIXTURES / "java_templates" / "partials_test"
-    ):
+    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "partials_test"):
         java.common_templates(
             template_path=TEMPLATES_PATH,
-            partial_files=[".kokoro/nightly/integration.cfg-partials.yaml"]
+            partial_files=[".kokoro/nightly/integration.cfg-partials.yaml"],
         )
         assert os.path.isfile(".kokoro/nightly/integration.cfg")
         assert_matches_golden(

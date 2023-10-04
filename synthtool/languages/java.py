@@ -475,7 +475,7 @@ def common_templates(
     excludes: List[str] = [],
     template_path: Optional[Path] = None,
     partial_files: List[str] = None,
-    **kwargs
+    **kwargs,
 ) -> None:
     """Generate common templates for a Java Library
 
@@ -522,9 +522,9 @@ def common_templates(
         )
     )
 
-    templates = gcp\
-        .CommonTemplates(template_path=template_path)\
-        .java_library(partial_files, **kwargs)
+    templates = gcp.CommonTemplates(template_path=template_path).java_library(
+        partial_files, **kwargs
+    )
 
     # skip README generation on Kokoro (autosynth)
     if os.environ.get("KOKORO_ROOT") is not None:
