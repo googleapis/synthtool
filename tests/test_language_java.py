@@ -254,6 +254,15 @@ releaseType: java-yoshi
             )
 
 
+def test_defaults():
+    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "defaults_test"):
+        java.common_templates(template_path=TEMPLATES_PATH)
+        assert os.path.isfile(".kokoro/nightly/integration.cfg")
+        assert_matches_golden(
+            "integration-golden.cfg", ".kokoro/nightly/integration.cfg"
+        )
+
+
 def test_merge_partials():
     with util.copied_fixtures_dir(FIXTURES / "java_templates" / "partials_test"):
         java.common_templates(
