@@ -37,17 +37,14 @@ def load_partials(files: List[str] = None) -> Dict:
     deprecation_warning: a warning to indicate that the library has been
         deprecated and a pointer to an alternate option
     """
-    if files is None:
-        files = _DEFAULT_PARTIAL_FILES
-    else:
-        files.extend(_DEFAULT_PARTIAL_FILES)
-    res = {}
+    files = (files or []) + _DEFAULT_PARTIAL_FILES
+    result = {}
     cwd_path = Path(os.getcwd())
     for file in files:
         key = file.partition("-")[0]
         if os.path.exists(cwd_path / file):
             partials_file = cwd_path / file
-            res[key] = {}
+            result[key] = {}
             with open(partials_file) as f:
-                res[key].update(yaml.load(f, Loader=yaml.SafeLoader))
-    return res
+                result[key].update(yaml.load(f, Loader=yaml.SafeLoader))
+    return result
