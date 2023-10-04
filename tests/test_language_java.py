@@ -257,14 +257,14 @@ releaseType: java-yoshi
 
 
 def test_merge_partials():
-    os.chdir(FIXTURES / "java_templates" / "partials")
-    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "partials"):
+    with util.copied_fixtures_dir(
+            FIXTURES / "java_templates" / "partials_test"
+    ):
         java.common_templates(
             template_path=TEMPLATES_PATH,
             partial_files=[".kokoro/nightly/integration.cfg-partials.yaml"]
         )
         assert os.path.isfile(".kokoro/nightly/integration.cfg")
-        os.system("cat .kokoro/nightly/integration.cfg")
         assert_matches_golden(
             "integration-golden.cfg", ".kokoro/nightly/integration.cfg"
         )
