@@ -267,11 +267,18 @@ def test_merge_partials():
     with util.copied_fixtures_dir(FIXTURES / "java_templates" / "partials_test"):
         java.common_templates(
             template_path=TEMPLATES_PATH,
-            partial_files=[".kokoro/nightly/integration.cfg-partials.yaml"],
+            partial_files=[
+                ".kokoro/nightly/integration.cfg-partials.yaml",
+                ".kokoro/presubmit/graalvm-native.cfg-partials.yaml",
+            ],
         )
         assert os.path.isfile(".kokoro/nightly/integration.cfg")
         assert_matches_golden(
             "integration-golden.cfg", ".kokoro/nightly/integration.cfg"
+        )
+        assert os.path.isfile(".kokoro/presubmit/graalvm-native.cfg")
+        assert_matches_golden(
+            "graalvm-native-golden.cfg", ".kokoro/presubmit/graalvm-native.cfg"
         )
 
 

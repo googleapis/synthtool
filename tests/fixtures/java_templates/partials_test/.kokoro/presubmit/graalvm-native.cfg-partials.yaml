@@ -1,0 +1,2 @@
+env_vars:
+  GOOGLE_CLOUD_PROJECT: example-project
