@@ -56,14 +56,16 @@ class CommonTemplates:
         partial_files: List[str] = None,
         **kwargs,
     ) -> Path:
+        # load default values that used to render templates.
         defaults_path = self._template_root / directory / "defaults"
-        kwargs["metadata"]["defaults"] = {}
-        for default_file in defaults_path.glob("*-default.yaml"):
-            self.excludes.append("defaults/{}".format(os.path.basename(default_file)))
-            with open(default_file) as f:
-                kwargs["metadata"]["defaults"].update(
-                    yaml.load(f, Loader=yaml.SafeLoader)
-                )
+        if defaults_path.exists():
+            kwargs["metadata"]["defaults"] = {}
+            for default_file in defaults_path.glob("*-default.yaml"):
+                self.excludes.append("defaults/{}".format(os.path.basename(default_file)))
+                with open(default_file) as f:
+                    kwargs["metadata"]["defaults"].update(
+                        yaml.load(f, Loader=yaml.SafeLoader)
+                    )
         # load common repo meta information (metadata that's not language
         # specific).
         if "metadata" in kwargs:

@@ -486,7 +486,8 @@ def common_templates(
     Args:
         :param excludes: List of template paths to ignore
         :param template_path:
-        :param partial_files:
+        :param partial_files: List of partial files to save customizations on
+        templates
         :param kwargs: Additional options for CommonTemplates.java_library()
 
     """
