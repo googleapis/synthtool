@@ -421,7 +421,7 @@ class CommonTemplates:
         return template
 
     def _load_generic_metadata(
-        self, metadata: Dict, relative_dir=None, partial_files: List[str] = None
+        self, metadata: Dict, relative_dir=None, partial_files: List[str] = []
     ):
         """
         loads additional meta information from .repo-metadata.json.
