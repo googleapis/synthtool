@@ -608,9 +608,9 @@ def _remove_first_occurrence(path: Path, strip_prefix: str, **kwargs) -> None:
     for enum in TemplateEnum:
         start_idx = enum.start
         end_idx = enum.end
-        enum = enum.name.lower()
-        if enum in kwargs["metadata"]["partials"][template_path]:
-            for key in kwargs["metadata"]["partials"][template_path][enum]:
+        enum_str = enum.name.lower()
+        if enum_str in kwargs["metadata"]["partials"][template_path]:
+            for key in kwargs["metadata"]["partials"][template_path][enum_str]:
                 num = sum(key in line for line in content)
                 if num == 1:
                     # the pattern is not a default in template since it only

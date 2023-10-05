@@ -21,7 +21,7 @@ from typing import Dict, List
 _DEFAULT_PARTIAL_FILES = [".readme-partials.yml", ".readme-partials.yaml"]
 
 
-def load_partials(files: List[str] = None) -> Dict:
+def load_partials(files: List[str] = []) -> Dict:
     """
     hand-crafted artisanal markdown can be provided in a .readme-partials.yml.
     The following fields are currently supported:
@@ -35,7 +35,7 @@ def load_partials(files: List[str] = None) -> Dict:
         deprecated and a pointer to an alternate option
     """
     files = (files or []) + _DEFAULT_PARTIAL_FILES
-    result = {}
+    result: Dict[str, Dict] = {}
     cwd_path = Path(os.getcwd())
     for file in files:
         is_default_partial = file in _DEFAULT_PARTIAL_FILES
