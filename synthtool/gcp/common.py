@@ -322,7 +322,7 @@ class CommonTemplates:
                     f.write(content)
         return ret
 
-    def java_library(self, partial_files: List[str] = None, **kwargs) -> Path:
+    def java_library(self, partial_files: List[str] = [], **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
