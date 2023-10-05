@@ -474,7 +474,7 @@ def _common_template_metadata() -> Dict[str, Any]:
 def common_templates(
     excludes: List[str] = [],
     template_path: Optional[Path] = None,
-    partial_files: List[str] = None,
+    partial_files: List[str] = [],
     **kwargs,
 ) -> None:
     """Generate common templates for a Java Library
