@@ -617,7 +617,11 @@ def _remove_first_occurrence(path: Path, strip_prefix: str, **kwargs) -> None:
                     # has one occurrence.
                     continue
                 first = _first_occurrence(content, key)
-                content = content[: first + start_idx] + content[first + end_idx + 1 :]
+                # a workaround of "E203 whitespace before ':'" when
+                # running flake8
+                start = first + start_idx
+                end = first + end_idx + 1
+                content = content[:start] + content[end:]
 
     with open(path, "w") as f:
         f.write("".join(content))
