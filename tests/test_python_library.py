@@ -153,11 +153,7 @@ def test_library_codeowners():
     t = templates.Templates(PYTHON_LIBRARY / ".github")
     result = t.render(
         "CODEOWNERS",
-        metadata={
-            'repo': {
-                'codeowner_team': 'googleapis/foo'
-            }
-        },
+        metadata={"repo": {"codeowner_team": "googleapis/foo"}},
     ).read_text()
     assert "*     @googleapis/yoshi-python googleapis/foo" in result
     assert "/samples/   @googleapis/python-samples-reviewers googleapis/foo" in result
@@ -167,9 +163,7 @@ def test_library_codeowners():
     t = templates.Templates(PYTHON_LIBRARY / ".github")
     result = t.render(
         "CODEOWNERS",
-        metadata={
-            'repo': {}
-        },
+        metadata={"repo": {}},
     ).read_text()
     assert "*     @googleapis/yoshi-python" in result
     assert "/samples/   @googleapis/python-samples-reviewers" in result
@@ -188,18 +182,16 @@ def test_library_blunderbuss():
     t = templates.Templates(PYTHON_LIBRARY / ".github")
     result = t.render(
         "blunderbuss.yml",
-        metadata={
-            'repo': {
-                'codeowner_team': 'googleapis/foo'
-            }
-        },
+        metadata={"repo": {"codeowner_team": "googleapis/foo"}},
     ).read_text()
     try:
         config = yaml.safe_load(result)
-        assert "googleapis/yoshi-python" in config['assign_issues']
-        assert "googleapis/foo" in config['assign_issues']
-        assert "googleapis/python-samples-reviewers" in config['assign_issues_by'][0]['to']
-        assert "googleapis/foo" in config['assign_issues_by'][0]['to']
+        assert "googleapis/yoshi-python" in config["assign_issues"]
+        assert "googleapis/foo" in config["assign_issues"]
+        assert (
+            "googleapis/python-samples-reviewers" in config["assign_issues_by"][0]["to"]
+        )
+        assert "googleapis/foo" in config["assign_issues_by"][0]["to"]
     except yaml.YAMLError:
         pytest.fail(f"unable to parse YAML: {result}")
 
@@ -208,16 +200,16 @@ def test_library_blunderbuss_no_codeowner():
     t = templates.Templates(PYTHON_LIBRARY / ".github")
     result = t.render(
         "blunderbuss.yml",
-        metadata={
-            'repo': {}
-        },
+        metadata={"repo": {}},
     ).read_text()
     try:
         config = yaml.safe_load(result)
-        assert "googleapis/yoshi-python" in config['assign_issues']
-        assert "googleapis/foo" not in config['assign_issues']
-        assert "googleapis/python-samples-reviewers" in config['assign_issues_by'][0]['to']
-        assert "googleapis/foo" not in config['assign_issues_by'][0]['to']
+        assert "googleapis/yoshi-python" in config["assign_issues"]
+        assert "googleapis/foo" not in config["assign_issues"]
+        assert (
+            "googleapis/python-samples-reviewers" in config["assign_issues_by"][0]["to"]
+        )
+        assert "googleapis/foo" not in config["assign_issues_by"][0]["to"]
     except yaml.YAMLError:
         pytest.fail(f"unable to parse YAML: {result}")
 
