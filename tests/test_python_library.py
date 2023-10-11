@@ -159,7 +159,7 @@ def test_library_codeowners():
     assert "/samples/   @googleapis/python-samples-reviewers googleapis/foo" in result
 
 
-def test_library_codeowners():
+def test_library_codeowners_without_metadata():
     t = templates.Templates(PYTHON_LIBRARY / ".github")
     result = t.render(
         "CODEOWNERS",
