@@ -259,7 +259,15 @@ def test_defaults():
         java.common_templates(template_path=TEMPLATES_PATH)
         assert os.path.isfile(".kokoro/nightly/integration.cfg")
         assert_matches_golden(
-            "integration-golden.cfg", ".kokoro/nightly/integration.cfg"
+            "nightly-integration-golden.cfg", ".kokoro/nightly/integration.cfg"
+        )
+        assert os.path.isfile(".kokoro/nightly/java11-integration.cfg")
+        assert_matches_golden(
+            "java11-integration-golden.cfg", ".kokoro/nightly/java11-integration.cfg"
+        )
+        assert os.path.isfile(".kokoro/presubmit/integration.cfg")
+        assert_matches_golden(
+            "presubmit-integration-golden.cfg", ".kokoro/presubmit/integration.cfg"
         )
 
 
