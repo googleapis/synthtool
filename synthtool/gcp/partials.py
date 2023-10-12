@@ -38,15 +38,8 @@ def load_partials(files: List[str] = []) -> Dict:
     result: Dict[str, Dict] = {}
     cwd_path = Path(os.getcwd())
     for file in files:
-        is_default_partial = file in _DEFAULT_PARTIAL_FILES
-        key = file.partition("-partials")[0]
-        if os.path.exists(cwd_path / file):
-            partials_file = cwd_path / file
-            result[key] = {}
+        partials_file = cwd_path / file
+        if os.path.exists(partials_file):
             with open(partials_file) as f:
-                if is_default_partial:
-                    # keep the readme-partials as-is.
-                    result.update(yaml.load(f, Loader=yaml.SafeLoader))
-                else:
-                    result[key].update(yaml.load(f, Loader=yaml.SafeLoader))
+                result.update(yaml.load(f, Loader=yaml.SafeLoader))
     return result

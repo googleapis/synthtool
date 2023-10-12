@@ -22,7 +22,6 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import jinja2
 from datetime import date
-from enum import Enum
 
 from synthtool import shell, _tracked_paths
 from synthtool.gcp import partials
@@ -346,7 +345,6 @@ class CommonTemplates:
 
         result = t.render(**kwargs)
         _tracked_paths.add(result)
-        _search_and_remove(result, "{}/".format(result), **kwargs)
 
         return result
 
@@ -567,103 +565,3 @@ def _get_default_branch_name(repository_name: str) -> str:
     # This default should be switched to "main" once we've migrated
     # the majority of our repositories:
     return os.getenv("DEFAULT_BRANCH", "master")
-
-
-def _search_and_remove(path: Path, strip_prefix: str, **kwargs) -> None:
-    """
-    Search for patterns (customized key-value pairs) in templates and remove
-    the first occurrence (the defaults in templates) in the give path.
-
-    The patterns (if any) is stored in `kwargs["metadata"]["partials"]`.
-    :param path: the path of templates after rendering
-    :param strip_prefix: a prefix of path
-    :param kwargs:
-    """
-    for sub in path.iterdir():
-        if sub.is_dir():
-            # search for patterns in subdirectories recursively.
-            _search_and_remove(sub, strip_prefix, **kwargs)
-        else:
-            # search for patterns in the file.
-            _remove_first_occurrence(sub, strip_prefix, **kwargs)
-
-
-def _remove_first_occurrence(path: Path, strip_prefix: str, **kwargs) -> None:
-    """
-    Removes the first occurrence of a pattern in a template if there are two
-    occurrences.
-    :param path: the path of templates after rendering
-    :param strip_prefix: a prefix of path
-    :param kwargs:
-    """
-    template_path = "{}".format(path).replace(strip_prefix, "")
-    if not (
-        "partials" in kwargs["metadata"]
-        and template_path in kwargs["metadata"]["partials"]
-    ):
-        return
-    with open(path, "r") as f:
-        content = f.readlines()
-
-    for enum in TemplateEnum:
-        start_idx = enum.start
-        end_idx = enum.end
-        enum_str = enum.name.lower()
-        if enum_str in kwargs["metadata"]["partials"][template_path]:
-            for key in kwargs["metadata"]["partials"][template_path][enum_str]:
-                num = sum(key in line for line in content)
-                if num == 1:
-                    # the pattern is not a default in template since it only
-                    # has one occurrence.
-                    continue
-                first = _first_occurrence(content, key)
-                # a workaround of "E203 whitespace before ':'" when
-                # running flake8
-                start = first + start_idx
-                end = first + end_idx + 1
-                content = content[:start] + content[end:]
-
-    with open(path, "w") as f:
-        f.write("".join(content))
-
-
-def _first_occurrence(content: List[str], substring: str) -> int:
-    """
-    Returns the index of the first occurrence of a given substring in a list of
-    str.
-    :param content:
-    :param substring:
-    :return: the index of the first occurrence in the given list
-    """
-    for index, line in enumerate(content):
-        if substring in line:
-            return index
-    return -1
-
-
-class TemplateEnum(Enum):
-    """
-    The keys in template file.
-
-    Attributes
-    ----------
-    start : int
-        the start line relative to the key
-    end: int
-        the end line relative to the key
-    """
-
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
-
-    """
-    Suppose a key of an env_vars entry is in line n, then the start line and end
-    line of this entry is n - 1 and n + 3 (empty line), respectively.
-    env_vars: { # line n - 1
-      key: example_key # line n
-      value: example_value
-    }
-    # line n + 3
-    """
-    ENV_VARS = -1, 3
