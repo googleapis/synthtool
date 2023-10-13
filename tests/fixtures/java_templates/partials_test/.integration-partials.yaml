@@ -1,4 +1,4 @@
-integration: |
+integration_append: |
   env_vars: {
     key: "INTEGRATION_TEST_ARGS"
     value: "-P bigtable-emulator-it"

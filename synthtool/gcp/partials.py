@@ -34,10 +34,9 @@ def load_partials(files: List[str] = []) -> Dict:
     deprecation_warning: a warning to indicate that the library has been
         deprecated and a pointer to an alternate option
     """
-    files = (files or []) + _DEFAULT_PARTIAL_FILES
     result: Dict[str, Dict] = {}
     cwd_path = Path(os.getcwd())
-    for file in files:
+    for file in files + _DEFAULT_PARTIAL_FILES:
         partials_file = cwd_path / file
         if os.path.exists(partials_file):
             with open(partials_file) as f:
