@@ -1,0 +1,10 @@
+integration_append: |
+  env_vars: {
+    key: "INTEGRATION_TEST_ARGS"
+    value: "-P bigtable-emulator-it"
+  }
+  
+  env_vars: {
+    key: "GCLOUD_PROJECT"
+    value: "gcloud-devel"
+  }

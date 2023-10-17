@@ -472,7 +472,9 @@ def _common_template_metadata() -> Dict[str, Any]:
 
 
 def common_templates(
-    excludes: List[str] = [], template_path: Optional[Path] = None, **kwargs
+    excludes: List[str] = [],
+    template_path: Optional[Path] = None,
+    **kwargs,
 ) -> None:
     """Generate common templates for a Java Library
 
@@ -481,8 +483,9 @@ def common_templates(
     their expected location.
 
     Args:
-        excludes (List[str], optional): List of template paths to ignore
-        **kwargs: Additional options for CommonTemplates.java_library()
+        :param excludes: List of template paths to ignore
+        :param template_path:
+        :param kwargs: Additional options for CommonTemplates.java_library()
     """
     metadata = _common_template_metadata()
     kwargs["metadata"] = metadata
