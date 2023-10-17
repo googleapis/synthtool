@@ -321,32 +321,11 @@ class CommonTemplates:
                     f.write(content)
         return ret
 
-    def java_library(self, partial_files: List[str] = [], **kwargs) -> Path:
+    def java_library(self, **kwargs) -> Path:
         # kwargs["metadata"] is required to load values from .repo-metadata.json
         if "metadata" not in kwargs:
             kwargs["metadata"] = {}
-        # load common repo meta information (metadata that's not language specific).
-        if "metadata" in kwargs:
-            self._load_generic_metadata(
-                kwargs["metadata"],
-                partial_files=partial_files,
-            )
-            # if no samples were found, don't attempt to render a
-            # samples/README.md.
-            if "samples" not in kwargs["metadata"] or not kwargs["metadata"]["samples"]:
-                self.excludes.append("samples/README.md")
-
-        t = templates.TemplateGroup(self._template_root / "java_library", self.excludes)
-
-        if "repository" in kwargs["metadata"] and "repo" in kwargs["metadata"]:
-            kwargs["metadata"]["repo"]["default_branch"] = _get_default_branch_name(
-                kwargs["metadata"]["repository"]
-            )
-
-        result = t.render(**kwargs)
-        _tracked_paths.add(result)
-
-        return result
+        return self._generic_library("java_library", **kwargs)
 
     def node_library(self, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
@@ -418,13 +397,11 @@ class CommonTemplates:
         _tracked_paths.add(template)
         return template
 
-    def _load_generic_metadata(
-        self, metadata: Dict, relative_dir=None, partial_files: List[str] = []
-    ):
+    def _load_generic_metadata(self, metadata: Dict, relative_dir=None):
         """
         loads additional meta information from .repo-metadata.json.
         """
-        metadata["partials"] = partials.load_partials(partial_files)
+        metadata["partials"] = partials.load_partials()
 
         # Loads repo metadata information from the default location if it
         # hasn't already been set. Some callers may have already loaded repo

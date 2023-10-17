@@ -273,12 +273,7 @@ def test_defaults():
 
 def test_merge_partials():
     with util.copied_fixtures_dir(FIXTURES / "java_templates" / "partials_test"):
-        java.common_templates(
-            template_path=TEMPLATES_PATH,
-            partial_files=[
-                ".integration-partials.yaml",
-            ],
-        )
+        java.common_templates(template_path=TEMPLATES_PATH)
         assert os.path.isfile(".kokoro/nightly/integration.cfg")
         assert_matches_golden(
             "nightly-integration-golden.cfg", ".kokoro/nightly/integration.cfg"
