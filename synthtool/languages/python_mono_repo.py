@@ -98,6 +98,58 @@ def update_url_in_setup_py(package_dir: str):
         f.writelines(new_setup_py)
 
 
+def apply_client_specific_post_processing(client_specific_post_processing_dir: Path):
+    """Applies client specific post processing which exists in
+    the Path `client_specific_post_processing_dir`. The client specific post processing
+    is in the following format:
+    ```
+        {
+            "description": "Verbose description about the need for the workaround",
+            "generator-issue-url": "Url of the issue in gapic-generator-python",
+            "replacements": [
+                {
+                    "client-library-paths": [<List of files where the replacement should occur>],
+                    "before": "The string to search for in the client-library-paths",
+                    "after":  "The string to replace in the client-library-paths",
+                    "replacement-count": <integer indicating number of replacements that should occur across all files>"
+                }
+            ]
+        }
+    ```
+
+    Args:
+        client_specific_post_processing_dir (str): path to the directory for a specific package which contains
+            client specific post processing. For example, 'scripts/client-post-processing'
+    """
+    if Path(client_specific_post_processing_dir).exists():
+        for post_processing_path in Path(client_specific_post_processing_dir).iterdir():
+            with open(post_processing_path, "r") as post_processing_path_file:
+                post_processing_json = json.load(post_processing_path_file)
+                replacements = post_processing_json["replacements"]
+
+                # For each workaround related to the specified issue
+                for replacement in replacements:
+                    # For each file that needs the workaround applied
+                    for client_library_path in replacement["client-library-paths"]:
+                        assert (
+                            s.replace(
+                                client_library_path,
+                                replacement["before"],
+                                replacement["after"],
+                            )
+                            == replacement["replacement-count"]
+                        )
+                        # Ensure that subsequent calls won't trigger additional replacements
+                        assert (
+                            s.replace(
+                                client_library_path,
+                                replacement["before"],
+                                replacement["after"],
+                            )
+                            == 0
+                        )
+
+
 def walk_through_owlbot_dirs(dir: Path):
     """
     Walks through all API packages in google-cloud-python/packages
@@ -188,5 +240,7 @@ if __name__ == "__main__":
     owlbot_dirs = walk_through_owlbot_dirs(Path.cwd())
     for package_dir in owlbot_dirs:
         owlbot_main(package_dir)
+
+    apply_client_specific_post_processing(Path("scripts/client-post-processing"))
 
     s.remove_staging_dirs()
