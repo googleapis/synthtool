@@ -11,8 +11,8 @@ API Reference
 .. toctree::
     :maxdepth: 2
 
-    {{ version }}/services
-    {{ version }}/types
+    {{ version }}/services_
+    {{ version }}/types_
 {% endfor %}
 {% if include_uprading_doc %}
 Migration Guide
