@@ -44,6 +44,6 @@ def test_apply_workaround():
         # Confirm that `AssertionError`` is raised if you run the post processing more than once
         # because the replacement should only occur once.
         with pytest.raises(AssertionError):
-          python_mono_repo.apply_client_specific_post_processing(
-              "scripts/client-post-processing"
-          )
+            python_mono_repo.apply_client_specific_post_processing(
+                "scripts/client-post-processing"
+            )
