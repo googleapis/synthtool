@@ -1,0 +1,11 @@
+description: Update docs/index.rst to show that a bot was here.
+url: N/A
+replacements:
+  - paths: ["packages/google-cloud-workflows/docs/index.rst"]
+    before: "First replacement"
+    after:  "Completed replacement 1."
+    count: 2
+  - paths: ["packages/google-cloud-workflows/docs/index.rst"]
+    before: "Second replacement"
+    after: "Completed replacement 2."
+    count: 1
