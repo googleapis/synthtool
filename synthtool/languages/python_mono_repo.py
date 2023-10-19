@@ -238,6 +238,6 @@ if __name__ == "__main__":
     for package_dir in owlbot_dirs:
         owlbot_main(package_dir)
 
-    apply_client_specific_post_processing(Path("scripts/client-post-processing"))
-
     s.remove_staging_dirs()
+
+    apply_client_specific_post_processing(Path("scripts/client-post-processing"))
