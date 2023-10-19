@@ -18,6 +18,7 @@ from pathlib import Path
 import shutil
 import synthtool as s
 import synthtool.gcp as gcp
+import yaml
 
 
 def create_symlink_in_docs_dir(package_dir: str, filename: str):
@@ -101,43 +102,39 @@ def update_url_in_setup_py(package_dir: str):
 def apply_client_specific_post_processing(client_specific_post_processing_dir: Path):
     """Applies client specific post processing which exists in
     the Path `client_specific_post_processing_dir`. The client specific post processing
-    is in the following format:
+    YAML is in the following format:
     ```
-        {
-            "description": "Verbose description about the need for the workaround",
-            "generator-issue-url": "Url of the issue in gapic-generator-python",
-            "replacements": [
-                {
-                    "client-library-paths": [<List of files where the replacement should occur>],
-                    "before": "The string to search for in the client-library-paths",
-                    "after":  "The string to replace in the client-library-paths",
-                    "replacement-count": <integer indicating number of replacements that should occur across all files>"
-                }
-            ]
-        }
+        description: Verbose description about the need for the workaround.
+        url: Url of the issue in gapic-generator-python.
+        replacements:
+          - replacement:
+            paths: [<List of files where the replacement should occur>]
+            before: ""The string to search for in the specified paths""
+            after:  "The string to replace in the the specified paths",
+            count: <integer indicating number of replacements that should have occurred across all files after the script is run>
     ```
 
     Args:
-        client_specific_post_processing_dir (str): path to the directory for a specific package which contains
-            client specific post processing. For example, 'scripts/client-post-processing'
+        client_specific_post_processing_dir (str): path to the directory which contains YAML files which will
+            be used to apply client specific post processing. For example, 'scripts/client-post-processing'
     """
     if Path(client_specific_post_processing_dir).exists():
         for post_processing_path in Path(client_specific_post_processing_dir).iterdir():
             with open(post_processing_path, "r") as post_processing_path_file:
-                post_processing_json = json.load(post_processing_path_file)
+                post_processing_json = yaml.safe_load(post_processing_path_file)
                 replacements = post_processing_json["replacements"]
 
                 # For each workaround related to the specified issue
                 for replacement in replacements:
                     # For each file that needs the workaround applied
-                    for client_library_path in replacement["client-library-paths"]:
+                    for client_library_path in replacement["paths"]:
                         assert (
                             s.replace(
                                 client_library_path,
                                 replacement["before"],
                                 replacement["after"],
                             )
-                            == replacement["replacement-count"]
+                            == replacement["count"]
                         )
                         # Ensure that subsequent calls won't trigger additional replacements
                         assert (
