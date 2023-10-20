@@ -105,7 +105,7 @@ def apply_client_specific_post_processing(client_specific_post_processing_dir: P
     YAML is in the following format:
     ```
         description: Verbose description about the need for the workaround.
-        url: Url of the issue in gapic-generator-python.
+        url: URL of the issue in gapic-generator-python tracking eventual removal of the workaround
         replacements:
           - replacement:
             paths: [<List of files where the replacement should occur>]
