@@ -128,9 +128,9 @@ def apply_client_specific_post_processing(
         ).iterdir():
             with open(post_processing_path, "r") as post_processing_path_file:
                 post_processing_json = yaml.safe_load(post_processing_path_file)
-                replacements = post_processing_json["replacements"]
+                all_replacements = post_processing_json["replacements"]
                 # For each workaround related to the specified issue
-                for replacement in replacements:
+                for replacement in all_replacements:
                     # For each file that needs the workaround applied
                     for client_library_path in replacement["paths"]:
                         if package_name in client_library_path:
