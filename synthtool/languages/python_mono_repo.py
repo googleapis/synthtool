@@ -116,7 +116,7 @@ def apply_client_specific_post_processing(client_specific_post_processing_dir: P
 
     Args:
         client_specific_post_processing_dir (str): path to the directory which contains YAML files which will
-            be used to apply client specific post processing. For example, 'scripts/client-post-processing'
+            be used to apply client-specific post processing, e.g. 'scripts/client-post-processing'
     """
     if Path(client_specific_post_processing_dir).exists():
         for post_processing_path in Path(client_specific_post_processing_dir).iterdir():
