@@ -31,7 +31,7 @@ def test_apply_workaround():
             == "First replacement\nFirst replacement\nSecond replacement\n"
         )
         python_mono_repo.apply_client_specific_post_processing(
-            "scripts/client-post-processing/google-cloud-workflows",
+            "packages/google-cloud-workflows/scripts/client-post-processing",
             "google-cloud-workflows",
         )
         docs_index_rst = Path(
@@ -46,6 +46,6 @@ def test_apply_workaround():
         # because the replacement should only occur once.
         with pytest.raises(AssertionError):
             python_mono_repo.apply_client_specific_post_processing(
-                "scripts/client-post-processing/google-cloud-workflows",
+                "packages/google-cloud-workflows/scripts/client-post-processing",
                 "google-cloud-workflows",
             )

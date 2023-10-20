@@ -117,7 +117,7 @@ def apply_client_specific_post_processing(
 
     Args:
         client_specific_post_processing_dir (str): Path to the directory which contains YAML files which will
-            be used to apply client-specific post processing, e.g. 'scripts/client-post-processing/<package-name>'
+            be used to apply client-specific post processing, e.g. 'packages/<package_name>/scripts/client-post-processing'
             relative to the monorepo root directory.
         package_name (str): The name of the package where client specific post processing will be applied.
     """
