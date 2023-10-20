@@ -353,7 +353,7 @@ class CommonTemplates:
 
         return self._generic_library("node_library", **kwargs)
 
-    def node_mono_repo_library(self, relative_dir, **kwargs) -> Path:
+    def node_mono_repo_library(self, relative_dir, is_esm=False, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
         #  .repo-metadata.json, or excluding README.md, we can remove this.
         if not os.path.exists(Path(relative_dir, ".repo-metadata.json").resolve()):
@@ -377,10 +377,14 @@ class CommonTemplates:
                 default_version=kwargs["default_version"],
                 relative_dir=relative_dir,
                 year=str(date.today().year),
+                is_esm=is_esm,
             )
 
+        templates_location = (
+            "node_mono_repo_library" if not is_esm else "node_esm_mono_repo_library"
+        )
         return self._generic_library(
-            "node_mono_repo_library", relative_dir=relative_dir, **kwargs
+            templates_location, relative_dir=relative_dir, **kwargs
         )
 
     def php_library(self, **kwargs) -> Path:

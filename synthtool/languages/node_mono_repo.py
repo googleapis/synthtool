@@ -186,7 +186,11 @@ def extract_clients(filePath: Path) -> List[str]:
 
 
 def generate_index_ts(
-    versions: List[str], default_version: str, relative_dir: str, year: str
+    versions: List[str],
+    default_version: str,
+    relative_dir: str,
+    year: str,
+    is_esm=False,
 ) -> None:
     """
     generate src/index.ts to export the client name and versions in the client library.
@@ -214,7 +218,15 @@ def generate_index_ts(
 
     # compose default version's index.ts file path
     versioned_index_ts_path = (
-        Path(relative_dir) / Path("src") / default_version / "index.ts"
+        (Path(relative_dir) / Path("src") / default_version / "index.ts")
+        if not is_esm
+        else (
+            Path(relative_dir)
+            / Path("esm")
+            / Path("src")
+            / default_version
+            / "index.ts"
+        )
     )
     clients = extract_clients(versioned_index_ts_path)
     if not clients:
@@ -224,11 +236,21 @@ def generate_index_ts(
 
     # compose template directory
     template_path = (
-        Path(__file__).parent.parent
-        / "gcp"
-        / "templates"
-        / "node_mono_repo_split_library"
+        (
+            Path(__file__).parent.parent
+            / "gcp"
+            / "templates"
+            / "node_mono_repo_split_library"
+        )
+        if not is_esm
+        else (
+            Path(__file__).parent.parent
+            / "gcp"
+            / "templates"
+            / "node_esm_mono_repo_split_library"
+        )
     )
+
     template_loader = FileSystemLoader(searchpath=str(template_path))
     template_env = Environment(loader=template_loader, keep_trailing_newline=True)
     TEMPLATE_FILE = "index.ts.j2"
@@ -237,7 +259,12 @@ def generate_index_ts(
     output_text = index_template.render(
         versions=versions, default_version=default_version, clients=clients, year=year
     )
-    with open(Path(relative_dir, "src/index.ts").resolve(), "w") as fh:
+    index_ts_path = (
+        Path(relative_dir, "src/index.ts").resolve()
+        if not is_esm
+        else Path(relative_dir, "esm", "src/index.ts").resolve()
+    )
+    with open(Path(relative_dir, index_ts_path).resolve(), "w") as fh:
         fh.write(output_text)
     logger.info("successfully generate `src/index.ts`")
 
@@ -308,46 +335,56 @@ def fix_hermetic(relative_dir, hide_output=False):
     )
 
 
-def compile_protos(hide_output=False):
+def compile_protos(hide_output=False, is_esm=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
     compileProtos script from google-gax.
     """
     logger.debug("Compiling protos...")
-    shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+    command = (
+        ["npx", "compileProtos", "src"]
+        if not is_esm
+        else ["npx", "compileProtos", "esm/src", "--esm"]
+    )
+    shell.run(command, hide_output=hide_output)
 
 
-def compile_protos_hermetic(relative_dir, hide_output=False):
+def compile_protos_hermetic(relative_dir, is_esm=False, hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
     compileProtos script from google-gax. Assumes that compileProtos
     is already installed in a well known location on disk (node_modules/.bin).
     """
     logger.debug("Compiling protos...")
+    command = (
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "esm/src", "--esm"]
+        if not is_esm
+        else [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "esm/src", "--esm"]
+    )
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        command,
         cwd=relative_dir,
         check=True,
         hide_output=hide_output,
     )
 
 
-def postprocess_gapic_library(hide_output=False):
+def postprocess_gapic_library(hide_output=False, is_esm=False):
     logger.debug("Post-processing GAPIC library...")
     install(hide_output=hide_output)
     fix(hide_output=hide_output)
-    compile_protos(hide_output=hide_output)
+    compile_protos(hide_output=hide_output, is_esm=is_esm)
     logger.debug("Post-processing completed")
 
 
-def postprocess_gapic_library_hermetic(relative_dir, hide_output=False):
+def postprocess_gapic_library_hermetic(relative_dir, hide_output=False, is_esm=False):
     logger.debug("Post-processing GAPIC library...")
     fix_hermetic(relative_dir, hide_output=hide_output)
-    compile_protos_hermetic(relative_dir, hide_output=hide_output)
+    compile_protos_hermetic(relative_dir, hide_output=hide_output, is_esm=is_esm)
     logger.debug("Post-processing completed")
 
 
-default_staging_excludes = ["package.json", "src/index.ts"]
+default_staging_excludes = ["package.json", "src/index.ts", "esm/src/index.ts"]
 default_templates_excludes: List[str] = []
 
 
@@ -444,6 +481,13 @@ def owlbot_main(
     default_version = json.load(
         open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
     ).get("default_version")
+    is_esm = False
+    src = Path(Path(relative_dir), "src").resolve()
+    source_location = "build/src"
+    if (Path(Path(relative_dir), "esm", "src").resolve()).is_dir():
+        is_esm = True
+        src = Path(Path(relative_dir), "esm", "src").resolve()
+        source_location = "build/esm/src"
     staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
     s_copy = transforms.move
     if default_version is None:
@@ -466,7 +510,6 @@ def owlbot_main(
         shutil.rmtree(staging)
     else:
         # Collect the subdirectories of the src directory.
-        src = Path(Path(relative_dir), "src").resolve()
         versions = [v.name for v in src.iterdir() if v.is_dir()]
         # Reorder the versions so the default version always comes last.
         versions = [v for v in versions if v != default_version] + [default_version]
@@ -477,15 +520,16 @@ def owlbot_main(
     if default_version:
         templates = common_templates.node_mono_repo_library(
             relative_dir=relative_dir,
-            source_location="build/src",
+            source_location=source_location,
             versions=versions,
             default_version=default_version,
+            is_esm=is_esm,
         )
         s_copy([templates], destination=relative_dir, excludes=templates_excludes)
-        postprocess_gapic_library_hermetic(relative_dir=relative_dir)
+        postprocess_gapic_library_hermetic(relative_dir=relative_dir, is_esm=is_esm)
     else:
         templates = common_templates.node_mono_repo_library(
-            relative_dir=relative_dir, source_location="build/src"
+            relative_dir=relative_dir, source_location=source_location
         )
         s_copy([templates], destination=relative_dir, excludes=templates_excludes)
 
