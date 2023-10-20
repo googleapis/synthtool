@@ -9,3 +9,7 @@ replacements:
     before: "Second replacement"
     after: "Completed replacement 2."
     count: 1
+  - paths: ["packages/some-other-package/docs/index.rst"]
+    before: "Does not exist"
+    after: "Replacement does not exist"
+    count: 1

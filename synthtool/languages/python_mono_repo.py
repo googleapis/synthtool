@@ -99,52 +99,58 @@ def update_url_in_setup_py(package_dir: str):
         f.writelines(new_setup_py)
 
 
-def apply_client_specific_post_processing(client_specific_post_processing_dir: Path):
-    """Applies client-specific post processing which exists in
-    the Path `client_specific_post_processing_dir`. The client-specific post processing
-    YAML is in the following format:
+def apply_client_specific_post_processing(
+    client_specific_post_processing_path: str, package_name: str
+) -> None:
+    """Applies client-specific post processing which exists in the Path `client_specific_post_processing_dir`.
+    The client-specific post processing YAML is in the following format:
     ```
         description: Verbose description about the need for the workaround.
         url: URL of the issue in gapic-generator-python tracking eventual removal of the workaround
         replacements:
           - replacement:
-            paths: [<List of files where the replacement should occur>]
+            paths: [<List of files where the replacement should occur relative to the monorepo root directory>]
             before: "The string to search for in the specified paths"
             after:  "The string to replace in the the specified paths",
             count: <integer indicating number of replacements that should have occurred across all files after the script is run>
     ```
 
     Args:
-        client_specific_post_processing_dir (str): path to the directory which contains YAML files which will
-            be used to apply client-specific post processing, e.g. 'scripts/client-post-processing'
+        client_specific_post_processing_dir (str): Path to the directory which contains YAML files which will
+            be used to apply client-specific post processing, e.g. 'scripts/client-post-processing/<package-name>'
+            relative to the monorepo root directory.
+        package_name (str): The name of the package where client specific post processing will be applied.
     """
-    if Path(client_specific_post_processing_dir).exists():
-        for post_processing_path in Path(client_specific_post_processing_dir).iterdir():
+
+    if Path(client_specific_post_processing_path).exists():
+        for post_processing_path in Path(
+            client_specific_post_processing_path
+        ).iterdir():
             with open(post_processing_path, "r") as post_processing_path_file:
                 post_processing_json = yaml.safe_load(post_processing_path_file)
                 replacements = post_processing_json["replacements"]
-
                 # For each workaround related to the specified issue
                 for replacement in replacements:
                     # For each file that needs the workaround applied
                     for client_library_path in replacement["paths"]:
-                        assert (
-                            s.replace(
-                                client_library_path,
-                                replacement["before"],
-                                replacement["after"],
+                        if package_name in client_library_path:
+                            assert (
+                                s.replace(
+                                    client_library_path,
+                                    replacement["before"],
+                                    replacement["after"],
+                                )
+                                == replacement["count"]
                             )
-                            == replacement["count"]
-                        )
-                        # Ensure that subsequent calls won't trigger additional replacements
-                        assert (
-                            s.replace(
-                                client_library_path,
-                                replacement["before"],
-                                replacement["after"],
+                            # Ensure that subsequent calls won't trigger additional replacements
+                            assert (
+                                s.replace(
+                                    client_library_path,
+                                    replacement["before"],
+                                    replacement["after"],
+                                )
+                                == 0
                             )
-                            == 0
-                        )
 
 
 def walk_through_owlbot_dirs(dir: Path):
@@ -191,9 +197,11 @@ def owlbot_main(package_dir: str) -> None:
     except FileNotFoundError:
         raise Exception("Could not find the default version")
 
-    if Path(f"owl-bot-staging/{Path(package_dir).name}").exists():
+    package_name = Path(package_dir).name
+
+    if Path(f"owl-bot-staging/{package_name}").exists():
         for library in s.get_staging_dirs(
-            default_version, f"owl-bot-staging/{Path(package_dir).name}"
+            default_version, f"owl-bot-staging/{package_name}"
         ):
             if clean_up_generated_samples:
                 shutil.rmtree(
@@ -203,7 +211,7 @@ def owlbot_main(package_dir: str) -> None:
             s.move([library], package_dir, excludes=[])
 
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
-            relative_dir=f"packages/{Path(package_dir).name}",
+            relative_dir=f"packages/{package_name}",
             microgenerator=True,
             default_python_version="3.9",
             unit_test_python_versions=["3.7", "3.8", "3.9", "3.10", "3.11"],
@@ -227,10 +235,12 @@ def owlbot_main(package_dir: str) -> None:
         update_url_in_setup_py(package_dir)
 
         # run format nox session for all directories which have a noxfile
-        for noxfile in Path(".").glob(
-            f"packages/{Path(package_dir).name}/**/noxfile.py"
-        ):
+        for noxfile in Path(".").glob(f"packages/{package_name}/**/noxfile.py"):
             s.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
+
+        apply_client_specific_post_processing(
+            f"scripts/client-post-processing/{package_name}", package_name
+        )
 
 
 if __name__ == "__main__":
@@ -239,5 +249,3 @@ if __name__ == "__main__":
         owlbot_main(package_dir)
 
     s.remove_staging_dirs()
-
-    apply_client_specific_post_processing(Path("scripts/client-post-processing"))
