@@ -16,7 +16,7 @@ import json
 import os
 from pathlib import Path
 import shutil
-import synthtool as s
+import synthtool
 import synthtool.gcp as gcp
 import yaml
 
@@ -135,7 +135,7 @@ def apply_client_specific_post_processing(
                     for client_library_path in replacement["paths"]:
                         if package_name in client_library_path:
                             assert (
-                                s.replace(
+                                synthtool.replace(
                                     client_library_path,
                                     replacement["before"],
                                     replacement["after"],
@@ -144,7 +144,7 @@ def apply_client_specific_post_processing(
                             )
                             # Ensure that subsequent calls won't trigger additional replacements
                             assert (
-                                s.replace(
+                                synthtool.replace(
                                     client_library_path,
                                     replacement["before"],
                                     replacement["after"],
@@ -200,7 +200,7 @@ def owlbot_main(package_dir: str) -> None:
     package_name = Path(package_dir).name
 
     if Path(f"owl-bot-staging/{package_name}").exists():
-        for library in s.get_staging_dirs(
+        for library in synthtool.get_staging_dirs(
             default_version, f"owl-bot-staging/{package_name}"
         ):
             if clean_up_generated_samples:
@@ -208,7 +208,7 @@ def owlbot_main(package_dir: str) -> None:
                     f"{package_dir}/samples/generated_samples", ignore_errors=True
                 )
                 clean_up_generated_samples = False
-            s.move([library], package_dir, excludes=[])
+            synthtool.move([library], package_dir, excludes=[])
 
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
             relative_dir=f"packages/{package_name}",
@@ -223,7 +223,7 @@ def owlbot_main(package_dir: str) -> None:
                 default_first=True,
             ),
         )
-        s.move([templated_files], package_dir)
+        synthtool.move([templated_files], package_dir)
 
         # create symlink docs/README.rst if it doesn't exist
         create_symlink_docs_readme(package_dir)
@@ -236,7 +236,7 @@ def owlbot_main(package_dir: str) -> None:
 
         # run format nox session for all directories which have a noxfile
         for noxfile in Path(".").glob(f"packages/{package_name}/**/noxfile.py"):
-            s.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
+            synthtool.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
 
         apply_client_specific_post_processing(
             f"scripts/client-post-processing/{package_name}", package_name
@@ -248,4 +248,4 @@ if __name__ == "__main__":
     for package_dir in owlbot_dirs:
         owlbot_main(package_dir)
 
-    s.remove_staging_dirs()
+    synthtool.remove_staging_dirs()
