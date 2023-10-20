@@ -236,7 +236,9 @@ def owlbot_main(package_dir: str) -> None:
 
         # run format nox session for all directories which have a noxfile
         for noxfile in Path(".").glob(f"packages/{package_name}/**/noxfile.py"):
-            synthtool.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
+            synthtool.shell.run(
+                ["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False
+            )
 
         apply_client_specific_post_processing(
             f"scripts/client-post-processing/{package_name}", package_name
