@@ -109,7 +109,7 @@ def apply_client_specific_post_processing(client_specific_post_processing_dir: P
         replacements:
           - replacement:
             paths: [<List of files where the replacement should occur>]
-            before: ""The string to search for in the specified paths""
+            before: "The string to search for in the specified paths"
             after:  "The string to replace in the the specified paths",
             count: <integer indicating number of replacements that should have occurred across all files after the script is run>
     ```
