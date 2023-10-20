@@ -100,7 +100,7 @@ def update_url_in_setup_py(package_dir: str):
 
 
 def apply_client_specific_post_processing(client_specific_post_processing_dir: Path):
-    """Applies client specific post processing which exists in
+    """Applies client-specific post processing which exists in
     the Path `client_specific_post_processing_dir`. The client specific post processing
     YAML is in the following format:
     ```
