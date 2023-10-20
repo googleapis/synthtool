@@ -241,7 +241,7 @@ def owlbot_main(package_dir: str) -> None:
             )
 
         apply_client_specific_post_processing(
-            f"scripts/client-post-processing/{package_name}", package_name
+            f"packages/{package_name}/scripts/client-post-processing", package_name
         )
 
 
