@@ -254,6 +254,40 @@ releaseType: java-yoshi
             )
 
 
+def test_defaults():
+    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "defaults_test"):
+        java.common_templates(template_path=TEMPLATES_PATH)
+        assert os.path.isfile(".kokoro/nightly/integration.cfg")
+        assert_matches_golden(
+            "nightly-integration-golden.cfg", ".kokoro/nightly/integration.cfg"
+        )
+        assert os.path.isfile(".kokoro/nightly/java11-integration.cfg")
+        assert_matches_golden(
+            "java11-integration-golden.cfg", ".kokoro/nightly/java11-integration.cfg"
+        )
+        assert os.path.isfile(".kokoro/presubmit/integration.cfg")
+        assert_matches_golden(
+            "presubmit-integration-golden.cfg", ".kokoro/presubmit/integration.cfg"
+        )
+
+
+def test_merge_partials():
+    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "partials_test"):
+        java.common_templates(template_path=TEMPLATES_PATH)
+        assert os.path.isfile(".kokoro/nightly/integration.cfg")
+        assert_matches_golden(
+            "nightly-integration-golden.cfg", ".kokoro/nightly/integration.cfg"
+        )
+        assert os.path.isfile(".kokoro/nightly/java11-integration.cfg")
+        assert_matches_golden(
+            "java11-integration-golden.cfg", ".kokoro/nightly/java11-integration.cfg"
+        )
+        assert os.path.isfile(".kokoro/presubmit/integration.cfg")
+        assert_matches_golden(
+            "presubmit-integration-golden.cfg", ".kokoro/presubmit/integration.cfg"
+        )
+
+
 def assert_matches_golden(expected, actual):
     matching_lines = 0
     with open(actual, "rt") as fp:
