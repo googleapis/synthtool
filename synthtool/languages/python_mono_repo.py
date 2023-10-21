@@ -100,9 +100,9 @@ def update_url_in_setup_py(package_dir: str):
 
 
 def apply_client_specific_post_processing(
-    client_specific_post_processing_path: str, package_name: str
+    post_processing_dir: str, package_name: str
 ) -> None:
-    """Applies client-specific post processing which exists in the Path `client_specific_post_processing_dir`.
+    """Applies client-specific post processing which exists in the Path `post_processing_dir`.
     The client-specific post processing YAML is in the following format:
     ```
         description: Verbose description about the need for the workaround.
@@ -116,16 +116,14 @@ def apply_client_specific_post_processing(
     ```
 
     Args:
-        client_specific_post_processing_dir (str): Path to the directory which contains YAML files which will
+        post_processing_dir (str): Path to the directory which contains YAML files which will
             be used to apply client-specific post processing, e.g. 'packages/<package_name>/scripts/client-post-processing'
             relative to the monorepo root directory.
         package_name (str): The name of the package where client specific post processing will be applied.
     """
 
-    if Path(client_specific_post_processing_path).exists():
-        for post_processing_path in Path(
-            client_specific_post_processing_path
-        ).iterdir():
+    if Path(post_processing_dir).exists():
+        for post_processing_path in Path(post_processing_dir).iterdir():
             with open(post_processing_path, "r") as post_processing_path_file:
                 post_processing_json = yaml.safe_load(post_processing_path_file)
                 all_replacements = post_processing_json["replacements"]
