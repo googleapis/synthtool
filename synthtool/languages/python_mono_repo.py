@@ -115,6 +115,9 @@ def apply_client_specific_post_processing(
             count: <integer indicating number of replacements that should have occurred across all files after the script is run>
     ```
 
+    Note: The `paths` key above must only include paths for the same package so that the number of replacements
+    made in a given package can be verified.
+
     Args:
         post_processing_dir (str): Path to the directory which contains YAML files which will
             be used to apply client-specific post processing, e.g. 'packages/<package_name>/scripts/client-post-processing'
