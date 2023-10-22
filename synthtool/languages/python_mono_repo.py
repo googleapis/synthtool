@@ -139,11 +139,11 @@ def apply_client_specific_post_processing(
                         if package_name in client_library_path:
                             validate_replacements = True
                             replacement_count += synthtool.replace(
-                                    client_library_path,
-                                    replacement["before"],
-                                    replacement["after"],
-                                )
-                            # Ensure idempotency by checking that subsequent calls won't 
+                                client_library_path,
+                                replacement["before"],
+                                replacement["after"],
+                            )
+                            # Ensure idempotency by checking that subsequent calls won't
                             # trigger additional replacements within the same path
                             assert (
                                 synthtool.replace(
@@ -157,7 +157,6 @@ def apply_client_specific_post_processing(
                         # Ensure that the total number of replacements matches the value specified in `count`
                         # for all paths in `replacement["paths"]`
                         assert replacement_count == replacement["count"]
-
 
 
 def walk_through_owlbot_dirs(dir: Path):
