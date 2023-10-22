@@ -132,18 +132,19 @@ def apply_client_specific_post_processing(
                 all_replacements = post_processing_json["replacements"]
                 # For each workaround related to the specified issue
                 for replacement in all_replacements:
+                    replacement_count = 0
+                    validate_replacements = False
                     # For each file that needs the workaround applied
                     for client_library_path in replacement["paths"]:
                         if package_name in client_library_path:
-                            assert (
-                                synthtool.replace(
+                            validate_replacements = True
+                            replacement_count += synthtool.replace(
                                     client_library_path,
                                     replacement["before"],
                                     replacement["after"],
                                 )
-                                == replacement["count"]
-                            )
-                            # Ensure that subsequent calls won't trigger additional replacements
+                            # Ensure idempotency by checking that subsequent calls won't 
+                            # trigger additional replacements within the same path
                             assert (
                                 synthtool.replace(
                                     client_library_path,
@@ -152,6 +153,11 @@ def apply_client_specific_post_processing(
                                 )
                                 == 0
                             )
+                    if validate_replacements:
+                        # Ensure that the total number of replacements matches the value specified in `count`
+                        # for all paths in `replacement["paths"]`
+                        assert replacement_count == replacement["count"]
+
 
 
 def walk_through_owlbot_dirs(dir: Path):
