@@ -103,7 +103,9 @@ def apply_client_specific_post_processing(
     post_processing_dir: str, package_name: str
 ) -> None:
     """Applies client-specific post processing which exists in the Path `post_processing_dir`.
-    The client-specific post processing YAML is in the following format:
+    This function is only called from `owlbot_main` when there is an `owl-bot-staging` folder
+    which contains generated client library code. Re-running the script more than once is
+    expected to be idempotent. The client-specific post processing YAML is in the following format:
     ```
         description: Verbose description about the need for the workaround.
         url: URL of the issue in gapic-generator-python tracking eventual removal of the workaround
