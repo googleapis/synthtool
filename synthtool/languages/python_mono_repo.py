@@ -135,11 +135,11 @@ def apply_client_specific_post_processing(
                 # For each workaround related to the specified issue
                 for replacement in all_replacements:
                     replacement_count = 0
-                    validate_replacements = False
+                    number_of_paths_with_replacements = 0
                     # For each file that needs the workaround applied
                     for client_library_path in replacement["paths"]:
                         if package_name in client_library_path:
-                            validate_replacements = True
+                            number_of_paths_with_replacements += 1
                             replacement_count += synthtool.replace(
                                 client_library_path,
                                 replacement["before"],
@@ -155,7 +155,11 @@ def apply_client_specific_post_processing(
                                 )
                                 == 0
                             )
-                    if validate_replacements:
+                    if number_of_paths_with_replacements:
+                        # Ensure that the numner of paths where a replacement occurred matches the number of paths.
+                        assert number_of_paths_with_replacements == len(
+                            replacement["paths"]
+                        )
                         # Ensure that the total number of replacements matches the value specified in `count`
                         # for all paths in `replacement["paths"]`
                         assert replacement_count == replacement["count"]

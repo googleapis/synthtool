@@ -49,3 +49,12 @@ def test_apply_workaround():
                 "packages/google-cloud-workflows/scripts/client-post-processing",
                 "google-cloud-workflows",
             )
+
+        # Confirm that `AssertionError`` is raised if
+        # there a replacement is defined for multiple packages.
+        # Each path in replacement["paths"] should only be for a single package.
+        with pytest.raises(AssertionError):
+            python_mono_repo.apply_client_specific_post_processing(
+                "packages/google-cloud-asset/scripts/client-post-processing",
+                "google-cloud-asset",
+            )
