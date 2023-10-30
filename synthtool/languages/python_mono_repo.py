@@ -230,7 +230,9 @@ def owlbot_main(package_dir: str) -> None:
             system_test_python_versions=["3.8", "3.9", "3.10", "3.11"],
             cov_level=100,
             versions=gcp.common.detect_versions(
-                path=f"{package_dir}/google" if package_name.startswith("google") else f"{package_dir}/{package_name}",
+                path=f"{package_dir}/google"
+                if package_name.startswith("google")
+                else f"{package_dir}/{package_name}",
                 default_version=default_version,
                 default_first=True,
             ),
