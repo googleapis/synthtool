@@ -16,8 +16,9 @@ import json
 import os
 from pathlib import Path
 import shutil
-import synthtool as s
+import synthtool
 import synthtool.gcp as gcp
+import yaml
 
 
 def create_symlink_in_docs_dir(package_dir: str, filename: str):
@@ -98,6 +99,72 @@ def update_url_in_setup_py(package_dir: str):
         f.writelines(new_setup_py)
 
 
+def apply_client_specific_post_processing(
+    post_processing_dir: str, package_name: str
+) -> None:
+    """Applies client-specific post processing which exists in the Path `post_processing_dir`.
+    This function is only called from `owlbot_main` when there is an `owl-bot-staging` folder
+    which contains generated client library code. Re-running the script more than once is
+    expected to be idempotent. The client-specific post processing YAML is in the following format:
+    ```
+        description: Verbose description about the need for the workaround.
+        url: URL of the issue in gapic-generator-python tracking eventual removal of the workaround
+        replacements:
+          - replacement:
+            paths: [<List of files where the replacement should occur relative to the monorepo root directory>]
+            before: "The string to search for in the specified paths"
+            after:  "The string to replace in the the specified paths",
+            count: <integer indicating number of replacements that should have occurred across all files after the script is run>
+    ```
+
+    Note: The `paths` key above must only include paths for the same package so that the number of replacements
+    made in a given package can be verified.
+
+    Args:
+        post_processing_dir (str): Path to the directory which contains YAML files which will
+            be used to apply client-specific post processing, e.g. 'packages/<package_name>/scripts/client-post-processing'
+            relative to the monorepo root directory.
+        package_name (str): The name of the package where client specific post processing will be applied.
+    """
+
+    if Path(post_processing_dir).exists():
+        for post_processing_path in Path(post_processing_dir).iterdir():
+            with open(post_processing_path, "r") as post_processing_path_file:
+                post_processing_json = yaml.safe_load(post_processing_path_file)
+                all_replacements = post_processing_json["replacements"]
+                # For each workaround related to the specified issue
+                for replacement in all_replacements:
+                    replacement_count = 0
+                    number_of_paths_with_replacements = 0
+                    # For each file that needs the workaround applied
+                    for client_library_path in replacement["paths"]:
+                        if package_name in client_library_path:
+                            number_of_paths_with_replacements += 1
+                            replacement_count += synthtool.replace(
+                                client_library_path,
+                                replacement["before"],
+                                replacement["after"],
+                            )
+                            # Ensure idempotency by checking that subsequent calls won't
+                            # trigger additional replacements within the same path
+                            assert (
+                                synthtool.replace(
+                                    client_library_path,
+                                    replacement["before"],
+                                    replacement["after"],
+                                )
+                                == 0
+                            )
+                    if number_of_paths_with_replacements:
+                        # Ensure that the numner of paths where a replacement occurred matches the number of paths.
+                        assert number_of_paths_with_replacements == len(
+                            replacement["paths"]
+                        )
+                        # Ensure that the total number of replacements matches the value specified in `count`
+                        # for all paths in `replacement["paths"]`
+                        assert replacement_count == replacement["count"]
+
+
 def walk_through_owlbot_dirs(dir: Path):
     """
     Walks through all API packages in google-cloud-python/packages
@@ -142,31 +209,35 @@ def owlbot_main(package_dir: str) -> None:
     except FileNotFoundError:
         raise Exception("Could not find the default version")
 
-    if Path(f"owl-bot-staging/{Path(package_dir).name}").exists():
-        for library in s.get_staging_dirs(
-            default_version, f"owl-bot-staging/{Path(package_dir).name}"
+    package_name = Path(package_dir).name
+
+    if Path(f"owl-bot-staging/{package_name}").exists():
+        for library in synthtool.get_staging_dirs(
+            default_version, f"owl-bot-staging/{package_name}"
         ):
             if clean_up_generated_samples:
                 shutil.rmtree(
                     f"{package_dir}/samples/generated_samples", ignore_errors=True
                 )
                 clean_up_generated_samples = False
-            s.move([library], package_dir, excludes=[])
+            synthtool.move([library], package_dir, excludes=[])
 
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
-            relative_dir=f"packages/{Path(package_dir).name}",
+            relative_dir=f"packages/{package_name}",
             microgenerator=True,
             default_python_version="3.9",
             unit_test_python_versions=["3.7", "3.8", "3.9", "3.10", "3.11"],
             system_test_python_versions=["3.8", "3.9", "3.10", "3.11"],
             cov_level=100,
             versions=gcp.common.detect_versions(
-                path=f"{package_dir}/google",
+                path=f"{package_dir}/google"
+                if package_name.startswith("google")
+                else f"{package_dir}/{package_name}",
                 default_version=default_version,
                 default_first=True,
             ),
         )
-        s.move([templated_files], package_dir)
+        synthtool.move([templated_files], package_dir)
 
         # create symlink docs/README.rst if it doesn't exist
         create_symlink_docs_readme(package_dir)
@@ -178,10 +249,14 @@ def owlbot_main(package_dir: str) -> None:
         update_url_in_setup_py(package_dir)
 
         # run format nox session for all directories which have a noxfile
-        for noxfile in Path(".").glob(
-            f"packages/{Path(package_dir).name}/**/noxfile.py"
-        ):
-            s.shell.run(["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False)
+        for noxfile in Path(".").glob(f"packages/{package_name}/**/noxfile.py"):
+            synthtool.shell.run(
+                ["nox", "-s", "format"], cwd=noxfile.parent, hide_output=False
+            )
+
+        apply_client_specific_post_processing(
+            f"packages/{package_name}/scripts/client-post-processing", package_name
+        )
 
 
 if __name__ == "__main__":
@@ -189,4 +264,4 @@ if __name__ == "__main__":
     for package_dir in owlbot_dirs:
         owlbot_main(package_dir)
 
-    s.remove_staging_dirs()
+    synthtool.remove_staging_dirs()

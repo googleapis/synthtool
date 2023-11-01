@@ -28,7 +28,11 @@ import nox
 
 BLACK_VERSION = "black[jupyter]==23.7.0"
 ISORT_VERSION = "isort==5.11.0"
+{% if metadata['repo']['distribution_name'].startswith('google') %}
 LINT_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
+{% else %}
+LINT_PATHS = ["docs", "{{ metadata['repo']['distribution_name'] }}", "tests", "noxfile.py", "setup.py"]
+{% endif %}
 
 DEFAULT_PYTHON_VERSION = "{{ default_python_version }}"
 
@@ -156,7 +160,11 @@ def lint(session):
         "--check",
         *LINT_PATHS,
     )
+    {% if metadata['repo']['distribution_name'].startswith('google') %}
     session.run("flake8", "google", "tests")
+    {% else %}
+    session.run("flake8", "{{ metadata['repo']['distribution_name'] }}", "tests")
+    {% endif %}
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
@@ -237,7 +245,11 @@ def default(session):
         "py.test",
         "--quiet",
         f"--junitxml=unit_{session.python}_sponge_log.xml",
+    {% if metadata['repo']['distribution_name'].startswith('google') %}
         "--cov=google",
+    {% else %}
+        "--cov={{ metadata['repo']['distribution_name'] }}",
+    {% endif %}
         "--cov=tests/unit",
         "--cov-append",
         "--cov-config=.coveragerc",

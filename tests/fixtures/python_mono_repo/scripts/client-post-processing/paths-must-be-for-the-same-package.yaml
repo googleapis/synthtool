@@ -1,0 +1,20 @@
+description: Update docs/index.rst to show that a bot was here.
+url: N/A
+replacements:
+  - paths: [
+      "packages/google-cloud-asset/docs/index.rst",
+      "packages/google-cloud-asset/another_path/another_file.rst",
+      # adding a path for a different package should cause an assertion error
+      "packages/another-path/another_path/another_file.rst",
+    ]
+    before: "First replacement"
+    after:  "Completed replacement 1."
+    count: 4
+  - paths: ["packages/google-cloud-asset/docs/index.rst"]
+    before: "Second replacement"
+    after: "Completed replacement 2."
+    count: 1
+  - paths: ["packages/some-other-asset/docs/index.rst"]
+    before: "Does not exist"
+    after: "Replacement does not exist"
+    count: 1
