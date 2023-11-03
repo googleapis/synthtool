@@ -225,7 +225,7 @@ def owlbot_main(package_dir: str) -> None:
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
             relative_dir=f"packages/{package_name}",
             microgenerator=True,
-            default_python_version="3.9",
+            default_python_version="3.10",
             unit_test_python_versions=["3.7", "3.8", "3.9", "3.10", "3.11"],
             system_test_python_versions=["3.8", "3.9", "3.10", "3.11"],
             cov_level=100,
