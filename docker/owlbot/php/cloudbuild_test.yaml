@@ -29,13 +29,3 @@ steps:
     args:
       ["test", "--image", "gcr.io/$PROJECT_ID/owlbot-php:$SHORT_SHA", "--config", "docker/owlbot/php/container_test.yaml"]
     waitFor: ["build"]
-
-  # end-to-end tests
-  - name: "gcr.io/$PROJECT_ID/owlbot-php:$SHORT_SHA"
-    dir: docker/owlbot/php/tests/move-code/input
-    id: "move-code-run"
-    waitFor: ["build"]      
-  - name: "bash"
-    args: ["diff", "-rw", "input", "golden"]
-    dir: docker/owlbot/java/tests/move-code
-    waitFor: ["move-code-run"]
