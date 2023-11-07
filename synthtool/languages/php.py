@@ -119,9 +119,7 @@ def owlbot_copy_version(
         # copy snippets
         snippet_dir = src / "samples"
         if os.path.isdir(snippet_dir):
-            s.move(
-                [snippet_dir], dest_samples, merge=_merge, excludes=copy_excludes
-            )
+            s.move([snippet_dir], dest_samples, merge=_merge, excludes=copy_excludes)
     else:
         logger.info("there is no src directory '%s' to copy", src_dir)
 
