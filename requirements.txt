@@ -8,9 +8,9 @@ argcomplete==2.0.0 \
     --hash=sha256:6372ad78c89d662035101418ae253668445b391755cfe94ea52f1b9d22425b20 \
     --hash=sha256:cffa11ea77999bb0dd27bb25ff6dc142a6796142f68d45b1a26b11f58724561e
     # via nox
-certifi==2022.12.7 \
-    --hash=sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3 \
-    --hash=sha256:4ad3232f5e926d6718ec31cfc1fcadfde020920e278684144551c91769c7bc18
+certifi==2023.7.22 \
+    --hash=sha256:539cc1d13202e33ca466e88b2807e29f4c13049d6d87031a3c110744495cb082 \
+    --hash=sha256:92d6037539857d8206b8f6ae472e8b77db8058fec5937a1ef3f54304089edbb9
     # via requests
 charset-normalizer==2.1.1 \
     --hash=sha256:5a3d016c7c547f69d6f81fb0db9449ce888b418b5b9952cc5e6e66843e9dd845 \
@@ -264,9 +264,9 @@ requests==2.31.0 \
 sample-tester==0.16.3 \
     --hash=sha256:c31ec53c0881ba7a603ebf52f1bd3c249ced5d305b40d8d98852b113eaf37735
     # via -r requirements.in
-urllib3==1.26.12 \
-    --hash=sha256:3fa96cf423e6987997fc326ae8df396db2a8b7c667747d47ddd8ecba91f4a74e \
-    --hash=sha256:b930dd878d5a8afb066a637fbb35144fe7901e3b209d1cd4f524bd0e9deee997
+urllib3==1.26.18 \
+    --hash=sha256:34b97092d7e0a3a8cf7cd10e386f401b3737364026c45e622aa02903dffe0f07 \
+    --hash=sha256:f8ecc1bba5667413457c529ab955bf8c67b45db799d159066261719e328580a0
     # via requests
 virtualenv==20.17.1 \
     --hash=sha256:ce3b1684d6e1a20a3e5ed36795a97dfc6af29bc3970ca8dab93e11ac6094b3c4 \
