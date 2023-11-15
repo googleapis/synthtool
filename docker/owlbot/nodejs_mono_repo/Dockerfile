@@ -51,7 +51,6 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
-# * google-gax and gapic-tools are used for compiling protos.
 RUN cd /synthtool && mkdir node_modules && npm i gts@5.0.0 \
     typescript@5.1.6 @google-cloud/typeless-sample-bot@1.3.3
 
