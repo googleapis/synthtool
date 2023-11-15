@@ -233,6 +233,7 @@ def fix_hermetic(hide_output=False):
         hide_output=hide_output,
     )
 
+
 def postprocess_gapic_library(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
     install(hide_output=hide_output)
