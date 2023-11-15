@@ -16,7 +16,7 @@
 // ** https://github.com/googleapis/synthtool **
 // ** All changes to this file may be overwritten. **
 
-import * as v2 from './v2.js';
+import * as v2 from './v2.index.js';
 
 const DlpServiceClient = v2.DlpServiceClient;
 type DlpServiceClient = v2.DlpServiceClient;
