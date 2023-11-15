@@ -180,6 +180,30 @@ def test_generate_index_ts():
         assert filecmp.cmp(generated_index_path, sample_index_path)
 
 
+def test_generate_index_ts_esm():
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "index_esm_samples"):
+        node_mono_repo.generate_index_ts(
+            ["v1", "v1beta1"],
+            "v1",
+            relative_dir=(FIXTURES / "node_templates" / "index_esm_samples"),
+            year="2020",
+            is_esm=True,
+        )
+        generated_index_path = pathlib.Path(
+            FIXTURES
+            / "node_templates"
+            / "index_esm_samples"
+            / "esm"
+            / "src"
+            / "index.ts"
+        )
+        sample_index_path = pathlib.Path(
+            FIXTURES / "node_templates" / "index_esm_samples" / "sample_index.ts"
+        )
+        assert filecmp.cmp(generated_index_path, sample_index_path)
+
+
 def test_write_release_please_config():
     # use a non-nodejs template directory
     with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
@@ -248,6 +272,20 @@ def test_generate_index_ts_empty_versions():
             assert "can't be empty" in err.args
 
 
+def test_generate_esm_index_ts_empty_versions():
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "index_esm_samples"):
+        with pytest.raises(AttributeError) as err:
+            node_mono_repo.generate_index_ts(
+                [],
+                "v1",
+                relative_dir=(FIXTURES / "node_templates" / "index_esm_samples",),
+                year=date.today().year,
+                is_esm=True,
+            )
+            assert "can't be empty" in err.args
+
+
 def test_generate_index_ts_invalid_default_version():
     # use a non-nodejs template directory
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):
@@ -283,6 +321,26 @@ def test_generate_index_ts_no_clients():
             )
 
 
+def test_generate_index_ts_no_clients_esm():
+    # use a non-nodejs template directory
+    with util.chdir(FIXTURES / "node_templates" / "index_esm_samples"):
+        versions = ["v1", "v1beta1", "invalid_index"]
+        default_version = "invalid_index"
+
+        with pytest.raises(AttributeError) as err:
+            node_mono_repo.generate_index_ts(
+                versions,
+                default_version,
+                relative_dir=(FIXTURES / "node_templates" / "index_esm_samples"),
+                year=date.today().year,
+                is_esm=True,
+            )
+            assert (
+                f"No client is exported in the default version's({default_version}) index.ts ."
+                in err.args
+            )
+
+
 class TestPostprocess(TestCase):
     @patch("synthtool.shell.run")
     def test_install(self, shell_run_mock):
@@ -303,12 +361,36 @@ class TestPostprocess(TestCase):
         assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
 
     @patch("synthtool.shell.run")
+    def test_compile_protos_esm(self, shell_run_mock):
+        node_mono_repo.compile_protos(is_esm=True)
+        calls = shell_run_mock.call_args_list
+        assert any(
+            [
+                "npx compileProtos esm/src --esm" in " ".join(call[0][0])
+                for call in calls
+            ]
+        )
+
+    @patch("synthtool.shell.run")
     def test_postprocess_gapic_library(self, shell_run_mock):
         node_mono_repo.postprocess_gapic_library()
         calls = shell_run_mock.call_args_list
         assert any(["npm install" in " ".join(call[0][0]) for call in calls])
         assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
         assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_postprocess_gapic_library_esm(self, shell_run_mock):
+        node_mono_repo.postprocess_gapic_library(is_esm=True)
+        calls = shell_run_mock.call_args_list
+        assert any(["npm install" in " ".join(call[0][0]) for call in calls])
+        assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+        assert any(
+            [
+                "npx compileProtos esm/src --esm" in " ".join(call[0][0])
+                for call in calls
+            ]
+        )
 
 
 # postprocess_gapic_library_hermetic() must be mocked because it depends on node modules
@@ -328,6 +410,13 @@ def nodejs_mono_repo():
     with util.copied_fixtures_dir(
         FIXTURES / "nodejs_mono_repo_with_staging"
     ) as workdir:
+        yield workdir
+
+
+@pytest.fixture
+def nodejs_mono_repo_esm():
+    """chdir to a copy of nodejs_mono_repo_esm"""
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_esm") as workdir:
         yield workdir
 
 
@@ -457,6 +546,29 @@ def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_mono_repo)
     assert "import * as v2" in staging_text
     assert "export * as v2" not in staging_text
     assert "export * as v2" in text
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_owlbot_main_for_esm_templates(hermetic_mock, nodejs_mono_repo_esm):
+    node_mono_repo.owlbot_entrypoint(
+        template_path=TEMPLATES,
+        staging_excludes=["README.md", "package.json"],
+        patch_staging=patch,
+        specified_owlbot_dirs=["packages/dlp"],
+    )
+    # confirm index.ts was overwritten by staging index.ts.
+    assert Path(
+        FIXTURES / "nodejs_mono_repo_esm" / "packages" / "dlp" / ".jsdoc.cjs"
+    ).is_file()
+    assert Path(
+        FIXTURES / "nodejs_mono_repo_esm" / "packages" / "dlp" / ".mocharc.cjs"
+    ).is_file()
+    assert Path(
+        FIXTURES / "nodejs_mono_repo_esm" / "packages" / "dlp" / ".prettierrc.cjs"
+    ).is_file()
+    assert Path(
+        FIXTURES / "nodejs_mono_repo_esm" / "packages" / "dlp" / "esm" / "src"
+    ).is_dir()
 
 
 def test_owlbot_main_without_version():
