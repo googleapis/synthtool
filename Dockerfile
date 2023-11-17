@@ -23,6 +23,9 @@ RUN rm -rdf /synthtool/docker
 RUN python3 -m pip install -e .
 RUN python3 -m pip install -r requirements.in
 
+# Allow non-root users to run python
+RUN chmod +rx /root/
+
 WORKDIR /workspace
 
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
