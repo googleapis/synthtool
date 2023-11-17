@@ -21,5 +21,8 @@ WORKDIR /synthtool
 RUN rm -rdf /synthtool/docker
 
 RUN python3 -m pip install --no-deps -e .
+
+WORKDIR /workspace
+
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
-CMD [ "python", "/workspace/owlbot.py" ]
+CMD [ "python3", "/workspace/owlbot.py" ]
