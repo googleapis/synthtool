@@ -32,4 +32,9 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 # Put synthtool in the PYTHONPATH so owlbot.py scripts will find it.
 ENV PYTHONPATH="/synthtool"
 
+# Update permissions so non-root users won't see errors.
+RUN find /synthtool -exec chmod a+r {} \;
+RUN find /synthtool -type d -exec chmod a+x {} \;
+
+
 CMD [ "python3" ]
