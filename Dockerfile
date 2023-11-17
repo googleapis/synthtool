@@ -29,4 +29,4 @@ RUN chmod +rx /root/
 WORKDIR /workspace
 
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
-CMD [ "python3", "/workspace/owlbot.py" ]
+CMD [ "python3" ]
