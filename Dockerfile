@@ -20,7 +20,8 @@ WORKDIR /synthtool
 # remove postprocessor images
 RUN rm -rdf /synthtool/docker
 
-RUN python3 -m pip install --no-deps -e .
+RUN python3 -m pip install -e .
+RUN python3 -m pip install -r requirements.in
 
 WORKDIR /workspace
 
