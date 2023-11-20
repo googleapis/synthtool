@@ -16,8 +16,8 @@
 // ** https://github.com/googleapis/synthtool **
 // ** All changes to this file may be overwritten. **
 
-import * as v1 from './v1.js';
-import * as v1beta1 from './v1beta1.js';
+import * as v1 from './v1/index.js';
+import * as v1beta1 from './v1beta1/index.js';
 
 const TextToSpeechClient = v1.TextToSpeechClient;
 type TextToSpeechClient = v1.TextToSpeechClient;
