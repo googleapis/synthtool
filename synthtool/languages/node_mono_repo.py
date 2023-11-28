@@ -335,16 +335,52 @@ def fix_hermetic(relative_dir, hide_output=False):
     )
 
 
+def compile_protos(hide_output=False, is_esm=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax.
+    """
+    logger.debug("Compiling protos...")
+    command = (
+        ["npx", "compileProtos", "src"]
+        if not is_esm
+        else ["npx", "compileProtos", "esm/src", "--esm"]
+    )
+    shell.run(command, hide_output=hide_output)
+
+
+def compile_protos_hermetic(relative_dir, is_esm=False, hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax. Assumes that compileProtos
+    is already installed in a well known location on disk (node_modules/.bin).
+    """
+    logger.debug("Compiling protos...")
+    command = (
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "esm/src", "--esm"]
+        if not is_esm
+        else [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "esm/src", "--esm"]
+    )
+    shell.run(
+        command,
+        cwd=relative_dir,
+        check=True,
+        hide_output=hide_output,
+    )
+
+
 def postprocess_gapic_library(hide_output=False, is_esm=False):
     logger.debug("Post-processing GAPIC library...")
     install(hide_output=hide_output)
     fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output, is_esm=is_esm)
     logger.debug("Post-processing completed")
 
 
 def postprocess_gapic_library_hermetic(relative_dir, hide_output=False, is_esm=False):
     logger.debug("Post-processing GAPIC library...")
     fix_hermetic(relative_dir, hide_output=hide_output)
+    compile_protos_hermetic(relative_dir, hide_output=hide_output, is_esm=is_esm)
     logger.debug("Post-processing completed")
 
 
