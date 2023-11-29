@@ -370,7 +370,7 @@ class TestPostprocess(TestCase):
                 for call in calls
             ]
         )
-    
+
     @patch("synthtool.shell.run")
     def test_compile_protos_hermetic(self, shell_run_mock):
         node_mono_repo.compile_protos_hermetic(relative_dir="any", is_esm=False)
@@ -413,6 +413,7 @@ class TestPostprocess(TestCase):
                 for call in calls
             ]
         )
+
 
 # postprocess_gapic_library_hermetic() must be mocked because it depends on node modules
 # present in the docker image but absent while running unit tests.
