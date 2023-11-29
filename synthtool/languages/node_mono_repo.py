@@ -357,7 +357,7 @@ def compile_protos_hermetic(relative_dir, is_esm=False, hide_output=False):
     """
     logger.debug("Compiling protos...")
     command = (
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "esm/src", "--esm"]
+        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"]
         if not is_esm
         else [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "esm/src", "--esm"]
     )
