@@ -21,17 +21,22 @@ import os
 import pathlib
 import re
 import shutil
+from typing import Dict, List
 import warnings
 
 import nox
 
-BLACK_VERSION = "black==22.3.0"
-ISORT_VERSION = "isort==5.10.1"
+BLACK_VERSION = "black[jupyter]==23.7.0"
+ISORT_VERSION = "isort==5.11.0"
+{% if metadata['repo']['distribution_name'].startswith('google') %}
 LINT_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
+{% else %}
+LINT_PATHS = ["docs", "{{ metadata['repo']['distribution_name'] }}", "tests", "noxfile.py", "setup.py"]
+{% endif %}
 
 DEFAULT_PYTHON_VERSION = "{{ default_python_version }}"
 
-UNIT_TEST_PYTHON_VERSIONS = [{% for v in unit_test_python_versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+UNIT_TEST_PYTHON_VERSIONS: List[str] = [{% for v in unit_test_python_versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
 UNIT_TEST_STANDARD_DEPENDENCIES = [
     "mock",
     "asyncmock",
@@ -40,47 +45,47 @@ UNIT_TEST_STANDARD_DEPENDENCIES = [
     "pytest-asyncio",
 ]
 {%- if unit_test_external_dependencies %}
-UNIT_TEST_EXTERNAL_DEPENDENCIES = [{% for v in unit_test_external_dependencies %}
+UNIT_TEST_EXTERNAL_DEPENDENCIES: List[str] = [{% for v in unit_test_external_dependencies %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-UNIT_TEST_EXTERNAL_DEPENDENCIES = []
+UNIT_TEST_EXTERNAL_DEPENDENCIES: List[str] = []
 {%- endif %}
 {%- if unit_test_local_dependencies %}
-UNIT_TEST_LOCAL_DEPENDENCIES = [{% for v in unit_test_local_dependencies %}
+UNIT_TEST_LOCAL_DEPENDENCIES: List[str] = [{% for v in unit_test_local_dependencies %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-UNIT_TEST_LOCAL_DEPENDENCIES = []
+UNIT_TEST_LOCAL_DEPENDENCIES: List[str] = []
 {%- endif %}
 {%- if unit_test_dependencies %}
-UNIT_TEST_DEPENDENCIES = [{% for v in unit_test_dependencies %}
+UNIT_TEST_DEPENDENCIES: List[str] = [{% for v in unit_test_dependencies %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-UNIT_TEST_DEPENDENCIES = []
+UNIT_TEST_DEPENDENCIES: List[str] = []
 {%- endif %}
 {%- if unit_test_extras %}
-UNIT_TEST_EXTRAS = [{% for v in unit_test_extras %}
+UNIT_TEST_EXTRAS: List[str] = [{% for v in unit_test_extras %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-UNIT_TEST_EXTRAS = []
+UNIT_TEST_EXTRAS: List[str] = []
 {%- endif %}
 
 {%- if unit_test_extras_by_python %}
-UNIT_TEST_EXTRAS_BY_PYTHON = {{ '{' }}{% if unit_test_extras_by_python %}{% for python_version, extras in unit_test_extras_by_python.items() %}
+UNIT_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {{ '{' }}{% if unit_test_extras_by_python %}{% for python_version, extras in unit_test_extras_by_python.items() %}
     "{{python_version}}": [{% for v in extras %}
         "{{v}}",{% endfor %}
     ],{% endfor %}{% endif %}
 }
 {%- else %}
-UNIT_TEST_EXTRAS_BY_PYTHON = {}
+UNIT_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {}
 {%- endif %}
 {% if system_test_python_versions %}
-SYSTEM_TEST_PYTHON_VERSIONS = [{% for v in system_test_python_versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
+SYSTEM_TEST_PYTHON_VERSIONS: List[str] = [{% for v in system_test_python_versions %}"{{v}}"{% if not loop.last %}, {% endif %}{% endfor %}]
 {%- else %}
-SYSTEM_TEST_PYTHON_VERSIONS = []
+SYSTEM_TEST_PYTHON_VERSIONS: List[str] = []
 {%- endif %}
 SYSTEM_TEST_STANDARD_DEPENDENCIES = [
     "mock",
@@ -88,41 +93,41 @@ SYSTEM_TEST_STANDARD_DEPENDENCIES = [
     "google-cloud-testutils",
 ]
 {%- if system_test_external_dependencies %}
-SYSTEM_TEST_EXTERNAL_DEPENDENCIES = [{% for v in system_test_external_dependencies %}
+SYSTEM_TEST_EXTERNAL_DEPENDENCIES: List[str] = [{% for v in system_test_external_dependencies %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-SYSTEM_TEST_EXTERNAL_DEPENDENCIES = []
+SYSTEM_TEST_EXTERNAL_DEPENDENCIES: List[str] = []
 {%- endif %}
 {%- if system_test_local_dependencies %}
-SYSTEM_TEST_LOCAL_DEPENDENCIES = [{% for v in system_test_local_dependencies %}
+SYSTEM_TEST_LOCAL_DEPENDENCIES: List[str] = [{% for v in system_test_local_dependencies %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-SYSTEM_TEST_LOCAL_DEPENDENCIES = []
+SYSTEM_TEST_LOCAL_DEPENDENCIES: List[str] = []
 {%- endif %}
 {%- if system_test_dependencies %}
-SYSTEM_TEST_DEPENDENCIES = [{% for v in system_test_dependencies %}
+SYSTEM_TEST_DEPENDENCIES: List[str] = [{% for v in system_test_dependencies %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-SYSTEM_TEST_DEPENDENCIES = []
+SYSTEM_TEST_DEPENDENCIES: List[str] = []
 {%- endif %}
 {%- if system_test_extras %}
-SYSTEM_TEST_EXTRAS = [{% for v in system_test_extras %}
+SYSTEM_TEST_EXTRAS: List[str] = [{% for v in system_test_extras %}
     "{{v}}",{% endfor %}
 ]
 {%- else %}
-SYSTEM_TEST_EXTRAS = []
+SYSTEM_TEST_EXTRAS: List[str] = []
 {%- endif %}
 {%- if system_test_extras_by_python %}
-SYSTEM_TEST_EXTRAS_BY_PYTHON = {{ '{' }}{% if system_test_extras_by_python %}{% for python_version, extras in system_test_extras_by_python.items() %}
+SYSTEM_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {{ '{' }}{% if system_test_extras_by_python %}{% for python_version, extras in system_test_extras_by_python.items() %}
     "{{python_version}}": [{% for v in extras %}
         "{{v}}",{% endfor %}
     ],{% endfor %}{% endif %}
 }
 {%- else %}
-SYSTEM_TEST_EXTRAS_BY_PYTHON = {}
+SYSTEM_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {}
 {%- endif %}
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
@@ -155,7 +160,11 @@ def lint(session):
         "--check",
         *LINT_PATHS,
     )
+    {% if metadata['repo']['distribution_name'].startswith('google') %}
     session.run("flake8", "google", "tests")
+    {% else %}
+    session.run("flake8", "{{ metadata['repo']['distribution_name'] }}", "tests")
+    {% endif %}
 
 
 @nox.session(python=DEFAULT_PYTHON_VERSION)
@@ -236,7 +245,11 @@ def default(session):
         "py.test",
         "--quiet",
         f"--junitxml=unit_{session.python}_sponge_log.xml",
+    {% if metadata['repo']['distribution_name'].startswith('google') %}
         "--cov=google",
+    {% else %}
+        "--cov={{ metadata['repo']['distribution_name'] }}",
+    {% endif %}
         "--cov=tests/unit",
         "--cov-append",
         "--cov-config=.coveragerc",
@@ -346,7 +359,7 @@ def docs(session):
 
     session.install("-e", ".")
     session.install(
-        "sphinx==4.0.1",
+        "sphinx==4.5.0",
         "alabaster",
         "recommonmark",
     )
@@ -472,24 +485,3 @@ def prerelease_deps(session):
     session.run("python", "-c", "import google.auth; print(google.auth.__version__)")
 
     session.run("py.test", "tests/unit")
-
-    system_test_path = os.path.join("tests", "system.py")
-    system_test_folder_path = os.path.join("tests", "system")
-
-    # Only run system tests if found.
-    if os.path.exists(system_test_path):
-        session.run(
-            "py.test",
-            "--verbose",
-            f"--junitxml=system_{session.python}_sponge_log.xml",
-            system_test_path,
-            *session.posargs,
-        )
-    if os.path.exists(system_test_folder_path):
-        session.run(
-            "py.test",
-            "--verbose",
-            f"--junitxml=system_{session.python}_sponge_log.xml",
-            system_test_folder_path,
-            *session.posargs,
-        )

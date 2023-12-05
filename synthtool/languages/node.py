@@ -213,6 +213,8 @@ def fix(hide_output=False):
     shell.run(["npm", "run", "fix"], hide_output=hide_output)
 
 
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def fix_hermetic(hide_output=False):
     """
     Fixes the formatting in the current Node.js library. It assumes that gts
@@ -220,13 +222,13 @@ def fix_hermetic(hide_output=False):
     """
     logger.debug("Copy eslint config")
     shell.run(
-        ["cp", "-r", f"{_TOOLS_DIRECTORY}/node_modules", "."],
+        ["cp", "-r", "node_modules", "."],
         check=True,
         hide_output=hide_output,
     )
     logger.debug("Running fix...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/gts", "fix"],
+        ["node_modules/.bin/gts", "fix"],
         check=False,
         hide_output=hide_output,
     )
@@ -241,6 +243,8 @@ def compile_protos(hide_output=False):
     shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
 
 
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
 def compile_protos_hermetic(hide_output=False):
     """
     Compiles protos into .json, .js, and .d.ts files using
@@ -249,7 +253,7 @@ def compile_protos_hermetic(hide_output=False):
     """
     logger.debug("Compiling protos...")
     shell.run(
-        [f"{_TOOLS_DIRECTORY}/node_modules/.bin/compileProtos", "src"],
+        ["node_modules/.bin/compileProtos", "src"],
         check=True,
         hide_output=hide_output,
     )
@@ -265,9 +269,36 @@ def postprocess_gapic_library(hide_output=False):
 
 def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
-    fix_hermetic(hide_output=hide_output)
-    compile_protos_hermetic(hide_output=hide_output)
+    fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
+
+
+# This function writes the release-please-config.json file
+# It adds entries for each directory with a default {} to
+# make sure we are tracking them for publishing
+def write_release_please_config(dirs: list):
+    with open("release-please-config.json", "r") as f:
+        data = json.load(f)
+        for dir in dirs:
+            isPrivate = check_if_private_package(dir)
+            result = re.search(r"(src/apis/.*)", dir)
+            assert result is not None
+            if result and isPrivate is False:
+                data["packages"][result.group()] = {}
+        # Make sure base package is also published
+        if check_if_private_package(".") is False:
+            data["packages"]["."] = {}
+    with open("release-please-config.json", "w") as f:
+        json.dump(data, f, indent=2)
+
+
+def check_if_private_package(path: str):
+    with open(Path(path, "package.json"), "r") as f:
+        packageJson = json.load(f)
+        if "private" in packageJson and packageJson["private"] is True:
+            return True
+    return False
 
 
 default_staging_excludes = ["README.md", "package.json", "src/index.ts"]
@@ -276,6 +307,20 @@ default_templates_excludes: List[str] = []
 
 def _noop(library: Path) -> None:
     pass
+
+
+# This function walks through the apiary packages
+# specifically in google-api-nodejs-client
+# This determines the current list of APIs
+def walk_through_apiary(dir, glob_to_search_for):
+    packages_to_exclude = [r"node_modules"]
+    dirs_to_return = []
+    for path_object in Path(dir).glob(glob_to_search_for):
+        if not path_object.is_file() and not re.search(
+            "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
+        ):
+            dirs_to_return.append(str(Path(path_object)))
+    return dirs_to_return
 
 
 def owlbot_main(
@@ -369,6 +414,8 @@ def owlbot_main(
     library_version = template_metadata().get("version")
     if library_version:
         common.update_library_version(library_version, _GENERATED_SAMPLES_DIRECTORY)
+    if Path("release-please-config.json").is_file():
+        write_release_please_config(walk_through_apiary(Path.cwd(), "src/apis/**/*"))
 
 
 if __name__ == "__main__":
