@@ -29,7 +29,7 @@ from typing import Any, Optional, Dict, Iterable, List
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
 GOOD_LICENSE = """/*
- * Copyright 2023 Google LLC
+ * Copyright 2024 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
