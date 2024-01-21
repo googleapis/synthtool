@@ -6,8 +6,8 @@ on:
       - 'renovate.json'
 
 jobs:
-  config_validation:
-    runs-on: ubuntu-latest
+  renovate_bot_config_validation:
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout code
