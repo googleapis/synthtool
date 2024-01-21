@@ -1,4 +1,4 @@
-name: Config Validation
+name: Renovate Bot Config Validation
 
 on:
   pull_request:
@@ -16,19 +16,10 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '20'
 
     - name: Install Renovate and Config Validator
       run: |
         npm install -g npm@latest
         npm install --global renovate
-        npm install --global renovate-config-validator
-
-    - name: Display Renovate version
-      run: renovate --version
-
-    - name: Run Renovate Config Validator
-      run: renovate-config-validator > validator_output.log 2>&1
-
-    - name: Display Renovate Config Validator logs
-      run: cat validator_output.log
+        renovate-config-validator
