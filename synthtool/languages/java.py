@@ -25,11 +25,13 @@ from synthtool.gcp import common, partials, pregenerated, samples, snippets
 from synthtool.log import logger
 from pathlib import Path
 from typing import Any, Optional, Dict, Iterable, List
+from datetime import date
 
 JAR_DOWNLOAD_URL = "https://github.com/google/google-java-format/releases/download/google-java-format-{version}/google-java-format-{version}-all-deps.jar"
 DEFAULT_FORMAT_VERSION = "1.7"
-GOOD_LICENSE = """/*
- * Copyright 2023 Google LLC
+CURRENT_YEAR = date.today().year
+GOOD_LICENSE = f"""/*
+ * Copyright {CURRENT_YEAR} Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
