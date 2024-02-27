@@ -123,10 +123,13 @@ def fix_proto_headers(proto_root: Path) -> None:
     Some resource name classes may contain malformed license headers. In those cases, replace
     those with our standard license header.
     """
-    headerless_files = _filter_no_header([proto_root / "src/**/*.java"]),
     print('START fix_proto_headers')
     print(f'proto_root = {proto_root}')
-    print(f'headerless_files = {headerless_files}')
+    headerless_files = _filter_no_header([proto_root / "src/**/*.java"]),
+    print(f'headerless_files = ')
+    for file in headerless_files:
+      print(file)
+
 
     s.replace(
         _filter_no_header([proto_root / "src/**/*.java"]),
