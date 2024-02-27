@@ -123,6 +123,11 @@ def fix_proto_headers(proto_root: Path) -> None:
     Some resource name classes may contain malformed license headers. In those cases, replace
     those with our standard license header.
     """
+    headerless_files = _filter_no_header([proto_root / "src/**/*.java"]),
+    print('START fix_proto_headers')
+    print(f'proto_root = {proto_root}')
+    print(f'headerless_files = {headerless_files}')
+
     s.replace(
         _filter_no_header([proto_root / "src/**/*.java"]),
         PROTOBUF_HEADER,
@@ -134,6 +139,7 @@ def fix_proto_headers(proto_root: Path) -> None:
         BAD_LICENSE,
         GOOD_LICENSE,
     )
+    print('END fix_proto_headers')
 
 
 def fix_grpc_headers(grpc_root: Path, package_name: str = "unused") -> None:
