@@ -17,11 +17,14 @@ assign_prs:
   - {{ metadata['repo']['codeowner_team'] }}
 {% else %}
 assign_issues:
-  - googleapis/yoshi-python
+  - googleapis/python-core-client-libraries
 
 assign_issues_by:
   - labels:
       - "samples"
     to:
       - googleapis/python-samples-reviewers
+      
+assign_prs:
+  - googleapis/python-core-client-libraries
 {% endif -%}
