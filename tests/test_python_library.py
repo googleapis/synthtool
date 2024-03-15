@@ -186,7 +186,7 @@ def test_library_blunderbuss():
     ).read_text()
     try:
         config = yaml.safe_load(result)
-        assert "googleapis/yoshi-python" in config["assign_issues"]
+        assert "googleapis/python-core-client-libraries" not in config["assign_issues"]
         assert "googleapis/foo" in config["assign_issues"]
         assert (
             "googleapis/python-samples-reviewers" in config["assign_issues_by"][0]["to"]
@@ -204,7 +204,7 @@ def test_library_blunderbuss_no_codeowner():
     ).read_text()
     try:
         config = yaml.safe_load(result)
-        assert "googleapis/yoshi-python" in config["assign_issues"]
+        assert "googleapis/python-core-client-libraries" in config["assign_issues"]
         assert "googleapis/foo" not in config["assign_issues"]
         assert (
             "googleapis/python-samples-reviewers" in config["assign_issues_by"][0]["to"]
