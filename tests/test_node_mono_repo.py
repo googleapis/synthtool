@@ -355,11 +355,51 @@ class TestPostprocess(TestCase):
         assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
 
     @patch("synthtool.shell.run")
+    def test_compile_protos(self, shell_run_mock):
+        node_mono_repo.compile_protos()
+        calls = shell_run_mock.call_args_list
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
+
+    @patch("synthtool.shell.run")
+    def test_compile_protos_esm(self, shell_run_mock):
+        node_mono_repo.compile_protos(is_esm=True)
+        calls = shell_run_mock.call_args_list
+        assert any(
+            [
+                "npx compileProtos esm/src --esm" in " ".join(call[0][0])
+                for call in calls
+            ]
+        )
+
+    @patch("synthtool.shell.run")
+    def test_compile_protos_hermetic(self, shell_run_mock):
+        node_mono_repo.compile_protos_hermetic(relative_dir="any", is_esm=False)
+        calls = shell_run_mock.call_args_list
+        assert any(
+            [
+                "/node_modules/.bin/compileProtos src" in " ".join(call[0][0])
+                for call in calls
+            ]
+        )
+
+    @patch("synthtool.shell.run")
+    def test_compile_protos_hermetic_esm(self, shell_run_mock):
+        node_mono_repo.compile_protos_hermetic(relative_dir="any", is_esm=True)
+        calls = shell_run_mock.call_args_list
+        assert any(
+            [
+                "/node_modules/.bin/compileProtos esm/src --esm" in " ".join(call[0][0])
+                for call in calls
+            ]
+        )
+
+    @patch("synthtool.shell.run")
     def test_postprocess_gapic_library(self, shell_run_mock):
         node_mono_repo.postprocess_gapic_library()
         calls = shell_run_mock.call_args_list
         assert any(["npm install" in " ".join(call[0][0]) for call in calls])
         assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+        assert any(["npx compileProtos src" in " ".join(call[0][0]) for call in calls])
 
     @patch("synthtool.shell.run")
     def test_postprocess_gapic_library_esm(self, shell_run_mock):
@@ -367,6 +407,12 @@ class TestPostprocess(TestCase):
         calls = shell_run_mock.call_args_list
         assert any(["npm install" in " ".join(call[0][0]) for call in calls])
         assert any(["npm run fix" in " ".join(call[0][0]) for call in calls])
+        assert any(
+            [
+                "npx compileProtos esm/src --esm" in " ".join(call[0][0])
+                for call in calls
+            ]
+        )
 
 
 # postprocess_gapic_library_hermetic() must be mocked because it depends on node modules

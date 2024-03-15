@@ -234,16 +234,43 @@ def fix_hermetic(hide_output=False):
     )
 
 
+def compile_protos(hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax.
+    """
+    logger.debug("Compiling protos...")
+    shell.run(["npx", "compileProtos", "src"], hide_output=hide_output)
+
+
+# TODO: delete these functions if it turns out we no longer
+# need them to be hermetic.
+def compile_protos_hermetic(hide_output=False):
+    """
+    Compiles protos into .json, .js, and .d.ts files using
+    compileProtos script from google-gax. Assumes that compileProtos
+    is already installed in a well known location on disk (node_modules/.bin).
+    """
+    logger.debug("Compiling protos...")
+    shell.run(
+        ["node_modules/.bin/compileProtos", "src"],
+        check=True,
+        hide_output=hide_output,
+    )
+
+
 def postprocess_gapic_library(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
     install(hide_output=hide_output)
     fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
 
 def postprocess_gapic_library_hermetic(hide_output=False):
     logger.debug("Post-processing GAPIC library...")
     fix(hide_output=hide_output)
+    compile_protos(hide_output=hide_output)
     logger.debug("Post-processing completed")
 
 
