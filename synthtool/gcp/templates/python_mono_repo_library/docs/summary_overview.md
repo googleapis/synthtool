@@ -11,8 +11,8 @@ Overview of the APIs available for {{ metadata['repo']['name'] }} API.
 
 ## All entries
 
-Take a look at all classes, methods and properties & attributes for
-{{ metadata['repo']['name'] }} API.
+Classes, methods and properties & attributes for
+{{ metadata['repo']['name_pretty'] }} API.
 
 [classes]({{ metadata['repo']['client_documentation'] }}/summary_class.html)
 
