@@ -24,6 +24,7 @@ steps:
       "-t", "gcr.io/$PROJECT_ID/owlbot-java:$SHORT_SHA",
       "-t", "gcr.io/$PROJECT_ID/owlbot-java:latest",
       "-t", "gcr.io/cloud-devrel-public-resources/owlbot-java:$SHORT_SHA",
+      "-t", "gcr.io/cloud-devrel-public-resources/owlbot-java:infrastructure-public-image-$SHORT_SHA",
       "-t", "gcr.io/cloud-devrel-public-resources/owlbot-java:latest",
       "-f", "docker/owlbot/java/Dockerfile", "." ]
     id: "build"
