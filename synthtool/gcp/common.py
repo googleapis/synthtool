@@ -265,7 +265,14 @@ class CommonTemplates:
         if "default_python_version" not in kwargs:
             kwargs["default_python_version"] = "3.8"
         if "unit_test_python_versions" not in kwargs:
-            kwargs["unit_test_python_versions"] = ["3.7", "3.8", "3.9", "3.10", "3.11"]
+            kwargs["unit_test_python_versions"] = [
+                "3.7",
+                "3.8",
+                "3.9",
+                "3.10",
+                "3.11",
+                "3.12",
+            ]
 
         if "system_test_python_versions" not in kwargs:
             kwargs["system_test_python_versions"] = ["3.8"]
@@ -353,7 +360,7 @@ class CommonTemplates:
 
         return self._generic_library("node_library", **kwargs)
 
-    def node_mono_repo_library(self, relative_dir, **kwargs) -> Path:
+    def node_mono_repo_library(self, relative_dir, is_esm=False, **kwargs) -> Path:
         # TODO: once we've migrated all Node.js repos to either having
         #  .repo-metadata.json, or excluding README.md, we can remove this.
         if not os.path.exists(Path(relative_dir, ".repo-metadata.json").resolve()):
@@ -377,10 +384,14 @@ class CommonTemplates:
                 default_version=kwargs["default_version"],
                 relative_dir=relative_dir,
                 year=str(date.today().year),
+                is_esm=is_esm,
             )
 
+        templates_location = (
+            "node_mono_repo_library" if not is_esm else "node_esm_mono_repo_library"
+        )
         return self._generic_library(
-            "node_mono_repo_library", relative_dir=relative_dir, **kwargs
+            templates_location, relative_dir=relative_dir, **kwargs
         )
 
     def php_library(self, **kwargs) -> Path:
