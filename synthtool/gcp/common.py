@@ -233,8 +233,10 @@ class CommonTemplates:
             self.excludes += ["docs/index.rst"]
 
         # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
-        if Path("google/cloud").exists():
+        if Path(f"{relative_dir}/google/cloud").exists():
             kwargs["is_google_cloud_api"] = True
+        else:
+            self.excludes += ["docs/summary_overview.md"]
 
         return self._generic_library("python_mono_repo_library", relative_dir, **kwargs)
 
@@ -299,6 +301,8 @@ class CommonTemplates:
         # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
         if Path("google/cloud").exists():
             kwargs["is_google_cloud_api"] = True
+        else:
+            self.excludes += ["docs/summary_overview.md"]
 
         # If Dockerfile exists in .kokoro/docker/samples, add kwargs to
         # signal that a custom docker image should be used when testing samples.
