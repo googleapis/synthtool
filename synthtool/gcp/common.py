@@ -233,7 +233,7 @@ class CommonTemplates:
             self.excludes += ["docs/index.rst"]
 
         # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
-        if Path("google/cloud").exists():
+        if Path(f"{relative_dir}/google/cloud").exists():
             kwargs["is_google_cloud_api"] = True
         else:
             self.excludes += ["docs/summary_overview.md"]
