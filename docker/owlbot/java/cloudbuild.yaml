@@ -48,3 +48,5 @@ images:
   - gcr.io/$PROJECT_ID/owlbot-java:latest
   - gcr.io/cloud-devrel-public-resources/owlbot-java:$SHORT_SHA
   - gcr.io/cloud-devrel-public-resources/owlbot-java:latest
+  - gcr.io/cloud-devrel-public-resources/owlbot-java:infrastructure-public-image-$SHORT_SHA
+
