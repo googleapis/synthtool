@@ -35,3 +35,10 @@ For a list of all ``{{ metadata['repo']['distribution_name'] }}`` releases:
     :maxdepth: 2
 
     changelog
+
+{% if is_google_cloud_api %}
+.. toctree::
+  :hidden:
+
+  summary_overview.md
+{% endif %}
