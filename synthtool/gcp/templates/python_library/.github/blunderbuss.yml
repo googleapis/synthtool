@@ -5,17 +5,23 @@
 # team, please update `codeowner_team` in `.repo-metadata.json`.
 {% if metadata['repo']['codeowner_team']|length -%}
 assign_issues:
-  - {{ metadata['repo']['codeowner_team'].replace("@","") }}
+  {%- for codeowner in metadata['repo']['codeowner_team'].replace("@","").split(" ") %}
+  - {{ codeowner }}
+  {%- endfor %}
 
 assign_issues_by:
   - labels:
       - "samples"
     to:
       - googleapis/python-samples-reviewers
-      - {{ metadata['repo']['codeowner_team'].replace("@","") }}
+      {%- for codeowner in metadata['repo']['codeowner_team'].replace("@","").split(" ") %}
+      - {{ codeowner }}
+      {%- endfor %}
 
 assign_prs:
-  - {{ metadata['repo']['codeowner_team'].replace("@","") }}
+  {%- for codeowner in metadata['repo']['codeowner_team'].replace("@","").split(" ") %}
+  - {{ codeowner }}
+  {%- endfor %}
 {% else %}
 assign_issues:
   - googleapis/python-core-client-libraries

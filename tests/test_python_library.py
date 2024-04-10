@@ -178,7 +178,7 @@ def assert_valid_yaml(file):
             pytest.fail(f"unable to parse YAML: {file}")
 
 
-def test_library_blunderbuss():
+def test_library_blunderbuss_single_codeowner():
     t = templates.Templates(PYTHON_LIBRARY / ".github")
     result = t.render(
         "blunderbuss.yml",
@@ -188,10 +188,33 @@ def test_library_blunderbuss():
         config = yaml.safe_load(result)
         assert "googleapis/python-core-client-libraries" not in config["assign_issues"]
         assert "googleapis/foo" in config["assign_issues"]
+        assert "googleapis/foo" in config["assign_prs"]
         assert (
             "googleapis/python-samples-reviewers" in config["assign_issues_by"][0]["to"]
         )
         assert "googleapis/foo" in config["assign_issues_by"][0]["to"]
+    except yaml.YAMLError:
+        pytest.fail(f"unable to parse YAML: {result}")
+
+
+def test_library_blunderbuss_multiple_codeowner():
+    t = templates.Templates(PYTHON_LIBRARY / ".github")
+    result = t.render(
+        "blunderbuss.yml",
+        metadata={"repo": {"codeowner_team": "googleapis/foo googleapis/bar"}},
+    ).read_text()
+    try:
+        config = yaml.safe_load(result)
+        assert "googleapis/python-core-client-libraries" not in config["assign_issues"]
+        assert "googleapis/foo" in config["assign_issues"]
+        assert "googleapis/bar" in config["assign_issues"]
+        assert "googleapis/foo" in config["assign_prs"]
+        assert "googleapis/bar" in config["assign_prs"]
+        assert (
+            "googleapis/python-samples-reviewers" in config["assign_issues_by"][0]["to"]
+        )
+        assert "googleapis/foo" in config["assign_issues_by"][0]["to"]
+        assert "googleapis/bar" in config["assign_issues_by"][0]["to"]
     except yaml.YAMLError:
         pytest.fail(f"unable to parse YAML: {result}")
 
