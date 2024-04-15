@@ -108,13 +108,13 @@ def test_working_common_templates():
 
 
 def test_render_readme_with_libraries_bom_version():
-    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "readme") as tempdir:
+    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "readme"):
         java.common_templates(
             template_path=TEMPLATES_PATH, monorepo=True, libraries_bom_version="26.36.0"
         )
-        os.path.isfile(f"{tempdir}/README.md")
+        os.path.isfile("README.md")
         assert_matches_golden(
-            "README-with-libraries-bom-version-golden.md", f"{tempdir}/README.md"
+            "README-with-libraries-bom-version-golden.md", "README.md"
         )
 
 
