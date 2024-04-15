@@ -112,7 +112,6 @@ def test_render_readme_with_libraries_bom_version():
         java.common_templates(
             template_path=TEMPLATES_PATH, monorepo=True, libraries_bom_version="26.36.0"
         )
-        assert os.path.isfile("README.md")
         assert_matches_golden(
             "README-with-libraries-bom-version-golden.md", "README.md"
         )
