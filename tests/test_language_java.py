@@ -114,7 +114,7 @@ def test_render_readme_with_libraries_bom_version():
         )
         os.path.isfile("README.md")
         assert_matches_golden(
-            "README-with-libraries-bom-version-golden.md", "README.md"
+            "README-with-libraries-bom-version-golden.md", "./README.md"
         )
 
 
