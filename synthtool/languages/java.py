@@ -62,6 +62,8 @@ BAD_LICENSE = """/\\*
  \\*/
 """
 DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 8
+METADATA = "metadata"
+LIBRARIES_BOM_VERSION = "libraries_bom_version"
 
 
 def format_code(
@@ -490,7 +492,7 @@ def common_templates(
         :param kwargs: Additional options for CommonTemplates.java_library()
     """
     metadata = _common_template_metadata()
-    kwargs["metadata"] = metadata
+    kwargs[METADATA] = metadata
 
     # Generate flat to tell this repository is a split repo that have migrated
     # to monorepo. The owlbot.py in the monorepo sets monorepo=True.
@@ -499,6 +501,8 @@ def common_templates(
     split_repo = not monorepo
     repo_metadata = metadata["repo"]
     repo_short = repo_metadata["repo_short"]
+    if LIBRARIES_BOM_VERSION in kwargs:
+        kwargs[METADATA][LIBRARIES_BOM_VERSION] = kwargs.get(LIBRARIES_BOM_VERSION)
     # Special libraries that are not GAPIC_AUTO but in the monorepo
     special_libs_in_monorepo = [
         "java-translate",
