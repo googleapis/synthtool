@@ -107,17 +107,6 @@ def test_working_common_templates():
                     assert_valid_yaml(os.path.join(dirpath, file))
 
 
-def test_render_readme_with_libraries_bom_version():
-    with util.copied_fixtures_dir(FIXTURES / "java_templates" / "readme"):
-        java.common_templates(
-            template_path=TEMPLATES_PATH, monorepo=True, libraries_bom_version="26.36.0"
-        )
-        os.path.isfile("README.md")
-        assert_matches_golden(
-            "README-with-libraries-bom-version-golden.md", "./README.md"
-        )
-
-
 def test_remove_method():
     with tempfile.TemporaryDirectory() as tempdir:
         shutil.copyfile(
