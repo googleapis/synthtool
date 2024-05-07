@@ -514,6 +514,11 @@ def common_templates(
         repo_metadata["library_type"] == "GAPIC_AUTO"
         or (repo_short and repo_short in special_libs_in_monorepo)
     )
+    # proto only libraries that does not covered by libraries-bom.
+    kwargs["proto_only_libraries"] = [
+        "proto-google-common-protos",
+        "proto-google-iam-v1",
+    ]
     logger.info(
         "monorepo: {}, split_repo: {}, library_type: {},"
         " repo_short: {}, migrated_split_repo: {}".format(
