@@ -515,7 +515,7 @@ def common_templates(
         or (repo_short and repo_short in special_libs_in_monorepo)
     )
     # proto only libraries that does not covered by libraries-bom.
-    kwargs["proto_only_libraries"] = [
+    kwargs[METADATA]["proto_only_libraries"] = [
         "proto-google-common-protos",
         "proto-google-iam-v1",
     ]
