@@ -210,12 +210,21 @@ def owlbot_main(package_dir: str) -> None:
         raise Exception("Could not find the default version")
 
     package_name = Path(package_dir).name
-
-    if Path(f"owl-bot-staging/{package_name}").exists():
+    owlbot_staging_package_dir = f"owl-bot-staging/{package_name}"
+    if Path(owlbot_staging_package_dir).exists():
         for library in synthtool.get_staging_dirs(
-            default_version, f"owl-bot-staging/{package_name}"
+            default_version, owlbot_staging_package_dir
         ):
-            if clean_up_generated_samples:
+            # Delete the generated samples, and pull in fresh samples.
+            # There are use cases where the post processor is run without any
+            # actual clients in the `owlbot_staging_package_dir`.
+            # Only delete the generated samples, if we have clients in `owlbot_staging_package_dir`.
+            number_clients = [
+                client_dir
+                for client_dir in Path(owlbot_staging_package_dir).iterdir()
+                if client_dir.is_dir()
+            ]
+            if number_clients and clean_up_generated_samples:
                 shutil.rmtree(
                     f"{package_dir}/samples/generated_samples", ignore_errors=True
                 )
