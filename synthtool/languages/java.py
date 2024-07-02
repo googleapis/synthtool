@@ -65,6 +65,8 @@ DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 8
 METADATA = "metadata"
 LIBRARIES_BOM_VERSION = "libraries_bom_version"
 LIBRARIES_BOM_VERSION_ENV_KEY = "SYNTHTOOL_LIBRARIES_BOM_VERSION"
+LIBRARY_VERSION = "library_version"
+LIBRARY_VERSION_ENV_KEY = "SYNTHTOOL_LIBRARY_VERSION"
 
 
 def format_code(
@@ -505,6 +507,10 @@ def common_templates(
     if os.getenv(LIBRARIES_BOM_VERSION_ENV_KEY, default=None) is not None:
         kwargs[METADATA][LIBRARIES_BOM_VERSION] = os.getenv(
             LIBRARIES_BOM_VERSION_ENV_KEY
+        )
+    if os.getenv(LIBRARY_VERSION_ENV_KEY, default=None) is not None:
+        kwargs[METADATA][LIBRARY_VERSION] = os.getenv(
+            LIBRARY_VERSION_ENV_KEY
         )
     # Special libraries that are not GAPIC_AUTO but in the monorepo
     special_libs_in_monorepo = [
