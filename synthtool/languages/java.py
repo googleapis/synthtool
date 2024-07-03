@@ -65,6 +65,8 @@ DEFAULT_MIN_SUPPORTED_JAVA_VERSION = 8
 METADATA = "metadata"
 LIBRARIES_BOM_VERSION = "libraries_bom_version"
 LIBRARIES_BOM_VERSION_ENV_KEY = "SYNTHTOOL_LIBRARIES_BOM_VERSION"
+LIBRARY_VERSION = "library_version"
+LIBRARY_VERSION_ENV_KEY = "SYNTHTOOL_LIBRARY_VERSION"
 
 
 def format_code(
@@ -477,7 +479,7 @@ def _common_template_metadata() -> Dict[str, Any]:
 
 
 def common_templates(
-    excludes: List[str] = [],
+    excludes: List[str] = None,
     template_path: Optional[Path] = None,
     **kwargs,
 ) -> None:
@@ -492,6 +494,8 @@ def common_templates(
         :param template_path:
         :param kwargs: Additional options for CommonTemplates.java_library()
     """
+    if not excludes:
+        excludes = []
     metadata = _common_template_metadata()
     kwargs[METADATA] = metadata
 
@@ -506,6 +510,7 @@ def common_templates(
         kwargs[METADATA][LIBRARIES_BOM_VERSION] = os.getenv(
             LIBRARIES_BOM_VERSION_ENV_KEY
         )
+    kwargs[METADATA][LIBRARY_VERSION] = os.getenv(LIBRARY_VERSION_ENV_KEY)
     # Special libraries that are not GAPIC_AUTO but in the monorepo
     special_libs_in_monorepo = [
         "java-translate",
