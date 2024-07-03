@@ -479,7 +479,7 @@ def _common_template_metadata() -> Dict[str, Any]:
 
 
 def common_templates(
-    excludes: List[str] = [],
+    excludes: List[str] = None,
     template_path: Optional[Path] = None,
     **kwargs,
 ) -> None:
@@ -494,6 +494,8 @@ def common_templates(
         :param template_path:
         :param kwargs: Additional options for CommonTemplates.java_library()
     """
+    if not excludes:
+        excludes = []
     metadata = _common_template_metadata()
     kwargs[METADATA] = metadata
 
