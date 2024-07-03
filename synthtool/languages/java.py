@@ -508,8 +508,7 @@ def common_templates(
         kwargs[METADATA][LIBRARIES_BOM_VERSION] = os.getenv(
             LIBRARIES_BOM_VERSION_ENV_KEY
         )
-    if os.getenv(LIBRARY_VERSION_ENV_KEY, default=None) is not None:
-        kwargs[METADATA][LIBRARY_VERSION] = os.getenv(LIBRARY_VERSION_ENV_KEY)
+    kwargs[METADATA][LIBRARY_VERSION] = os.getenv(LIBRARY_VERSION_ENV_KEY)
     # Special libraries that are not GAPIC_AUTO but in the monorepo
     special_libs_in_monorepo = [
         "java-translate",
