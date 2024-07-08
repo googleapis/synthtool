@@ -72,8 +72,6 @@ RUN tar -xvf Python-3.10.14.tgz
 RUN ./Python-3.10.14/configure --enable-optimizations
 RUN make altinstall
 
-###################### Use python 3.10 by default
-
 RUN python3.10 -m venv /venv
 ENV PATH /venv/bin:$PATH
 
