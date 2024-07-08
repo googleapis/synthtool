@@ -60,7 +60,7 @@ RUN apt-get update \
   && rm -f /var/cache/apt/archives/*.deb
 
 
-###################### Install python 3.10.14 for docfx session
+###################### Install python 3.10.14 for docs/docfx session
 
 # Download python 3.10.14
 RUN wget https://www.python.org/ftp/python/3.10.14/Python-3.10.14.tgz
