@@ -19,7 +19,7 @@
 FROM python:3.10.14-bookworm
 WORKDIR /
 
-###################### Install nodejs.
+###################### Install Node.js.
 RUN curl https://nodejs.org/dist/v18.20.4/node-v18.20.4-linux-x64.tar.xz > /tmp/nodejs.tar.xz
 RUN tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz
 RUN rm -f /tmp/nodejs.tar.xz
