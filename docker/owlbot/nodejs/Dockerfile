@@ -16,11 +16,11 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-nodejs -f docker/owlbot/nodejs/Dockerfile .
-FROM python:3.10.12-bookworm
+FROM python:3.10.14-bookworm
 WORKDIR /
 
 ###################### Install nodejs.
-RUN curl https://nodejs.org/dist/v18.17.0/node-v18.17.0-linux-x64.tar.xz > /tmp/nodejs.tar.xz
+RUN curl https://nodejs.org/dist/v18.20.4/node-v18.20.4-linux-x64.tar.xz > /tmp/nodejs.tar.xz
 RUN tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz
 RUN rm -f /tmp/nodejs.tar.xz
 ENV PATH "$PATH:/usr/local/bin"
