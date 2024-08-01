@@ -15,9 +15,7 @@
 
 set -eo pipefail
 
-python3 -m pip install keyring
-python3 -m pip install keyrings.google-artifactregistry-auth
-
+python3 -m pip install --require-hashes -r github/python-test-utils/.kokoro/requirements-aoss.txt
 python3 -m keyring --list-backends
 
 echo "[distutils]
