@@ -15,7 +15,7 @@
 
 set -eo pipefail
 
-python3 -m pip install --require-hashes -r github/python-test-utils/.kokoro/requirements-aoss.txt
+python3 -m pip install --require-hashes -r github/{{ metadata['repo']['repo'].split('/')[1] }}/.kokoro/requirements-aoss.txt
 python3 -m keyring --list-backends
 
 echo "[distutils]
