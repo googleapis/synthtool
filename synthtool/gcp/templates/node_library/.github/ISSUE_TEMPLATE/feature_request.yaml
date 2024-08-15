@@ -29,7 +29,8 @@ body:
         submitting an issue in its linked tracker in the .repo-metadata.json
         file in the API under packages/* ([example]({{ metadata['repo']['issue_tracker'] }}))
 
-         Examples of common library-specific issues vs. API issues are: retry strategies, authentication questions, issues with typings. 
+        Example of library specific issues would be: retry strategies, authentication questions, or issues with typings.
+        Examples of API issues would include: expanding method parameter types, adding functionality to an API.   
     validations:
       required: true
   - type: textarea

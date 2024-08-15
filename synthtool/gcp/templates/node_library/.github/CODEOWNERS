@@ -5,7 +5,7 @@
 # https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners#codeowners-syntax
 
 
-# The yoshi-nodejs team is the default owner for nodejs repositories.
+# Unless specified, the jsteam is the default owner for nodejs repositories.
 {%- if 'codeowner_team' in metadata['repo'] %}
 *     {{ metadata['repo']['codeowner_team'] }} @googleapis/jsteam
 {%- else %}
