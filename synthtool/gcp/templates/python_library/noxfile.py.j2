@@ -130,7 +130,6 @@ SYSTEM_TEST_EXTRAS_BY_PYTHON: Dict[str, List[str]] = {}
 
 CURRENT_DIRECTORY = pathlib.Path(__file__).parent.absolute()
 
-# 'docfx' is excluded since it only needs to run in 'docs-presubmit'
 nox.options.sessions = [
     "unit",
     "system",
@@ -139,6 +138,7 @@ nox.options.sessions = [
     "lint_setup_py",
     "blacken",
     "docs",
+    "docfx",
     "format",
 ]
 
