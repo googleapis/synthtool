@@ -17,7 +17,9 @@ steps:
     args: [ 'build',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-python:$SHORT_SHA',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-python:latest',
+      '-t', 'gcr.io/$PROJECT_ID/owlbot-python:infrastructure-public-image-$SHORT_SHA',
       '-f', 'docker/owlbot/python/Dockerfile', '.' ]
 images:
   - 'gcr.io/$PROJECT_ID/owlbot-python:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/owlbot-python:latest'
+  - 'gcr.io/$PROJECT_ID/owlbot-python:infrastructure-public-image-$SHORT_SHA'

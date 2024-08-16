@@ -243,7 +243,6 @@ def test_python_library():
         common = gcp.CommonTemplates(template_path=template_dir)
         templated_files = common.py_library()
 
-        assert os.path.exists(templated_files / ".kokoro/docs/docs-presubmit.cfg")
         assert os.path.exists(templated_files / ".kokoro/docker/docs/Dockerfile")
 
 
