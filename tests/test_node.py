@@ -48,7 +48,7 @@ def test_quickstart_metadata_with_snippet():
 def test_metadata_engines_field():
     with util.chdir(FIXTURES / "node_templates" / "standard"):
         metadata = node.template_metadata()
-        assert "10" in metadata["engine"]
+        assert "18" in metadata["engine"]
 
 
 def test_quickstart_metadata_without_snippet():

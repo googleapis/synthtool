@@ -74,7 +74,7 @@ def test_metadata_engines_field():
         metadata = node_mono_repo.template_metadata(
             FIXTURES / "node_templates" / "standard"
         )
-        assert "10" in metadata["engine"]
+        assert "18" in metadata["engine"]
 
 
 def test_quickstart_metadata_without_snippet():
