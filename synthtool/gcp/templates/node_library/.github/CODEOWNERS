@@ -5,12 +5,9 @@
 # https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners#codeowners-syntax
 
 
-# The yoshi-nodejs team is the default owner for nodejs repositories.
+# Unless specified, the jsteam is the default owner for nodejs repositories.
 {%- if 'codeowner_team' in metadata['repo'] %}
-*     @googleapis/yoshi-nodejs {{ metadata['repo']['codeowner_team'] }}
+*     {{ metadata['repo']['codeowner_team'] }} @googleapis/jsteam
 {%- else %}
-*     @googleapis/yoshi-nodejs
+*     @googleapis/jsteam
 {%- endif %}
-
-# The github automation team is the default owner for the auto-approve file.
-.github/auto-approve.yml @googleapis/github-automation
