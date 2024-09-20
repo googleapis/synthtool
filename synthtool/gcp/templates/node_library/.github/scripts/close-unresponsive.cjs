@@ -13,7 +13,7 @@
 // limitations under the License.
 
 function labeledEvent(data) {
-    return data.event === "labeled" && data.label.name === "needs more info";
+    return data.event === 'labeled' && data.label.name === 'needs more info';
   }
   
   const numberOfDaysLimit = 15;
@@ -21,14 +21,14 @@ function labeledEvent(data) {
   not been answered for ${numberOfDaysLimit} days. It can be reopened when the \
   requested information is provided.`;
   
-  module.exports = async ({ github, context }) => {
+  module.exports = async ({github, context}) => {
     const owner = context.repo.owner;
     const repo = context.repo.repo;
   
     const issues = await github.rest.issues.listForRepo({
       owner: owner,
       repo: repo,
-      labels: "needs more info",
+      labels: 'needs more info',
     });
     const numbers = issues.data.map((e) => e.number);
   
@@ -55,7 +55,7 @@ function labeledEvent(data) {
           owner: owner,
           repo: repo,
           issue_number: number,
-          state: "closed",
+          state: 'closed',
         });
   
         await github.rest.issues.createComment({

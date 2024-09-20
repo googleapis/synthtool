@@ -22,12 +22,12 @@ module.exports = async ({ github, context }) => {
     const author = issue.data.user.login;
     const labels = issue.data.labels.map((e) => e.name);
   
-    if (author === commenter && labels.includes("needs more info")) {
+    if (author === commenter && labels.includes('needs more info')) {
       await github.rest.issues.removeLabel({
         owner: context.repo.owner,
         repo: context.repo.repo,
         issue_number: context.issue.number,
-        name: "needs more info",
+        name: 'needs more info',
       });
     }
   };
