@@ -54,7 +54,7 @@ Google APIs Client Libraries, in [Client Libraries Explained][explained].
 1.  [Select or create a Cloud Platform project][projects].{% if metadata['repo']['requires_billing'] %}
 1.  [Enable billing for your project][billing].{% endif %}
 1.  [Enable the {{ metadata['repo']['name_pretty'] }} API][enable_api].
-1.  [Set up authentication with a service account][auth] so you can access the
+1.  [Set up authentication][auth] so you can access the
     API from your local workstation.
 {% endif %}
 ### Installing the client library
@@ -171,4 +171,4 @@ See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/{{ metadata
 [projects]: https://console.cloud.google.com/project
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 {% if metadata['repo']['api_id'] %}[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
-[auth]: https://cloud.google.com/docs/authentication/getting-started
+[auth]: https://cloud.google.com/docs/authentication/external/set-up-adc-local

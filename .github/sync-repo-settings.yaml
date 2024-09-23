@@ -8,7 +8,6 @@ branchProtectionRules:
     - 'cla/google'
     - 'owlbot-nodejs-mono-repo-presubmit (repo-automation-bots)'
     - 'owlbot-nodejs-presubmit (repo-automation-bots)'
-    - 'owlbot-java-presubmit (repo-automation-bots)'
     - 'owlbot-php-presubmit (repo-automation-bots)'
   requiredApprovingReviewCount: 1
   requiresCodeOwnerReviews: true
