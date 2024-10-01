@@ -57,7 +57,7 @@ body:
         case, please submit an issue to the API team, either by submitting an
         issue in its issue tracker https://cloud.google.com/support/docs/issue-trackers, or by
         submitting an issue in its linked tracker in the .repo-metadata.json
-        file {{ metadata['repo']['issue_tracker'] }}       
+        file        
     validations:
       required: true
   - type: input
