@@ -29,6 +29,9 @@ ENV PATH "$PATH:/usr/local/bin"
 ###################### Install git.
 RUN apt-get update && apt-get install -y git
 
+###################### Update image to latest
+RUN apt-get upgrade -y
+
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install --require-hashes -r /synthtool/requirements.txt
