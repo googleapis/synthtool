@@ -26,8 +26,8 @@ RUN tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz
 RUN rm -f /tmp/nodejs.tar.xz
 ENV PATH "$PATH:/usr/local/bin"
 
-###################### Install git.
-RUN apt-get update && apt-get install -y git
+###################### Install git and update image to latest.
+RUN apt-get update && apt-get install -y git && apt-get upgrade -y
 
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
