@@ -19,6 +19,9 @@
 FROM python:3.10.12-bookworm
 WORKDIR /
 
+RUN apt-get update && \
+    apt-get upgrade -y
+
 ###################### Install nodejs.
 RUN curl https://nodejs.org/dist/v18.17.0/node-v18.17.0-linux-x64.tar.xz > /tmp/nodejs.tar.xz
 RUN tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz
