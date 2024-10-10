@@ -39,7 +39,7 @@ __all__ = [
 # Make sure that synthtool is being used instead of running the synth file
 # directly
 _main_module = sys.modules["__main__"]
-if hasattr(_main_module, "__file__") and "synthtool" not in _main_module.__file__:
+if hasattr(_main_module, "__file__") and "synthtool" not in str(_main_module.__file__):
     logger.critical(
         "You are running the synthesis script directly, this will be disabled in a future release of Synthtool. Please use python3 -m synthtool instead."
     )
