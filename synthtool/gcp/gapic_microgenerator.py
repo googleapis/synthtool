@@ -75,11 +75,11 @@ class GAPICMicrogenerator:
         language: str,
         *,
         private: bool = False,
-        proto_path: Union[str, Path] = None,
+        proto_path: Optional[Union[str, Path]] = None,
         extra_proto_files: List[str] = [],
-        output_dir: Union[str, Path] = None,
+        output_dir: Optional[Union[str, Path]] = None,
         generator_version: str = GENERATOR_VERSION,
-        generator_args: Mapping[str, str] = None,
+        generator_args: Optional[Mapping[str, str]] = None,
     ):
         # Determine which googleapis repo to use
         if not private:

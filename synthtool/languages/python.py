@@ -18,7 +18,7 @@ import sys
 import json
 from pathlib import Path
 import shutil
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 import yaml
 
 import synthtool as s
@@ -108,7 +108,7 @@ def python_notebooks_testing_pipeline() -> None:
 
 def py_samples(
     *,
-    root: PathOrStr = None,
+    root: Optional[PathOrStr] = None,
     skip_readmes: bool = False,
     files_to_exclude: List[str] = [],
 ) -> None:

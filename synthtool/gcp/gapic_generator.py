@@ -237,8 +237,8 @@ class GAPICGenerator:
         version: str,
         genfiles: Path,
         googleapis_service_dir: Path,
-        samples_root_dir: Path = None,
-        samples_resources_dir: Path = None,
+        samples_root_dir: Optional[Path] = None,
+        samples_resources_dir: Optional[Path] = None,
     ):
         """Include code samples and supporting resources in generated output.
 
