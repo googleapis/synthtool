@@ -73,8 +73,8 @@ def _local_default_branch(path: pathlib.Path) -> Union[str, None]:
 
 def clone(
     url: str,
-    dest: pathlib.Path = None,
-    committish: str = None,
+    dest: Optional[pathlib.Path] = None,
+    committish: Optional[str] = None,
     force: bool = False,
 ) -> pathlib.Path:
     """Clones a remote git repo.
@@ -164,7 +164,7 @@ def parse_repo_url(url: str) -> Dict[str, str]:
     return {"owner": owner, "name": name}
 
 
-def get_latest_commit(repo: pathlib.Path = None) -> Tuple[str, str]:
+def get_latest_commit(repo: Optional[pathlib.Path] = None) -> Tuple[str, str]:
     """Return the sha and commit message of the latest commit."""
     output = subprocess.check_output(
         ["git", "log", "-1", "--pretty=%H%n%B"], cwd=repo
