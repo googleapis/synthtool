@@ -85,10 +85,11 @@ def main(synthfile: str, metadata: str, extra_args: Sequence[str]):
         logger.debug(f"Executing {synth_file}.")
         # https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly
         spec = importlib.util.spec_from_file_location("synth", synth_file)
-        synth_module = importlib.util.module_from_spec(spec)
 
-        if spec.loader is None:
+        if spec is None or spec.loader is None:
             raise ImportError("Could not import synth.py")
+
+        synth_module = importlib.util.module_from_spec(spec)
 
         with synthtool.metadata.MetadataTrackerAndWriter(metadata):
             spec.loader.exec_module(synth_module)  # type: ignore
