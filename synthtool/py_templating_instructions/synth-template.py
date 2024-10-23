@@ -23,4 +23,4 @@ from synthtool import gcp
 common = gcp.CommonTemplates()
 sample_files = common.py_samples()
 for path in sample_files:
-    s.move(path, excludes=["noxfile.py"])
+    s.move([path], excludes=["noxfile.py"])

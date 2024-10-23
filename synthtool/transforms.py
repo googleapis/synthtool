@@ -31,7 +31,9 @@ class MissingSourceError(Exception):
     pass
 
 
-def _expand_paths(paths: ListOfPathsOrStrs, root: PathOrStr = None) -> Iterable[Path]:
+def _expand_paths(
+    paths: ListOfPathsOrStrs, root: Optional[PathOrStr] = None
+) -> Iterable[Path]:
     """Given a list of globs/paths, expands them into a flat sequence,
     expanding globs as necessary."""
     if paths is None:
@@ -103,8 +105,8 @@ def _merge_file(
 def _copy_dir_to_existing_dir(
     source: Path,
     destination: Path,
-    excludes: ListOfPathsOrStrs = None,
-    merge: Callable[[str, str, Path], str] = None,
+    excludes: Optional[ListOfPathsOrStrs] = None,
+    merge: Optional[Callable[[str, str, Path], str]] = None,
 ) -> bool:
     """
     copies files over existing files to an existing directory
@@ -169,9 +171,9 @@ def dont_overwrite(
 
 def move(
     sources: ListOfPathsOrStrs,
-    destination: PathOrStr = None,
-    excludes: ListOfPathsOrStrs = None,
-    merge: Callable[[str, str, Path], str] = None,
+    destination: Optional[PathOrStr] = None,
+    excludes: Optional[ListOfPathsOrStrs] = None,
+    merge: Optional[Callable[[str, str, Path], str]] = None,
     required: bool = False,
 ) -> bool:
     """

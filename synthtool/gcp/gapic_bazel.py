@@ -80,11 +80,11 @@ class GAPICBazel:
         private: bool = False,
         discogapic: bool = False,
         diregapic: bool = False,
-        proto_path: Union[str, Path] = None,
-        output_dir: Union[str, Path] = None,
-        bazel_target: str = None,
+        proto_path: Optional[Union[str, Path]] = None,
+        output_dir: Optional[Union[str, Path]] = None,
+        bazel_target: Optional[str] = None,
         include_protos: bool = False,
-        proto_output_path: Union[str, Path] = None,
+        proto_output_path: Optional[Union[str, Path]] = None,
         tar_strip_components: int = 1,
     ):
         # Determine which googleapis repo to use
