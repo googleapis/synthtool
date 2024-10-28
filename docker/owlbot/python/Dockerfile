@@ -54,3 +54,4 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/python/entrypoint.sh" ]
+
