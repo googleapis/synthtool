@@ -49,4 +49,11 @@ if [[ -z "${TRAMPOLINE_BUILD_FILE:-}" ]]; then
 fi
 
 # Secret Manager secrets.
+TRAMPOLINE_HOST=$(echo "${TRAMPOLINE_IMAGE}" | cut -d/ -f1)
+if [[ ! "${TRAMPOLINE_HOST}" =~ "gcr.io" ]]
+then
+  echo "TRAMPOLINE_HOST: ${TRAMPOLINE_HOST}"
+  gcloud components update
+  gcloud auth configure-docker "${TRAMPOLINE_HOST}"
+fi
 source ${PROJECT_ROOT}/.kokoro/populate-secrets.sh

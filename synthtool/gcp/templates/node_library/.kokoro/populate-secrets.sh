@@ -22,6 +22,12 @@ function now { date +"%Y-%m-%d %H:%M:%S" | tr -d '\n' ;}
 function msg { println "$*" >&2 ;}
 function println { printf '%s\n' "$(now) $*" ;}
 
+# Override to declare the GCP project that holds the secrets to fetch
+if [[ -z "${SECRET_MANAGER_PROJECT_ID}" ]]; then
+  msg "SECRET_MANAGER_PROJECT_ID is not set in environment variables, using default"
+  SECRET_MANAGER_PROJECT_ID="cloud-devrel-kokoro-resources"
+fi
+
 # Populates requested secrets set in SECRET_MANAGER_KEYS
 
 # In Kokoro CI builds, we use the service account attached to the
@@ -30,30 +36,30 @@ function println { printf '%s\n' "$(now) $*" ;}
 # secrets.
 
 if [[ "${RUNNING_IN_CI:-}" == "true" ]]; then
-    GCLOUD_COMMANDS=(
-	"docker"
-	"run"
-	"--entrypoint=gcloud"
-	"--volume=${KOKORO_GFILE_DIR}:${KOKORO_GFILE_DIR}"
-	"gcr.io/google.com/cloudsdktool/cloud-sdk"
+  GCLOUD_COMMANDS=(
+    "docker"
+    "run"
+    "--entrypoint=gcloud"
+    "--volume=${KOKORO_GFILE_DIR}:${KOKORO_GFILE_DIR}"
+    "gcr.io/google.com/cloudsdktool/cloud-sdk"
     )
-    if [[ "${TRAMPOLINE_CI:-}" == "kokoro" ]]; then
-	SECRET_LOCATION="${KOKORO_GFILE_DIR}/secret_manager"
-    else
-	echo "Authentication for this CI system is not implemented yet."
-	exit 2
-	# TODO: Determine appropriate SECRET_LOCATION and the GCLOUD_COMMANDS.
-    fi
-else
-    # For local run, use /dev/shm or temporary directory for
-    # KOKORO_GFILE_DIR.
-    if [[ -d "/dev/shm" ]]; then
-	export KOKORO_GFILE_DIR=/dev/shm
-    else
-	export KOKORO_GFILE_DIR=$(mktemp -d -t ci-XXXXXXXX)
-    fi
+  if [[ "${TRAMPOLINE_CI:-}" == "kokoro" ]]; then
     SECRET_LOCATION="${KOKORO_GFILE_DIR}/secret_manager"
-    GCLOUD_COMMANDS=("gcloud")
+  else
+    echo "Authentication for this CI system is not implemented yet."
+    exit 2
+    # TODO: Determine appropriate SECRET_LOCATION and the GCLOUD_COMMANDS.
+  fi
+else
+  # For local run, use /dev/shm or temporary directory for
+  # KOKORO_GFILE_DIR.
+  if [[ -d "/dev/shm" ]]; then
+    export KOKORO_GFILE_DIR=/dev/shm
+  else
+    export KOKORO_GFILE_DIR=$(mktemp -d -t ci-XXXXXXXX)
+  fi
+  SECRET_LOCATION="${KOKORO_GFILE_DIR}/secret_manager"
+  GCLOUD_COMMANDS=("gcloud")
 fi
 
 msg "Creating folder on disk for secrets: ${SECRET_LOCATION}"
@@ -61,16 +67,16 @@ mkdir -p ${SECRET_LOCATION}
 
 for key in $(echo ${SECRET_MANAGER_KEYS} | sed "s/,/ /g")
 do
-    msg "Retrieving secret ${key}"
-    "${GCLOUD_COMMANDS[@]}" \
-	secrets versions access latest \
-	--project cloud-devrel-kokoro-resources \
-	--secret $key > \
-	"$SECRET_LOCATION/$key"
-    if [[ $? == 0 ]]; then
-	msg "Secret written to ${SECRET_LOCATION}/${key}"
-    else
-	msg "Error retrieving secret ${key}"
-	exit 2
-    fi
+  msg "Retrieving secret ${key}"
+  "${GCLOUD_COMMANDS[@]}" \
+    secrets versions access latest \
+    --project "${SECRET_MANAGER_PROJECT_ID}" \
+    --secret $key > \
+    "$SECRET_LOCATION/$key"
+  if [[ $? == 0 ]]; then
+    msg "Secret written to ${SECRET_LOCATION}/${key}"
+  else
+    msg "Error retrieving secret ${key}"
+    exit 2
+  fi
 done
