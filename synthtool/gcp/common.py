@@ -426,6 +426,11 @@ class CommonTemplates:
         if "repo" not in metadata:
             metadata["repo"] = _load_repo_metadata(relative_dir=relative_dir)
 
+            if "repo" in metadata["repo"]:
+                repo = git.parse_repo_url(metadata["repo"]["repo"])
+
+                metadata["repository_name"] = repo["name"]
+
 
 def detect_versions(
     path: str = "./src",
