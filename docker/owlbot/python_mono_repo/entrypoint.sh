@@ -16,4 +16,4 @@
 set -e
 set -x
 
-python -m synthtool.languages.python_mono_repo
+python3 -m synthtool.languages.python_mono_repo
