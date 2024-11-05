@@ -16,7 +16,7 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python_mono_repo/Dockerfile .
-FROM gcr.io/cloud-devrel-kokoro-resources/python-base:latest
+FROM gcr.io/cloud-devrel-public-resources/python-base:latest
 
 WORKDIR /
 
