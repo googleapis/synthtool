@@ -15,22 +15,10 @@
 # Version 0.2.0
 
 # build from the root of this repo:
-# docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python/Dockerfile .
-FROM python:3.10.6-buster
+# docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python_mono_repo/Dockerfile .
+FROM gcr.io/cloud-devrel-public-resources/python-base:latest
 
 WORKDIR /
-
-###################### Install python 3.9.13
-
-# Download python 3.9.13
-RUN wget https://www.python.org/ftp/python/3.9.13/Python-3.9.13.tgz
-
-# Extract files
-RUN tar -xvf Python-3.9.13.tgz
-
-# Install python 3.9.13
-RUN ./Python-3.9.13/configure --enable-optimizations
-RUN make altinstall
 
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
