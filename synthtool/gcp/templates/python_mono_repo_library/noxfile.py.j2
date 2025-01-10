@@ -28,7 +28,7 @@ import nox
 
 BLACK_VERSION = "black[jupyter]==23.7.0"
 ISORT_VERSION = "isort==5.11.0"
-{% if metadata['repo']['distribution_name'].startswith('google') %}
+{% if 'google' in metadata['repo']['distribution_name'] %}
 LINT_PATHS = ["docs", "google", "tests", "noxfile.py", "setup.py"]
 {% else %}
 LINT_PATHS = ["docs", "{{ metadata['repo']['distribution_name'] }}", "tests", "noxfile.py", "setup.py"]
@@ -160,7 +160,7 @@ def lint(session):
         "--check",
         *LINT_PATHS,
     )
-    {% if metadata['repo']['distribution_name'].startswith('google') %}
+    {% if 'google' in metadata['repo']['distribution_name'] %}
     session.run("flake8", "google", "tests")
     {% else %}
     session.run("flake8", "{{ metadata['repo']['distribution_name'] }}", "tests")
