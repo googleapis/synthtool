@@ -36,6 +36,7 @@ NOTEBOOK_TEMPLATE_PATH = (
     Path(CommonTemplates()._template_root) / "python_notebooks_testing_pipeline"
 )
 
+
 def _get_help(filename: str) -> str:
     """Function used by sample readmegen"""
     return shell.run([sys.executable, filename, "--help"]).stdout
