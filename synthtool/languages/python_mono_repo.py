@@ -40,6 +40,12 @@ LICENSE = """
 
 
 def fix_pb2_headers() -> None:
+    """
+    Add / fix license headers in generated protobuf code. By default
+    generated protobuf code does not include license header
+    information. As an example, see the generated `*pb2.py` and
+    `*.pb2.pyi` files in [googleapis-gen](https://github.com/googleapis/googleapis-gen/tree/master/google/api/api-py).
+    """
     synthtool.replace(
         "**/*_pb2.py",
         PB2_HEADER,
