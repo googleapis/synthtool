@@ -298,7 +298,7 @@ def owlbot_main(package_dir: str) -> None:
         # update the url in setup.py to point to google-cloud-python
         update_url_in_setup_py(package_dir)
 
-        # add license header to pb2.py files
+        # add license header to pb2.py and pb2.pyi files.
         fix_pb2_headers()
 
         # run format nox session for all directories which have a noxfile
