@@ -43,14 +43,13 @@ def fix_pb2_headers() -> None:
     synthtool.replace(
         "**/*_pb2.py",
         PB2_HEADER,
-        rf"\g<1>{LICENSE}\n\n\g<2>",  # change order to avoid stacking replacements
+        rf"\g<1>{LICENSE}\n\n\g<2>",
         flags=re.DOTALL | re.MULTILINE,
     )
-    # Also fix *.pyi files if they exist
     synthtool.replace(
         "**/*_pb2.pyi",
-        "^\A(.*)",
-        rf"{LICENSE}\n\n\g<1>",  # change order to avoid stacking replacements
+        r"^\A(.*)",
+        rf"{LICENSE}\n\n\g<1>",
         flags=re.DOTALL | re.MULTILINE,
     )
 
