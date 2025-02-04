@@ -39,16 +39,16 @@ LICENSE = """
 # limitations under the License."""
 
 
-def fix_pb2_headers(*, proto_root: str = "**/*_pb2.py") -> None:
+def fix_pb2_headers() -> None:
     synthtool.replace(
-        proto_root,
+        "**/*_pb2.py",
         PB2_HEADER,
         rf"\g<1>{LICENSE}\n\n\g<2>",  # change order to avoid stacking replacements
         flags=re.DOTALL | re.MULTILINE,
     )
     # Also fix *.pyi files if they exist
     synthtool.replace(
-        f"{proto_root}i",
+        "**/*_pb2.pyi",
         "^\A(.*)",
         rf"{LICENSE}\n\n\g<1>",  # change order to avoid stacking replacements
         flags=re.DOTALL | re.MULTILINE,
