@@ -39,21 +39,27 @@ LICENSE = """
 # limitations under the License."""
 
 
-def fix_pb2_headers() -> None:
+def fix_pb2_headers(package_dir: str) -> None:
     """
     Add / fix license headers in generated protobuf code. By default
     generated protobuf code does not include license header
     information. As an example, see the generated `*pb2.py` and
     `*.pb2.pyi` files in [googleapis-gen](https://github.com/googleapis/googleapis-gen/tree/master/google/api/api-py).
+
+    Args:
+        package_dir (str): path to the directory for a specific package. For example
+            '<path to>/packages/google-cloud-video-transcoder'
     """
+
+    package_name = package_dir.split("/")[-1]
     synthtool.replace(
-        "**/*_pb2.py",
+        f"packages/{package_name}/**/*_pb2.py",
         PB2_HEADER,
         rf"\g<1>{LICENSE}\n\n\g<2>",
         flags=re.DOTALL | re.MULTILINE,
     )
     synthtool.replace(
-        "**/*_pb2.pyi",
+        f"packages/{package_name}/**/*_pb2.pyi",
         r"^\A(.*)",
         rf"{LICENSE}\n\n\g<1>",
         flags=re.DOTALL | re.MULTILINE,
@@ -305,7 +311,7 @@ def owlbot_main(package_dir: str) -> None:
         update_url_in_setup_py(package_dir)
 
         # add license header to pb2.py and pb2.pyi files.
-        fix_pb2_headers()
+        fix_pb2_headers(package_dir)
 
         # run format nox session for all directories which have a noxfile
         for noxfile in Path(".").glob(f"packages/{package_name}/**/noxfile.py"):
