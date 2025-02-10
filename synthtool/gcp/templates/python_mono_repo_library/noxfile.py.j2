@@ -572,8 +572,8 @@ def core_deps_from_source(session, protobuf_implementation):
     core_dependencies_from_source = [
         "google-api-core @ git+https://github.com/googleapis/python-api-core.git",
         "google-auth @ git+https://github.com/googleapis/google-auth-library-python.git",
-        CURRENT_DIRECTORY / ".." / "googleapis-common-protos",
-        CURRENT_DIRECTORY / ".." / "grpc-google-iam-v1",
+        f"{CURRENT_DIRECTORY}/../googleapis-common-protos",
+        f"{CURRENT_DIRECTORY}/../grpc-google-iam-v1",
         "proto-plus @ git+https://github.com/googleapis/proto-plus-python.git",
         
     ]
