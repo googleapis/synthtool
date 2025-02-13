@@ -121,7 +121,6 @@ Note the following:
 #. Google may refine the occurrence, level, and content of various log messages in this library without flagging such changes as breaking. **Do not depend on immutability of the logging events**.
 #. By default, the logging events from this library are not handled. You must **explicitly configure log handling** using one of the mechanisms below.
 
-
 Simple, environment-based configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -137,6 +136,7 @@ A logging scope is a period-separated namespace that begins with :code:`google`,
 
 **NOTE**: If the logging scope is invalid, the library does not set up any logging handlers.
 
+.. _environment-based-examples:
 
 Examples
 ^^^^^^^^
@@ -159,6 +159,7 @@ Advanced, code-based configuration
 
 You can also configure a valid logging scope using Python's standard `logging` mechanism.
 
+.. _code-based-examples:
 
 Examples
 ^^^^^^^^
@@ -186,7 +187,6 @@ Examples
     base_logger = logging.getLogger("google.cloud.library_v1")
     base_logger.addHandler(logging.StreamHandler())
     base_logger.setLevel(logging.DEBUG)
-
 
 Logging details
 ~~~~~~~~~~~~~~~
