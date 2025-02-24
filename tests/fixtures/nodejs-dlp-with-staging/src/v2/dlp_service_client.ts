@@ -1065,7 +1065,7 @@ export class DlpServiceClient {
     >
   ): void;
   /**
-   * Creates an InspectTemplate for re-using frequently used configuration
+   * Creates an InspectTemplate for reusing frequently used configuration
    * for inspecting content, images, and storage.
    * See https://cloud.google.com/dlp/docs/creating-templates to learn more.
    *
@@ -1476,7 +1476,7 @@ export class DlpServiceClient {
     >
   ): void;
   /**
-   * Creates a DeidentifyTemplate for re-using frequently used configuration
+   * Creates a DeidentifyTemplate for reusing frequently used configuration
    * for de-identifying content, images, and storage.
    * See https://cloud.google.com/dlp/docs/creating-templates-deid to learn
    * more.
