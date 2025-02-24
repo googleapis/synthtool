@@ -35,7 +35,7 @@ function main(parent, backupId, backup) {
    *  Required. The ID of the backup, which is used as the final component of the
    *  backup's name.
    *  This value must be between 1 and 64 characters long, begin with a letter,
-   *  end with a letter or number, and consist of alpha-numeric ASCII characters
+   *  end with a letter or number, and consist of alphanumeric ASCII characters
    *  or hyphens.
    */
   // const backupId = 'abc123'

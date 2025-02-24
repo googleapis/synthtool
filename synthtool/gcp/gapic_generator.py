@@ -158,7 +158,7 @@ class GAPICGenerator:
             # appropriate place.
             proto_output_path = genfiles / "protos"
             if language == "python":
-                # place protos alongsize the *_pb2.py files
+                # place protos alongside the *_pb2.py files
                 proto_output_path = genfiles / f"google/cloud/{service}_{version}/proto"
             os.makedirs(proto_output_path, exist_ok=True)
 

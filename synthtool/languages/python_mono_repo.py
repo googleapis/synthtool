@@ -201,7 +201,7 @@ def apply_client_specific_post_processing(
                                 == 0
                             )
                     if number_of_paths_with_replacements:
-                        # Ensure that the numner of paths where a replacement occurred matches the number of paths.
+                        # Ensure that the number of paths where a replacement occurred matches the number of paths.
                         assert number_of_paths_with_replacements == len(
                             replacement["paths"]
                         )
