@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+const fs = require('fs');
+const yaml = require('js-yaml');
+const TEMPLATE_FILE_PATH = '../ISSUE_TEMPLATE/bug_report.yml'
+
 async function closeIssue(github, owner, repo, number) {
     await github.rest.issues.createComment({
           owner: owner,
@@ -30,20 +34,20 @@ module.exports = async ({ github, context }) => {
     const owner = context.repo.owner;
     const repo = context.repo.repo;
     const number = context.issue.number;
-
-    const issue = await github.rest.issues.get({
-      owner: owner,
-      repo: repo,
+	@@ -37,20 +41,28 @@ module.exports = async ({github, context}) => {
       issue_number: number,
     });
 
-    const isBugTemplate = issue.data.body.includes("Link to the code that reproduces this issue");
+    const yamlData = fs.readFileSync(TEMPLATE_FILE_PATH, 'utf8');
+    const obj = yaml.load(yamlData);
+    const linkMatchingText = obj.body.find(x => {return x.type === 'input' && x.validations.required === true && x.attributes.label.includes('link')});
+    const isBugTemplate = issue.data.body.includes(linkMatchingText);
 
     if (isBugTemplate) {
         console.log(`Issue ${number} is a bug template`)
         try {
             const text = issue.data.body;
-            const match = text.match(/Link to the code that reproduces this issue. A link to a \*\*public\*\* Github Repository with a minimal reproduction/);
+            const match = text.match(new RegExp(linkMatchingText));
             if (match) {
                 const nextLineIndex = text.indexOf('http', match.index);
                 const link = text.substring(nextLineIndex, text.indexOf('\n', nextLineIndex));

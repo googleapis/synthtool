@@ -35,7 +35,9 @@ jobs:
           node-version: 18
       - run: node --version
       - run: npm install --engine-strict
+        working-directory: .github/scripts
       - run: npm test
+        working-directory: .github/scripts
         env:
           MOCHA_THROW_DEPRECATION: false
   windows:
