@@ -243,7 +243,7 @@ def test_python_library():
         common = gcp.CommonTemplates(template_path=template_dir)
         templated_files = common.py_library()
 
-        assert os.path.exists(templated_files / ".kokoro/docker/docs/Dockerfile")
+        assert os.path.exists(templated_files / ".kokoro/build.sh")
 
 
 def test_split_system_tests():
