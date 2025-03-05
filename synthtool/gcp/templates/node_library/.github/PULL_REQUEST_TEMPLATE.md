@@ -11,7 +11,8 @@
 
 ## Testing
 
-> What testing have you performed or added for this pull request?
+> Have you added unit and integration tests if necessary?
+> Were any tests changed? Are any breaking changes necessary?
 
 ## Additional Information
 
