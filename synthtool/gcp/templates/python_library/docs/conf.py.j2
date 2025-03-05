@@ -369,9 +369,9 @@ intersphinx_mapping = {
     "proto-plus": ("https://proto-plus-python.readthedocs.io/en/latest/", None),
     "protobuf": ("https://googleapis.dev/python/protobuf/latest/", None),
     {%- if intersphinx_dependencies %}
-        {% for name, url in intersphinx_dependencies.items() %}
+        {%- for name, url in intersphinx_dependencies.items() %}
     "{{ name }}": ("{{ url }}", None),
-        {% endfor %}
+        {%- endfor -%}
     {% endif %}
 }
 
