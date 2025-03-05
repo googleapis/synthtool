@@ -3,6 +3,7 @@
 ## Description
 
 > Please provide a detailed description for the change.
+> As much as possible, please try to keep changes separate by purpose. For example, try not to make a one-line bug fix in a feature request, or add an irrelevant README change to a bug fix.
 
 ## Impact
 
