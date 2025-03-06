@@ -70,7 +70,7 @@ accept your pull requests.
         npm run fix
 
 [setup]: https://cloud.google.com/nodejs/docs/setup
-[projects]: https://console.cloud.google.com/project
+[projects]: https://console.cloud.google.com/cloud-resource-manager
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
-[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid=dlp.googleapis.com
+[enable_api]: https://console.cloud.google.com/apis/enableflow?apiid=dlp.googleapis.com
 [auth]: https://cloud.google.com/docs/authentication/getting-started

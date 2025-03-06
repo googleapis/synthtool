@@ -112,7 +112,7 @@ See [LICENSE](https://github.com/googleapis/repo-automation-bots/blob/master/LIC
 [client-docs]: https://cloud.google.com/nodejs/docs/reference/repo-automation-bots/latest
 
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
-[projects]: https://console.cloud.google.com/project
+[projects]: https://console.cloud.google.com/cloud-resource-manager
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
 
 [auth]: https://cloud.google.com/docs/authentication/getting-started

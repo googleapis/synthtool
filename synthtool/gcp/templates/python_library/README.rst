@@ -32,7 +32,7 @@ In order to use this library, you first need to go through the following steps:
 3. `Enable the {{ metadata['repo']['name_pretty'] }} API.`_
 4. `Set up Authentication.`_
 
-.. _Select or create a Cloud Platform project.: https://console.cloud.google.com/project
+.. _Select or create a Cloud Platform project.: https://console.cloud.google.com/cloud-resource-manager
 .. _Enable billing for your project.: https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project
 .. _Enable the {{ metadata['repo']['name_pretty'] }} API.:  {{ metadata['repo']['product_documentation'] }}
 .. _Set up Authentication.: https://googleapis.dev/python/google-api-core/latest/auth.html

@@ -168,7 +168,7 @@ See [LICENSE](https://github.com/{{ metadata['repo']['repo'] }}/blob/{{ metadata
 {% if metadata['repo']['client_documentation'] %}[client-docs]: {{ metadata['repo']['client_documentation'] }}{% endif %}
 {% if metadata['repo']['product_documentation'] %}[product-docs]: {{ metadata['repo']['product_documentation'] }}{% endif %}
 [shell_img]: https://gstatic.com/cloudssh/images/open-btn.png
-[projects]: https://console.cloud.google.com/project
+[projects]: https://console.cloud.google.com/cloud-resource-manager
 [billing]: https://support.google.com/cloud/answer/6293499#enable-billing
-{% if metadata['repo']['api_id'] %}[enable_api]: https://console.cloud.google.com/flows/enableapi?apiid={{ metadata['repo']['api_id'] }}{% endif %}
+{% if metadata['repo']['api_id'] %}[enable_api]: https://console.cloud.google.com/apis/enableflow?apiid={{ metadata['repo']['api_id'] }}{% endif %}
 [auth]: https://cloud.google.com/docs/authentication/getting-started
