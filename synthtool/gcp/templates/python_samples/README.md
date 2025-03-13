@@ -3,7 +3,7 @@
 
 ## Python Samples for {{ metadata['repo']['name_pretty'] }}
 
-This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a refererence for how to use this product. {% if metadata['repo']['custom_content'] is defined %}
+This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a reference for how to use this product. {% if metadata['repo']['custom_content'] is defined %}
 {{ metadata['repo']['custom_content']}}{% endif %}{% if metadata['repo']['samples']|length %}
 Samples, quickstarts, and other documentation are available at <a href="{{ metadata['repo']['product_documentation'] }}">cloud.google.com</a>.
 {% for sample in range(metadata['repo']['samples']|length) %}
@@ -18,7 +18,7 @@ Samples, quickstarts, and other documentation are available at <a href="{{ metad
 
 To run this sample:
 
-1. If this is your first time working with GCP products, you will need to set up [the Cloud SDK][cloud_sdk] or utilize [Google Cloud Shell][gcloud_shell]. This sample may [require authetication][authentication]{% if metadata['repo']['requires_billing'] %} and you will need to [enable billing][enable_billing]{% endif %}.
+1. If this is your first time working with GCP products, you will need to set up [the Cloud SDK][cloud_sdk] or utilize [Google Cloud Shell][gcloud_shell]. This sample may [require authentication][authentication]{% if metadata['repo']['requires_billing'] %} and you will need to [enable billing][enable_billing]{% endif %}.
 
 1. Make a fork of this repo and clone the branch locally, then navigate to the sample directory you want to use.
 
