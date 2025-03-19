@@ -208,7 +208,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            client.initialize().catch(err => {throw err});
             assert(client.dlpServiceStub);
             client.close().then(() => {
                 done();
@@ -265,7 +265,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.InspectContentRequest()
             );
@@ -292,7 +292,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.InspectContentRequest()
             );
@@ -330,7 +330,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.InspectContentRequest()
             );
@@ -354,7 +354,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.InspectContentRequest()
             );
@@ -373,7 +373,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.RedactImageRequest()
             );
@@ -400,7 +400,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.RedactImageRequest()
             );
@@ -438,7 +438,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.RedactImageRequest()
             );
@@ -462,7 +462,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.RedactImageRequest()
             );
@@ -481,7 +481,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeidentifyContentRequest()
             );
@@ -508,7 +508,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeidentifyContentRequest()
             );
@@ -546,7 +546,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeidentifyContentRequest()
             );
@@ -570,7 +570,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeidentifyContentRequest()
             );
@@ -589,7 +589,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ReidentifyContentRequest()
             );
@@ -616,7 +616,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ReidentifyContentRequest()
             );
@@ -654,7 +654,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ReidentifyContentRequest()
             );
@@ -678,7 +678,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ReidentifyContentRequest()
             );
@@ -697,7 +697,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInfoTypesRequest()
             );
@@ -724,7 +724,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInfoTypesRequest()
             );
@@ -762,7 +762,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInfoTypesRequest()
             );
@@ -786,7 +786,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInfoTypesRequest()
             );
@@ -805,7 +805,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateInspectTemplateRequest()
             );
@@ -832,7 +832,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateInspectTemplateRequest()
             );
@@ -870,7 +870,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateInspectTemplateRequest()
             );
@@ -894,7 +894,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateInspectTemplateRequest()
             );
@@ -913,7 +913,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateInspectTemplateRequest()
             );
@@ -940,7 +940,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateInspectTemplateRequest()
             );
@@ -978,7 +978,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateInspectTemplateRequest()
             );
@@ -1002,7 +1002,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateInspectTemplateRequest()
             );
@@ -1021,7 +1021,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetInspectTemplateRequest()
             );
@@ -1048,7 +1048,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetInspectTemplateRequest()
             );
@@ -1086,7 +1086,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetInspectTemplateRequest()
             );
@@ -1110,7 +1110,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetInspectTemplateRequest()
             );
@@ -1129,7 +1129,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteInspectTemplateRequest()
             );
@@ -1156,7 +1156,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteInspectTemplateRequest()
             );
@@ -1194,7 +1194,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteInspectTemplateRequest()
             );
@@ -1218,7 +1218,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteInspectTemplateRequest()
             );
@@ -1237,7 +1237,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest()
             );
@@ -1264,7 +1264,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest()
             );
@@ -1302,7 +1302,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest()
             );
@@ -1326,7 +1326,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDeidentifyTemplateRequest()
             );
@@ -1345,7 +1345,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDeidentifyTemplateRequest()
             );
@@ -1372,7 +1372,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDeidentifyTemplateRequest()
             );
@@ -1410,7 +1410,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDeidentifyTemplateRequest()
             );
@@ -1434,7 +1434,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDeidentifyTemplateRequest()
             );
@@ -1453,7 +1453,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDeidentifyTemplateRequest()
             );
@@ -1480,7 +1480,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDeidentifyTemplateRequest()
             );
@@ -1518,7 +1518,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDeidentifyTemplateRequest()
             );
@@ -1542,7 +1542,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDeidentifyTemplateRequest()
             );
@@ -1561,7 +1561,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDeidentifyTemplateRequest()
             );
@@ -1588,7 +1588,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDeidentifyTemplateRequest()
             );
@@ -1626,7 +1626,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDeidentifyTemplateRequest()
             );
@@ -1650,7 +1650,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDeidentifyTemplateRequest()
             );
@@ -1669,7 +1669,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateJobTriggerRequest()
             );
@@ -1696,7 +1696,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateJobTriggerRequest()
             );
@@ -1734,7 +1734,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateJobTriggerRequest()
             );
@@ -1758,7 +1758,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateJobTriggerRequest()
             );
@@ -1777,7 +1777,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateJobTriggerRequest()
             );
@@ -1804,7 +1804,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateJobTriggerRequest()
             );
@@ -1842,7 +1842,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateJobTriggerRequest()
             );
@@ -1866,7 +1866,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateJobTriggerRequest()
             );
@@ -1885,7 +1885,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectJobTriggerRequest()
             );
@@ -1912,7 +1912,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectJobTriggerRequest()
             );
@@ -1950,7 +1950,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectJobTriggerRequest()
             );
@@ -1974,7 +1974,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectJobTriggerRequest()
             );
@@ -1993,7 +1993,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetJobTriggerRequest()
             );
@@ -2020,7 +2020,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetJobTriggerRequest()
             );
@@ -2058,7 +2058,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetJobTriggerRequest()
             );
@@ -2082,7 +2082,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetJobTriggerRequest()
             );
@@ -2101,7 +2101,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteJobTriggerRequest()
             );
@@ -2128,7 +2128,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteJobTriggerRequest()
             );
@@ -2166,7 +2166,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteJobTriggerRequest()
             );
@@ -2190,7 +2190,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteJobTriggerRequest()
             );
@@ -2209,7 +2209,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ActivateJobTriggerRequest()
             );
@@ -2236,7 +2236,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ActivateJobTriggerRequest()
             );
@@ -2274,7 +2274,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ActivateJobTriggerRequest()
             );
@@ -2298,7 +2298,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ActivateJobTriggerRequest()
             );
@@ -2317,7 +2317,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDiscoveryConfigRequest()
             );
@@ -2344,7 +2344,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDiscoveryConfigRequest()
             );
@@ -2382,7 +2382,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDiscoveryConfigRequest()
             );
@@ -2406,7 +2406,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDiscoveryConfigRequest()
             );
@@ -2425,7 +2425,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDiscoveryConfigRequest()
             );
@@ -2452,7 +2452,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDiscoveryConfigRequest()
             );
@@ -2490,7 +2490,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDiscoveryConfigRequest()
             );
@@ -2514,7 +2514,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateDiscoveryConfigRequest()
             );
@@ -2533,7 +2533,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDiscoveryConfigRequest()
             );
@@ -2560,7 +2560,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDiscoveryConfigRequest()
             );
@@ -2598,7 +2598,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDiscoveryConfigRequest()
             );
@@ -2622,7 +2622,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDiscoveryConfigRequest()
             );
@@ -2641,7 +2641,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDiscoveryConfigRequest()
             );
@@ -2668,7 +2668,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDiscoveryConfigRequest()
             );
@@ -2706,7 +2706,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDiscoveryConfigRequest()
             );
@@ -2730,7 +2730,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDiscoveryConfigRequest()
             );
@@ -2749,7 +2749,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDlpJobRequest()
             );
@@ -2776,7 +2776,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDlpJobRequest()
             );
@@ -2814,7 +2814,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDlpJobRequest()
             );
@@ -2838,7 +2838,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateDlpJobRequest()
             );
@@ -2857,7 +2857,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDlpJobRequest()
             );
@@ -2884,7 +2884,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDlpJobRequest()
             );
@@ -2922,7 +2922,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDlpJobRequest()
             );
@@ -2946,7 +2946,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetDlpJobRequest()
             );
@@ -2965,7 +2965,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDlpJobRequest()
             );
@@ -2992,7 +2992,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDlpJobRequest()
             );
@@ -3030,7 +3030,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDlpJobRequest()
             );
@@ -3054,7 +3054,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteDlpJobRequest()
             );
@@ -3073,7 +3073,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CancelDlpJobRequest()
             );
@@ -3100,7 +3100,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CancelDlpJobRequest()
             );
@@ -3138,7 +3138,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CancelDlpJobRequest()
             );
@@ -3162,7 +3162,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CancelDlpJobRequest()
             );
@@ -3181,7 +3181,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateStoredInfoTypeRequest()
             );
@@ -3208,7 +3208,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateStoredInfoTypeRequest()
             );
@@ -3246,7 +3246,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateStoredInfoTypeRequest()
             );
@@ -3270,7 +3270,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateStoredInfoTypeRequest()
             );
@@ -3289,7 +3289,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateStoredInfoTypeRequest()
             );
@@ -3316,7 +3316,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateStoredInfoTypeRequest()
             );
@@ -3354,7 +3354,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateStoredInfoTypeRequest()
             );
@@ -3378,7 +3378,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateStoredInfoTypeRequest()
             );
@@ -3397,7 +3397,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetStoredInfoTypeRequest()
             );
@@ -3424,7 +3424,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetStoredInfoTypeRequest()
             );
@@ -3462,7 +3462,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetStoredInfoTypeRequest()
             );
@@ -3486,7 +3486,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetStoredInfoTypeRequest()
             );
@@ -3505,7 +3505,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest()
             );
@@ -3532,7 +3532,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest()
             );
@@ -3570,7 +3570,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest()
             );
@@ -3594,7 +3594,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteStoredInfoTypeRequest()
             );
@@ -3613,7 +3613,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetProjectDataProfileRequest()
             );
@@ -3640,7 +3640,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetProjectDataProfileRequest()
             );
@@ -3678,7 +3678,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetProjectDataProfileRequest()
             );
@@ -3702,7 +3702,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetProjectDataProfileRequest()
             );
@@ -3721,7 +3721,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetFileStoreDataProfileRequest()
             );
@@ -3748,7 +3748,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetFileStoreDataProfileRequest()
             );
@@ -3786,7 +3786,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetFileStoreDataProfileRequest()
             );
@@ -3810,7 +3810,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetFileStoreDataProfileRequest()
             );
@@ -3829,7 +3829,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteFileStoreDataProfileRequest()
             );
@@ -3856,7 +3856,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteFileStoreDataProfileRequest()
             );
@@ -3894,7 +3894,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteFileStoreDataProfileRequest()
             );
@@ -3918,7 +3918,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteFileStoreDataProfileRequest()
             );
@@ -3937,7 +3937,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetTableDataProfileRequest()
             );
@@ -3964,7 +3964,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetTableDataProfileRequest()
             );
@@ -4002,7 +4002,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetTableDataProfileRequest()
             );
@@ -4026,7 +4026,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetTableDataProfileRequest()
             );
@@ -4045,7 +4045,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetColumnDataProfileRequest()
             );
@@ -4072,7 +4072,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetColumnDataProfileRequest()
             );
@@ -4110,7 +4110,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetColumnDataProfileRequest()
             );
@@ -4134,7 +4134,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetColumnDataProfileRequest()
             );
@@ -4153,7 +4153,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteTableDataProfileRequest()
             );
@@ -4180,7 +4180,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteTableDataProfileRequest()
             );
@@ -4218,7 +4218,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteTableDataProfileRequest()
             );
@@ -4242,7 +4242,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteTableDataProfileRequest()
             );
@@ -4261,7 +4261,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectDlpJobRequest()
             );
@@ -4288,7 +4288,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectDlpJobRequest()
             );
@@ -4326,7 +4326,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectDlpJobRequest()
             );
@@ -4350,7 +4350,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.HybridInspectDlpJobRequest()
             );
@@ -4369,7 +4369,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.FinishDlpJobRequest()
             );
@@ -4396,7 +4396,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.FinishDlpJobRequest()
             );
@@ -4434,7 +4434,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.FinishDlpJobRequest()
             );
@@ -4458,7 +4458,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.FinishDlpJobRequest()
             );
@@ -4477,7 +4477,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateConnectionRequest()
             );
@@ -4504,7 +4504,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateConnectionRequest()
             );
@@ -4542,7 +4542,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateConnectionRequest()
             );
@@ -4566,7 +4566,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.CreateConnectionRequest()
             );
@@ -4585,7 +4585,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetConnectionRequest()
             );
@@ -4612,7 +4612,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetConnectionRequest()
             );
@@ -4650,7 +4650,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetConnectionRequest()
             );
@@ -4674,7 +4674,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.GetConnectionRequest()
             );
@@ -4693,7 +4693,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteConnectionRequest()
             );
@@ -4720,7 +4720,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteConnectionRequest()
             );
@@ -4758,7 +4758,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteConnectionRequest()
             );
@@ -4782,7 +4782,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.DeleteConnectionRequest()
             );
@@ -4801,7 +4801,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateConnectionRequest()
             );
@@ -4828,7 +4828,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateConnectionRequest()
             );
@@ -4866,7 +4866,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateConnectionRequest()
             );
@@ -4890,7 +4890,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.UpdateConnectionRequest()
             );
@@ -4909,7 +4909,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInspectTemplatesRequest()
             );
@@ -4937,7 +4937,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInspectTemplatesRequest()
             );
@@ -4976,7 +4976,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInspectTemplatesRequest()
             );
@@ -5000,7 +5000,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInspectTemplatesRequest()
             );
@@ -5044,7 +5044,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInspectTemplatesRequest()
             );
@@ -5083,7 +5083,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInspectTemplatesRequest()
             );
@@ -5119,7 +5119,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListInspectTemplatesRequest()
             );
@@ -5154,7 +5154,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDeidentifyTemplatesRequest()
             );
@@ -5182,7 +5182,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDeidentifyTemplatesRequest()
             );
@@ -5221,7 +5221,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDeidentifyTemplatesRequest()
             );
@@ -5245,7 +5245,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDeidentifyTemplatesRequest()
             );
@@ -5289,7 +5289,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDeidentifyTemplatesRequest()
             );
@@ -5328,7 +5328,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDeidentifyTemplatesRequest()
             );
@@ -5364,7 +5364,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDeidentifyTemplatesRequest()
             );
@@ -5399,7 +5399,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListJobTriggersRequest()
             );
@@ -5427,7 +5427,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListJobTriggersRequest()
             );
@@ -5466,7 +5466,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListJobTriggersRequest()
             );
@@ -5490,7 +5490,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListJobTriggersRequest()
             );
@@ -5534,7 +5534,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListJobTriggersRequest()
             );
@@ -5573,7 +5573,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListJobTriggersRequest()
             );
@@ -5609,7 +5609,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListJobTriggersRequest()
             );
@@ -5644,7 +5644,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDiscoveryConfigsRequest()
             );
@@ -5672,7 +5672,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDiscoveryConfigsRequest()
             );
@@ -5711,7 +5711,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDiscoveryConfigsRequest()
             );
@@ -5735,7 +5735,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDiscoveryConfigsRequest()
             );
@@ -5779,7 +5779,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDiscoveryConfigsRequest()
             );
@@ -5818,7 +5818,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDiscoveryConfigsRequest()
             );
@@ -5854,7 +5854,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDiscoveryConfigsRequest()
             );
@@ -5889,7 +5889,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDlpJobsRequest()
             );
@@ -5917,7 +5917,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDlpJobsRequest()
             );
@@ -5956,7 +5956,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDlpJobsRequest()
             );
@@ -5980,7 +5980,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDlpJobsRequest()
             );
@@ -6024,7 +6024,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDlpJobsRequest()
             );
@@ -6063,7 +6063,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDlpJobsRequest()
             );
@@ -6099,7 +6099,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListDlpJobsRequest()
             );
@@ -6134,7 +6134,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListStoredInfoTypesRequest()
             );
@@ -6162,7 +6162,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListStoredInfoTypesRequest()
             );
@@ -6201,7 +6201,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListStoredInfoTypesRequest()
             );
@@ -6225,7 +6225,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListStoredInfoTypesRequest()
             );
@@ -6269,7 +6269,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListStoredInfoTypesRequest()
             );
@@ -6308,7 +6308,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListStoredInfoTypesRequest()
             );
@@ -6344,7 +6344,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListStoredInfoTypesRequest()
             );
@@ -6379,7 +6379,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListProjectDataProfilesRequest()
             );
@@ -6407,7 +6407,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListProjectDataProfilesRequest()
             );
@@ -6446,7 +6446,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListProjectDataProfilesRequest()
             );
@@ -6470,7 +6470,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListProjectDataProfilesRequest()
             );
@@ -6514,7 +6514,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListProjectDataProfilesRequest()
             );
@@ -6553,7 +6553,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListProjectDataProfilesRequest()
             );
@@ -6589,7 +6589,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListProjectDataProfilesRequest()
             );
@@ -6624,7 +6624,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListTableDataProfilesRequest()
             );
@@ -6652,7 +6652,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListTableDataProfilesRequest()
             );
@@ -6691,7 +6691,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListTableDataProfilesRequest()
             );
@@ -6715,7 +6715,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListTableDataProfilesRequest()
             );
@@ -6759,7 +6759,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListTableDataProfilesRequest()
             );
@@ -6798,7 +6798,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListTableDataProfilesRequest()
             );
@@ -6834,7 +6834,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListTableDataProfilesRequest()
             );
@@ -6869,7 +6869,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListColumnDataProfilesRequest()
             );
@@ -6897,7 +6897,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListColumnDataProfilesRequest()
             );
@@ -6936,7 +6936,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListColumnDataProfilesRequest()
             );
@@ -6960,7 +6960,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListColumnDataProfilesRequest()
             );
@@ -7004,7 +7004,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListColumnDataProfilesRequest()
             );
@@ -7043,7 +7043,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListColumnDataProfilesRequest()
             );
@@ -7079,7 +7079,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListColumnDataProfilesRequest()
             );
@@ -7114,7 +7114,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListFileStoreDataProfilesRequest()
             );
@@ -7142,7 +7142,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListFileStoreDataProfilesRequest()
             );
@@ -7181,7 +7181,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListFileStoreDataProfilesRequest()
             );
@@ -7205,7 +7205,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListFileStoreDataProfilesRequest()
             );
@@ -7249,7 +7249,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListFileStoreDataProfilesRequest()
             );
@@ -7288,7 +7288,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListFileStoreDataProfilesRequest()
             );
@@ -7324,7 +7324,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListFileStoreDataProfilesRequest()
             );
@@ -7359,7 +7359,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListConnectionsRequest()
             );
@@ -7387,7 +7387,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListConnectionsRequest()
             );
@@ -7426,7 +7426,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListConnectionsRequest()
             );
@@ -7450,7 +7450,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListConnectionsRequest()
             );
@@ -7494,7 +7494,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListConnectionsRequest()
             );
@@ -7533,7 +7533,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListConnectionsRequest()
             );
@@ -7569,7 +7569,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.ListConnectionsRequest()
             );
@@ -7604,7 +7604,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.SearchConnectionsRequest()
             );
@@ -7632,7 +7632,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.SearchConnectionsRequest()
             );
@@ -7671,7 +7671,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.SearchConnectionsRequest()
             );
@@ -7695,7 +7695,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.SearchConnectionsRequest()
             );
@@ -7739,7 +7739,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.SearchConnectionsRequest()
             );
@@ -7778,7 +7778,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.SearchConnectionsRequest()
             );
@@ -7814,7 +7814,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new protos.google.privacy.dlp.v2.SearchConnectionsRequest()
             );
@@ -7848,7 +7848,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new LocationProtos.google.cloud.location.GetLocationRequest()
             );
@@ -7875,7 +7875,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new LocationProtos.google.cloud.location.GetLocationRequest()
             );
@@ -7917,7 +7917,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new LocationProtos.google.cloud.location.GetLocationRequest()
             );
@@ -7943,7 +7943,7 @@ describe('v2.DlpServiceClient', () => {
               credentials: {client_email: 'bogus', private_key: 'bogus'},
               projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
                 new LocationProtos.google.cloud.location.ListLocationsRequest()
             );
@@ -7982,7 +7982,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             const request = generateSampleMessage(
               new LocationProtos.google.cloud.location.ListLocationsRequest()
             );
@@ -8011,7 +8011,7 @@ describe('v2.DlpServiceClient', () => {
 
     describe('Path templates', () => {
 
-        describe('discoveryConfig', () => {
+        describe('discoveryConfig', async () => {
             const fakePath = "/rendered/path/discoveryConfig";
             const expectedParameters = {
                 project: "projectValue",
@@ -8022,7 +8022,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.discoveryConfigPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.discoveryConfigPathTemplate.match =
@@ -8057,7 +8057,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('finding', () => {
+        describe('finding', async () => {
             const fakePath = "/rendered/path/finding";
             const expectedParameters = {
                 project: "projectValue",
@@ -8068,7 +8068,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.findingPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.findingPathTemplate.match =
@@ -8103,7 +8103,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('location', () => {
+        describe('location', async () => {
             const fakePath = "/rendered/path/location";
             const expectedParameters = {
                 project: "projectValue",
@@ -8113,7 +8113,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.locationPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.locationPathTemplate.match =
@@ -8141,7 +8141,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organization', () => {
+        describe('organization', async () => {
             const fakePath = "/rendered/path/organization";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8150,7 +8150,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationPathTemplate.match =
@@ -8171,7 +8171,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationDeidentifyTemplate', () => {
+        describe('organizationDeidentifyTemplate', async () => {
             const fakePath = "/rendered/path/organizationDeidentifyTemplate";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8181,7 +8181,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationDeidentifyTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationDeidentifyTemplatePathTemplate.match =
@@ -8209,7 +8209,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationInspectTemplate', () => {
+        describe('organizationInspectTemplate', async () => {
             const fakePath = "/rendered/path/organizationInspectTemplate";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8219,7 +8219,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationInspectTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationInspectTemplatePathTemplate.match =
@@ -8247,7 +8247,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocation', () => {
+        describe('organizationLocation', async () => {
             const fakePath = "/rendered/path/organizationLocation";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8257,7 +8257,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationPathTemplate.match =
@@ -8285,7 +8285,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationColumnDataProfile', () => {
+        describe('organizationLocationColumnDataProfile', async () => {
             const fakePath = "/rendered/path/organizationLocationColumnDataProfile";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8296,7 +8296,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationColumnDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationColumnDataProfilePathTemplate.match =
@@ -8331,7 +8331,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationConnection', () => {
+        describe('organizationLocationConnection', async () => {
             const fakePath = "/rendered/path/organizationLocationConnection";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8342,7 +8342,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationConnectionPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationConnectionPathTemplate.match =
@@ -8377,7 +8377,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationDeidentifyTemplate', () => {
+        describe('organizationLocationDeidentifyTemplate', async () => {
             const fakePath = "/rendered/path/organizationLocationDeidentifyTemplate";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8388,7 +8388,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationDeidentifyTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationDeidentifyTemplatePathTemplate.match =
@@ -8423,7 +8423,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationFileStoreDataProfile', () => {
+        describe('organizationLocationFileStoreDataProfile', async () => {
             const fakePath = "/rendered/path/organizationLocationFileStoreDataProfile";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8434,7 +8434,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationFileStoreDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationFileStoreDataProfilePathTemplate.match =
@@ -8469,7 +8469,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationInspectTemplate', () => {
+        describe('organizationLocationInspectTemplate', async () => {
             const fakePath = "/rendered/path/organizationLocationInspectTemplate";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8480,7 +8480,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationInspectTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationInspectTemplatePathTemplate.match =
@@ -8515,7 +8515,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationProjectDataProfile', () => {
+        describe('organizationLocationProjectDataProfile', async () => {
             const fakePath = "/rendered/path/organizationLocationProjectDataProfile";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8526,7 +8526,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationProjectDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationProjectDataProfilePathTemplate.match =
@@ -8561,7 +8561,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationStoredInfoType', () => {
+        describe('organizationLocationStoredInfoType', async () => {
             const fakePath = "/rendered/path/organizationLocationStoredInfoType";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8572,7 +8572,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationStoredInfoTypePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationStoredInfoTypePathTemplate.match =
@@ -8607,7 +8607,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationLocationTableDataProfile', () => {
+        describe('organizationLocationTableDataProfile', async () => {
             const fakePath = "/rendered/path/organizationLocationTableDataProfile";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8618,7 +8618,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationLocationTableDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationLocationTableDataProfilePathTemplate.match =
@@ -8653,7 +8653,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('organizationStoredInfoType', () => {
+        describe('organizationStoredInfoType', async () => {
             const fakePath = "/rendered/path/organizationStoredInfoType";
             const expectedParameters = {
                 organization: "organizationValue",
@@ -8663,7 +8663,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.organizationStoredInfoTypePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.organizationStoredInfoTypePathTemplate.match =
@@ -8691,7 +8691,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('project', () => {
+        describe('project', async () => {
             const fakePath = "/rendered/path/project";
             const expectedParameters = {
                 project: "projectValue",
@@ -8700,7 +8700,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectPathTemplate.match =
@@ -8721,7 +8721,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectDeidentifyTemplate', () => {
+        describe('projectDeidentifyTemplate', async () => {
             const fakePath = "/rendered/path/projectDeidentifyTemplate";
             const expectedParameters = {
                 project: "projectValue",
@@ -8731,7 +8731,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectDeidentifyTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectDeidentifyTemplatePathTemplate.match =
@@ -8759,7 +8759,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectDlpContent', () => {
+        describe('projectDlpContent', async () => {
             const fakePath = "/rendered/path/projectDlpContent";
             const expectedParameters = {
                 project: "projectValue",
@@ -8768,7 +8768,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectDlpContentPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectDlpContentPathTemplate.match =
@@ -8789,7 +8789,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectDlpJob', () => {
+        describe('projectDlpJob', async () => {
             const fakePath = "/rendered/path/projectDlpJob";
             const expectedParameters = {
                 project: "projectValue",
@@ -8799,7 +8799,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectDlpJobPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectDlpJobPathTemplate.match =
@@ -8827,7 +8827,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectInspectTemplate', () => {
+        describe('projectInspectTemplate', async () => {
             const fakePath = "/rendered/path/projectInspectTemplate";
             const expectedParameters = {
                 project: "projectValue",
@@ -8837,7 +8837,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectInspectTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectInspectTemplatePathTemplate.match =
@@ -8865,7 +8865,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectJobTrigger', () => {
+        describe('projectJobTrigger', async () => {
             const fakePath = "/rendered/path/projectJobTrigger";
             const expectedParameters = {
                 project: "projectValue",
@@ -8875,7 +8875,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectJobTriggerPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectJobTriggerPathTemplate.match =
@@ -8903,7 +8903,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationColumnDataProfile', () => {
+        describe('projectLocationColumnDataProfile', async () => {
             const fakePath = "/rendered/path/projectLocationColumnDataProfile";
             const expectedParameters = {
                 project: "projectValue",
@@ -8914,7 +8914,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationColumnDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationColumnDataProfilePathTemplate.match =
@@ -8949,7 +8949,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationConnection', () => {
+        describe('projectLocationConnection', async () => {
             const fakePath = "/rendered/path/projectLocationConnection";
             const expectedParameters = {
                 project: "projectValue",
@@ -8960,7 +8960,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationConnectionPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationConnectionPathTemplate.match =
@@ -8995,7 +8995,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationDeidentifyTemplate', () => {
+        describe('projectLocationDeidentifyTemplate', async () => {
             const fakePath = "/rendered/path/projectLocationDeidentifyTemplate";
             const expectedParameters = {
                 project: "projectValue",
@@ -9006,7 +9006,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationDeidentifyTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationDeidentifyTemplatePathTemplate.match =
@@ -9041,7 +9041,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationDlpJob', () => {
+        describe('projectLocationDlpJob', async () => {
             const fakePath = "/rendered/path/projectLocationDlpJob";
             const expectedParameters = {
                 project: "projectValue",
@@ -9052,7 +9052,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationDlpJobPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationDlpJobPathTemplate.match =
@@ -9087,7 +9087,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationFileStoreDataProfile', () => {
+        describe('projectLocationFileStoreDataProfile', async () => {
             const fakePath = "/rendered/path/projectLocationFileStoreDataProfile";
             const expectedParameters = {
                 project: "projectValue",
@@ -9098,7 +9098,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationFileStoreDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationFileStoreDataProfilePathTemplate.match =
@@ -9133,7 +9133,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationInspectTemplate', () => {
+        describe('projectLocationInspectTemplate', async () => {
             const fakePath = "/rendered/path/projectLocationInspectTemplate";
             const expectedParameters = {
                 project: "projectValue",
@@ -9144,7 +9144,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationInspectTemplatePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationInspectTemplatePathTemplate.match =
@@ -9179,7 +9179,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationJobTrigger', () => {
+        describe('projectLocationJobTrigger', async () => {
             const fakePath = "/rendered/path/projectLocationJobTrigger";
             const expectedParameters = {
                 project: "projectValue",
@@ -9190,7 +9190,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationJobTriggerPathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationJobTriggerPathTemplate.match =
@@ -9225,7 +9225,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationProjectDataProfile', () => {
+        describe('projectLocationProjectDataProfile', async () => {
             const fakePath = "/rendered/path/projectLocationProjectDataProfile";
             const expectedParameters = {
                 project: "projectValue",
@@ -9236,7 +9236,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationProjectDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationProjectDataProfilePathTemplate.match =
@@ -9271,7 +9271,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationStoredInfoType', () => {
+        describe('projectLocationStoredInfoType', async () => {
             const fakePath = "/rendered/path/projectLocationStoredInfoType";
             const expectedParameters = {
                 project: "projectValue",
@@ -9282,7 +9282,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationStoredInfoTypePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationStoredInfoTypePathTemplate.match =
@@ -9317,7 +9317,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectLocationTableDataProfile', () => {
+        describe('projectLocationTableDataProfile', async () => {
             const fakePath = "/rendered/path/projectLocationTableDataProfile";
             const expectedParameters = {
                 project: "projectValue",
@@ -9328,7 +9328,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectLocationTableDataProfilePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectLocationTableDataProfilePathTemplate.match =
@@ -9363,7 +9363,7 @@ describe('v2.DlpServiceClient', () => {
             });
         });
 
-        describe('projectStoredInfoType', () => {
+        describe('projectStoredInfoType', async () => {
             const fakePath = "/rendered/path/projectStoredInfoType";
             const expectedParameters = {
                 project: "projectValue",
@@ -9373,7 +9373,7 @@ describe('v2.DlpServiceClient', () => {
                 credentials: {client_email: 'bogus', private_key: 'bogus'},
                 projectId: 'bogus',
             });
-            client.initialize();
+            await client.initialize();
             client.pathTemplates.projectStoredInfoTypePathTemplate.render =
                 sinon.stub().returns(fakePath);
             client.pathTemplates.projectStoredInfoTypePathTemplate.match =
