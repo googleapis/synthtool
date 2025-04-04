@@ -279,7 +279,7 @@
 - Prefer https URLs for cloning from GitHub, add SYNTHTOOL_USE_SSH to use ssh ([#120](https://github.com/googleapis/synthtool/pull/120))
 - Drop the PR template for nodejs ([#117](https://github.com/googleapis/synthtool/pull/117))
 - Update github issue templates ([#116](https://github.com/googleapis/synthtool/pull/116))
-- Incude build/ in eslint ignore ([#115](https://github.com/googleapis/synthtool/pull/115))
+- Include build/ in eslint ignore ([#115](https://github.com/googleapis/synthtool/pull/115))
 - feat: make npm link work for system tests ([#114](https://github.com/googleapis/synthtool/pull/114))
 - fix: update nodejs issue templates ([#112](https://github.com/googleapis/synthtool/pull/112))
 - feat(node): add node11 test env ([#110](https://github.com/googleapis/synthtool/pull/110))
