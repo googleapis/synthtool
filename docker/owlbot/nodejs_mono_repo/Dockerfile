@@ -52,7 +52,7 @@ RUN find /synthtool -type d -exec chmod a+x {} \;
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
 # * google-gax and gapic-tools are used for compiling protos.
-RUN cd /synthtool && mkdir node_modules && npm i gts@5.0.0 google-gax@4.3.1 \
-    typescript@5.1.6 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@0.4.1
+RUN cd /synthtool && mkdir node_modules && npm i gts@6.0.2 google-gax@5.0.1-rc \
+    typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.1
 
 ENTRYPOINT [ "/bin/bash", "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
