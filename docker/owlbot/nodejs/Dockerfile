@@ -12,57 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Version 0.3.0
-
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-nodejs -f docker/owlbot/nodejs/Dockerfile .
 FROM marketplace.gcr.io/google/debian12:latest
 WORKDIR /
 
-## Install Build Essentials, ca-certificates, and Python 3.10.16
+## Install Build Essentials, ca-certificates, and Python 3.10
 
-# This step installs all necessary tools and libraries to compile Python from source.
-# It also includes 'ca-certificates' to ensure secure HTTPS connections for downloads.
-# Git is also included here as it's a common dependency.
+# This step installs necessary tools and libraries, including Python 3.10
+# directly from the Debian repositories.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
-    build-essential \
-    zlib1g-dev \
-    libncurses5-dev \
-    libgdbm-dev \
-    libnss3-dev \
-    libssl-dev \
-    libreadline-dev \
-    libffi-dev \
-    libsqlite3-dev \
-    wget \
-    libbz2-dev \
-    tk-dev \
-    liblzma-dev \
-    curl \
-    git && \
+    git \
+    python3.10 \
+    python3-pip \
+    curl && \
     rm -rf /var/lib/apt/lists/*
-
-# Define the Python version for easier updates and download/install Python from source.
-# We use 'altinstall' to prevent conflicts with any potential system Python.
-ENV PYTHON_VERSION=3.10.16
-RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz -O /tmp/python.tgz && \
-    tar -xzf /tmp/python.tgz -C /tmp && \
-    cd /tmp/Python-${PYTHON_VERSION} && \
-    ./configure --enable-optimizations --with-ensurepip=install && \
-    make -j$(nproc) && \
-    make altinstall && \
-    rm -rf /tmp/python.tgz /tmp/Python-${PYTHON_VERSION}
 
 # Verify Python installation and ensure pip is available.
 RUN python3.10 --version
 RUN python3.10 -m pip --version
 
 # Set Python 3.10 as the default 'python' command using update-alternatives.
-RUN update-alternatives --install /usr/local/bin/python python /usr/local/bin/python3.10 1
-# Also set a pip3 alternative for convenience.
-RUN update-alternatives --install /usr/local/bin/pip3 pip3 /usr/local/bin/pip3.10 1
+# python3 is usually symlinked to python3.10 so this step might not be strictly necessary,
+# but it's good practice for consistency.
+RUN update-alternatives --install /usr/local/bin/python python /usr/bin/python3.10 1
+# Also set a pip3 alternative for convenience, linking to the python3.10 pip.
+RUN update-alternatives --install /usr/local/bin/pip3 pip3 /usr/bin/pip3 1
 
 ## Install Node.js
 
