@@ -17,29 +17,28 @@
 FROM marketplace.gcr.io/google/debian12:latest
 WORKDIR /
 
-## Install Build Essentials, ca-certificates, and Python 3.10
+## Install Essential Tools, Python 3.11, and xz-utils
 
-# This step installs necessary tools and libraries, including Python 3.10
-# directly from the Debian repositories.
+# Install necessary tools, the default Python 3 (which is 3.11 on Debian 12),
+# python3-venv for virtual environments, and xz-utils for Node.js archives.
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
-    python3.10 \
+    python3 \
     python3-pip \
-    curl && \
+    python3-venv \
+    curl \
+    xz-utils && \
     rm -rf /var/lib/apt/lists/*
 
 # Verify Python installation and ensure pip is available.
-RUN python3.10 --version
-RUN python3.10 -m pip --version
+# 'python3' command will now point to Python 3.11.
+RUN python3 --version
+RUN python3 -m pip --version
 
-# Set Python 3.10 as the default 'python' command using update-alternatives.
-# python3 is usually symlinked to python3.10 so this step might not be strictly necessary,
-# but it's good practice for consistency.
-RUN update-alternatives --install /usr/local/bin/python python /usr/bin/python3.10 1
-# Also set a pip3 alternative for convenience, linking to the python3.10 pip.
-RUN update-alternatives --install /usr/local/bin/pip3 pip3 /usr/bin/pip3 1
+# Removed update-alternatives for 'python' and 'pip' as we're consistently
+# using 'python3' and 'python3 -m pip', which are managed by Debian.
 
 ## Install Node.js
 
@@ -54,13 +53,22 @@ ENV PATH "$PATH:/usr/local/bin"
 
 ## Install Synthtool and Dependencies
 
-# Copy the requirements file and install Python dependencies using pip.
-# We explicitly use 'python3.10 -m pip' to ensure the correct pip is invoked.
+# Create a Python virtual environment for synthtool dependencies.
+# This isolates your Python packages from the system Python.
+ENV VIRTUAL_ENV=/opt/venv/synthtool
+RUN python3 -m venv $VIRTUAL_ENV
+# Add the virtual environment's bin directory to the PATH. This effectively "activates"
+# the venv for all subsequent commands in this and future RUN layers.
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Copy requirements.txt and install Python dependencies into the virtual environment.
 COPY requirements.txt /synthtool/requirements.txt
-RUN python3.10 -m pip install --require-hashes -r /synthtool/requirements.txt
+RUN pip install --require-hashes -r /synthtool/requirements.txt
 
 # Set PYTHONPATH to ensure synthtool can be found by Python scripts.
-ENV PYTHONPATH="/synthtool"
+# Include the virtual environment's site-packages for completeness, though
+# the PATH modification often handles this for executables run directly.
+ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.11/site-packages"
 
 # Configure synthtool to use templates from this image.
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
