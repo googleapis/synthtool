@@ -5,4 +5,4 @@ commandTests:
   expectedOutput: ["v18.17.0"]
 - name: "python"
   command: ["python", "--version"]
-  expectedOutput: ["Python 3.10.12"]
+  expectedOutput: ["Python 3.11.2"]
