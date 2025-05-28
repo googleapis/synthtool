@@ -16,22 +16,64 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo -f docker/owlbot/nodejs_mono_repo/Dockerfile .
-FROM python:3.10.12-bookworm
+FROM marketplace.gcr.io/google/debian12:latest
 
 WORKDIR /
 
-###################### Install nodejs.
-RUN curl https://nodejs.org/dist/v18.17.0/node-v18.17.0-linux-x64.tar.xz > /tmp/nodejs.tar.xz
-RUN tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz
-RUN rm -f /tmp/nodejs.tar.xz
-ENV PATH "$PATH:/usr/local/bin"
+###################### Install build essentials, ca-certificates, and Python 3.10 from source.
+# Ensure apt-get is updated and install ca-certificates first
+# This ensures that subsequent HTTPS downloads (like for Python source or Node.js) work.
+# Then install other build dependencies for Python and general utilities.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    build-essential \
+    zlib1g-dev \
+    libncurses5-dev \
+    libgdbm-dev \
+    libnss3-dev \
+    libssl-dev \
+    libreadline-dev \
+    libffi-dev \
+    libsqlite3-dev \
+    wget \
+    libbz2-dev \
+    tk-dev \
+    liblzma-dev \
+    curl \
+    git && \
+    rm -rf /var/lib/apt/lists/*
 
-###################### Install git and update image to latest.
-RUN apt-get update && apt-get install -y git && apt-get upgrade -y
+# Download and install Python 3.10.12
+ENV PYTHON_VERSION=3.10.12
+RUN wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz -O /tmp/python.tgz && \
+    tar -xzf /tmp/python.tgz -C /tmp && \
+    cd /tmp/Python-${PYTHON_VERSION} && \
+    ./configure --enable-optimizations --with-ensurepip=install && \
+    make -j$(nproc) && \
+    make altinstall && \
+    rm -rf /tmp/python.tgz /tmp/Python-${PYTHON_VERSION}
+
+# Verify Python installation and ensure pip is available
+RUN python3.10 --version
+RUN python3.10 -m pip --version
+
+# Set Python 3.10 as the default 'python' command (optional, but convenient for general use)
+# This will make 'python' point to 'python3.10', but it might not make 'pip' point to 'pip3.10' directly.
+# The 'python3.10 -m pip' approach is more robust.
+RUN update-alternatives --install /usr/local/bin/python python /usr/local/bin/python3.10 1
+
+###################### Install nodejs.
+# Node.js installation
+RUN curl -fsSL https://nodejs.org/dist/v18.17.0/node-v18.17.0-linux-x64.tar.xz -o /tmp/nodejs.tar.xz && \
+    tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz && \
+    rm -f /tmp/nodejs.tar.xz
+ENV PATH "$PATH:/usr/local/bin"
 
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
-RUN pip install --require-hashes -r /synthtool/requirements.txt
+# CHANGE THIS LINE: Use python3.10 -m pip explicitly
+RUN python3.10 -m pip install --require-hashes -r /synthtool/requirements.txt
 
 # Put synthtool in the PYTHONPATH so owlbot.py scripts will find it.
 ENV PYTHONPATH="/synthtool"
@@ -46,8 +88,8 @@ COPY docker /synthtool/docker
 COPY post-processor-changes.txt /post-processor-changes.txt
 
 # Update permissions so non-root users won't see errors.
-RUN find /synthtool -exec chmod a+r {} \;
-RUN find /synthtool -type d -exec chmod a+x {} \;
+RUN find /synthtool -exec chmod a+r {} \; && \
+    find /synthtool -type d -exec chmod a+x {} \;
 
 # Install dependencies used for post processing:
 # * gts/typescript are used for linting.
