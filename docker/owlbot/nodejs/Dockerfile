@@ -64,8 +64,6 @@ RUN update-alternatives --install /usr/local/bin/python python /usr/local/bin/py
 # Also set a pip3 alternative for convenience.
 RUN update-alternatives --install /usr/local/bin/pip3 pip3 /usr/local/bin/pip3.10 1
 
----
-
 ## Install Node.js
 
 # Download and extract Node.js directly into /usr/local.
@@ -76,8 +74,6 @@ RUN curl -fsSL https://nodejs.org/dist/v18.20.8/node-v18.20.8-linux-x64.tar.xz -
 
 # Add Node.js binaries to the PATH.
 ENV PATH "$PATH:/usr/local/bin"
-
----
 
 ## Install Synthtool and Dependencies
 
@@ -103,8 +99,6 @@ RUN find /synthtool -exec chmod a+r {} \; && \
 
 # Install Node.js dependencies for post-processing.
 RUN cd /synthtool && mkdir node_modules && npm install @google-cloud/typeless-sample-bot@1.3.3
-
----
 
 ## Entrypoint Configuration
 
