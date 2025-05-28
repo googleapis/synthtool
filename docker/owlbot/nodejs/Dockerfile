@@ -19,8 +19,6 @@
 FROM marketplace.gcr.io/google/debian12:latest
 WORKDIR /
 
----
-
 ## Install Build Essentials, ca-certificates, and Python 3.10.16
 
 # This step installs all necessary tools and libraries to compile Python from source.
