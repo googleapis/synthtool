@@ -85,7 +85,7 @@ RUN find /synthtool -exec chmod a+r {} \; && \
     find /synthtool -type d -exec chmod a+x {} \;
 
 # Install Node.js dependencies for post-processing.
-RUN cd /synthtool && mkdir node_modules && npm i gts@6.0.2 google-gax@5.0.1-rc.0 \
-    typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.1
+RUN cd /synthtool && mkdir node_modules && npm i gts@6.0.2 google-gax@5.1.0-rc.1 \
+    typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.2
 
 ENTRYPOINT [ "/bin/bash", "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
