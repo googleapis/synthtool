@@ -37,19 +37,17 @@ RUN apt-get update && \
 RUN python3 --version
 RUN python3 -m pip --version
 
-# Removed update-alternatives for 'python' and 'pip' as we're consistently
-# using 'python3' and 'python3 -m pip', which are managed by Debian.
 
-## Install Node.js
+## Install Node.js from apt-get
 
-# Download and extract Node.js directly into /usr/local.
-# The 'curl' command includes '-fsSL' for silent, fail-fast, and redirect-following behavior.
-RUN curl -fsSL https://nodejs.org/dist/v18.20.8/node-v18.20.8-linux-x64.tar.xz -o /tmp/nodejs.tar.xz && \
-    tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz && \
-    rm -f /tmp/nodejs.tar.xz
+# Add NodeSource APT repository for Node.js v18
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
 
-# Add Node.js binaries to the PATH.
-ENV PATH "$PATH:/usr/local/bin"
+# Verify Node.js and npm installations
+RUN node --version
+RUN npm --version
 
 ## Install Synthtool and Dependencies
 
