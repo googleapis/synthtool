@@ -126,7 +126,7 @@ def language_pretty(input: str) -> str:
 
 
 def slugify(input: str) -> str:
-    """Converts Foo Bar into foo-bar, for use wih anchor links."""
+    """Converts Foo Bar into foo-bar, for use with anchor links."""
     input = re.sub(r"([() ]+)", "-", input.lower())
     return re.sub(r"-$", "", input)
 

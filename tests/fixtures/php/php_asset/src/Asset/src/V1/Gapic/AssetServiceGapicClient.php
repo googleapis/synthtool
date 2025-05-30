@@ -641,7 +641,7 @@ class AssetServiceGapicClient
      *                                  "projects/12345").
      * @param string $destinationParent Required. Name of the GCP Folder or Organization to reparent the target
      *                                  resource. The analysis will be performed against hypothetically moving the
-     *                                  resource to this specified desitination parent. This can only be a Folder
+     *                                  resource to this specified destination parent. This can only be a Folder
      *                                  number (such as "folders/123") or an Organization number (such as
      *                                  "organizations/123").
      * @param array  $optionalArgs      {

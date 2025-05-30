@@ -147,5 +147,5 @@ subprocess.run(
 
 # Address breaking changes
 # We're using a git command for production Asset directory,
-# but we emulate tha behavior with a static patch file.
+# but we emulate the behavior with a static patch file.
 subprocess.run("patch -p2 < ../patch.diff", shell=True)
