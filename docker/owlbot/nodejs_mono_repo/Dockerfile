@@ -16,43 +16,76 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo -f docker/owlbot/nodejs_mono_repo/Dockerfile .
-FROM python:3.10.12-bookworm
+FROM marketplace.gcr.io/google/debian12:latest
 
 WORKDIR /
 
-###################### Install nodejs.
-RUN curl https://nodejs.org/dist/v18.17.0/node-v18.17.0-linux-x64.tar.xz > /tmp/nodejs.tar.xz
-RUN tar -C /usr/local --strip-components=1 -xJf /tmp/nodejs.tar.xz
-RUN rm -f /tmp/nodejs.tar.xz
-ENV PATH "$PATH:/usr/local/bin"
+## Install Essential Tools, Python 3.11, and xz-utils
 
-###################### Install git and update image to latest.
-RUN apt-get update && apt-get install -y git && apt-get upgrade -y
+# Update apt and install core tools.
+# This includes git, curl, and 'xz-utils' (needed for Node.js tarball decompression).
+# python3, python3-pip, and python3-venv are installed to provide Python 3.11 and
+# the tools for creating virtual environments.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    curl \
+    xz-utils \
+    python3 \
+    python3-pip \
+    python3-venv && \
+    rm -rf /var/lib/apt/lists/*
 
-###################### Install synthtool's requirements.
+# Verify Python installation and ensure pip is available.
+# 'python3' command will now point to Python 3.11.
+RUN python3 --version
+RUN python3 -m pip --version
+
+## Install Node.js from apt-get
+
+# Add NodeSource APT repository for Node.js v18
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Verify Node.js and npm installations
+RUN node --version
+RUN npm --version
+
+## Install Synthtool and Dependencies
+
+# Create a Python virtual environment for synthtool's dependencies.
+# This isolates your Python packages from the system Python, preventing conflicts.
+ENV VIRTUAL_ENV=/opt/venv/synthtool
+RUN python3 -m venv $VIRTUAL_ENV
+# Add the virtual environment's bin directory to the PATH. This effectively "activates"
+# the venv for all subsequent commands in this and future RUN layers.
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Copy requirements.txt and install Python dependencies into the virtual environment.
+# Since we're in the venv, 'pip' directly refers to the venv's pip.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install --require-hashes -r /synthtool/requirements.txt
 
-# Put synthtool in the PYTHONPATH so owlbot.py scripts will find it.
-ENV PYTHONPATH="/synthtool"
+# Set PYTHONPATH to ensure synthtool can be found by Python scripts.
+# Include the virtual environment's site-packages for completeness.
+ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.11/site-packages"
 
-# Tell synthtool to pull templates from this docker image instead of from
-# the live repo.
+# Configure synthtool to use templates from this image.
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 
-# Copy synthtool.
+# Copy synthtool source code and associated Docker files.
 COPY synthtool /synthtool/synthtool
 COPY docker /synthtool/docker
 COPY post-processor-changes.txt /post-processor-changes.txt
 
-# Update permissions so non-root users won't see errors.
-RUN find /synthtool -exec chmod a+r {} \;
-RUN find /synthtool -type d -exec chmod a+x {} \;
+# Update file permissions to prevent errors for non-root users.
+RUN find /synthtool -exec chmod a+r {} \; && \
+    find /synthtool -type d -exec chmod a+x {} \;
 
-# Install dependencies used for post processing:
-# * gts/typescript are used for linting.
-# * google-gax and gapic-tools are used for compiling protos.
-RUN cd /synthtool && mkdir node_modules && npm i gts@6.0.2 google-gax@5.0.1-rc.0 \
-    typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.1
+# Install Node.js dependencies for post-processing.
+RUN cd /synthtool && mkdir node_modules && npm i gts@6.0.2 google-gax@5.1.0-rc.1 \
+    typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.2
 
 ENTRYPOINT [ "/bin/bash", "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
