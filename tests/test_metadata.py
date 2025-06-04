@@ -265,7 +265,7 @@ def test_add_new_files_with_bad_file(source_tree, preserve_track_obsolete_file_f
     try:
         os.symlink(tmpdir / dne, tmpdir / "badlink")
     except OSError:
-        # On Windows, creating a symlink requires Admin priveleges, which
+        # On Windows, creating a symlink requires Admin privileges, which
         # should never be granted to test runners.
         assert "win32" == sys.platform
         return
