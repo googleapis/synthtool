@@ -204,13 +204,15 @@ def apply_client_specific_post_processing(
                 if number_of_paths_with_replacements:
                     # Ensure that the number of paths where a replacement occurred matches the number of paths.
                     expected_number_of_paths = len(replacement["paths"])
-                    assert number_of_paths_with_replacements == expected_number_of_paths, (
-                        f"Replaced {number_of_paths_with_replacements} rather than {expected_number_of_paths} paths")
+                    assert (
+                        number_of_paths_with_replacements == expected_number_of_paths
+                    ), f"Replaced {number_of_paths_with_replacements} rather than {expected_number_of_paths} paths"
                     # Ensure that the total number of replacements matches the value specified in `count`
                     # for all paths in `replacement["paths"]`
                     expected_count = replacement["count"]
-                    assert replacement_count == expected_count, (
-                        f"Replaced {replacement_count} rather than {expected_count} instances")
+                    assert (
+                        replacement_count == expected_count
+                    ), f"Replaced {replacement_count} rather than {expected_count} instances"
 
 
 def walk_through_owlbot_dirs(dir: Path):
