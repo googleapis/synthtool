@@ -279,7 +279,7 @@ def owlbot_main(package_dir: str) -> None:
                     f"{package_dir}/samples/generated_samples", ignore_errors=True
                 )
                 clean_up_generated_samples = False
-            synthtool.move([library], package_dir, excludes=[])
+            synthtool.move([library], package_dir, excludes=["*.tar.gz"])
 
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
             relative_dir=f"packages/{package_name}",
