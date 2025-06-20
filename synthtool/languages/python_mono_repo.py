@@ -156,7 +156,7 @@ def apply_client_specific_post_processing(
         url: URL of the issue in gapic-generator-python tracking eventual removal of the workaround
         replacements:
           - replacement:
-            paths: [<List of files where the replacement should occur relative to the monorepo root directory>]
+            paths: [<List of monorepo file paths beginning with "packages/" where the replacement should occur>]
             before: "The string to search for in the specified paths"
             after:  "The string to replace in the the specified paths",
             count: <integer indicating number of replacements that should have occurred across all files after the script is run>
@@ -172,42 +172,47 @@ def apply_client_specific_post_processing(
         package_name (str): The name of the package where client specific post processing will be applied.
     """
 
-    if Path(post_processing_dir).exists():
-        for post_processing_path in Path(post_processing_dir).iterdir():
-            with open(post_processing_path, "r") as post_processing_path_file:
-                post_processing_json = yaml.safe_load(post_processing_path_file)
-                all_replacements = post_processing_json["replacements"]
-                # For each workaround related to the specified issue
-                for replacement in all_replacements:
-                    replacement_count = 0
-                    number_of_paths_with_replacements = 0
-                    # For each file that needs the workaround applied
-                    for client_library_path in replacement["paths"]:
-                        if package_name in client_library_path:
-                            number_of_paths_with_replacements += 1
-                            replacement_count += synthtool.replace(
+    if not Path(post_processing_dir).exists():
+        return
+    for post_processing_path in Path(post_processing_dir).iterdir():
+        with open(post_processing_path, "r") as post_processing_path_file:
+            post_processing_json = yaml.safe_load(post_processing_path_file)
+            all_replacements = post_processing_json["replacements"]
+            # For each workaround related to the specified issue
+            for replacement in all_replacements:
+                replacement_count = 0
+                number_of_paths_with_replacements = 0
+                # For each file that needs the workaround applied
+                for client_library_path in replacement["paths"]:
+                    if package_name == client_library_path.split("/")[1]:
+                        number_of_paths_with_replacements += 1
+                        replacement_count += synthtool.replace(
+                            client_library_path,
+                            replacement["before"],
+                            replacement["after"],
+                        )
+                        # Ensure idempotency by checking that subsequent calls won't
+                        # trigger additional replacements within the same path
+                        assert (
+                            synthtool.replace(
                                 client_library_path,
                                 replacement["before"],
                                 replacement["after"],
                             )
-                            # Ensure idempotency by checking that subsequent calls won't
-                            # trigger additional replacements within the same path
-                            assert (
-                                synthtool.replace(
-                                    client_library_path,
-                                    replacement["before"],
-                                    replacement["after"],
-                                )
-                                == 0
-                            )
-                    if number_of_paths_with_replacements:
-                        # Ensure that the numner of paths where a replacement occurred matches the number of paths.
-                        assert number_of_paths_with_replacements == len(
-                            replacement["paths"]
+                            == 0
                         )
-                        # Ensure that the total number of replacements matches the value specified in `count`
-                        # for all paths in `replacement["paths"]`
-                        assert replacement_count == replacement["count"]
+                if number_of_paths_with_replacements:
+                    # Ensure that the number of paths where a replacement occurred matches the number of paths.
+                    expected_number_of_paths = len(replacement["paths"])
+                    assert (
+                        number_of_paths_with_replacements == expected_number_of_paths
+                    ), f"Replaced {number_of_paths_with_replacements} rather than {expected_number_of_paths} paths"
+                    # Ensure that the total number of replacements matches the value specified in `count`
+                    # for all paths in `replacement["paths"]`
+                    expected_count = replacement["count"]
+                    assert (
+                        replacement_count == expected_count
+                    ), f"Replaced {replacement_count} rather than {expected_count} instances"
 
 
 def walk_through_owlbot_dirs(dir: Path):
@@ -274,7 +279,7 @@ def owlbot_main(package_dir: str) -> None:
                     f"{package_dir}/samples/generated_samples", ignore_errors=True
                 )
                 clean_up_generated_samples = False
-            synthtool.move([library], package_dir, excludes=[])
+            synthtool.move([library], package_dir, excludes=["*.tar.gz"])
 
         templated_files = gcp.CommonTemplates().py_mono_repo_library(
             relative_dir=f"packages/{package_name}",
