@@ -31,8 +31,7 @@ RUN apt-get update && \
     ca-certificates \
     git \
     curl \
-    xz-utils \
-    rm -rf /var/lib/apt/lists/*
+    xz-utils
 
 # Install pyenv dependencies
 RUN apt-get update && \
