@@ -25,18 +25,31 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
-    python3 \
-    python3-pip \
-    python3-venv \
     curl \
-    xz-utils && \
-    rm -rf /var/lib/apt/lists/*
+    xz-utils
 
-# Verify Python installation and ensure pip is available.
-# 'python3' command will now point to Python 3.11.
-RUN python3 --version
-RUN python3 -m pip --version
+# Install pyenv dependencies
+RUN apt-get update && \
+    apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev && \
+    apt-get upgrade -y
 
+WORKDIR /root
+
+# Install pyenv
+RUN curl -L -o /tmp/pyenv.tar.gz https://github.com/pyenv/pyenv/archive/refs/tags/v2.6.3.tar.gz && \
+    mkdir -p /root/.pyenv && \
+    tar -xzvf /tmp/pyenv.tar.gz -C /root/.pyenv --strip-components=1 && \
+    echo 'eval "$(pyenv init -)"' >> /root/.profile && \
+    echo 'eval "$(pyenv virtualenv-init -)"' >> /root/.profile
+
+ENV PATH="/root/.pyenv/bin:/root/.pyenv/shims:${PATH}"
+
+# Install python
+RUN pyenv install 3.13.5 && \
+    pyenv global 3.13.5 && \
+    python3 -m pip install --upgrade pip setuptools
 
 ## Install Node.js from apt-get
 
