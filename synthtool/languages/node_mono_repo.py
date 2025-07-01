@@ -539,7 +539,6 @@ def owlbot_main(
             library_version,
             str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
         )
-    copy_list_sample_to_quickstart(relative_dir=relative_dir)
 
 
 def owlbot_entrypoint(
