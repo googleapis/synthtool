@@ -233,7 +233,6 @@ def test_generate_index_ts_empty_versions():
             )
             assert "can't be empty" in err.args
 
-
 def test_generate_esm_index_ts_empty_versions():
     # use a non-nodejs template directory
     with util.chdir(FIXTURES / "node_templates" / "index_esm_samples"):
