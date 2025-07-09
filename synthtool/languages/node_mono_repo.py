@@ -540,6 +540,7 @@ def owlbot_main(
             str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
         )
 
+
 def owlbot_entrypoint(
     specified_owlbot_dirs: Optional[List[str]] = None,
     template_path: Optional[Path] = None,
