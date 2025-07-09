@@ -27,7 +27,6 @@ import logging
 import shutil
 from synthtool.languages import common
 from datetime import date
-from os import system
 
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
