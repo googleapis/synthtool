@@ -221,6 +221,7 @@ def test_write_release_please_config():
             pathlib.Path("release-please-config-post.json"),
         )
 
+
 def test_generate_index_ts_empty_versions():
     # use a non-nodejs template directory
     with util.chdir(FIXTURES / "node_templates" / "index_samples"):
@@ -232,6 +233,7 @@ def test_generate_index_ts_empty_versions():
                 year=date.today().year,
             )
             assert "can't be empty" in err.args
+
 
 def test_generate_esm_index_ts_empty_versions():
     # use a non-nodejs template directory
