@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [{{metadata['engine'] | int}}, {{metadata['engine'] | int+2}}, {{metadata['engine'] | int+4}}]
+        node: [{{metadata['engine'] | int}}, {{metadata['engine'] | int+2}}, {{metadata['engine'] | int+4}}, {{metadata['engine'] | int+6}}]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

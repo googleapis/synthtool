@@ -63,6 +63,9 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 
+# Remove unnecessary cross-spawn from npm to resolve CVE-2024-21538
+RUN rm -r /usr/lib/node_modules/npm/node_modules/cross-spawn
+
 # Verify Node.js and npm installations
 RUN node --version
 RUN npm --version
@@ -88,6 +91,7 @@ RUN pip install --require-hashes -r /synthtool/requirements.txt
 # since it does not include a fix for CVE-2025-47273/CVE-2025-47273.
 RUN rm -rf /venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-68.0.0-py3-none-any.whl
 RUN rm -rf /venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-75.1.0-py3-none-any.whl
+RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-68.0.0-py3-none-any.whl
 
 # Set PYTHONPATH to ensure synthtool can be found by Python scripts.
 # Include the virtual environment's site-packages for completeness.
