@@ -1,11 +1,12 @@
 setuptools==78.1.1
 
 nox
+tomli
 requests>=2.31.0
 pyyaml
 jinja2
 deprecation
-protobuf==3.20.2
+protobuf==6.31.1
 watchdog
 # `virtualenv==20.26.6` is added for Python 3.7 compatibility
 virtualenv==20.26.6
