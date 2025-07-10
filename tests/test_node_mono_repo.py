@@ -15,7 +15,6 @@
 import filecmp
 import pathlib
 import re
-import os
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import Mock, patch, MagicMock
