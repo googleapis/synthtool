@@ -29,7 +29,6 @@ from synthtool.languages import common
 from datetime import date
 from os import system
 
-
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
 _GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
@@ -539,7 +538,6 @@ def owlbot_main(
             library_version,
             str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
         )
-    copy_list_sample_to_quickstart(relative_dir=relative_dir)
 
 
 def owlbot_entrypoint(

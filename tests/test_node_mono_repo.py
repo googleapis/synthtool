@@ -15,7 +15,6 @@
 import filecmp
 import pathlib
 import re
-import os
 from pathlib import Path
 from unittest import TestCase
 from unittest.mock import Mock, patch, MagicMock
@@ -220,43 +219,6 @@ def test_write_release_please_config():
             pathlib.Path("release-please-config.json"),
             pathlib.Path("release-please-config-post.json"),
         )
-
-
-def test_copy_quickstart():
-    with util.copied_fixtures_dir(
-        FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
-    ):
-        node_mono_repo.copy_list_sample_to_quickstart(
-            FIXTURES / "nodejs_mono_repo_with_samples" / "packages" / "datastore"
-        )
-
-        assert filecmp.cmp(
-            pathlib.Path(
-                FIXTURES
-                / "nodejs_mono_repo_with_samples"
-                / "packages"
-                / "datastore"
-                / "samples"
-                / "quickstart.js"
-            ),
-            pathlib.Path(
-                FIXTURES
-                / "nodejs_mono_repo_with_samples"
-                / "packages"
-                / "datastore"
-                / "samples"
-                / "generated"
-                / "compare_to_quickstart.js"
-            ),
-        )
-    os.remove(
-        FIXTURES
-        / "nodejs_mono_repo_with_samples"
-        / "packages"
-        / "datastore"
-        / "samples"
-        / "quickstart.js"
-    )
 
 
 def test_generate_index_ts_empty_versions():
