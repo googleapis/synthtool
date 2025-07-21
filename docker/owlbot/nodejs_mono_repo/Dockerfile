@@ -89,13 +89,12 @@ RUN pip install --require-hashes -r /synthtool/requirements.txt
 # https://github.com/pypa/virtualenv/tree/main/src/virtualenv/seed/wheels/embed
 # In the interim, remove the bundled setuptools 75.3.2 wheel
 # since it does not include a fix for CVE-2025-47273/CVE-2025-47273.
-RUN rm -rf /venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-68.0.0-py3-none-any.whl
-RUN rm -rf /venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-75.1.0-py3-none-any.whl
+
 RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-68.0.0-py3-none-any.whl
 
 # Set PYTHONPATH to ensure synthtool can be found by Python scripts.
 # Include the virtual environment's site-packages for completeness.
-ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.11/site-packages"
+ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.13/site-packages"
 
 # Configure synthtool to use templates from this image.
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"

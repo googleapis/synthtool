@@ -17,4 +17,4 @@ set -ex
 
 RELATIVE_DIRS=$1
 
-python -m synthtool.languages.node_mono_repo $1
+python3 -m synthtool.languages.node_mono_repo $1
