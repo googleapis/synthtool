@@ -439,6 +439,27 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
         )
     return owlbot_dirs
 
+def is_library_combined_hacky(current_library):
+    """Eventually, we should not need this method.
+    It is a hacky way of determining whether a library is
+    the new combined version, or the old version (libraries generated individually).
+    Once we migrate all libraries to the new version we can remove
+    this entirely.
+    """
+    search_string = '[//]: # "partials.introduction"'
+    try:
+        with open(Path(Path(current_library), "README.md").resolve(), 'r', encoding='utf-8') as f:
+            file_contents = f.read()
+            if search_string in file_contents:
+                print("search string contains [//]: # partials.introduction")
+                return True
+            else:
+                print("contents do not contain search string")
+                return False
+    except FileNotFoundError:
+        print(f"Error: The file '{file_path}' was not found.")
+
+
 
 def owlbot_main(
     relative_dir,
@@ -470,74 +491,81 @@ def owlbot_main(
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
-    if staging_excludes is None:
-        staging_excludes = default_staging_excludes
-    if templates_excludes is None:
-        templates_excludes = default_templates_excludes
+    if not is_library_combined_hacky(relative_dir):
+        if staging_excludes is None:
+            staging_excludes = default_staging_excludes
+        if templates_excludes is None:
+            templates_excludes = default_templates_excludes
 
-    logging.basicConfig(level=logging.DEBUG)
-    # Load the default version defined in .repo-metadata.json.
-    default_version = json.load(
-        open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
-    ).get("default_version")
-    is_esm = False
-    src = Path(Path(relative_dir), "src").resolve()
-    source_location = "build/src"
-    if (Path(Path(relative_dir), "esm", "src").resolve()).is_dir():
-        is_esm = True
-        src = Path(Path(relative_dir), "esm", "src").resolve()
-        source_location = "build/esm/src"
-    staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
-    s_copy = transforms.move
-    if default_version is None:
-        logger.info("No default version found in .repo-metadata.json.  Ok.")
-    elif staging.is_dir():
-        logger.info(f"Copying files from staging directory ${staging}.")
-        # Collect the subdirectories of the staging directory.
-        versions = [v.name for v in staging.iterdir() if v.is_dir()]
-        # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
-        logger.info(f"Collected versions ${versions} from ${staging}")
+        logging.basicConfig(level=logging.DEBUG)
+        # Load the default version defined in .repo-metadata.json.
+        default_version = json.load(
+            open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
+        ).get("default_version")
+        is_esm = False
+        src = Path(Path(relative_dir), "src").resolve()
+        source_location = "build/src"
+        if (Path(Path(relative_dir), "esm", "src").resolve()).is_dir():
+            is_esm = True
+            src = Path(Path(relative_dir), "esm", "src").resolve()
+            source_location = "build/esm/src"
+        staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
+        s_copy = transforms.move
+        if default_version is None:
+            logger.info("No default version found in .repo-metadata.json.  Ok.")
+        elif staging.is_dir():
+            logger.info(f"Copying files from staging directory ${staging}.")
+            # Collect the subdirectories of the staging directory.
+            versions = [v.name for v in staging.iterdir() if v.is_dir()]
+            # Reorder the versions so the default version always comes last.
+            versions = [v for v in versions if v != default_version] + [default_version]
+            logger.info(f"Collected versions ${versions} from ${staging}")
+            # Copy each version directory into the root.
+            for version in versions:
+                library = staging / version
+                _tracked_paths.add(library)
+                patch_staging(library)
+                s_copy([library], destination=relative_dir, excludes=staging_excludes)
+            # The staging directory should never be merged into the main branch.
+            shutil.rmtree(staging)
+        else:
+            # Collect the subdirectories of the src directory.
+            versions = [v.name for v in src.iterdir() if v.is_dir()]
+            # Reorder the versions so the default version always comes last.
+            versions = [v for v in versions if v != default_version] + [default_version]
+            logger.info(f"Collected versions ${versions} from ${src}")
 
-        # Copy each version directory into the root.
-        for version in versions:
-            library = staging / version
-            _tracked_paths.add(library)
-            patch_staging(library)
-            s_copy([library], destination=relative_dir, excludes=staging_excludes)
-        # The staging directory should never be merged into the main branch.
-        shutil.rmtree(staging)
+    # TODO: Instead of this bottom section, we want to always:
+    # TODO: Add README reconciliation
+    # TODO: run fix
+    # TODO: run any post-generation step
+    if is_library_combined_hacky(relative_dir):
+        shell.run(["node", "/synthtool/synthtool/languages/node-monorepo-newprocess.js", relative_dir])
     else:
-        # Collect the subdirectories of the src directory.
-        versions = [v.name for v in src.iterdir() if v.is_dir()]
-        # Reorder the versions so the default version always comes last.
-        versions = [v for v in versions if v != default_version] + [default_version]
-        logger.info(f"Collected versions ${versions} from ${src}")
+        common_templates = gcp.CommonTemplates(template_path)
+        common_templates.excludes.extend(templates_excludes)
+        if default_version:
+            templates = common_templates.node_mono_repo_library(
+                relative_dir=relative_dir,
+                source_location=source_location,
+                versions=versions,
+                default_version=default_version,
+                is_esm=is_esm,
+            )
+            s_copy([templates], destination=relative_dir, excludes=templates_excludes)
+            postprocess_gapic_library_hermetic(relative_dir=relative_dir, is_esm=is_esm)
+        else:
+            templates = common_templates.node_mono_repo_library(
+                relative_dir=relative_dir, source_location=source_location
+            )
+            s_copy([templates], destination=relative_dir, excludes=templates_excludes)
 
-    common_templates = gcp.CommonTemplates(template_path)
-    common_templates.excludes.extend(templates_excludes)
-    if default_version:
-        templates = common_templates.node_mono_repo_library(
-            relative_dir=relative_dir,
-            source_location=source_location,
-            versions=versions,
-            default_version=default_version,
-            is_esm=is_esm,
-        )
-        s_copy([templates], destination=relative_dir, excludes=templates_excludes)
-        postprocess_gapic_library_hermetic(relative_dir=relative_dir, is_esm=is_esm)
-    else:
-        templates = common_templates.node_mono_repo_library(
-            relative_dir=relative_dir, source_location=source_location
-        )
-        s_copy([templates], destination=relative_dir, excludes=templates_excludes)
-
-    library_version = template_metadata(str(Path(relative_dir))).get("version")
-    if library_version:
-        common.update_library_version(
-            library_version,
-            str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
-        )
+        library_version = template_metadata(str(Path(relative_dir))).get("version")
+        if library_version:
+            common.update_library_version(
+                library_version,
+                str(Path(relative_dir, _GENERATED_SAMPLES_DIRECTORY).resolve()),
+            )
 
 
 def owlbot_entrypoint(

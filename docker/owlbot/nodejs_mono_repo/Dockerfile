@@ -102,7 +102,7 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 # Copy synthtool source code and associated Docker files.
 COPY synthtool /synthtool/synthtool
 COPY docker /synthtool/docker
-COPY post-processor-changes.txt /post-processor-changes.txt
+# COPY post-processor-changes.txt /post-processor-changes.txt
 
 # Update file permissions to prevent errors for non-root users.
 RUN find /synthtool -exec chmod a+r {} \; && \
@@ -110,6 +110,6 @@ RUN find /synthtool -exec chmod a+r {} \; && \
 
 # Install Node.js dependencies for post-processing.
 RUN cd /synthtool && mkdir node_modules && npm i gts@6.0.2 google-gax@5.1.0-rc.1 \
-    typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.2
-
+    typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.2 \
+    gapic-node-processing@0.1.16-experimental
 ENTRYPOINT [ "/bin/bash", "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
