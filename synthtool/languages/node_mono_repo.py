@@ -439,6 +439,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
         )
     return owlbot_dirs
 
+
 def is_library_combined_hacky(current_library):
     """Eventually, we should not need this method.
     It is a hacky way of determining whether a library is
@@ -460,6 +461,7 @@ def is_library_combined_hacky(current_library):
                 return False
     except FileNotFoundError:
         print("Error: The README file was not found.")
+
 
 def owlbot_main(
     relative_dir,
