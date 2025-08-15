@@ -4,5 +4,5 @@ commandTests:
   command: ["node", "--version"]
   expectedOutput: ["v18.20.6"]
 - name: "python"
-  command: ["python3", "--version"]
+  command: ["python", "--version"]
   expectedOutput: ["Python 3.13.5"]
