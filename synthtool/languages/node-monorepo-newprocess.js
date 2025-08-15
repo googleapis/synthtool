@@ -6,7 +6,10 @@ const yaml = require('js-yaml');
 
 const LIBRARIAN_SCRIPT = 'librarian.js';
 const README_PARTIALS = 'readme-partials.yaml';
+const _TOOLS_DIRECTORY = "/synthtool"
 
+// Small helper function to check if a file exists
+// returns a boolean if it exists or not
 async function checkFileExists(filePath) {
   try {
     // This attempts to check if the file exists.
@@ -25,6 +28,10 @@ async function checkFileExists(filePath) {
 }
 
 
+// Main function that only runs the CLI tools including:
+// 1. Any custom librarian.js file
+// 2. Runs the generate-readme tool from gapic-node-processing
+// 3. Runs npm run fix (like in the main code)
 async function main(libraryDirectory) {
     const librarianCustomScriptPath = path.join(libraryDirectory, LIBRARIAN_SCRIPT);
     
@@ -54,7 +61,7 @@ async function main(libraryDirectory) {
     }
 
     console.log('Running npm fix');
-    cp.execSync('npx gts fix', {cwd: libraryDirectory});
+    cp.execSync(`${_TOOLS_DIRECTORY}/node_modules/.bin/gts`, {cwd: libraryDirectory});
     console.log('Finished running npm');
 }
 
