@@ -535,10 +535,7 @@ def owlbot_main(
             versions = [v for v in versions if v != default_version] + [default_version]
             logger.info(f"Collected versions ${versions} from ${src}")
 
-    # TODO: Instead of this bottom section, we want to always:
-    # TODO: Add README reconciliation
-    # TODO: run fix
-    # TODO: run any post-generation step
+
     if is_library_combined_hacky(relative_dir):
         shell.run(["node", "/synthtool/synthtool/languages/node-monorepo-newprocess.js", relative_dir])
     else:
