@@ -439,6 +439,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
         )
     return owlbot_dirs
 
+
 def is_library_combined_hacky(current_library):
     """Eventually, we should not need this method.
     It is a hacky way of determining whether a library is
@@ -448,7 +449,9 @@ def is_library_combined_hacky(current_library):
     """
     search_string = '[//]: # "partials.introduction"'
     try:
-        with open(Path(Path(current_library), "README.md").resolve(), 'r', encoding='utf-8') as f:
+        with open(
+            Path(Path(current_library), "README.md").resolve(), "r", encoding="utf-8"
+        ) as f:
             file_contents = f.read()
             if search_string in file_contents:
                 print("search string contains [//]: # partials.introduction")
@@ -458,7 +461,6 @@ def is_library_combined_hacky(current_library):
                 return False
     except FileNotFoundError:
         print(f"Error: The file '{file_path}' was not found.")
-
 
 
 def owlbot_main(
@@ -535,9 +537,14 @@ def owlbot_main(
             versions = [v for v in versions if v != default_version] + [default_version]
             logger.info(f"Collected versions ${versions} from ${src}")
 
-
     if is_library_combined_hacky(relative_dir):
-        shell.run(["node", "/synthtool/synthtool/languages/node-monorepo-newprocess.js", relative_dir])
+        shell.run(
+            [
+                "node",
+                "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
+                relative_dir,
+            ]
+        )
     else:
         common_templates = gcp.CommonTemplates(template_path)
         common_templates.excludes.extend(templates_excludes)
