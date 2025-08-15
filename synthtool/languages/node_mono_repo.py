@@ -460,7 +460,7 @@ def is_library_combined_hacky(current_library):
                 print("contents do not contain search string")
                 return False
     except FileNotFoundError:
-        print(f"Error: The file '{Path(Path(current_library), "README.md")}' was not found.")
+        print("Error: The README file was not found.")
 
 
 def owlbot_main(
