@@ -493,15 +493,23 @@ def owlbot_main(
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
-    if is_library_combined_hacky(relative_dir):
-        shell.run(
-            [
-                "node",
-                "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
-                relative_dir,
-            ]
-        )
-        return
+    staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
+    s_copy = transforms.move
+    if is_library_combined_hacky(staging):
+        _tracked_paths.add(staging)
+        s_copy([staging], destination=relative_dir)
+        # The staging directory should never be merged into the main branch.
+        shutil.rmtree(staging)
+    else:
+        if is_library_combined_hacky(relative_dir):
+            shell.run(
+                [
+                    "node",
+                    "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
+                    Path(relative_dir).resolve(),
+                ]
+            )
+    return
 
     if staging_excludes is None:
         staging_excludes = default_staging_excludes
@@ -520,8 +528,6 @@ def owlbot_main(
         is_esm = True
         src = Path(Path(relative_dir), "esm", "src").resolve()
         source_location = "build/esm/src"
-    staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
-    s_copy = transforms.move
     if default_version is None:
         logger.info("No default version found in .repo-metadata.json.  Ok.")
     elif staging.is_dir():

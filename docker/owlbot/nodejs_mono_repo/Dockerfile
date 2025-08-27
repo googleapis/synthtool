@@ -108,8 +108,24 @@ COPY post-processor-changes.txt /post-processor-changes.txt
 RUN find /synthtool -exec chmod a+r {} \; && \
     find /synthtool -type d -exec chmod a+x {} \;
 
-# Install Node.js dependencies for post-processing.
-RUN cd /synthtool && mkdir node_modules && npm i gts@6.0.2 google-gax@5.1.0-rc.1 \
+RUN useradd -ms /bin/bash nonroot
+
+# Change ownership of /synthtool and its contents to the nonroot user.
+# This must happen as root, before switching users.
+RUN chown -R nonroot:nonroot /synthtool
+
+# Switch to the non-root user to run npm install.
+USER nonroot
+
+# Install Node.js dependencies as the non-root user.
+WORKDIR /synthtool
+RUN npm i gts@6.0.2 google-gax@5.1.0-rc.1 \
     typescript@5.8.3 @google-cloud/typeless-sample-bot@1.3.3 gapic-tools@1.0.2 \
-    gapic-node-processing@0.1.0
+    gapic-node-processing@0.1.19-experimental
+
+# Switch back to root if needed for subsequent steps.
+USER root
+
+# ... (any other commands that require root access) ...
+
 ENTRYPOINT [ "/bin/bash", "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
