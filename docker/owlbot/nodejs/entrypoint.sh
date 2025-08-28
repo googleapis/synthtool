@@ -18,7 +18,7 @@ set -ex
 npm i --only=dev --ignore-scripts
 
 if [ -f owlbot.py ]; then
-    python owlbot.py
+    python3 owlbot.py
 else
-    python -m synthtool.languages.node
+    python3 -m synthtool.languages.node
 fi

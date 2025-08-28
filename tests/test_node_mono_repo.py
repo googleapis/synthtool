@@ -208,7 +208,7 @@ def test_write_release_please_config():
     with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
         node_mono_repo.write_release_please_config(
             [
-                "google-cloud-node/packages/gapic-node-templating",
+                "google-cloud-node/packages/gapic-node-processing/templates/bootstrap-templates",
                 "Users/person/google-cloud-node/packages/dlp",
                 "Users/person/google-cloud-node/packages/asset",
                 "packages/bigquery-migration",
