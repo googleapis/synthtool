@@ -443,6 +443,29 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     return owlbot_dirs
 
 
+def is_library_combined_hacky(current_library):
+    """Eventually, we should not need this method.
+    It is a hacky way of determining whether a library is
+    the new combined version, or the old version (libraries generated individually).
+    Once we migrate all libraries to the new version we can remove
+    this entirely.
+    """
+    search_string = '[//]: # "partials.introduction"'
+    try:
+        with open(
+            Path(Path(current_library), "README.md").resolve(), "r", encoding="utf-8"
+        ) as f:
+            file_contents = f.read()
+            if search_string in file_contents:
+                print("search string contains [//]: # partials.introduction")
+                return True
+            else:
+                print("contents do not contain search string")
+                return False
+    except FileNotFoundError:
+        print("Error: The README file was not found.")
+
+
 def owlbot_main(
     relative_dir,
     template_path: Optional[Path] = None,
@@ -473,6 +496,24 @@ def owlbot_main(
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
+    staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
+    s_copy = transforms.move
+    if is_library_combined_hacky(relative_dir) or is_library_combined_hacky(staging):
+        if is_library_combined_hacky(staging):
+            _tracked_paths.add(staging)
+            s_copy([staging], destination=relative_dir)
+            # The staging directory should never be merged into the main branch.
+            shutil.rmtree(staging)
+        if is_library_combined_hacky(relative_dir):
+            shell.run(
+                [
+                    "node",
+                    "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
+                    Path(relative_dir).resolve(),
+                ]
+            )
+    return
+
     if staging_excludes is None:
         staging_excludes = default_staging_excludes
     if templates_excludes is None:
@@ -490,8 +531,6 @@ def owlbot_main(
         is_esm = True
         src = Path(Path(relative_dir), "esm", "src").resolve()
         source_location = "build/esm/src"
-    staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
-    s_copy = transforms.move
     if default_version is None:
         logger.info("No default version found in .repo-metadata.json.  Ok.")
     elif staging.is_dir():
