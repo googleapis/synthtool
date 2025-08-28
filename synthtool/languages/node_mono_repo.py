@@ -399,7 +399,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     A list of client libs
     """
     owlbot_dirs = []
-    packages_to_exclude = [r"gapic-node-templating", r"node_modules"]
+    packages_to_exclude = [r"packages/gapic-node-processing/templates/bootstrap-templates", r"node_modules"]
     if search_for_changed_files:
         try:
             # Need to run this step first in the post processor since we only clone
