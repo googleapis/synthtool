@@ -90,7 +90,7 @@ RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/whee
 # Set PYTHONPATH to ensure synthtool can be found by Python scripts.
 # Include the virtual environment's site-packages for completeness, though
 # the PATH modification often handles this for executables run directly.
-ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.11/site-packages"
+ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.13/site-packages"
 
 # Configure synthtool to use templates from this image.
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
