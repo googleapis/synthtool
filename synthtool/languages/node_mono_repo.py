@@ -495,12 +495,12 @@ def owlbot_main(
     """
     staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
     s_copy = transforms.move
-    if is_library_combined_hacky(staging):
-        _tracked_paths.add(staging)
-        s_copy([staging], destination=relative_dir)
-        # The staging directory should never be merged into the main branch.
-        shutil.rmtree(staging)
-    else:
+    if is_library_combined_hacky(relative_dir) or is_library_combined_hacky(staging):
+        if is_library_combined_hacky(staging):
+            _tracked_paths.add(staging)
+            s_copy([staging], destination=relative_dir)
+            # The staging directory should never be merged into the main branch.
+            shutil.rmtree(staging)
         if is_library_combined_hacky(relative_dir):
             shell.run(
                 [
