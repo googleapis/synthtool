@@ -2,7 +2,7 @@ schemaVersion: 1.0.0
 commandTests:
 - name: "node"
   command: ["node", "--version"]
-  expectedOutput: ["v18.20.6"]
+  expectedOutput: ["v18.20.8"]
 - name: "python"
-  command: ["python", "--version"]
+  command: ["python3", "--version"]
   expectedOutput: ["Python 3.13.5"]
