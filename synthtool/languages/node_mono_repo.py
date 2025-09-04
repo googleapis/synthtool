@@ -451,19 +451,19 @@ def is_library_combined_hacky(current_library):
     this entirely.
     """
     search_string = '[//]: # "partials.introduction"'
+    readme_path = Path(Path(current_library), "README.md").resolve()
     try:
-        with open(
-            Path(Path(current_library), "README.md").resolve(), "r", encoding="utf-8"
-        ) as f:
+        with open(readme_path, "r", encoding="utf-8") as f:
             file_contents = f.read()
             if search_string in file_contents:
-                print("search string contains [//]: # partials.introduction")
+                print(f"{readme_path} search string contains {search_string}")
                 return True
             else:
-                print("contents do not contain search string")
+                print(f"{readme_path} do not contain {search_string}")
                 return False
     except FileNotFoundError:
-        print("Error: The README file was not found.")
+        print(f"{readme_path} does not exist so does not contain {search_string}")
+        return False
 
 
 def owlbot_main(
@@ -500,11 +500,16 @@ def owlbot_main(
     s_copy = transforms.move
     if is_library_combined_hacky(relative_dir) or is_library_combined_hacky(staging):
         if is_library_combined_hacky(staging):
-            _tracked_paths.add(staging)
+            print("Entering staging copying for hacky repo")
+            # _tracked_paths.add(staging)
             s_copy([staging], destination=relative_dir)
             # The staging directory should never be merged into the main branch.
             shutil.rmtree(staging)
+            return
         if is_library_combined_hacky(relative_dir):
+            print(
+                "Entering post-processing for hacky library (node-monorepo-newprocess.js)"
+            )
             shell.run(
                 [
                     "node",
@@ -512,7 +517,8 @@ def owlbot_main(
                     Path(relative_dir).resolve(),
                 ]
             )
-    return
+            return
+        return
 
     if staging_excludes is None:
         staging_excludes = default_staging_excludes

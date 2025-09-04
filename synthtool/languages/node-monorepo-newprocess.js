@@ -1,6 +1,8 @@
 const fs = require('fs/promises');
 const path = require('path');
+const util = require('util');
 const cp = require('child_process');
+const exec = util.promisify(cp.exec);
 const yaml = require('js-yaml');
 
 
@@ -11,6 +13,7 @@ const README_PARTIALS = '.readme-partials.yaml';
 // returns a boolean if it exists or not
 async function checkFileExists(filePath) {
   try {
+    console.log(`checking if ${filePath} exists`)
     // This attempts to check if the file exists.
     // If the file is not found, it throws an error.
     await fs.access(filePath);
@@ -32,12 +35,13 @@ async function checkFileExists(filePath) {
 // 2. Runs the generate-readme tool from gapic-node-processing
 // 3. Runs npm run fix (like in the main code)
 async function main(libraryDirectory) {
+    console.log(libraryDirectory)
     const librarianCustomScriptPath = path.join(libraryDirectory, LIBRARIAN_SCRIPT);
 
     // Run any custom function the library provides
     if (await checkFileExists(librarianCustomScriptPath)) {
         console.log(`Running ${librarianCustomScriptPath}`);
-        cp.execSync(`node ${librarianCustomScriptPath}`);
+        await exec(`node ${librarianCustomScriptPath}`);
         console.log(`Successfully ran ${librarianCustomScriptPath}`);
     }
 
@@ -48,20 +52,20 @@ async function main(libraryDirectory) {
         console.log(`Regenerating README.md in ${libraryDirectory} with ${JSON.stringify(readMePartialsPath)}`);
         if (readmePartialsYaml.introduction) {
             console.log(`Regenerating README.md in ${libraryDirectory} with "${readmePartialsYaml.introduction}"`);
-            const command = `npx gapic-node-processing generate-readme --library-path=${libraryDirectory} --string-to-replace='[//]: # "partials.introduction"' --replacement-string='${readmePartialsYaml.introduction}'`;
-            cp.execSync(command, { cwd: libraryDirectory, stdio: 'inherit' });
+            const command = `npx gapic-node-processing generate-readme --source-path=${libraryDirectory} --string-to-replace='[//]: # "partials.introduction"' --replacement-string='${readmePartialsYaml.introduction}'`;
+            await exec(command, { cwd: libraryDirectory, stdio: 'inherit' });
         }       
         if (readmePartialsYaml.body) {
             console.log(`Regenerating README.md in ${libraryDirectory} with "${readmePartialsYaml.body}"`);
-            const command = `npx gapic-node-processing generate-readme --library-path=${libraryDirectory} --string-to-replace='[//]: # "partials.body"' --replacement-string='${readmePartialsYaml.body}'`;
-            cp.execSync(command, { cwd: libraryDirectory, stdio: 'inherit' });
+            const command = `npx gapic-node-processing generate-readme --source-path=${libraryDirectory} --string-to-replace='[//]: # "partials.body"' --replacement-string='${readmePartialsYaml.body}'`;
+            await exec(command, { cwd: libraryDirectory, stdio: 'inherit' });
         }
         console.log('Finished regenerating README');  
     }
 
     console.log('Running npm fix');
     try {
-      cp.execSync(`npm run fix`, {cwd: libraryDirectory});
+      await exec(`npm run fix`, {cwd: libraryDirectory});
     } catch (err) {
       console.log(err);
       // Don't fail if running npm fix didn't succeed, this should be handled
