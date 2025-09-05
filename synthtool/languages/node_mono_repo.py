@@ -505,17 +505,16 @@ def owlbot_main(
             s_copy([staging], destination=relative_dir)
             # The staging directory should never be merged into the main branch.
             shutil.rmtree(staging)
-        if is_library_combined_hacky(relative_dir):
-            print(
-                "Entering post-processing for hacky library (node-monorepo-newprocess.js)"
-            )
-            shell.run(
-                [
-                    "node",
-                    "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
-                    Path(relative_dir).resolve(),
-                ]
-            )
+        print(
+            "Entering post-processing for hacky library (node-monorepo-newprocess.js)"
+        )
+        shell.run(
+            [
+                "node",
+                "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
+                Path(relative_dir).resolve(),
+            ]
+        )
         return
 
     if staging_excludes is None:
