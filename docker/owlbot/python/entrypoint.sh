@@ -17,7 +17,7 @@ set -e
 set -x
 
 if [ -f owlbot.py ]; then
-    python owlbot.py
+    python3.10 owlbot.py
 else
-    python -m synthtool.languages.python
+    python3.10 -m synthtool.languages.python
 fi
