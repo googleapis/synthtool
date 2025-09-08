@@ -16,25 +16,53 @@
 
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-python -f docker/owlbot/python/Dockerfile .
-FROM python:3.10.6-buster
+FROM marketplace.gcr.io/google/ubuntu2404
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    # Essential for compiling C code
+    build-essential \
+    git \
+    wget \
+    ca-certificates \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libffi-dev \
+    libsqlite3-dev \
+    libreadline-dev \
+    # ------------------------------------------------------
+    && apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install multiple Python versions from source. `make altinstall` is used to
+# prevent replacing the system's default python binary.
+# TODO(http://github.com/googleapis/gapic-generator-python/issues/2435): Remove `3.10.18` when the linked issue is resolved.
+RUN for PYTHON_VERSION in 3.10.18 3.13.5; do \
+    wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && \
+    tar -xvf Python-${PYTHON_VERSION}.tgz && \
+    cd Python-${PYTHON_VERSION} && \
+    ./configure --enable-optimizations --prefix=/usr/local && \
+    make -j$(nproc) && \
+    make altinstall && \
+    cd / && \
+    rm -rf Python-${PYTHON_VERSION}* \
+    ; done
+
+# Install pip for each python version
+# TODO(http://github.com/googleapis/gapic-generator-python/issues/2435): Remove `3.10` when the linked issue is resolved.
+RUN wget --no-check-certificate -O /tmp/get-pip.py 'https://bootstrap.pypa.io/get-pip.py' && \
+    for PYTHON_VERSION in 3.10 3.13; do \
+        python${PYTHON_VERSION} /tmp/get-pip.py; \
+    done && \
+    rm /tmp/get-pip.py
+
 
 WORKDIR /
 
-###################### Install python 3.8.11
-
-# Download python 3.8.11
-RUN wget https://www.python.org/ftp/python/3.8.11/Python-3.8.11.tgz
-
-# Extract files
-RUN tar -xvf Python-3.8.11.tgz
-
-# Install python 3.8.11
-RUN ./Python-3.8.11/configure --enable-optimizations
-RUN make altinstall
-
 ###################### Install synthtool's requirements.
 COPY requirements.txt /synthtool/requirements.txt
-RUN pip install --require-hashes -r /synthtool/requirements.txt
+RUN python3.10 -m pip install --require-hashes -r /synthtool/requirements.txt
 
 # Put synthtool in the PYTHONPATH so owlbot.py scripts will find it.
 ENV PYTHONPATH="/synthtool"
