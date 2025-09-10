@@ -17,12 +17,11 @@ import pathlib
 import re
 from pathlib import Path
 from unittest import TestCase
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from datetime import date
 
 import pytest
 
-import synthtool as s
 from synthtool.languages import node_mono_repo
 from . import util
 
