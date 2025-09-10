@@ -17,7 +17,7 @@ import pathlib
 import re
 from pathlib import Path
 from unittest import TestCase
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 from datetime import date
 
 import pytest
