@@ -22,7 +22,6 @@ from datetime import date
 
 import pytest
 
-import synthtool as s
 from synthtool.languages import node_mono_repo
 from . import util
 
