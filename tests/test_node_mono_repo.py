@@ -376,6 +376,7 @@ class TestPostprocess(TestCase):
             ]
         )
 
+
 @pytest.fixture
 def nodejs_mono_repo():
     """chdir to a copy of nodejs-dlp-with-staging."""
@@ -390,6 +391,7 @@ def nodejs_mono_repo_esm():
     """chdir to a copy of nodejs_mono_repo_esm"""
     with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_esm") as workdir:
         yield workdir
+
 
 @patch("subprocess.run")
 def test_walk_through_owlbot_dirs_git_diff(mock_subproc_popen):
@@ -414,6 +416,7 @@ def test_walk_through_owlbot_dirs(mock_subproc_popen):
     )
     assert not mock_subproc_popen.called
     assert re.search("packages/dlp", owlbot_dirs[0])
+
 
 @patch("synthtool.languages.node_mono_repo.walk_through_owlbot_dirs")
 def test_entrypoint_args_with_no_arg(hermetic_mock, nodejs_mono_repo):
