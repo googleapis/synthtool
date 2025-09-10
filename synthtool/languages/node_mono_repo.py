@@ -18,16 +18,14 @@ from pathlib import Path
 import re
 import sys
 import subprocess
-from synthtool import _tracked_paths, gcp, shell, transforms
+from synthtool import shell, transforms
 from synthtool.gcp import samples, snippets
 from synthtool.log import logger
 from synthtool.sources import git
 from typing import Any, Dict, List, Optional, Callable
-import logging
 import shutil
 from synthtool.languages import common
 from datetime import date
-from os import system
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
