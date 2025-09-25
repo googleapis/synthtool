@@ -312,8 +312,9 @@ def owlbot_main(package_dir: str) -> None:
         # create CHANGELOG.md and symlink to docs/CHANGELOG.md if it doesn't exist
         create_changelog_and_symlink_to_docs_changelog(package_dir)
 
-        # update the url in setup.py to point to google-cloud-python
-        update_url_in_setup_py(package_dir)
+        if Path(f"packages/{package_name}/setup.py").exists():
+            # update the url in setup.py to point to google-cloud-python
+            update_url_in_setup_py(package_dir)
 
         # add license header to pb2.py and pb2.pyi files.
         fix_pb2_headers(package_dir)
