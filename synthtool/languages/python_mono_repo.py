@@ -306,11 +306,12 @@ def owlbot_main(package_dir: str) -> None:
         )
         synthtool.move([templated_files], package_dir)
 
-        # create symlink docs/README.rst if it doesn't exist
-        create_symlink_docs_readme(package_dir)
+        if Path(f"{package_dir}/docs").exists():
+            # create symlink docs/README.rst if it doesn't exist
+            create_symlink_docs_readme(package_dir)
 
-        # create CHANGELOG.md and symlink to docs/CHANGELOG.md if it doesn't exist
-        create_changelog_and_symlink_to_docs_changelog(package_dir)
+            # create CHANGELOG.md and symlink to docs/CHANGELOG.md if it doesn't exist
+            create_changelog_and_symlink_to_docs_changelog(package_dir)
 
         if Path(f"{package_dir}/setup.py").exists():
             # update the url in setup.py to point to google-cloud-python
