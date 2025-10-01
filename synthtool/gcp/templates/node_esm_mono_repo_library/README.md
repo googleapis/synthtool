@@ -9,7 +9,7 @@
 {%- endif %}
 
 {{ metadata['repo']['release_level']|release_quality_badge }}
-[![npm version](https://img.shields.io/npm/v/{{ metadata['name'] }}.svg)](https://www.npmjs.org/package/{{ metadata['name'] }})
+[![npm version](https://img.shields.io/npm/v/{{ metadata['name'] }}.svg)](https://www.npmjs.com/package/{{ metadata['name'] }})
 
 {% if metadata['deprecated'] %}
 | :warning: Deprecated Module |
