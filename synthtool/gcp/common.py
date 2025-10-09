@@ -275,6 +275,7 @@ class CommonTemplates:
                 "3.11",
                 "3.12",
                 "3.13",
+                "3.14",
             ]
 
         if "system_test_python_versions" not in kwargs:
