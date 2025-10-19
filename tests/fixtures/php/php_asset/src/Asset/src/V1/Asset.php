@@ -145,13 +145,13 @@ class Asset extends \Google\Protobuf\Internal\Message
      *           There can be more than one organization policy with different constraints
      *           set on a given resource.
      *     @type \Google\Identity\AccessContextManager\V1\AccessPolicy $access_policy
-     *           Please also refer to the [access policy user
+     *           Please refer to the [access policy user
      *           guide](https://cloud.google.com/access-context-manager/docs/overview#access-policies).
      *     @type \Google\Identity\AccessContextManager\V1\AccessLevel $access_level
-     *           Please also refer to the [access level user
+     *           Please refer to the [access level user
      *           guide](https://cloud.google.com/access-context-manager/docs/overview#access-levels).
      *     @type \Google\Identity\AccessContextManager\V1\ServicePerimeter $service_perimeter
-     *           Please also refer to the [service perimeter user
+     *           Please refer to the [service perimeter user
      *           guide](https://cloud.google.com/vpc-service-controls/docs/overview).
      *     @type \Google\Cloud\OsConfig\V1\Inventory $os_inventory
      *           A representation of runtime OS Inventory information. See [this
@@ -400,7 +400,7 @@ class Asset extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Please also refer to the [access policy user
+     * Please refer to the [access policy user
      * guide](https://cloud.google.com/access-context-manager/docs/overview#access-policies).
      *
      * Generated from protobuf field <code>.google.identity.accesscontextmanager.v1.AccessPolicy access_policy = 7;</code>
@@ -417,7 +417,7 @@ class Asset extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Please also refer to the [access policy user
+     * Please refer to the [access policy user
      * guide](https://cloud.google.com/access-context-manager/docs/overview#access-policies).
      *
      * Generated from protobuf field <code>.google.identity.accesscontextmanager.v1.AccessPolicy access_policy = 7;</code>
@@ -433,7 +433,7 @@ class Asset extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Please also refer to the [access level user
+     * Please refer to the [access level user
      * guide](https://cloud.google.com/access-context-manager/docs/overview#access-levels).
      *
      * Generated from protobuf field <code>.google.identity.accesscontextmanager.v1.AccessLevel access_level = 8;</code>
@@ -450,7 +450,7 @@ class Asset extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Please also refer to the [access level user
+     * Please refer to the [access level user
      * guide](https://cloud.google.com/access-context-manager/docs/overview#access-levels).
      *
      * Generated from protobuf field <code>.google.identity.accesscontextmanager.v1.AccessLevel access_level = 8;</code>
@@ -466,7 +466,7 @@ class Asset extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Please also refer to the [service perimeter user
+     * Please refer to the [service perimeter user
      * guide](https://cloud.google.com/vpc-service-controls/docs/overview).
      *
      * Generated from protobuf field <code>.google.identity.accesscontextmanager.v1.ServicePerimeter service_perimeter = 9;</code>
@@ -483,7 +483,7 @@ class Asset extends \Google\Protobuf\Internal\Message
     }
 
     /**
-     * Please also refer to the [service perimeter user
+     * Please refer to the [service perimeter user
      * guide](https://cloud.google.com/vpc-service-controls/docs/overview).
      *
      * Generated from protobuf field <code>.google.identity.accesscontextmanager.v1.ServicePerimeter service_perimeter = 9;</code>
