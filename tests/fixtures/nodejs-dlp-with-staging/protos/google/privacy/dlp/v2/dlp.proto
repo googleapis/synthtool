@@ -1342,7 +1342,7 @@ message ReidentifyContentRequest {
   string location_id = 7;
 }
 
-// Results of re-identifying a item.
+// Results of re-identifying an item.
 message ReidentifyContentResponse {
   // The re-identified item.
   ContentItem item = 1;
