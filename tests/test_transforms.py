@@ -233,7 +233,7 @@ def test_replace_not_found(expand_path_fixtures):
 
 def test_required_move_not_found():
     try:
-        transforms.move(["non-existent"], required=True)
+        transforms.move(["nonexistent"], required=True)
         assert False, "should have thrown error"
     except transforms.MissingSourceError:
         assert True

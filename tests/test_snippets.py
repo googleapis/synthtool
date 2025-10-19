@@ -114,7 +114,7 @@ var line3 = 3;
 
 def test_non_existent_file():
     with util.chdir(FIXTURES):
-        all_snippets = snippets.all_snippets_from_file("snippets/non-existent-file.foo")
+        all_snippets = snippets.all_snippets_from_file("snippets/nonexistent-file.foo")
         assert len(all_snippets) == 0
 
 
