@@ -77,8 +77,8 @@ def _merge_file(
     source_path: Path, dest_path: Path, merge: Callable[[str, str, Path], str]
 ):
     """
-    Writes to the destination the result of merging the source with the
-    existing destination contents, using the given merge function.
+    Writes the result of merging the source with the existing destination
+    contents using the given merge function to the destination.
 
     The merge function must take three arguments: the source contents, the
     old destination contents, and a Path to the file to be written.
