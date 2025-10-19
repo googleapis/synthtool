@@ -119,7 +119,7 @@ TRAMPOLINE_WORKSPACE="${TRAMPOLINE_WORKSPACE:-/workspace}"
 
 pass_down_envvars=(
     # TRAMPOLINE_V2 variables.
-    # Tells scripts whether they are running as part of CI or not.
+    # Tells scripts whether or not they are running as part of CI.
     "RUNNING_IN_CI"
     # Indicates which CI system we're in.
     "TRAMPOLINE_CI"
