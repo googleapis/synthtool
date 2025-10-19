@@ -437,7 +437,7 @@
 ### New Features
 
 - add template for .circleci config for node libraries (#6, #7, #17)
-- Warn when copy/move/replace can not find any sources (#4)
+- Warn when copy/move/replace cannot find any sources (#4)
 - Add warning for non-replacement
 - Add an update checker.
 - added get_workflow_name.py (#15)

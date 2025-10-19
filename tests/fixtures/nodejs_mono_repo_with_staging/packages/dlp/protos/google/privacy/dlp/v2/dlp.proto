@@ -3006,7 +3006,7 @@ message JobTrigger {
     // Trigger is temporarily paused.
     PAUSED = 2;
 
-    // Trigger is cancelled and can not be resumed.
+    // Trigger is cancelled and cannot be resumed.
     CANCELLED = 3;
   }
 
