@@ -2536,7 +2536,7 @@ message CryptoReplaceFfxFpeConfig {
   // applied to both structured and non-structured `ContentItem`s.
   // Currently, the referenced field may be of value type integer or string.
   //
-  // The tweak is constructed as a sequence of bytes in big endian byte order
+  // The tweak is constructed as a sequence of bytes in big-endian byte order
   // such that:
   //
   // - a 64 bit integer is encoded followed by a single byte of value 1
