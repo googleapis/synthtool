@@ -1053,7 +1053,7 @@ message TableLocation {
   // populated for resources that have a natural ordering, not BigQuery. In
   // BigQuery, to identify the source row of a finding, populate
   // BigQueryOptions.identifying_fields with your primary key column names and
-  // when you store the findings the value of those columns will be stored
+  // when you store the findings, the value of those columns will be stored
   // inside of Finding.
   int64 row_index = 1;
 }
