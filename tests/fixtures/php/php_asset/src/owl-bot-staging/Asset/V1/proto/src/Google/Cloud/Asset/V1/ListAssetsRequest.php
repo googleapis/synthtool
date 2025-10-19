@@ -45,7 +45,7 @@ class ListAssetsRequest extends \Google\Protobuf\Internal\Message
      * See [RE2](https://github.com/google/re2/wiki/Syntax) for all supported
      * regular expression syntax. If the regular expression does not match any
      * supported asset type, an INVALID_ARGUMENT error will be returned.
-     * If specified, only matching assets will be returned, otherwise, it will
+     * If specified, only matching assets will be returned; otherwise, it will
      * snapshot all asset types. See [Introduction to Cloud Asset
      * Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      * for all supported asset types.
@@ -124,7 +124,7 @@ class ListAssetsRequest extends \Google\Protobuf\Internal\Message
      *           See [RE2](https://github.com/google/re2/wiki/Syntax) for all supported
      *           regular expression syntax. If the regular expression does not match any
      *           supported asset type, an INVALID_ARGUMENT error will be returned.
-     *           If specified, only matching assets will be returned, otherwise, it will
+     *           If specified, only matching assets will be returned; otherwise, it will
      *           snapshot all asset types. See [Introduction to Cloud Asset
      *           Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      *           for all supported asset types.
@@ -248,7 +248,7 @@ class ListAssetsRequest extends \Google\Protobuf\Internal\Message
      * See [RE2](https://github.com/google/re2/wiki/Syntax) for all supported
      * regular expression syntax. If the regular expression does not match any
      * supported asset type, an INVALID_ARGUMENT error will be returned.
-     * If specified, only matching assets will be returned, otherwise, it will
+     * If specified, only matching assets will be returned; otherwise, it will
      * snapshot all asset types. See [Introduction to Cloud Asset
      * Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      * for all supported asset types.
@@ -272,7 +272,7 @@ class ListAssetsRequest extends \Google\Protobuf\Internal\Message
      * See [RE2](https://github.com/google/re2/wiki/Syntax) for all supported
      * regular expression syntax. If the regular expression does not match any
      * supported asset type, an INVALID_ARGUMENT error will be returned.
-     * If specified, only matching assets will be returned, otherwise, it will
+     * If specified, only matching assets will be returned; otherwise, it will
      * snapshot all asset types. See [Introduction to Cloud Asset
      * Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      * for all supported asset types.

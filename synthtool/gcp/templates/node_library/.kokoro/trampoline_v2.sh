@@ -241,7 +241,7 @@ function repo_root() {
 }
 
 # Detect the project root. In CI builds, we assume the script is in
-# the git tree and traverse from there, otherwise, traverse from `pwd`
+# the git tree and traverse from there; otherwise, traverse from `pwd`
 # to find `.git` directory.
 if [[ "${RUNNING_IN_CI:-}" == "true" ]]; then
     PROGRAM_PATH="$(realpath "$0")"
@@ -444,7 +444,7 @@ do
 done
 
 # If arguments are given, all arguments will become the commands run
-# in the container, otherwise run TRAMPOLINE_BUILD_FILE.
+# in the container; otherwise, run TRAMPOLINE_BUILD_FILE.
 if [[ $# -ge 1 ]]; then
     log_yellow "Running the given commands '" "${@:1}" "' in the container."
     readonly commands=("${@:1}")
