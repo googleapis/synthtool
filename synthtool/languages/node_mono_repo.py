@@ -404,7 +404,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     if search_for_changed_files:
         try:
             # Need to run this step first in the post processor since we only clone
-            # the branch the PR is on in the Docker container
+            # the branch that the PR is on in the Docker container
             output = subprocess.run(
                 ["git", "fetch", "origin", "main:main", "--deepen=200"]
             )
