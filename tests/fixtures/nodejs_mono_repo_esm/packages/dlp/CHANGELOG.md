@@ -298,7 +298,7 @@ Greetings!  This release has a few new features, bug fixes, and doc updates.  En
 01-04-2019 15:04 PST
 
 ### New Features
-- feat: add excluded field field for storage ([#169](https://github.com/googleapis/nodejs-dlp/pull/169))
+- feat: add excluded field for storage ([#169](https://github.com/googleapis/nodejs-dlp/pull/169))
 - feat: add support for storedInfoTypes ([#157](https://github.com/googleapis/nodejs-dlp/pull/157))
 - feat: add  CloudStorageRegexFileSet ([#153](https://github.com/googleapis/nodejs-dlp/pull/153))
 - feat: add sorting and ordering of results ([#147](https://github.com/googleapis/nodejs-dlp/pull/147))
