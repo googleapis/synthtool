@@ -439,7 +439,7 @@ def detect_versions(
     default_first: Optional[bool] = None,
 ) -> List[str]:
     """
-    Detects the versions a library has, based on distinct folders
+    Detects the versions of a library, based on distinct folders
     within path. This is based on the fact that our GAPIC libraries are
     structured as follows:
 
