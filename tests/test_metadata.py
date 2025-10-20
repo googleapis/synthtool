@@ -293,9 +293,9 @@ def test_read_nonexistent_metadata(tmpdir):
 
 @pytest.fixture(scope="function")
 def preserve_track_obsolete_file_flag():
-    should_track_obselete_files = metadata.should_track_obsolete_files()
-    yield should_track_obselete_files
-    metadata.set_track_obsolete_files(should_track_obselete_files)
+    should_track_obsolete_files = metadata.should_track_obsolete_files()
+    yield should_track_obsolete_files
+    metadata.set_track_obsolete_files(should_track_obsolete_files)
 
 
 def test_track_obsolete_files_defaults_to_false(preserve_track_obsolete_file_flag):
