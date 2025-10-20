@@ -2056,7 +2056,7 @@ message AnalyzeDataSourceRiskDetails {
     // K-anonymity result
     KAnonymityResult k_anonymity_result = 5;
 
-    // L-divesity result
+    // L-diversity result
     LDiversityResult l_diversity_result = 6;
 
     // K-map result
