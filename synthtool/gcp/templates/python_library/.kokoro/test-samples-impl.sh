@@ -36,7 +36,7 @@ env | grep KOKORO
 # `virtualenv==20.26.6` is added for Python 3.7 compatibility
 python3.9 -m pip install --upgrade --quiet nox virtualenv==20.26.6
 
-# Use secrets acessor service account to get secrets
+# Use secrets assessor service account to get secrets
 if [[ -f "${KOKORO_GFILE_DIR}/secrets_viewer_service_account.json" ]]; then
     gcloud auth activate-service-account \
 	   --key-file="${KOKORO_GFILE_DIR}/secrets_viewer_service_account.json" \
