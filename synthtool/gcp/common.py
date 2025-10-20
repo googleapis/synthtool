@@ -531,7 +531,7 @@ def _load_repo_metadata(
     * `api_id` - The API ID associated with the service. Fully qualified identifier use to
       enable a service in the cloud platform (e.g. monitoring.googleapis.com)
     * `requires_billing` - Whether or not the API requires billing to be configured on the
-      customer's acocunt
+      customer's account
 
     Args:
         metadata_file (str, optional): Path to the metadata json file
