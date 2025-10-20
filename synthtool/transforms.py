@@ -159,11 +159,11 @@ def dont_overwrite(
     files.
     """
 
-    def merge(source_text: str, destinaton_text: str, file_path: Path) -> str:
+    def merge(source_text: str, destination_text: str, file_path: Path) -> str:
         for pattern in patterns:
             if file_path.match(str(pattern)):
                 logger.debug(f"Preserving existing contents of {file_path}.")
-                return destinaton_text
+                return destination_text
         return source_text
 
     return merge
