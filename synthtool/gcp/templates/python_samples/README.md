@@ -3,7 +3,7 @@
 
 ## Python Samples for {{ metadata['repo']['name_pretty'] }}
 
-This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a refererence for how to use this product. {% if metadata['repo']['custom_content'] is defined %}
+This directory contains samples for {{ metadata['repo']['name_pretty'] }}, which may be used as a reference for how to use this product. {% if metadata['repo']['custom_content'] is defined %}
 {{ metadata['repo']['custom_content']}}{% endif %}{% if metadata['repo']['samples']|length %}
 Samples, quickstarts, and other documentation are available at <a href="{{ metadata['repo']['product_documentation'] }}">cloud.google.com</a>.
 {% for sample in range(metadata['repo']['samples']|length) %}
