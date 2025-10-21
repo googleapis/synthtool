@@ -205,7 +205,7 @@ class ResourceSearchResult extends \Google\Protobuf\Internal\Message
      * attributes](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types)
      * to see which fields are included.
      * You can search values of these fields through free text search. However,
-     * you should not consume the field programically as the field names and
+     * you should not consume the field programmatically as the field names and
      * values may change as the GCP service updates to a new incompatible API
      * version.
      * To search against the `additional_attributes`:
@@ -412,7 +412,7 @@ class ResourceSearchResult extends \Google\Protobuf\Internal\Message
      *           attributes](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types)
      *           to see which fields are included.
      *           You can search values of these fields through free text search. However,
-     *           you should not consume the field programically as the field names and
+     *           you should not consume the field programmatically as the field names and
      *           values may change as the GCP service updates to a new incompatible API
      *           version.
      *           To search against the `additional_attributes`:
@@ -1047,7 +1047,7 @@ class ResourceSearchResult extends \Google\Protobuf\Internal\Message
      * attributes](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types)
      * to see which fields are included.
      * You can search values of these fields through free text search. However,
-     * you should not consume the field programically as the field names and
+     * you should not consume the field programmatically as the field names and
      * values may change as the GCP service updates to a new incompatible API
      * version.
      * To search against the `additional_attributes`:
@@ -1083,7 +1083,7 @@ class ResourceSearchResult extends \Google\Protobuf\Internal\Message
      * attributes](https://cloud.google.com/asset-inventory/docs/supported-asset-types#searchable_asset_types)
      * to see which fields are included.
      * You can search values of these fields through free text search. However,
-     * you should not consume the field programically as the field names and
+     * you should not consume the field programmatically as the field names and
      * values may change as the GCP service updates to a new incompatible API
      * version.
      * To search against the `additional_attributes`:
