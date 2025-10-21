@@ -91,59 +91,6 @@ def create_symlink_in_docs_dir(package_dir: str, filename: str):
     os.chdir(current_dir)
 
 
-def create_symlink_docs_readme(package_dir: str):
-    """Creates a symlink for docs/README.rst pointing to README.rst
-        in the package_dir specified.
-
-    Args:
-        package_dir (str): path to the directory for a specific package. For example
-            'packages/google-cloud-video-transcoder'
-    """
-    create_symlink_in_docs_dir(package_dir, "README.rst")
-
-
-def create_changelog_and_symlink_to_docs_changelog(package_dir: str):
-    """Creates a CHANGELOG.md in the package_dir specified if it
-        doesn't exist and a symlink for docs/CHANGELOG.md pointing
-        to CHANGELOG.md.
-
-    Args:
-        package_dir (str): path to the directory for a specific package. For example
-            'packages/google-cloud-video-transcoder'
-    """
-    path_to_changelog = Path(f"{package_dir}/CHANGELOG.md")
-
-    # Create a CHANGELOG.md file if it doesn't exist
-    if not path_to_changelog.exists():
-        with open(path_to_changelog, "w") as f:
-            f.write("# Changelog")
-
-    create_symlink_in_docs_dir(package_dir, "CHANGELOG.md")
-
-
-def update_url_in_setup_py(package_dir: str):
-    """Update the url in setup.py to point to the mono repo google-cloud-python
-
-    Args:
-        package_dir (str): path to the directory for a specific package. For example
-            'packages/google-cloud-video-transcoder'
-    """
-    path_to_setup_py = Path(f"{package_dir}/setup.py")
-
-    with open(path_to_setup_py, "r") as f:
-        new_setup_py = []
-        for line in f:
-            if line.startswith("""url = \"https://github.com/googleapis/python-"""):
-                new_setup_py.append(
-                    """url = \"https://github.com/googleapis/google-cloud-python\"\n"""
-                )
-            else:
-                new_setup_py.append(line)
-
-    with open(path_to_setup_py, "w") as f:
-        f.writelines(new_setup_py)
-
-
 def apply_client_specific_post_processing(
     post_processing_dir: str, package_name: str
 ) -> None:
@@ -305,17 +252,6 @@ def owlbot_main(package_dir: str) -> None:
             ),
         )
         synthtool.move([templated_files], package_dir)
-
-        if Path(f"{package_dir}/docs").exists():
-            # create symlink docs/README.rst if it doesn't exist
-            create_symlink_docs_readme(package_dir)
-
-            # create CHANGELOG.md and symlink to docs/CHANGELOG.md if it doesn't exist
-            create_changelog_and_symlink_to_docs_changelog(package_dir)
-
-        if Path(f"{package_dir}/setup.py").exists():
-            # update the url in setup.py to point to google-cloud-python
-            update_url_in_setup_py(package_dir)
 
         # add license header to pb2.py and pb2.pyi files.
         fix_pb2_headers(package_dir)
