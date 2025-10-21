@@ -555,7 +555,7 @@ def _get_default_branch_name(repository_name: str) -> str:
     First checks environment variable DEFAULT_BRANCH_PATH.  If found, it
     reads the contents of the file at DEFAULT_BRANCH_PATH and returns it.
 
-    Then checks environment varabile DEFAULT_BRANCH, and returns it if found.
+    Then checks environment variable DEFAULT_BRANCH, and returns it if found.
     """
     default_branch_path = os.getenv("DEFAULT_BRANCH_PATH")
     if default_branch_path:
