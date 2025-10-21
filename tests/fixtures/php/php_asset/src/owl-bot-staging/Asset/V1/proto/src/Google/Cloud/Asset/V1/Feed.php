@@ -98,7 +98,7 @@ class Feed extends \Google\Protobuf\Internal\Message
      * * Otherwise:
      * it outputs the supported relationships of the types of [asset_names] and
      * [asset_types] or returns an error if any of the [asset_names] or the
-     * [asset_types] has no replationship support.
+     * [asset_types] has no relationship support.
      * See [Introduction to Cloud Asset
      * Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      * for all supported asset types and relationship types.
@@ -168,7 +168,7 @@ class Feed extends \Google\Protobuf\Internal\Message
      *           * Otherwise:
      *           it outputs the supported relationships of the types of [asset_names] and
      *           [asset_types] or returns an error if any of the [asset_names] or the
-     *           [asset_types] has no replationship support.
+     *           [asset_types] has no relationship support.
      *           See [Introduction to Cloud Asset
      *           Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      *           for all supported asset types and relationship types.
@@ -428,7 +428,7 @@ class Feed extends \Google\Protobuf\Internal\Message
      * * Otherwise:
      * it outputs the supported relationships of the types of [asset_names] and
      * [asset_types] or returns an error if any of the [asset_names] or the
-     * [asset_types] has no replationship support.
+     * [asset_types] has no relationship support.
      * See [Introduction to Cloud Asset
      * Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      * for all supported asset types and relationship types.
@@ -454,7 +454,7 @@ class Feed extends \Google\Protobuf\Internal\Message
      * * Otherwise:
      * it outputs the supported relationships of the types of [asset_names] and
      * [asset_types] or returns an error if any of the [asset_names] or the
-     * [asset_types] has no replationship support.
+     * [asset_types] has no relationship support.
      * See [Introduction to Cloud Asset
      * Inventory](https://cloud.google.com/asset-inventory/docs/overview)
      * for all supported asset types and relationship types.
