@@ -75,7 +75,6 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 # Copy synthtool source code and associated Docker files.
 COPY synthtool /synthtool/synthtool
 COPY docker /synthtool/docker
-COPY post-processor-changes.txt /post-processor-changes.txt
 
 # Allow npx to run
 ENV npm_config_cache=/tmp/.npm
