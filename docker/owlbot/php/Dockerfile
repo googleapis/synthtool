@@ -12,41 +12,81 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Version 0.2.0
-
 # build from the root of this repo:
 # docker build -t gcr.io/repo-automation-bots/owlbot-php -f docker/owlbot/php/Dockerfile .
-FROM python:3.10.18-bullseye
+FROM marketplace.gcr.io/google/debian12:latest
 
 WORKDIR /
 
-###################### Install nodejs.
-RUN curl -sL https://deb.nodesource.com/setup_15.x | bash -
-RUN apt-get install -y nodejs
+## Install Essential Tools, Python 3.11, and xz-utils
 
-###################### Install synthtool's requirements.
+# Install necessary tools, the default Python 3 (which is 3.11 on Debian 12),
+# python3-venv for virtual environments, and xz-utils for Node.js archives.
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    python3 \
+    python3-pip \
+    python3-venv \
+    curl \
+    xz-utils && \
+    rm -rf /var/lib/apt/lists/*
+
+# Verify Python installation and ensure pip is available.
+# 'python3' command will now point to Python 3.11.
+RUN python3 --version
+RUN python3 -m pip --version
+
+## Install Node.js from apt-get
+
+# Add NodeSource APT repository for Node.js v18
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Verify Node.js and npm installations
+RUN node --version
+RUN npm --version
+
+
+## Install Synthtool and Dependencies
+
+# Create a Python virtual environment for synthtool dependencies.
+# This isolates your Python packages from the system Python.
+ENV VIRTUAL_ENV=/opt/venv/synthtool
+RUN python3 -m venv $VIRTUAL_ENV
+# Add the virtual environment's bin directory to the PATH. This effectively "activates"
+# the venv for all subsequent commands in this and future RUN layers.
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Copy requirements.txt and install Python dependencies into the virtual environment.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install --require-hashes -r /synthtool/requirements.txt
 
-# Put synthtool in the PYTHONPATH so owlbot.py scripts will find it.
-ENV PYTHONPATH="/synthtool"
+# Set PYTHONPATH to ensure synthtool can be found by Python scripts.
+# Include the virtual environment's site-packages for completeness, though
+# the PATH modification often handles this for executables run directly.
+ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.11/site-packages"
 
-# Tell synthtool to pull templates from this docker image instead of from
-# the live repo.
+# Configure synthtool to use templates from this image.
 ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
+
+# Copy synthtool source code and associated Docker files.
+COPY synthtool /synthtool/synthtool
+COPY docker /synthtool/docker
 
 # Allow npx to run
 ENV npm_config_cache=/tmp/.npm
 RUN mkdir /tmp/.npm && chmod 1777 /tmp/.npm
 
-# Copy synthtool.
-COPY synthtool /synthtool/synthtool
-COPY docker /synthtool/docker
-COPY post-processor-changes.txt /post-processor-changes.txt
+# Update file permissions to prevent errors for non-root users.
+RUN find /synthtool -exec chmod a+r {} \; && \
+    find /synthtool -type d -exec chmod a+x {} \;
 
-# Update permissions so non-root users won't see errors.
-RUN find /synthtool -exec chmod a+r {} \;
-RUN find /synthtool -type d -exec chmod a+x {} \;
+## Entrypoint Configuration
 
+# Set the entrypoint to a shell, and the default command to your entrypoint script.
 ENTRYPOINT [ "/bin/bash" ]
 CMD [ "/synthtool/docker/owlbot/php/entrypoint.sh" ]
+
