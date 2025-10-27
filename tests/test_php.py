@@ -13,11 +13,9 @@
 # limitations under the License.
 
 
-from filecmp import dircmp
 import os
 from pathlib import Path
 import shutil
-import subprocess
 import tempfile
 
 import pytest
