@@ -59,4 +59,3 @@ def get_diff_string(dcmp, buf=""):
     for sub_dcmp in dcmp.subdirs.values():
         buf += get_diff_string(sub_dcmp)
     return buf
-
