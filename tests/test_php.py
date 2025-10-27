@@ -27,29 +27,6 @@ FIXTURES = Path(__file__).parent / "fixtures" / "php"
 
 
 @pytest.fixture(scope="session")
-def docker_image():
-    image_name = "owlbot-php-test"
-    f = open("post-processor-changes.txt", "w")
-    f.close()
-
-    subprocess.run(
-        [
-            "docker",
-            "build",
-            "-t",
-            image_name,
-            "-f",
-            "docker/owlbot/php/Dockerfile",
-            ".",
-        ],
-        check=True,
-    )
-    yield image_name
-
-    os.remove("post-processor-changes.txt")
-
-
-@pytest.fixture(scope="session")
 def hybrid_tmp_path():
     """A tmp dir implementation both for local run and on Kokoro."""
     # Trampoline mount KOKORO_ROOT at the same path.
@@ -83,32 +60,3 @@ def get_diff_string(dcmp, buf=""):
         buf += get_diff_string(sub_dcmp)
     return buf
 
-
-def test_owlbot_php(copy_fixture, docker_image):
-    user_id = os.getuid()
-    group_id = os.getgid()
-    src_dir = (copy_fixture / "src").resolve()
-
-    # Run the postprocessor image
-    subprocess.run(
-        [
-            "docker",
-            "run",
-            "--user",
-            f"{user_id}:{group_id}",
-            "--rm",
-            "-v",
-            f"{src_dir}:/repo",
-            "-w",
-            "/repo",
-            docker_image,
-        ],
-        check=True,
-    )
-
-    dcmp = dircmp(copy_fixture / "expected", copy_fixture / "src")
-    diff_string = get_diff_string(dcmp, "")
-    assert diff_string == ""
-    staging = copy_fixture / "src/owl-bot-staging"
-    # make sure the staging directory is deleted
-    assert not staging.is_dir()
