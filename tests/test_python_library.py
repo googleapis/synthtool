@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import os
-import shutil
 from pathlib import Path
 import yaml
 
@@ -21,7 +20,6 @@ import pytest
 
 from synthtool import gcp
 from synthtool.sources import templates
-from synthtool.languages import python
 from . import util
 
 
