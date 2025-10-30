@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This file is not used any more, but we keep this file for making it
+# This file is not used anymore, but we keep this file for making it
 # easy to roll back.
 # TODO: Remove this file from the template.
 
