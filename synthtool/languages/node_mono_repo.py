@@ -457,7 +457,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
         package_name = Path(path_object).name
         destination_folder = get_destination_folder(package_name)
         if (destination_folder is None):
-            return raise RuntimeError(
+            raise RuntimeError(
                 f"Can't find package {package_name} in subdirectories")
         owlbot_dirs.append(
             f"{Path(path_object).parents[1]}/{destination_folder}/{package_name}"
