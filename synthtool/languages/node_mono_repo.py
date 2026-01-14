@@ -30,6 +30,9 @@ from datetime import date
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
 _GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
+PACKAGE_DIRECTORIES = ["packages", "handwritten"]
+PACKAGE_DIRECTORIES_REGEX = f"((?:{'|'.join(PACKAGE_DIRECTORIES)})/.*)"
+
 
 
 def read_metadata(relative_dir: str):
@@ -117,7 +120,7 @@ def write_release_please_config(owlbot_dirs):
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in owlbot_dirs:
-            result = re.search(r"(packages/.*)", dir)
+            result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
             assert result is not None
             data["packages"][result.group()] = {}
     with open("release-please-config.json", "w") as f:
@@ -142,7 +145,7 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     all_samples = samples.all_samples([str(Path(relative_dir, "samples/**/*.js"))])
 
     for sample in all_samples:
-        rel_file_path = re.search(r"(packages\/.*)", sample["file"])
+        rel_file_path = re.search(PACKAGE_DIRECTORIES_REGEX, sample["file"])
         if rel_file_path:
             sample["file"] = rel_file_path.group()
 
@@ -388,6 +391,40 @@ default_templates_excludes: List[str] = []
 def _noop(library: Path) -> None:
     pass
 
+def get_destination_folder(package_name: str) -> Optional[str]:
+    """
+    Finds the destination folder (e.g. 'packages', 'handwritten') for a given package.
+    It searches for a directory with the package name in all subdirectories of the current directory.
+    """
+    for path in Path.cwd().glob(f"*/{package_name}"):
+        if path.is_dir():
+            return path.parent.name
+    return None
+
+def find_owlbot_dirs_in_sub_dir(base_dir: Path, sub_dir: str, packages_to_exclude: List[str], search_for_changed_files: bool) -> List[str]:
+    owlbot_dirs = []
+    for path_object in base_dir.glob(f"{sub_dir}/**/.OwlBot.yaml"):
+        if path_object.is_file() and not re.search(
+            "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
+        ):
+            if search_for_changed_files:
+                if (
+                    subprocess.run(
+                        [
+                            "git",
+                            "diff",
+                            "--quiet",
+                            "main...",
+                            Path(path_object).parents[0],
+                        ]
+                    ).returncode
+                    == 1
+                ):
+                    owlbot_dirs.append(str(Path(path_object).parents[0]))
+            else:
+                owlbot_dirs.append(str(Path(path_object).parents[0]))
+    return owlbot_dirs
+
 
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     """
@@ -414,29 +451,16 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
                 logger.info(f"Error: ${e.output}; skipping fetching main")
             else:
                 raise e
-    for path_object in dir.glob("packages/**/.OwlBot.yaml"):
-        if path_object.is_file() and not re.search(
-            "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
-        ):
-            if search_for_changed_files:
-                if (
-                    subprocess.run(
-                        [
-                            "git",
-                            "diff",
-                            "--quiet",
-                            "main...",
-                            Path(path_object).parents[0],
-                        ]
-                    ).returncode
-                    == 1
-                ):
-                    owlbot_dirs.append(str(Path(path_object).parents[0]))
-            else:
-                owlbot_dirs.append(str(Path(path_object).parents[0]))
+    for sub_dir in PACKAGE_DIRECTORIES:
+        owlbot_dirs.extend(find_owlbot_dirs_in_sub_dir(dir, sub_dir, packages_to_exclude, search_for_changed_files))
     for path_object in dir.glob("owl-bot-staging/*"):
+        package_name = Path(path_object).name
+        destination_folder = get_destination_folder(package_name)
+        if (destination_folder is None):
+            return raise RuntimeError(
+                f"Can't find package {package_name} in subdirectories")
         owlbot_dirs.append(
-            f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}"
+            f"{Path(path_object).parents[1]}/{destination_folder}/{package_name}"
         )
     return owlbot_dirs
 
