@@ -34,7 +34,6 @@ PACKAGE_DIRECTORIES = ["packages", "handwritten"]
 PACKAGE_DIRECTORIES_REGEX = f"((?:{'|'.join(PACKAGE_DIRECTORIES)})/.*)"
 
 
-
 def read_metadata(relative_dir: str):
     """
     read package name and repository in package.json from a Node library.
@@ -403,7 +402,12 @@ def get_destination_folder(package_name: str, base_dir: Path) -> Optional[str]:
     return None
 
 
-def find_owlbot_dirs_in_sub_dir(base_dir: Path, sub_dir: str, packages_to_exclude: List[str], search_for_changed_files: bool) -> List[str]:
+def find_owlbot_dirs_in_sub_dir(
+    base_dir: Path,
+    sub_dir: str,
+    packages_to_exclude: List[str],
+    search_for_changed_files: bool,
+) -> List[str]:
     owlbot_dirs = []
     for path_object in base_dir.glob(f"{sub_dir}/**/.OwlBot.yaml"):
         if path_object.is_file() and not re.search(
@@ -454,7 +458,11 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
             else:
                 raise e
     for sub_dir in PACKAGE_DIRECTORIES:
-        owlbot_dirs.extend(find_owlbot_dirs_in_sub_dir(dir, sub_dir, packages_to_exclude, search_for_changed_files))
+        owlbot_dirs.extend(
+            find_owlbot_dirs_in_sub_dir(
+                dir, sub_dir, packages_to_exclude, search_for_changed_files
+            )
+        )
     for path_object in dir.glob("owl-bot-staging/*"):
         package_name = Path(path_object).name
         destination_folder = get_destination_folder(package_name, dir)
