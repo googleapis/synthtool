@@ -391,12 +391,12 @@ default_templates_excludes: List[str] = []
 def _noop(library: Path) -> None:
     pass
 
-def get_destination_folder(package_name: str) -> Optional[str]:
+def get_destination_folder(package_name: str, base_dir: Path) -> Optional[str]:
     """
     Finds the destination folder (e.g. 'packages', 'handwritten') for a given package.
     It searches for a directory with the package name in all subdirectories of the current directory.
     """
-    for path in Path.cwd().glob(f"*/{package_name}"):
+    for path in base_dir.glob(f"*/{package_name}"):
         if path.is_dir():
             return path.parent.name
     return None
@@ -455,7 +455,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
         owlbot_dirs.extend(find_owlbot_dirs_in_sub_dir(dir, sub_dir, packages_to_exclude, search_for_changed_files))
     for path_object in dir.glob("owl-bot-staging/*"):
         package_name = Path(path_object).name
-        destination_folder = get_destination_folder(package_name)
+        destination_folder = get_destination_folder(package_name, dir)
         if (destination_folder is None):
             raise RuntimeError(
                 f"Can't find package {package_name} in subdirectories")
