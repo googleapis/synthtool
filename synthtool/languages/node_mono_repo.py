@@ -458,9 +458,8 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     for path_object in dir.glob("owl-bot-staging/*"):
         package_name = Path(path_object).name
         destination_folder = get_destination_folder(package_name, dir)
-        if (destination_folder is None):
-            raise RuntimeError(
-                f"Can't find package {package_name} in subdirectories")
+        if destination_folder is None:
+            raise RuntimeError(f"Can't find package {package_name} in subdirectories")
         owlbot_dirs.append(
             f"{Path(path_object).parents[1]}/{destination_folder}/{package_name}"
         )
