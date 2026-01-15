@@ -391,6 +391,7 @@ default_templates_excludes: List[str] = []
 def _noop(library: Path) -> None:
     pass
 
+
 def get_destination_folder(package_name: str, base_dir: Path) -> Optional[str]:
     """
     Finds the destination folder (e.g. 'packages', 'handwritten') for a given package.
@@ -400,6 +401,7 @@ def get_destination_folder(package_name: str, base_dir: Path) -> Optional[str]:
         if path.is_dir():
             return path.parent.name
     return None
+
 
 def find_owlbot_dirs_in_sub_dir(base_dir: Path, sub_dir: str, packages_to_exclude: List[str], search_for_changed_files: bool) -> List[str]:
     owlbot_dirs = []
