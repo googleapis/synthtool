@@ -417,6 +417,41 @@ def test_walk_through_owlbot_dirs(mock_subproc_popen):
     assert re.search("packages/dlp", owlbot_dirs[0])
 
 
+@patch("subprocess.run")
+def test_walk_through_owlbot_dirs_handwritten(mock_subproc_popen):
+    process_mock = Mock()
+    attrs = {"communicate.return_value": ("output", "error")}
+    process_mock.configure_mock(**attrs)
+    mock_subproc_popen.return_value = process_mock
+
+    with util.copied_fixtures_dir(
+        FIXTURES / "nodejs_mono_repo_with_staging"
+    ) as workdir:
+        # Create a handwritten package
+        handwritten_dir = workdir / "handwritten" / "my-package"
+        handwritten_dir.mkdir(parents=True)
+        (handwritten_dir / ".OwlBot.yaml").touch()
+
+        owlbot_dirs = node_mono_repo.walk_through_owlbot_dirs(
+            workdir, search_for_changed_files=False
+        )
+
+        assert not mock_subproc_popen.called
+        assert len(owlbot_dirs) == 3
+
+        handwritten_count = sum(
+            1 for d in owlbot_dirs if re.search("handwritten/my-package", d)
+        )
+        assert handwritten_count == 1
+
+        package_dlp_count = sum(1 for d in owlbot_dirs if re.search("packages/dlp", d))
+        staging_dlp_count = sum(
+            1 for d in owlbot_dirs if re.search("owl-bot-staging/dlp", d)
+        )
+
+        assert package_dlp_count + staging_dlp_count == 2
+
+
 @patch("synthtool.languages.node_mono_repo.walk_through_owlbot_dirs")
 def test_entrypoint_args_with_no_arg(hermetic_mock, nodejs_mono_repo):
     node_mono_repo.owlbot_entrypoint()
