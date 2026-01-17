@@ -397,7 +397,7 @@ def get_destination_folder(package_name: str, base_dir: Path) -> Optional[str]:
     It searches for a directory with the package name in all subdirectories of the current directory.
     """
     for path in base_dir.glob(f"*/{package_name}"):
-        if path.is_dir():
+        if path.is_dir() and path.parent.name != "owl-bot-staging":
             return path.parent.name
     return None
 
