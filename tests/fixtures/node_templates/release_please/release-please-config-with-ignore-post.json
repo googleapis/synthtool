@@ -1,0 +1,7 @@
+{
+  "release-type": "node",
+  "packages": {
+    "packages/gapic-node-processing/templates/bootstrap-templates": {},
+    "packages/dlp": {}
+  }
+}
