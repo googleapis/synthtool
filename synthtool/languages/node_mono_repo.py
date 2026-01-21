@@ -116,12 +116,24 @@ def copy_list_sample_to_quickstart(relative_dir: str):
 
 
 def write_release_please_config(owlbot_dirs):
+    ignore_file = Path("ignore.json")
+    ignore_list = []
+    if ignore_file.is_file():
+        with open(ignore_file, "r") as f:
+            try:
+                ignore_list = json.load(f)
+            except json.JSONDecodeError:
+                logger.warning(f"Could not decode {ignore_file}, ignoring.")
+
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in owlbot_dirs:
             result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
             assert result is not None
-            data["packages"][result.group()] = {}
+            package_name = result.group()
+            if package_name in ignore_list:
+                continue
+            data["packages"][package_name] = {}
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
 

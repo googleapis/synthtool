@@ -21,6 +21,8 @@ from unittest.mock import Mock, patch
 from datetime import date
 
 import pytest
+import json
+import shutil
 
 from synthtool.languages import node_mono_repo
 from . import util
@@ -203,8 +205,11 @@ def test_generate_index_ts_esm():
 
 
 def test_write_release_please_config():
-    # use a non-nodejs template directory
     with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
+        # Ensure no ignore.json exists for this test
+        ignore_file = Path("ignore.json")
+        if ignore_file.is_file():
+            ignore_file.unlink()
         node_mono_repo.write_release_please_config(
             [
                 "google-cloud-node/packages/gapic-node-processing/templates/bootstrap-templates",
@@ -214,10 +219,65 @@ def test_write_release_please_config():
             ]
         )
 
-        assert filecmp.cmp(
-            pathlib.Path("release-please-config.json"),
-            pathlib.Path("release-please-config-post.json"),
+        expected_data = {
+            "release-type": "node",
+            "packages": {
+                "packages/gapic-node-processing/templates/bootstrap-templates": {},
+                "packages/dlp": {},
+                "packages/asset": {},
+                "packages/bigquery-migration": {}
+            }
+        }
+        with open("release-please-config.json", "r") as f:
+            actual_data = json.load(f)
+        assert actual_data == expected_data
+
+
+def test_write_release_please_config_with_ignore():
+    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
+        # The ignore.json and initial release-please-config.json are already in the fixture dir
+        # via previous write_file calls.
+        # However, copied_fixtures_dir copies the *original* fixtures.
+        # So, I need to write them again in the temporary directory created by copied_fixtures_dir.
+        # This is a bit redundant but ensures the test operates on the correct files.
+
+        # Create the ignore.json file in the temporary directory
+        with open("ignore.json", "w") as f:
+            json.dump(
+                [
+                    "packages/asset",
+                    "packages/bigquery-migration",
+                ],
+                f,
+                indent=2,
+            )
+        
+        # Copy the initial release-please-config.json
+        shutil.copyfile(
+            pathlib.Path(FIXTURES / "node_templates" / "release_please" / "release-please-config-with-ignore-initial.json"),
+            "release-please-config.json",
         )
+
+        node_mono_repo.write_release_please_config(
+            [
+                "google-cloud-node/packages/gapic-node-processing/templates/bootstrap-templates",
+                "Users/person/google-cloud-node/packages/dlp",
+                "Users/person/google-cloud-node/packages/asset", # This should be ignored
+                "packages/bigquery-migration", # This should be ignored
+            ]
+        )
+
+        # Assert that the release-please-config.json is updated correctly
+        expected_data = {
+            "release-type": "node",
+            "packages": {
+                "packages/gapic-node-processing/templates/bootstrap-templates": {},
+                "packages/dlp": {}
+            }
+        }
+        with open("release-please-config.json", "r") as f:
+            actual_data = json.load(f)
+        assert actual_data == expected_data
 
 
 def test_generate_index_ts_empty_versions():
