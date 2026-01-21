@@ -225,8 +225,8 @@ def test_write_release_please_config():
                 "packages/gapic-node-processing/templates/bootstrap-templates": {},
                 "packages/dlp": {},
                 "packages/asset": {},
-                "packages/bigquery-migration": {}
-            }
+                "packages/bigquery-migration": {},
+            },
         }
         with open("release-please-config.json", "r") as f:
             actual_data = json.load(f)
@@ -251,10 +251,15 @@ def test_write_release_please_config_with_ignore():
                 f,
                 indent=2,
             )
-        
+
         # Copy the initial release-please-config.json
         shutil.copyfile(
-            pathlib.Path(FIXTURES / "node_templates" / "release_please" / "release-please-config-with-ignore-initial.json"),
+            pathlib.Path(
+                FIXTURES
+                / "node_templates"
+                / "release_please"
+                / "release-please-config-with-ignore-initial.json"
+            ),
             "release-please-config.json",
         )
 
@@ -262,8 +267,8 @@ def test_write_release_please_config_with_ignore():
             [
                 "google-cloud-node/packages/gapic-node-processing/templates/bootstrap-templates",
                 "Users/person/google-cloud-node/packages/dlp",
-                "Users/person/google-cloud-node/packages/asset", # This should be ignored
-                "packages/bigquery-migration", # This should be ignored
+                "Users/person/google-cloud-node/packages/asset",  # This should be ignored
+                "packages/bigquery-migration",  # This should be ignored
             ]
         )
 
@@ -272,8 +277,8 @@ def test_write_release_please_config_with_ignore():
             "release-type": "node",
             "packages": {
                 "packages/gapic-node-processing/templates/bootstrap-templates": {},
-                "packages/dlp": {}
-            }
+                "packages/dlp": {},
+            },
         }
         with open("release-please-config.json", "r") as f:
             actual_data = json.load(f)
