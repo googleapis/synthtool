@@ -140,7 +140,7 @@ class GAPICMicrogenerator:
         sep = os.path.sep
 
         # try to figure out user ID and stay compatible.
-        # If there is no `os.getuid()`, fallback to `getpass.getuser()`
+        # If there is no `os.getuid()`, fall back to `getpass.getuser()`
         getuid = getattr(os, "getuid", None)
         if getuid:
             user = str(getuid())

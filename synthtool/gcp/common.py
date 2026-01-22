@@ -298,7 +298,7 @@ class CommonTemplates:
 
         # Add kwargs to signal that UPGRADING.md should be included in docs/index.rst if it exists
         if Path("docs/UPGRADING.md").exists() or Path("docs/UPGRADING.rst").exists():
-            kwargs["include_uprading_doc"] = True
+            kwargs["include_upgrading_doc"] = True
 
         # If the directory `google/cloud` exists, add kwargs to signal that the client library is for a Cloud API
         if Path("google/cloud").exists():
@@ -439,7 +439,7 @@ def detect_versions(
     default_first: Optional[bool] = None,
 ) -> List[str]:
     """
-    Detects the versions a library has, based on distinct folders
+    Detects the versions of a library, based on distinct folders
     within path. This is based on the fact that our GAPIC libraries are
     structured as follows:
 
@@ -531,7 +531,7 @@ def _load_repo_metadata(
     * `api_id` - The API ID associated with the service. Fully qualified identifier use to
       enable a service in the cloud platform (e.g. monitoring.googleapis.com)
     * `requires_billing` - Whether or not the API requires billing to be configured on the
-      customer's acocunt
+      customer's account
 
     Args:
         metadata_file (str, optional): Path to the metadata json file
@@ -555,7 +555,7 @@ def _get_default_branch_name(repository_name: str) -> str:
     First checks environment variable DEFAULT_BRANCH_PATH.  If found, it
     reads the contents of the file at DEFAULT_BRANCH_PATH and returns it.
 
-    Then checks environment varabile DEFAULT_BRANCH, and returns it if found.
+    Then checks environment variable DEFAULT_BRANCH, and returns it if found.
     """
     default_branch_path = os.getenv("DEFAULT_BRANCH_PATH")
     if default_branch_path:
