@@ -632,7 +632,6 @@ def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_mono_repo):
 
 @patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
 def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_mono_repo):
-    mock_s = MagicMock()
 
     def patch(library: Path):
         transforms.replace(library / "src" / "index.ts", "import", "export")
