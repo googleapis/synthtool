@@ -1,0 +1,18 @@
+{
+  "name": "dlp",
+  "name_pretty": "Cloud Data Loss Prevention (DLP)",
+  "product_documentation": "https://cloud.google.com/dlp/docs/",
+  "client_documentation": "https://googleapis.dev/nodejs/dlp/latest/",
+  "issue_tracker": "https://github.com/googleapis/google-cloud-node/issues",
+  "release_level": "stable",
+  "language": "nodejs",
+  "repo": "googleapis/google-cloud-node",
+  "repo_short": "nodejs-dlp",
+  "distribution_name": "@google-cloud/dlp",
+  "api_id": "dlp.googleapis.com",
+  "requires_billing": true,
+  "default_version": "v2",
+  "codeowner_team": "@googleapis/data-protection",
+  "library_type": "GAPIC_AUTO",
+  "api_shortname": "dlp"
+}
