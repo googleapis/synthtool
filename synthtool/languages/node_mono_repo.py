@@ -585,7 +585,7 @@ def owlbot_main(
             )
             s_copy([templates], destination=relative_dir, excludes=templates_excludes)
     # This is the "new" behavior that applies to libraries that have been migrated to the new post-processor (every gapic layer)
-    else:            
+    else:
         staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
         s_copy = transforms.move
         if staging.is_dir():
