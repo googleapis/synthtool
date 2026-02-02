@@ -1,0 +1,6 @@
+# .OwlBot.yaml
+# This file is used by OwlBot to copy files from the googleapis-gen repo to this repo.
+# The files are copied into the owl-bot-staging directory.
+#
+# For more information, see:
+# https://github.com/googleapis/synthtool/blob/master/README.md#owl-bot
