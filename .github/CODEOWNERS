@@ -1,4 +1,4 @@
-*   @chingor13 @googleapis/cloud-sdk-python-team @googleapis/cloud-sdk-platform-team
+*   @googleapis/cloud-sdk-python-team @googleapis/cloud-sdk-platform-team
 
 # assign templates to the language team that owns them
 synthtool/gcp/templates/java_library/          @googleapis/cloud-sdk-java-team
