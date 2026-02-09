@@ -261,7 +261,7 @@ def owlbot_main(package_dir: str) -> None:
             synthtool.shell.run(
                 ["nox", "-s", "format", "--no-venv"],
                 cwd=noxfile.parent,
-                hide_output=False
+                hide_output=False,
             )
 
         apply_client_specific_post_processing(
