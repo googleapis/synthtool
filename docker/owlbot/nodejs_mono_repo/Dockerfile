@@ -43,18 +43,13 @@ RUN apt-get update && \
 WORKDIR /root
 
 # Install pyenv
-RUN curl -L -o /tmp/pyenv.tar.gz https://github.com/pyenv/pyenv/archive/refs/tags/v2.6.3.tar.gz && \
+RUN curl -L -o /tmp/pyenv.tar.gz https://github.com/pyenv/pyenv/archive/refs/tags/v2.6.22.tar.gz && \
     mkdir -p /root/.pyenv && \
     tar -xzvf /tmp/pyenv.tar.gz -C /root/.pyenv --strip-components=1 && \
     echo 'eval "$(pyenv init -)"' >> /root/.profile && \
     echo 'eval "$(pyenv virtualenv-init -)"' >> /root/.profile
 
 ENV PATH="/root/.pyenv/bin:/root/.pyenv/shims:${PATH}"
-
-# Install python
-RUN pyenv install 3.13.5 && \
-    pyenv global 3.13.5 && \
-    python3 -m pip install --upgrade pip setuptools
 
 ## Install Node.js from apt-get
 
@@ -72,6 +67,14 @@ RUN npm --version
 
 ## Install Synthtool and Dependencies
 
+# Install python
+RUN pyenv install 3.13.12 && \
+    pyenv global 3.13.12 
+
+# This is needed to upgrade pip in the following path
+# /root/.pyenv/versions/3.13.12/lib/python3.13/site-packages/
+RUN pip install --upgrade pip
+
 # Create a Python virtual environment for synthtool's dependencies.
 # This isolates your Python packages from the system Python, preventing conflicts.
 ENV VIRTUAL_ENV=/opt/venv/synthtool
@@ -80,17 +83,32 @@ RUN python3 -m venv $VIRTUAL_ENV
 # the venv for all subsequent commands in this and future RUN layers.
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
+# This is needed to upgrade pip in the following path
+# /opt/venv/synthtool/lib/python3.13/site-packages/
+RUN pip install --upgrade pip
+
+# TODO(https://github.com/python/cpython/issues/144538): This is
+# need to address CVE-2026-1703 which requires pip 26.0
+# as per https://github.com/advisories/GHSA-4xh5-x5gv-qwph.
+# Remove this code once Python 3.13.13 is released which includes a fix.
+RUN rm -rf /root/.pyenv/versions/3.13.12/lib/python3.13/ensurepip/_bundled/pip-25.3-py3-none-any.whl
+
 # Copy requirements.txt and install Python dependencies into the virtual environment.
 # Since we're in the venv, 'pip' directly refers to the venv's pip.
 COPY requirements.txt /synthtool/requirements.txt
 RUN pip install --require-hashes -r /synthtool/requirements.txt
 
 # TODO: Remove this code once there is a newer version of virtualenv which does not include setuptools 75.3.2
-# https://github.com/pypa/virtualenv/tree/main/src/virtualenv/seed/wheels/embed
+# https://github.com/pypa/virtualenv/tree/20.36.1/src/virtualenv/seed/wheels/embed
 # In the interim, remove the bundled setuptools 75.3.2 wheel
 # since it does not include a fix for CVE-2025-47273/CVE-2025-47273.
-
-RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-68.0.0-py3-none-any.whl
+RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-75.3.2-py3-none-any.whl
+# TODO: Remove this code once there is a newer version of virtualenv which does not include pip 25.0.1 and 25.3
+# https://github.com/pypa/virtualenv/tree/20.36.1/src/virtualenv/seed/wheels/embed
+# In the interim, remove the bundled pip sheel
+# since it does not include a fix for CVE-2026-1703
+RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/pip-25.3-py3-none-any.whl
+RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/pip-25.0.1-py3-none-any.whl
 
 # Set PYTHONPATH to ensure synthtool can be found by Python scripts.
 # Include the virtual environment's site-packages for completeness.
