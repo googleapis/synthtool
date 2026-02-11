@@ -259,7 +259,7 @@ def owlbot_main(package_dir: str) -> None:
         # run format nox session for all directories which have a noxfile
         for noxfile in Path(".").glob(f"packages/{package_name}/**/noxfile.py"):
             synthtool.shell.run(
-                ["nox", "-s", "format", "--no-venv"],
+                ["nox", "-s", "format", "--no-venv", "--no-install"],
                 cwd=noxfile.parent,
                 hide_output=False,
             )
