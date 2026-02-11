@@ -8,8 +8,8 @@ jinja2
 deprecation
 protobuf==6.33.5
 watchdog
-# `virtualenv==20.26.6` is added for Python 3.7 compatibility
-virtualenv==20.26.6
+# `virtualenv==20.36.1` is added for Python 3.7 compatibility
+virtualenv==20.36.1
 
 # some java processing requires xml handling
 lxml
