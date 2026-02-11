@@ -26,10 +26,16 @@ from typing import Any, Dict, List, Optional, Callable
 import shutil
 from synthtool.languages import common
 from datetime import date
+import logging
+from os import system
+from synthtool import _tracked_paths
+from synthtool import gcp
 
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
 _GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
+PACKAGE_DIRECTORIES = ["packages", "handwritten"]
+PACKAGE_DIRECTORIES_REGEX = f"((?:{'|'.join(PACKAGE_DIRECTORIES)})/.*)"
 
 
 def read_metadata(relative_dir: str):
@@ -114,12 +120,24 @@ def copy_list_sample_to_quickstart(relative_dir: str):
 
 
 def write_release_please_config(owlbot_dirs):
+    ignore_file = Path("ignore.json")
+    ignore_list = []
+    if ignore_file.is_file():
+        with open(ignore_file, "r") as f:
+            try:
+                ignore_list = json.load(f)
+            except json.JSONDecodeError:
+                logger.warning(f"Could not decode {ignore_file}, ignoring.")
+
     with open("release-please-config.json", "r") as f:
         data = json.load(f)
         for dir in owlbot_dirs:
-            result = re.search(r"(packages/.*)", dir)
+            result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
             assert result is not None
-            data["packages"][result.group()] = {}
+            package_name = result.group()
+            if package_name in ignore_list:
+                continue
+            data["packages"][package_name] = {}
     with open("release-please-config.json", "w") as f:
         json.dump(data, f, indent=2)
 
@@ -142,7 +160,7 @@ def template_metadata(relative_dir: str) -> Dict[str, Any]:
     all_samples = samples.all_samples([str(Path(relative_dir, "samples/**/*.js"))])
 
     for sample in all_samples:
-        rel_file_path = re.search(r"(packages\/.*)", sample["file"])
+        rel_file_path = re.search(PACKAGE_DIRECTORIES_REGEX, sample["file"])
         if rel_file_path:
             sample["file"] = rel_file_path.group()
 
@@ -179,7 +197,7 @@ def extract_clients(filePath: Path) -> List[str]:
     """
     with open(filePath, "r") as fh:
         content = fh.read()
-    return re.findall(r"\{(.*Client)\}", content)
+    return re.findall(r"\{\s*(\w+Client)\s*\}", content)
 
 
 def generate_index_ts(
@@ -389,6 +407,47 @@ def _noop(library: Path) -> None:
     pass
 
 
+def get_destination_folder(package_name: str, base_dir: Path) -> Optional[str]:
+    """
+    Finds the destination folder (e.g. 'packages', 'handwritten') for a given package.
+    It searches for a directory with the package name in all subdirectories of the current directory.
+    """
+    for path in base_dir.glob(f"*/{package_name}"):
+        if path.is_dir() and path.parent.name != "owl-bot-staging":
+            return path.parent.name
+    return None
+
+
+def find_owlbot_dirs_in_sub_dir(
+    base_dir: Path,
+    sub_dir: str,
+    packages_to_exclude: List[str],
+    search_for_changed_files: bool,
+) -> List[str]:
+    owlbot_dirs = []
+    for path_object in base_dir.glob(f"{sub_dir}/**/.OwlBot.yaml"):
+        if path_object.is_file() and not re.search(
+            "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
+        ):
+            if search_for_changed_files:
+                if (
+                    subprocess.run(
+                        [
+                            "git",
+                            "diff",
+                            "--quiet",
+                            "main...",
+                            Path(path_object).parents[0],
+                        ]
+                    ).returncode
+                    == 1
+                ):
+                    owlbot_dirs.append(str(Path(path_object).parents[0]))
+            else:
+                owlbot_dirs.append(str(Path(path_object).parents[0]))
+    return owlbot_dirs
+
+
 def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     """
     Walks through all API packages in google-cloud-node/packages
@@ -414,29 +473,19 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
                 logger.info(f"Error: ${e.output}; skipping fetching main")
             else:
                 raise e
-    for path_object in dir.glob("packages/**/.OwlBot.yaml"):
-        if path_object.is_file() and not re.search(
-            "(?:% s)" % "|".join(packages_to_exclude), str(Path(path_object))
-        ):
-            if search_for_changed_files:
-                if (
-                    subprocess.run(
-                        [
-                            "git",
-                            "diff",
-                            "--quiet",
-                            "main...",
-                            Path(path_object).parents[0],
-                        ]
-                    ).returncode
-                    == 1
-                ):
-                    owlbot_dirs.append(str(Path(path_object).parents[0]))
-            else:
-                owlbot_dirs.append(str(Path(path_object).parents[0]))
+    for sub_dir in PACKAGE_DIRECTORIES:
+        owlbot_dirs.extend(
+            find_owlbot_dirs_in_sub_dir(
+                dir, sub_dir, packages_to_exclude, search_for_changed_files
+            )
+        )
     for path_object in dir.glob("owl-bot-staging/*"):
+        package_name = Path(path_object).name
+        destination_folder = get_destination_folder(package_name, dir)
+        if destination_folder is None:
+            raise RuntimeError(f"Can't find package {package_name} in subdirectories")
         owlbot_dirs.append(
-            f"{Path(path_object).parents[1]}/packages/{Path(path_object).name}"
+            f"{Path(path_object).parents[1]}/{destination_folder}/{package_name}"
         )
     return owlbot_dirs
 
@@ -471,23 +520,90 @@ def owlbot_main(
     Also, this function requires a default_version in your .repo-metadata.json.  Ex:
         "default_version": "v1",
     """
-    staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
-    s_copy = transforms.move
-    if staging.is_dir():
-        print(f"Entering staging copying ${staging} to {relative_dir}")
-        # _tracked_paths.add(staging)
-        s_copy([staging], destination=relative_dir)
-        # The staging directory should never be merged into the main branch.
-        shutil.rmtree(staging)
-    print(f"Entering post-processing for {relative_dir}")
-    shell.run(
-        [
-            "node",
-            "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
-            Path(relative_dir).resolve(),
-        ]
-    )
-    return
+
+    # This is the "old" behavior that only applies to the handwritten libraries (that haven't yet been migrated to the new post-processing structure)
+    if "handwritten" in relative_dir:
+        if staging_excludes is None:
+            staging_excludes = default_staging_excludes
+        if templates_excludes is None:
+            templates_excludes = default_templates_excludes
+
+        logging.basicConfig(level=logging.DEBUG)
+        # Load the default version defined in .repo-metadata.json.
+        default_version = json.load(
+            open(Path(relative_dir, ".repo-metadata.json").resolve(), "rt")
+        ).get("default_version")
+        is_esm = False
+        src = Path(Path(relative_dir), "src").resolve()
+        source_location = "build/src"
+        if (Path(Path(relative_dir), "esm", "src").resolve()).is_dir():
+            is_esm = True
+            src = Path(Path(relative_dir), "esm", "src").resolve()
+            source_location = "build/esm/src"
+        staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
+        s_copy = transforms.move
+        if default_version is None:
+            logger.info("No default version found in .repo-metadata.json.  Ok.")
+        elif staging.is_dir():
+            logger.info(f"Copying files from staging directory ${staging}.")
+            # Collect the subdirectories of the staging directory.
+            versions = [v.name for v in staging.iterdir() if v.is_dir()]
+            # Reorder the versions so the default version always comes last.
+            versions = [v for v in versions if v != default_version] + [default_version]
+            logger.info(f"Collected versions ${versions} from ${staging}")
+
+            # Copy each version directory into the root.
+            for version in versions:
+                library = staging / version
+                _tracked_paths.add(library)
+                patch_staging(library)
+                s_copy([library], destination=relative_dir, excludes=staging_excludes)
+            # The staging directory should never be merged into the main branch.
+            shutil.rmtree(staging)
+        else:
+            # Collect the subdirectories of the src directory.
+            versions = [v.name for v in src.iterdir() if v.is_dir()]
+            # Reorder the versions so the default version always comes last.
+            versions = [v for v in versions if v != default_version] + [default_version]
+            logger.info(f"Collected versions ${versions} from ${src}")
+
+        common_templates = gcp.CommonTemplates(template_path)
+        common_templates.excludes.extend(templates_excludes)
+        if default_version:
+            templates = common_templates.node_mono_repo_library(
+                relative_dir=relative_dir,
+                source_location=source_location,
+                versions=versions,
+                default_version=default_version,
+                is_esm=is_esm,
+            )
+            s_copy([templates], destination=relative_dir, excludes=templates_excludes)
+            postprocess_gapic_library_hermetic(relative_dir=relative_dir, is_esm=is_esm)
+        else:
+            templates = common_templates.node_mono_repo_library(
+                relative_dir=relative_dir, source_location=source_location
+            )
+            s_copy([templates], destination=relative_dir, excludes=templates_excludes)
+    # This is the "new" behavior that applies to libraries that have been migrated to the new post-processor (every gapic layer)
+    else:
+        staging = Path("owl-bot-staging", Path(relative_dir).name).resolve()
+        s_copy = transforms.move
+        if staging.is_dir():
+            print(f"Entering staging copying ${staging} to {relative_dir}")
+            # _tracked_paths.add(staging)
+            s_copy([staging], destination=relative_dir)
+            # The staging directory should never be merged into the main branch.
+            shutil.rmtree(staging)
+
+        print(f"Entering post-processing for {relative_dir}")
+        shell.run(
+            [
+                "node",
+                "/synthtool/synthtool/languages/node-monorepo-newprocess.js",
+                Path(relative_dir).resolve(),
+            ]
+        )
+        return
 
 
 def owlbot_entrypoint(
@@ -499,29 +615,42 @@ def owlbot_entrypoint(
 ):
     if specified_owlbot_dirs:
         for dir in specified_owlbot_dirs:
-            owlbot_main(
-                dir,
-                template_path,
-                staging_excludes,
-                templates_excludes,
-                patch_staging,
-            )
+            owlbot_py_file_path = hasOwlBotPy(dir)
+            if owlbot_py_file_path:
+                system(f"python3 {owlbot_py_file_path}")
+            else:
+                owlbot_main(
+                    dir,
+                    template_path,
+                    staging_excludes,
+                    templates_excludes,
+                    patch_staging,
+                )
     else:
         owlbot_dirs = walk_through_owlbot_dirs(
             Path.cwd(), search_for_changed_files=True
         )
         for dir in owlbot_dirs:
-            owlbot_main(
-                dir,
-                template_path,
-                staging_excludes,
-                templates_excludes,
-                patch_staging,
-            )
+            owlbot_py_file_path = hasOwlBotPy(dir)
+            if owlbot_py_file_path:
+                system(f"python3 {owlbot_py_file_path}")
+            else:
+                owlbot_main(
+                    dir,
+                    template_path,
+                    staging_excludes,
+                    templates_excludes,
+                    patch_staging,
+                )
     if Path("release-please-config.json").is_file():
         write_release_please_config(
             walk_through_owlbot_dirs(Path.cwd(), search_for_changed_files=False)
         )
+
+
+def hasOwlBotPy(dir):
+    if Path(Path(dir, "owlbot.py").resolve()).exists():
+        return Path(dir, "owlbot.py").resolve()
 
 
 if __name__ == "__main__":

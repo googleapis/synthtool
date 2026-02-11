@@ -17,12 +17,15 @@ import pathlib
 import re
 from pathlib import Path
 from unittest import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import Mock, patch, MagicMock, ANY
 from datetime import date
 
 import pytest
+import json
+import shutil
 
 from synthtool.languages import node_mono_repo
+from synthtool import transforms
 from . import util
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -203,8 +206,11 @@ def test_generate_index_ts_esm():
 
 
 def test_write_release_please_config():
-    # use a non-nodejs template directory
     with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
+        # Ensure no ignore.json exists for this test
+        ignore_file = Path("ignore.json")
+        if ignore_file.is_file():
+            ignore_file.unlink()
         node_mono_repo.write_release_please_config(
             [
                 "google-cloud-node/packages/gapic-node-processing/templates/bootstrap-templates",
@@ -214,10 +220,70 @@ def test_write_release_please_config():
             ]
         )
 
-        assert filecmp.cmp(
-            pathlib.Path("release-please-config.json"),
-            pathlib.Path("release-please-config-post.json"),
+        expected_data = {
+            "release-type": "node",
+            "packages": {
+                "packages/gapic-node-processing/templates/bootstrap-templates": {},
+                "packages/dlp": {},
+                "packages/asset": {},
+                "packages/bigquery-migration": {},
+            },
+        }
+        with open("release-please-config.json", "r") as f:
+            actual_data = json.load(f)
+        assert actual_data == expected_data
+
+
+def test_write_release_please_config_with_ignore():
+    with util.copied_fixtures_dir(FIXTURES / "node_templates" / "release_please"):
+        # The ignore.json and initial release-please-config.json are already in the fixture dir
+        # via previous write_file calls.
+        # However, copied_fixtures_dir copies the *original* fixtures.
+        # So, I need to write them again in the temporary directory created by copied_fixtures_dir.
+        # This is a bit redundant but ensures the test operates on the correct files.
+
+        # Create the ignore.json file in the temporary directory
+        with open("ignore.json", "w") as f:
+            json.dump(
+                [
+                    "packages/asset",
+                    "packages/bigquery-migration",
+                ],
+                f,
+                indent=2,
+            )
+
+        # Copy the initial release-please-config.json
+        shutil.copyfile(
+            pathlib.Path(
+                FIXTURES
+                / "node_templates"
+                / "release_please"
+                / "release-please-config-with-ignore-initial.json"
+            ),
+            "release-please-config.json",
         )
+
+        node_mono_repo.write_release_please_config(
+            [
+                "google-cloud-node/packages/gapic-node-processing/templates/bootstrap-templates",
+                "Users/person/google-cloud-node/packages/dlp",
+                "Users/person/google-cloud-node/packages/asset",  # This should be ignored
+                "packages/bigquery-migration",  # This should be ignored
+            ]
+        )
+
+        # Assert that the release-please-config.json is updated correctly
+        expected_data = {
+            "release-type": "node",
+            "packages": {
+                "packages/gapic-node-processing/templates/bootstrap-templates": {},
+                "packages/dlp": {},
+            },
+        }
+        with open("release-please-config.json", "r") as f:
+            actual_data = json.load(f)
+        assert actual_data == expected_data
 
 
 def test_generate_index_ts_empty_versions():
@@ -417,9 +483,253 @@ def test_walk_through_owlbot_dirs(mock_subproc_popen):
     assert re.search("packages/dlp", owlbot_dirs[0])
 
 
+@patch("subprocess.run")
+def test_walk_through_owlbot_dirs_handwritten(mock_subproc_popen):
+    process_mock = Mock()
+    attrs = {"communicate.return_value": ("output", "error")}
+    process_mock.configure_mock(**attrs)
+    mock_subproc_popen.return_value = process_mock
+
+    with util.copied_fixtures_dir(
+        FIXTURES / "nodejs_mono_repo_with_staging"
+    ) as workdir:
+        # Create a handwritten package
+        handwritten_dir = workdir / "handwritten" / "my-package"
+        handwritten_dir.mkdir(parents=True)
+        (handwritten_dir / ".OwlBot.yaml").touch()
+
+        owlbot_dirs = node_mono_repo.walk_through_owlbot_dirs(
+            workdir, search_for_changed_files=False
+        )
+
+        assert not mock_subproc_popen.called
+        assert len(owlbot_dirs) == 4
+        assert any(re.search("packages/dlp", d) for d in owlbot_dirs)
+        assert any(re.search("handwritten/my-package", d) for d in owlbot_dirs)
+        assert any(re.search("handwritten/dlp", d) for d in owlbot_dirs)
+
+
+@patch("subprocess.run")
+def test_walk_through_owlbot_dirs_no_staging(mock_subproc_popen):
+    process_mock = Mock()
+    attrs = {"communicate.return_value": ("output", "error")}
+    process_mock.configure_mock(**attrs)
+    mock_subproc_popen.return_value = process_mock
+
+    with util.copied_fixtures_dir(
+        FIXTURES / "nodejs_mono_repo_with_staging"
+    ) as workdir:
+        # Create a handwritten package
+        handwritten_dir = workdir / "handwritten" / "my-package"
+        handwritten_dir.mkdir(parents=True)
+        (handwritten_dir / ".OwlBot.yaml").touch()
+
+        owlbot_dirs = node_mono_repo.walk_through_owlbot_dirs(
+            workdir, search_for_changed_files=False
+        )
+        unique_owlbot_dirs = set(owlbot_dirs)
+
+        assert not mock_subproc_popen.called
+        # dlp, my-package. Staging-sourced paths should be mapped to destination.
+        assert len(unique_owlbot_dirs) == 3
+        assert any(re.search("handwritten/my-package", d) for d in unique_owlbot_dirs)
+        assert any(re.search("packages/dlp", d) for d in unique_owlbot_dirs)
+        assert not any(re.search("owl-bot-staging", d) for d in unique_owlbot_dirs)
+
+
 @patch("synthtool.languages.node_mono_repo.walk_through_owlbot_dirs")
 def test_entrypoint_args_with_no_arg(hermetic_mock, nodejs_mono_repo):
     node_mono_repo.owlbot_entrypoint()
     node_mono_repo.walk_through_owlbot_dirs.assert_called_with(
         Path.cwd(), search_for_changed_files=True
     )
+
+
+# postprocess_gapic_library_hermetic() must be mocked because it depends on node modules
+# present in the docker image but absent while running unit tests.
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_owlbot_main(hermetic_mock):
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_with_staging"):
+        # just confirm it doesn't throw an exception.
+        node_mono_repo.owlbot_entrypoint(
+            template_path=TEMPLATES,
+            specified_owlbot_dirs=["handwritten/dlp"],  # changed from packages/dlp
+        )
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_owlbot_main_with_staging(hermetic_mock, nodejs_mono_repo):
+    original_text = open(
+        FIXTURES
+        / "nodejs_mono_repo_with_staging"
+        / "packages"
+        / "dlp"
+        / "src"
+        / "index.ts",
+        "rt",
+    ).read()
+    node_mono_repo.owlbot_entrypoint(
+        template_path=TEMPLATES,
+        specified_owlbot_dirs=["handwritten/dlp"],  # changed from packages/dlp
+    )
+    # confirm index.ts was overwritten by template-generated index.ts.
+    staging_text = open(
+        FIXTURES
+        / "nodejs_mono_repo_with_staging"
+        / "owl-bot-staging"
+        / "dlp"
+        / "v2"
+        / "src"
+        / "index.ts",
+        "rt",
+    ).read()
+    text = open("./handwritten/dlp/src/v2/index.ts", "rt").read()  # changed path
+    assert staging_text != text
+    assert original_text != text
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_owlbot_main_with_staging_index_from_staging(hermetic_mock, nodejs_mono_repo):
+    node_mono_repo.owlbot_entrypoint(
+        template_path=TEMPLATES,
+        staging_excludes=["README.md", "package.json"],
+        templates_excludes=["src/index.ts"],
+        specified_owlbot_dirs=["handwritten/dlp"],  # changed from packages/dlp
+    )
+    # confirm index.ts was overwritten by staging index.ts.
+    staging_text = open(
+        FIXTURES
+        / "nodejs_mono_repo_with_staging"
+        / "owl-bot-staging"
+        / "dlp"
+        / "v2"
+        / "src"
+        / "index.ts",
+        "rt",
+    ).read()
+    text = open("./handwritten/dlp/src/index.ts", "rt").read()  # changed path
+    assert staging_text == text
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_owlbot_main_with_staging_ignore_index(hermetic_mock, nodejs_mono_repo):
+    # Create a placeholder index.ts in the handwritten directory for this test
+    handwritten_dlp_src_index_path = (
+        nodejs_mono_repo / "handwritten" / "dlp" / "src" / "index.ts"
+    )
+    handwritten_dlp_src_index_path.write_text("MY CUSTOM INDEX CONTENT")
+    original_text = handwritten_dlp_src_index_path.read_text()
+
+    node_mono_repo.owlbot_entrypoint(
+        template_path=TEMPLATES,
+        staging_excludes=["README.md", "package.json", "src/index.ts"],
+        templates_excludes=["src/index.ts"],
+        specified_owlbot_dirs=["handwritten/dlp"],
+    )
+    text = handwritten_dlp_src_index_path.read_text()
+    assert original_text == text
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_owlbot_main_with_staging_patch_staging(hermetic_mock, nodejs_mono_repo):
+    def patch(library: Path):
+        transforms.replace(library / "src" / "index.ts", "import", "export")
+
+    node_mono_repo.owlbot_entrypoint(
+        template_path=TEMPLATES,
+        staging_excludes=["README.md", "package.json"],
+        templates_excludes=["src/index.ts"],
+        patch_staging=patch,
+        specified_owlbot_dirs=["handwritten/dlp"],
+    )
+    # confirm index.ts was overwritten by staging index.ts.
+    staging_text = open(
+        FIXTURES
+        / "nodejs_mono_repo_with_staging"
+        / "owl-bot-staging"
+        / "dlp"
+        / "v2"
+        / "src"
+        / "index.ts",
+        "rt",
+    ).read()
+    text = open("./handwritten/dlp/src/index.ts", "rt").read()
+    assert "import * as v2" in staging_text
+    assert "export * as v2" not in staging_text
+    assert "export * as v2" in text
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_owlbot_main_for_esm_templates(hermetic_mock, nodejs_mono_repo_esm):
+    node_mono_repo.owlbot_entrypoint(
+        template_path=TEMPLATES,
+        staging_excludes=["README.md", "package.json"],
+        patch_staging=patch,
+        specified_owlbot_dirs=["handwritten/dlp"],  # changed from packages/dlp
+    )
+    # confirm index.ts was overwritten by staging index.ts.
+    assert Path(nodejs_mono_repo_esm / "handwritten" / "dlp" / ".jsdoc.cjs").is_file()
+    assert Path(nodejs_mono_repo_esm / "handwritten" / "dlp" / ".mocharc.cjs").is_file()
+    assert Path(
+        nodejs_mono_repo_esm / "handwritten" / "dlp" / ".prettierrc.cjs"
+    ).is_file()
+    assert Path(nodejs_mono_repo_esm / "handwritten" / "dlp" / "esm" / "src").is_dir()
+
+
+def test_owlbot_main_without_version():
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_without_version"):
+        # just confirm it doesn't throw an exception.
+        node_mono_repo.owlbot_entrypoint(
+            template_path=TEMPLATES,
+            specified_owlbot_dirs=[
+                "handwritten/no_version"
+            ],  # changed from packages/no_version
+        )
+
+
+@patch("synthtool.languages.node_mono_repo.owlbot_main")
+def test_entrypoint_args_with_specified_dirs(hermetic_mock, nodejs_mono_repo):
+    node_mono_repo.owlbot_main = MagicMock()
+    node_mono_repo.owlbot_entrypoint(
+        specified_owlbot_dirs=[
+            "handwritten/google-cloud-compute"
+        ]  # changed from packages/google-cloud-compute
+    )
+    node_mono_repo.owlbot_main.assert_called_with(
+        "handwritten/google-cloud-compute",
+        ANY,  # template_path
+        ANY,  # staging_excludes
+        ANY,  # templates_excludes
+        ANY,  # patch_staging
+    )  # changed dir param to match
+
+
+@patch("synthtool.languages.node_mono_repo.owlbot_main")
+def test_entrypoint_with_owlbot_py(hermetic_mock, nodejs_mono_repo):
+    with util.chdir(FIXTURES / "nodejs_mono_repo_with_staging"):
+        node_mono_repo.owlbot_entrypoint(
+            specified_owlbot_dirs=[
+                "handwritten/workflow-executions"
+            ]  # changed from packages/workflow-executions
+        )
+        node_mono_repo.owlbot_main.assert_called_with(
+            "handwritten/workflow-executions",
+            ANY,  # template_path
+            ANY,  # staging_excludes
+            ANY,  # templates_excludes
+            ANY,  # patch_staging
+        )
+
+
+@patch("synthtool.languages.node_mono_repo.postprocess_gapic_library_hermetic")
+def test_generated_readme(hermetic_mock, nodejs_mono_repo):
+    with util.copied_fixtures_dir(FIXTURES / "nodejs_mono_repo_with_staging"):
+        node_mono_repo.owlbot_entrypoint(
+            template_path=TEMPLATES,
+            specified_owlbot_dirs=["handwritten/dlp"],  # changed from packages/dlp
+        )
+        readme_text = open("./handwritten/dlp/README.md", "rt").read()  # changed path
+        # open_in_editor link in samples list includes full path to README.
+        assert ",googleapis-test/nodejs-dlp/samples/README.md" in readme_text
+        # client_documentation from .repo-metadata.json is included in README.
+        assert "https://googleapis.dev/nodejs/dlp/latest" in readme_text
