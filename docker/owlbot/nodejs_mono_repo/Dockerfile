@@ -105,7 +105,7 @@ RUN pip install --require-hashes -r /synthtool/requirements.txt
 RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/setuptools-75.3.2-py3-none-any.whl
 # TODO: Remove this code once there is a newer version of virtualenv which does not include pip 25.0.1 and 25.3
 # https://github.com/pypa/virtualenv/tree/20.36.1/src/virtualenv/seed/wheels/embed
-# In the interim, remove the bundled pip sheel
+# In the interim, remove the bundled pip wheel
 # since it does not include a fix for CVE-2026-1703
 RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/pip-25.3-py3-none-any.whl
 RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/pip-25.0.1-py3-none-any.whl
