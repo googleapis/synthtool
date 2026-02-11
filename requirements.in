@@ -6,7 +6,7 @@ requests>=2.31.0
 pyyaml
 jinja2
 deprecation
-protobuf==6.31.1
+protobuf==6.33.5
 watchdog
 # `virtualenv==20.36.1` is added for Python 3.7 compatibility
 virtualenv==20.36.1
