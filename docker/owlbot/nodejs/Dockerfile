@@ -64,7 +64,7 @@ RUN npm --version
 
 # Install python
 RUN pyenv install 3.13.12 && \
-    pyenv global 3.13.12 && \
+    pyenv global 3.13.12
 
 # This is needed to upgrade pip in the following path
 # /root/.pyenv/versions/3.13.12/lib/python3.13/site-packages/
