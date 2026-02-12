@@ -110,6 +110,12 @@ RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/whee
 RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/pip-25.3-py3-none-any.whl
 RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/pip-25.0.1-py3-none-any.whl
 
+# TODO: Remove this code once there is a newer version of virtualenv which does not include wheel 45.1
+# https://github.com/pypa/virtualenv/tree/20.36.1/src/virtualenv/seed/wheels/embed
+# In the interim, remove the bundled wheel 45.1
+# since it does not include a fix for CVE-2026-24049
+RUN rm -rf /opt/venv/synthtool/lib/python3.13/site-packages/virtualenv/seed/wheels/embed/wheel-0.45.1-py3-none-any.whl
+
 # Set PYTHONPATH to ensure synthtool can be found by Python scripts.
 # Include the virtual environment's site-packages for completeness.
 ENV PYTHONPATH="/synthtool:$VIRTUAL_ENV/lib/python3.13/site-packages"
