@@ -129,17 +129,52 @@ def write_release_please_config(owlbot_dirs):
             except json.JSONDecodeError:
                 logger.warning(f"Could not decode {ignore_file}, ignoring.")
 
-    with open("release-please-config.json", "r") as f:
-        data = json.load(f)
-        for dir in owlbot_dirs:
-            result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
-            assert result is not None
-            package_name = result.group()
-            if package_name in ignore_list:
-                continue
-            data["packages"][package_name] = {}
-    with open("release-please-config.json", "w") as f:
-        json.dump(data, f, indent=2)
+    config_path = Path("release-please-config.json")
+    submodules_path = Path("release-please-submodules.json")
+
+    with open(config_path, "r") as f:
+        config_data = json.load(f)
+
+    submodules_data = None
+    if submodules_path.is_file():
+        with open(submodules_path, "r") as f:
+            submodules_data = json.load(f)
+
+    for dir in owlbot_dirs:
+        result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
+        assert result is not None
+        package_name = result.group()
+
+        if package_name in ignore_list:
+            continue
+
+        if submodules_data is not None and package_name.startswith("handwritten/"):
+            # Add to submodules config
+            component_name = package_name.split("/")[-1]
+            if package_name not in submodules_data["packages"]:
+                submodules_data["packages"][package_name] = {}
+            submodules_data["packages"][package_name]["component"] = component_name
+
+            # Remove from main config if present
+            if package_name in config_data["packages"]:
+                del config_data["packages"][package_name]
+        else:
+            # Add to main config
+            if package_name not in config_data["packages"]:
+                config_data["packages"][package_name] = {}
+
+            # Remove from submodules config if present
+            if submodules_data is not None and package_name in submodules_data["packages"]:
+                del submodules_data["packages"][package_name]
+
+    with open(config_path, "w") as f:
+        json.dump(config_data, f, indent=2)
+        f.write("\n")
+
+    if submodules_data is not None:
+        with open(submodules_path, "w") as f:
+            json.dump(submodules_data, f, indent=2)
+            f.write("\n")
 
 
 def template_metadata(relative_dir: str) -> Dict[str, Any]:
