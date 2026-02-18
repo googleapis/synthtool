@@ -140,6 +140,9 @@ def write_release_please_config(owlbot_dirs):
         with open(submodules_path, "r") as f:
             submodules_data = json.load(f)
 
+    # If submodules config exists, use it as an exclusion list from bundled release
+    non_bundled_packages = set(submodules_data.get("packages", {}).keys()) if submodules_data else set()
+
     for dir in owlbot_dirs:
         result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
         assert result is not None
@@ -148,33 +151,17 @@ def write_release_please_config(owlbot_dirs):
         if package_name in ignore_list:
             continue
 
-        if submodules_data is not None and package_name.startswith("handwritten/"):
-            # Add to submodules config
-            component_name = package_name.split("/")[-1]
-            if package_name not in submodules_data["packages"]:
-                submodules_data["packages"][package_name] = {}
-            submodules_data["packages"][package_name]["component"] = component_name
-
-            # Remove from main config if present
+        if package_name in non_bundled_packages:
+            # remove from bundled release
             if package_name in config_data["packages"]:
                 del config_data["packages"][package_name]
         else:
-            # Add to main config
             if package_name not in config_data["packages"]:
                 config_data["packages"][package_name] = {}
-
-            # Remove from submodules config if present
-            if submodules_data is not None and package_name in submodules_data["packages"]:
-                del submodules_data["packages"][package_name]
 
     with open(config_path, "w") as f:
         json.dump(config_data, f, indent=2)
         f.write("\n")
-
-    if submodules_data is not None:
-        with open(submodules_path, "w") as f:
-            json.dump(submodules_data, f, indent=2)
-            f.write("\n")
 
 
 def template_metadata(relative_dir: str) -> Dict[str, Any]:
