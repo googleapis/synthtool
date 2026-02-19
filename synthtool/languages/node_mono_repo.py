@@ -129,17 +129,41 @@ def write_release_please_config(owlbot_dirs):
             except json.JSONDecodeError:
                 logger.warning(f"Could not decode {ignore_file}, ignoring.")
 
-    with open("release-please-config.json", "r") as f:
-        data = json.load(f)
-        for dir in owlbot_dirs:
-            result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
-            assert result is not None
-            package_name = result.group()
-            if package_name in ignore_list:
-                continue
-            data["packages"][package_name] = {}
-    with open("release-please-config.json", "w") as f:
-        json.dump(data, f, indent=2)
+    config_path = Path("release-please-config.json")
+    submodules_path = Path("release-please-submodules.json")
+
+    with open(config_path, "r") as f:
+        config_data = json.load(f)
+
+    submodules_data = None
+    if submodules_path.is_file():
+        with open(submodules_path, "r") as f:
+            submodules_data = json.load(f)
+
+    # If submodules config exists, use it as an exclusion list from bundled release
+    non_bundled_packages = (
+        set(submodules_data.get("packages", {}).keys()) if submodules_data else set()
+    )
+
+    for dir in owlbot_dirs:
+        result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
+        assert result is not None
+        package_name = result.group()
+
+        if package_name in ignore_list:
+            continue
+
+        if package_name in non_bundled_packages:
+            # remove from bundled release
+            if package_name in config_data["packages"]:
+                del config_data["packages"][package_name]
+        else:
+            if package_name not in config_data["packages"]:
+                config_data["packages"][package_name] = {}
+
+    with open(config_path, "w") as f:
+        json.dump(config_data, f, indent=2)
+        f.write("\n")
 
 
 def template_metadata(relative_dir: str) -> Dict[str, Any]:
