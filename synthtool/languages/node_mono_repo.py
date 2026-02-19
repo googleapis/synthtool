@@ -141,7 +141,9 @@ def write_release_please_config(owlbot_dirs):
             submodules_data = json.load(f)
 
     # If submodules config exists, use it as an exclusion list from bundled release
-    non_bundled_packages = set(submodules_data.get("packages", {}).keys()) if submodules_data else set()
+    non_bundled_packages = (
+        set(submodules_data.get("packages", {}).keys()) if submodules_data else set()
+    )
 
     for dir in owlbot_dirs:
         result = re.search(PACKAGE_DIRECTORIES_REGEX, dir)
