@@ -25,7 +25,7 @@ class GcsDestination extends \Google\Protobuf\Internal\Message
      *
      *     @type string $uri
      *           The uri of the Cloud Storage object. It's the same uri that is used by
-     *           gsutil. Example: "gs://bucket_name/object_name". See [Viewing and
+     *           gcloud storage. Example: "gs://bucket_name/object_name". See [Viewing and
      *           Editing Object
      *           Metadata](https://cloud.google.com/storage/docs/viewing-editing-metadata)
      *           for more information.
@@ -51,7 +51,7 @@ class GcsDestination extends \Google\Protobuf\Internal\Message
 
     /**
      * The uri of the Cloud Storage object. It's the same uri that is used by
-     * gsutil. Example: "gs://bucket_name/object_name". See [Viewing and
+     * gcloud storage. Example: "gs://bucket_name/object_name". See [Viewing and
      * Editing Object
      * Metadata](https://cloud.google.com/storage/docs/viewing-editing-metadata)
      * for more information.
@@ -74,7 +74,7 @@ class GcsDestination extends \Google\Protobuf\Internal\Message
 
     /**
      * The uri of the Cloud Storage object. It's the same uri that is used by
-     * gsutil. Example: "gs://bucket_name/object_name". See [Viewing and
+     * gcloud storage. Example: "gs://bucket_name/object_name". See [Viewing and
      * Editing Object
      * Metadata](https://cloud.google.com/storage/docs/viewing-editing-metadata)
      * for more information.
@@ -150,4 +150,3 @@ class GcsDestination extends \Google\Protobuf\Internal\Message
     }
 
 }
-
