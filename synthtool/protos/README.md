@@ -1,6 +1,6 @@
 # Synthtool and Autosynth Protocol
 
-**Synthtool** generates client library source code according to the currrent
+**Synthtool** generates client library source code according to the current
 state of the source repo, and upstream repos like 
 [googleapis/googleapis](https://github.com/googleapis/googleapis).
 

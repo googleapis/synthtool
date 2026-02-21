@@ -119,7 +119,7 @@ TRAMPOLINE_WORKSPACE="${TRAMPOLINE_WORKSPACE:-/workspace}"
 
 pass_down_envvars=(
     # TRAMPOLINE_V2 variables.
-    # Tells scripts whether they are running as part of CI or not.
+    # Tells scripts whether or not they are running as part of CI.
     "RUNNING_IN_CI"
     # Indicates which CI system we're in.
     "TRAMPOLINE_CI"
@@ -241,7 +241,7 @@ function repo_root() {
 }
 
 # Detect the project root. In CI builds, we assume the script is in
-# the git tree and traverse from there, otherwise, traverse from `pwd`
+# the git tree and traverse from there; otherwise, traverse from `pwd`
 # to find `.git` directory.
 if [[ "${RUNNING_IN_CI:-}" == "true" ]]; then
     PROGRAM_PATH="$(realpath "$0")"
@@ -394,7 +394,7 @@ docker_flags=(
     # Use the host network.
     "--network=host"
 
-    # Run in priviledged mode. We are not using docker for sandboxing or
+    # Run in privileged mode. We are not using docker for sandboxing or
     # isolation, just for packaging our dev tools.
     "--privileged"
 
@@ -444,7 +444,7 @@ do
 done
 
 # If arguments are given, all arguments will become the commands run
-# in the container, otherwise run TRAMPOLINE_BUILD_FILE.
+# in the container; otherwise, run TRAMPOLINE_BUILD_FILE.
 if [[ $# -ge 1 ]]; then
     log_yellow "Running the given commands '" "${@:1}" "' in the container."
     readonly commands=("${@:1}")

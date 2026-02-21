@@ -265,7 +265,7 @@ def test_add_new_files_with_bad_file(source_tree, preserve_track_obsolete_file_f
     try:
         os.symlink(tmpdir / dne, tmpdir / "badlink")
     except OSError:
-        # On Windows, creating a symlink requires Admin priveleges, which
+        # On Windows, creating a symlink requires Admin privileges, which
         # should never be granted to test runners.
         assert "win32" == sys.platform
         return
@@ -293,9 +293,9 @@ def test_read_nonexistent_metadata(tmpdir):
 
 @pytest.fixture(scope="function")
 def preserve_track_obsolete_file_flag():
-    should_track_obselete_files = metadata.should_track_obsolete_files()
-    yield should_track_obselete_files
-    metadata.set_track_obsolete_files(should_track_obselete_files)
+    should_track_obsolete_files = metadata.should_track_obsolete_files()
+    yield should_track_obsolete_files
+    metadata.set_track_obsolete_files(should_track_obsolete_files)
 
 
 def test_track_obsolete_files_defaults_to_false(preserve_track_obsolete_file_flag):

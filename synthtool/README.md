@@ -1,6 +1,6 @@
 # SynthTool (for client libraries)
 
-![Diagram of relationship between Autosynth, Synthtool, and Github](../images/flow.png)
+![Diagram of relationship between Autosynth, Synthtool, and GitHub](../images/flow.png)
 
 This tool helps to generate and layout cloud client libraries. Synthtool runs the [GAPIC (Generated API Client) Generator][GAPIC] via [Google API Artifact Manager (artman)][artman].
 

@@ -80,7 +80,7 @@ def clone(
     """Clones a remote git repo.
 
     Will not actually clone the repo if it's already local via two ways:
-      1. It's in the cache (the default destitination).
+      1. It's in the cache (the default destination).
       2. It was supplied via the preconfig file.
 
     Arguments:

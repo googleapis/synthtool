@@ -14,7 +14,7 @@ API Reference
     {{ version }}/services_
     {{ version }}/types_
 {% endfor %}
-{% if include_uprading_doc %}
+{% if include_upgrading_doc %}
 Migration Guide
 ---------------
 

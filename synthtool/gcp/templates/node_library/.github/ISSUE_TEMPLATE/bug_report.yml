@@ -63,7 +63,7 @@ body:
   - type: input
     attributes:
       label: >
-        Link to the code that reproduces this issue. A link to a **public** Github Repository or gist with a minimal
+        Link to the code that reproduces this issue. A link to a **public** GitHub Repository or gist with a minimal
         reproduction.
       description: >
         **Skipping this or providing an invalid link will result in the issue being closed**        

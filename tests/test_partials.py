@@ -28,5 +28,5 @@ def test_readme_partials():
 
 
 def test_readme_partials_not_found():
-    data = partials.load_partials(["non-existent.yaml"])
+    data = partials.load_partials(["nonexistent.yaml"])
     assert len(data) == 0
