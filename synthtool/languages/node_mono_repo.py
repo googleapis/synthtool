@@ -641,7 +641,7 @@ def owlbot_entrypoint(
         for dir in specified_owlbot_dirs:
             owlbot_py_file_path = hasOwlBotPy(dir)
             if owlbot_py_file_path:
-                subprocess.check_call(["python3", str(owlbot_py_file_path)])
+                subprocess.check_call(["python3", str(owlbot_py_file_path)], check=True)
             else:
                 owlbot_main(
                     dir,
@@ -657,7 +657,7 @@ def owlbot_entrypoint(
         for dir in owlbot_dirs:
             owlbot_py_file_path = hasOwlBotPy(dir)
             if owlbot_py_file_path:
-                subprocess.check_call(["python3", str(owlbot_py_file_path)])
+                subprocess.check_call(["python3", str(owlbot_py_file_path)], check=True)
             else:
                 owlbot_main(
                     dir,
