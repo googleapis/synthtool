@@ -138,7 +138,7 @@ RUN useradd -ms /bin/bash nonroot
 # This must happen as root, before switching users.
 RUN chown -R nonroot:nonroot /synthtool
 
-# # Switch to the non-root user to run npm install.
+# Switch to the non-root user to run npm install.
 USER nonroot
 
 # Install Node.js dependencies as the non-root user.
@@ -149,8 +149,6 @@ RUN npm i gts@6.0.2 google-gax@5.1.0-rc.1 \
 
 # Switch back to root if needed for subsequent steps.
 USER root
-
-# RUN chmod -R 777 /synthtool/node_modules
 
 ENV PATH="/synthtool/node_modules/.bin:${PATH}"
 # ... (any other commands that require root access) ...

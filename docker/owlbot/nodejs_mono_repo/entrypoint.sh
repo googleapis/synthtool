@@ -17,8 +17,4 @@ set -ex
 
 RELATIVE_DIRS=$1
 
-if [ -f owlbot.py ]; then
-    python3 owlbot.py
-else
-    python3 -m synthtool.languages.node_mono_repo $1
-fi
+python3 -m synthtool.languages.node_mono_repo $1
