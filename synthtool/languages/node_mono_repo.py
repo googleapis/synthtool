@@ -27,7 +27,7 @@ import shutil
 from synthtool.languages import common
 from datetime import date
 import logging
-from os import system
+import subprocess
 from synthtool import _tracked_paths
 from synthtool import gcp
 
@@ -641,7 +641,7 @@ def owlbot_entrypoint(
         for dir in specified_owlbot_dirs:
             owlbot_py_file_path = hasOwlBotPy(dir)
             if owlbot_py_file_path:
-                system(f"python3 {owlbot_py_file_path}")
+                subprocess.check_call(["python3", str(owlbot_py_file_path)])
             else:
                 owlbot_main(
                     dir,
@@ -657,7 +657,7 @@ def owlbot_entrypoint(
         for dir in owlbot_dirs:
             owlbot_py_file_path = hasOwlBotPy(dir)
             if owlbot_py_file_path:
-                system(f"python3 {owlbot_py_file_path}")
+                subprocess.check_call(["python3", str(owlbot_py_file_path)])
             else:
                 owlbot_main(
                     dir,
