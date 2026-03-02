@@ -27,7 +27,6 @@ import shutil
 from synthtool.languages import common
 from datetime import date
 import logging
-import subprocess
 from synthtool import _tracked_paths
 from synthtool import gcp
 
