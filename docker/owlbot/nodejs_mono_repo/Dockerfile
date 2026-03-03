@@ -126,7 +126,7 @@ ENV SYNTHTOOL_TEMPLATES="/synthtool/synthtool/gcp/templates"
 # Copy synthtool source code and associated Docker files.
 COPY synthtool /synthtool/synthtool
 COPY docker /synthtool/docker
-# COPY post-processor-changes.txt /post-processor-changes.txt
+COPY post-processor-changes.txt /post-processor-changes.txt
 
 # Update file permissions to prevent errors for non-root users.
 RUN find /synthtool -exec chmod a+r {} \; && \
@@ -150,6 +150,7 @@ RUN npm i gts@6.0.2 google-gax@5.1.0-rc.1 \
 # Switch back to root if needed for subsequent steps.
 USER root
 
+ENV PATH="/synthtool/node_modules/.bin:${PATH}"
 # ... (any other commands that require root access) ...
 
 ENTRYPOINT [ "/bin/bash", "/synthtool/docker/owlbot/nodejs_mono_repo/entrypoint.sh" ]
