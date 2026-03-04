@@ -61,7 +61,7 @@ def template_metadata() -> Dict[str, Any]:
     Returns:
         Dictionary of metadata. Includes the entire parsed contents of the package.json file if
         present. Other expected fields:
-        * quickstart (str): Contents of the quickstart snippet if available, otherwise, ""
+        * quickstart (str): Contents of the quickstart snippet if available; otherwise, ""
         * samples (List[Dict[str, str]]): List of available samples. See synthtool.gcp.samples.all_samples()
     """
     metadata = {}
