@@ -33,7 +33,7 @@ from synthtool import gcp
 _REQUIRED_FIELDS = ["name", "repository", "engines"]
 _TOOLS_DIRECTORY = "/synthtool"
 _GENERATED_SAMPLES_DIRECTORY = "./samples/generated"
-PACKAGE_DIRECTORIES = ["packages", "handwritten"]
+PACKAGE_DIRECTORIES = ["packages", "handwritten", "core"]
 PACKAGE_DIRECTORIES_REGEX = f"((?:{'|'.join(PACKAGE_DIRECTORIES)})/.*)"
 
 
