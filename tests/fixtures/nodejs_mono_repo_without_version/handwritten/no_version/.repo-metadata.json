@@ -1,0 +1,17 @@
+{
+  "name": "no_version",
+  "name_pretty": "No Version API",
+  "product_documentation": "https://cloud.google.com/no_version/docs/",
+  "client_documentation": "https://googleapis.dev/nodejs/no_version/latest/",
+  "issue_tracker": "https://github.com/googleapis/google-cloud-node/issues",
+  "release_level": "stable",
+  "language": "nodejs",
+  "repo": "googleapis/google-cloud-node",
+  "repo_short": "node-no_version",
+  "distribution_name": "@google-cloud/no-version",
+  "api_id": "no_version.googleapis.com",
+  "requires_billing": true,
+  "codeowner_team": "@googleapis/no_version",
+  "library_type": "GAPIC_AUTO",
+  "api_shortname": "no_version"
+}

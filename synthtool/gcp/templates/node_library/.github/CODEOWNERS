@@ -7,7 +7,7 @@
 
 # Unless specified, the jsteam is the default owner for nodejs repositories.
 {%- if 'codeowner_team' in metadata['repo'] %}
-*     {{ metadata['repo']['codeowner_team'] }} @googleapis/jsteam
+*     {{ metadata['repo']['codeowner_team'] }} @googleapis/cloud-sdk-nodejs-team
 {%- else %}
-*     @googleapis/jsteam
+*     @googleapis/cloud-sdk-nodejs-team
 {%- endif %}

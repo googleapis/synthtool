@@ -13,17 +13,17 @@ branchProtectionRules:
   requiresCodeOwnerReviews: true
   requiresStrictStatusChecks: true
 permissionRules:
-  - team: yoshi
+  - team: cloud-sdk-platform-team
     permission: push
   - team: yoshi-admins
     permission: admin
-  - team: yoshi-java
+  - team: cloud-sdk-java-team
     permission: push
-  - team: yoshi-nodejs
+  - team: cloud-sdk-nodejs-team
     permission: push
-  - team: yoshi-php
+  - team: cloud-sdk-php-team
     permission: push
-  - team: yoshi-python
+  - team: cloud-sdk-python-team
     permission: push
-  - team: yoshi-ruby
+  - team: cloud-sdk-ruby-team
     permission: push

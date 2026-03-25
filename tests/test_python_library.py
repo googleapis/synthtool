@@ -32,7 +32,7 @@ def test_library_codeowners():
         "CODEOWNERS",
         metadata={"repo": {"codeowner_team": "googleapis/foo"}},
     ).read_text()
-    assert "*     @googleapis/yoshi-python googleapis/foo" in result
+    assert "*     @googleapis/cloud-sdk-python-team googleapis/foo" in result
     assert "/samples/   @googleapis/python-samples-reviewers googleapis/foo" in result
 
 
@@ -42,7 +42,7 @@ def test_library_codeowners_without_metadata():
         "CODEOWNERS",
         metadata={"repo": {}},
     ).read_text()
-    assert "*     @googleapis/yoshi-python" in result
+    assert "*     @googleapis/cloud-sdk-python-team" in result
     assert "/samples/   @googleapis/python-samples-reviewers" in result
     assert "@googleapis/foo" not in result
 
@@ -63,7 +63,7 @@ def test_library_blunderbuss_single_codeowner():
     ).read_text()
     try:
         config = yaml.safe_load(result)
-        assert "googleapis/python-core-client-libraries" not in config["assign_issues"]
+        assert "googleapis/cloud-sdk-python-team" not in config["assign_issues"]
         assert "googleapis/foo" in config["assign_issues"]
         assert "googleapis/foo" in config["assign_prs"]
         assert (
@@ -82,7 +82,7 @@ def test_library_blunderbuss_multiple_codeowner():
     ).read_text()
     try:
         config = yaml.safe_load(result)
-        assert "googleapis/python-core-client-libraries" not in config["assign_issues"]
+        assert "googleapis/cloud-sdk-python-team" not in config["assign_issues"]
         assert "googleapis/foo" in config["assign_issues"]
         assert "googleapis/bar" in config["assign_issues"]
         assert "googleapis/foo" in config["assign_prs"]
@@ -104,7 +104,7 @@ def test_library_blunderbuss_no_codeowner():
     ).read_text()
     try:
         config = yaml.safe_load(result)
-        assert "googleapis/python-core-client-libraries" in config["assign_issues"]
+        assert "googleapis/cloud-sdk-python-team" in config["assign_issues"]
         assert "googleapis/foo" not in config["assign_issues"]
         assert (
             "googleapis/python-samples-reviewers" in config["assign_issues_by"][0]["to"]

@@ -24,7 +24,7 @@ assign_prs:
   {%- endfor %}
 {% else %}
 assign_issues:
-  - googleapis/python-core-client-libraries
+  - googleapis/cloud-sdk-python-team
 
 assign_issues_by:
   - labels:
@@ -33,5 +33,5 @@ assign_issues_by:
       - googleapis/python-samples-reviewers
       
 assign_prs:
-  - googleapis/python-core-client-libraries
+  - googleapis/cloud-sdk-python-team
 {% endif -%}

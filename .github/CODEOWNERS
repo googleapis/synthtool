@@ -1,21 +1,21 @@
-*   @chingor13 @googleapis/yoshi-python @googleapis/github-automation
+*   @googleapis/cloud-sdk-python-team @googleapis/cloud-sdk-platform-team
 
 # assign templates to the language team that owns them
-synthtool/gcp/templates/java_library/          @googleapis/yoshi-java
-synthtool/languages/java.py                    @googleapis/yoshi-java
-synthtool/gcp/templates/node_library/          @googleapis/jsteam
-synthtool/gcp/templates/node_split_library/    @googleapis/jsteam
-synthtool/gcp/templates/php_library/           @googleapis/yoshi-php
-synthtool/gcp/templates/python_library/        @googleapis/yoshi-python
-synthtool/gcp/templates/python_samples/        @googleapis/yoshi-python
-synthtool/gcp/templates/ruby_library/          @googleapis/yoshi-ruby
+synthtool/gcp/templates/java_library/          @googleapis/cloud-sdk-java-team
+synthtool/languages/java.py                    @googleapis/cloud-sdk-java-team
+synthtool/gcp/templates/node_library/          @googleapis/cloud-sdk-nodejs-team
+synthtool/gcp/templates/node_split_library/    @googleapis/cloud-sdk-nodejs-team
+synthtool/gcp/templates/php_library/           @googleapis/cloud-sdk-php-team
+synthtool/gcp/templates/python_library/        @googleapis/cloud-sdk-python-team
+synthtool/gcp/templates/python_samples/        @googleapis/cloud-sdk-python-team
+synthtool/gcp/templates/ruby_library/          @googleapis/cloud-sdk-ruby-team
 
 # Also assign tests specific to language teams
-synthtool/tests/test_language_java.py          @googleapis/yoshi-java
-synthtool/tests/test_python_library.py         @googleapis/yoshi-python
-synthtool/tests/test_ruby.py                   @googleapis/yoshi-ruby
+synthtool/tests/test_language_java.py          @googleapis/cloud-sdk-java-team
+synthtool/tests/test_python_library.py         @googleapis/cloud-sdk-python-team
+synthtool/tests/test_ruby.py                   @googleapis/cloud-sdk-ruby-team
 
 # Assign owlbot images to language teams
-docker/owlbot/java                             @googleapis/yoshi-java
-docker/owlbot/nodejs                           @googleapis/jsteam
-docker/owlbot/python                           @googleapis/yoshi-python
+docker/owlbot/java                             @googleapis/cloud-sdk-java-team
+docker/owlbot/nodejs                           @googleapis/cloud-sdk-nodejs-team
+docker/owlbot/python                           @googleapis/cloud-sdk-python-team
