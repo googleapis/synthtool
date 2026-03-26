@@ -25,7 +25,8 @@ def download_file(bucket_name: str, blob_name: str, destination_file: str) -> st
     remote_file_path = "".join(["gs://", "/".join([bucket_name, blob_name])])
 
     subprocess.check_output(
-        ["gcloud", "storage", "cp", remote_file_path, destination_file], encoding="UTF-8"
+        ["gcloud", "storage", "cp", remote_file_path, destination_file],
+        encoding="UTF-8",
     )
 
     return destination_file
