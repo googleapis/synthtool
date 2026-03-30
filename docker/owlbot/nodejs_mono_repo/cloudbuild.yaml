@@ -20,6 +20,7 @@ steps:
       '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA',
       '-t', 'gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest',
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:$SHORT_SHA',
+      '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:infrastructure-public-image-$BUILD_ID',
       '-t', 'gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest',
       '-f', 'docker/owlbot/nodejs_mono_repo/Dockerfile', '.' ]
 # Push the docker image.
@@ -27,4 +28,5 @@ images:
   - gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:$SHORT_SHA
   - gcr.io/repo-automation-bots/owlbot-nodejs-mono-repo:latest
   - gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:$SHORT_SHA
+  - gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:infrastructure-public-image-$BUILD_ID
   - gcr.io/cloud-devrel-public-resources/owlbot-nodejs-mono-repo:latest
