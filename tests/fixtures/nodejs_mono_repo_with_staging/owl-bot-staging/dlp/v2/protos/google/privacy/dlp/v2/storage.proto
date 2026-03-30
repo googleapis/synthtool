@@ -619,7 +619,7 @@ message BigQueryKey {
   // Complete BigQuery table reference.
   BigQueryTable table_reference = 1;
 
-  // Row number inferred at the time the table was scanned. This value is
+  // Row number inferred at the time that the table was scanned. This value is
   // nondeterministic, cannot be queried, and may be null for inspection
   // jobs. To locate findings within a table, specify
   // `inspect_job.storage_config.big_query_options.identifying_fields` in

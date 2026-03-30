@@ -36,7 +36,7 @@ class BigQueryDestination extends \Google\Protobuf\Internal\Message
      * If the destination table already exists and this flag is `TRUE`, the
      * table will be overwritten by the contents of assets snapshot. If the flag
      * is `FALSE` or unset and the destination table already exists, the export
-     * call returns an INVALID_ARGUMEMT error.
+     * call returns an INVALID_ARGUMENT error.
      *
      * Generated from protobuf field <code>bool force = 3;</code>
      */
@@ -110,7 +110,7 @@ class BigQueryDestination extends \Google\Protobuf\Internal\Message
      *           If the destination table already exists and this flag is `TRUE`, the
      *           table will be overwritten by the contents of assets snapshot. If the flag
      *           is `FALSE` or unset and the destination table already exists, the export
-     *           call returns an INVALID_ARGUMEMT error.
+     *           call returns an INVALID_ARGUMENT error.
      *     @type \Google\Cloud\Asset\V1\PartitionSpec $partition_spec
      *           [partition_spec] determines whether to export to partitioned table(s) and
      *           how to partition the data.
@@ -225,7 +225,7 @@ class BigQueryDestination extends \Google\Protobuf\Internal\Message
      * If the destination table already exists and this flag is `TRUE`, the
      * table will be overwritten by the contents of assets snapshot. If the flag
      * is `FALSE` or unset and the destination table already exists, the export
-     * call returns an INVALID_ARGUMEMT error.
+     * call returns an INVALID_ARGUMENT error.
      *
      * Generated from protobuf field <code>bool force = 3;</code>
      * @return bool
@@ -239,7 +239,7 @@ class BigQueryDestination extends \Google\Protobuf\Internal\Message
      * If the destination table already exists and this flag is `TRUE`, the
      * table will be overwritten by the contents of assets snapshot. If the flag
      * is `FALSE` or unset and the destination table already exists, the export
-     * call returns an INVALID_ARGUMEMT error.
+     * call returns an INVALID_ARGUMENT error.
      *
      * Generated from protobuf field <code>bool force = 3;</code>
      * @param bool $var

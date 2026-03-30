@@ -55,7 +55,7 @@ setuptools.setup(
         'Operating System :: OS Independent',
         'Topic :: Internet',
     ],
-    platforms='Posix; MacOS X; Windows',
+    platforms='POSIX; MacOS X; Windows',
     packages=packages,
     install_requires=dependencies,
     include_package_data=True,

@@ -981,7 +981,7 @@ message ContentLocation {
   // * Datastore namespace: {namespace}
   //
   // Nested names could be absent if the embedded object has no string
-  // identifier (for an example an image contained within a document).
+  // identifier (for example, an image contained within a document).
   string container_name = 1;
 
   // Type of the container within the file with location of the finding.
@@ -1051,9 +1051,9 @@ message RecordLocation {
 message TableLocation {
   // The zero-based index of the row where the finding is located. Only
   // populated for resources that have a natural ordering, not BigQuery. In
-  // BigQuery, to identify the row a finding came from, populate
+  // BigQuery, to identify the source row of a finding, populate
   // BigQueryOptions.identifying_fields with your primary key column names and
-  // when you store the findings the value of those columns will be stored
+  // when you store the findings, the value of those columns will be stored
   // inside of Finding.
   int64 row_index = 1;
 }
@@ -1342,7 +1342,7 @@ message ReidentifyContentRequest {
   string location_id = 7;
 }
 
-// Results of re-identifying a item.
+// Results of re-identifying an item.
 message ReidentifyContentResponse {
   // The re-identified item.
   ContentItem item = 1;
@@ -2056,7 +2056,7 @@ message AnalyzeDataSourceRiskDetails {
     // K-anonymity result
     KAnonymityResult k_anonymity_result = 5;
 
-    // L-divesity result
+    // L-diversity result
     LDiversityResult l_diversity_result = 6;
 
     // K-map result
@@ -2181,7 +2181,7 @@ message TransformationErrorHandling {
 
   // Skips the data without modifying it if the requested transformation would
   // cause an error. For example, if a `DateShift` transformation were applied
-  // an an IP address, this mode would leave the IP address unchanged in the
+  // to an IP address, this mode would leave the IP address unchanged in the
   // response.
   message LeaveUntransformed {
 
@@ -2536,7 +2536,7 @@ message CryptoReplaceFfxFpeConfig {
   // applied to both structured and non-structured `ContentItem`s.
   // Currently, the referenced field may be of value type integer or string.
   //
-  // The tweak is constructed as a sequence of bytes in big endian byte order
+  // The tweak is constructed as a sequence of bytes in big-endian byte order
   // such that:
   //
   // - a 64 bit integer is encoded followed by a single byte of value 1
@@ -3006,7 +3006,7 @@ message JobTrigger {
     // Trigger is temporarily paused.
     PAUSED = 2;
 
-    // Trigger is cancelled and can not be resumed.
+    // Trigger is cancelled and cannot be resumed.
     CANCELLED = 3;
   }
 

@@ -25,5 +25,5 @@ Each sample in `samples` has the attributes:
 - `file` : The main file associated with this sample
 - `runnable` (Optional) : Either True/False, depending on whether this sample is made to be run by running the above file name, or not.
 - `custom_content` (Optional) : This is custom content that appears after all other information generated about the sample
-- `override_path` (Optional): If you would like to have a seperate README generate for this file in a different folder within the directory that holds the samples, ex. a folder named `quickstart`, specify that relative path here.
+- `override_path` (Optional): If you would like to have a separate README generate for this file in a different folder within the directory that holds the samples, ex. a folder named `quickstart`, specify that relative path here.
 If multiple samples have the same override path, the README in that folder will contain info for all those samples.
