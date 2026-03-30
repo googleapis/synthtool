@@ -84,7 +84,7 @@ def _process_notebook(
         resources,
     ) = remove_no_execute_cells_preprocessor.preprocess(nb)
 
-    (nb, resources) = update_variables_preprocessor.preprocess(nb, resources)
+    nb, resources = update_variables_preprocessor.preprocess(nb, resources)
 
     with open(notebook_path, mode="w", encoding="utf-8") as new_file:
         nbformat.write(nb, new_file)
@@ -172,7 +172,8 @@ def process_and_execute_notebook(
             # Use gcloud to get tail
             try:
                 result.error_message = subprocess.check_output(
-                    ["gsutil", "cat", "-r", "-1000", log_file_uri], encoding="UTF-8"
+                    ["gcloud", "storage", "cat", "--range=-1000", log_file_uri],
+                    encoding="UTF-8",
                 )
             except Exception as error:
                 result.error_message = str(error)
