@@ -482,6 +482,7 @@ def walk_through_owlbot_dirs(dir: Path, search_for_changed_files: bool):
     packages_to_exclude = [
         r"packages/gapic-node-processing/templates/bootstrap-templates",
         r"node_modules",
+        r"core/generator/gapic-generator-typescript/test-fixtures",
     ]
     if search_for_changed_files:
         try:
