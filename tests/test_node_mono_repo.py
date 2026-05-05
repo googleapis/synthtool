@@ -519,12 +519,19 @@ def test_walk_through_owlbot_dirs_excluded(mock_subproc_popen):
     with util.copied_fixtures_dir(
         FIXTURES / "nodejs_mono_repo_with_staging"
     ) as workdir:
-        excluded_dir = workdir / "core" / "generator" / "gapic-generator-typescript" / "test-fixtures" / "speech"
+        excluded_dir = (
+            workdir
+            / "core"
+            / "generator"
+            / "gapic-generator-typescript"
+            / "test-fixtures"
+            / "speech"
+        )
         excluded_dir.mkdir(parents=True)
         (excluded_dir / ".OwlBot.yaml").touch()
 
         regular_dir = workdir / "core" / "generator" / "gapic-generator-typescript"
-        regular_dir.mkdir(parents=True)
+        regular_dir.mkdir(parents=True, exist_ok=True)
         (regular_dir / ".OwlBot.yaml").touch()
 
         owlbot_dirs = node_mono_repo.walk_through_owlbot_dirs(
@@ -532,8 +539,17 @@ def test_walk_through_owlbot_dirs_excluded(mock_subproc_popen):
         )
 
         assert not mock_subproc_popen.called
-        assert any(re.search("core/generator/gapic-generator-typescript$", d) for d in owlbot_dirs)
-        assert not any(re.search("core/generator/gapic-generator-typescript/test-fixtures/speech", d) for d in owlbot_dirs)
+        assert any(
+            re.search("core/generator/gapic-generator-typescript$", d)
+            for d in owlbot_dirs
+        )
+        assert not any(
+            re.search(
+                "core/generator/gapic-generator-typescript/test-fixtures/speech",
+                d,
+            )
+            for d in owlbot_dirs
+        )
 
 
 @patch("subprocess.run")
