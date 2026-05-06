@@ -17,7 +17,10 @@ steps:
     args: [ 'build',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-php:$SHORT_SHA',
       '-t', 'gcr.io/$PROJECT_ID/owlbot-php:latest',
+      '-t', 'gcr.io/$PROJECT_ID/owlbot-php:infrastructure-public-image-$SHORT_SHA',
       '-f', 'docker/owlbot/php/Dockerfile', '.' ]
 images:
   - 'gcr.io/$PROJECT_ID/owlbot-php:$SHORT_SHA'
   - 'gcr.io/$PROJECT_ID/owlbot-php:latest'
+  - 'gcr.io/$PROJECT_ID/owlbot-php:infrastructure-public-image-$SHORT_SHA'
+
