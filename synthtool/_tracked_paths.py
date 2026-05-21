@@ -20,7 +20,7 @@ This is a bit of a hack.
 import pathlib
 
 
-_tracked_paths = []
+_tracked_paths: list[pathlib.Path] = []
 
 
 def add(path):
