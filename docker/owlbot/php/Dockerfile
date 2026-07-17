@@ -23,6 +23,7 @@ WORKDIR /
 # Install necessary tools, the default Python 3 (which is 3.11 on Debian 12),
 # python3-venv for virtual environments, and xz-utils for Node.js archives.
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
@@ -59,6 +60,9 @@ RUN python3 -m venv $VIRTUAL_ENV
 # Add the virtual environment's bin directory to the PATH. This effectively "activates"
 # the venv for all subsequent commands in this and future RUN layers.
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Upgrade pip, setuptools, and wheel in the virtual environment to patch their vulnerabilities
+RUN pip install --upgrade pip setuptools wheel
 
 # Copy requirements.txt and install Python dependencies into the virtual environment.
 COPY requirements.txt /synthtool/requirements.txt
