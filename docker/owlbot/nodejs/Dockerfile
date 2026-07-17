@@ -22,6 +22,7 @@ WORKDIR /
 # Install necessary tools, the default Python 3 (which is 3.11 on Debian 12),
 # python3-venv for virtual environments, and xz-utils for Node.js archives.
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     ca-certificates \
     git \
@@ -32,8 +33,7 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev libffi-dev liblzma-dev && \
-    apt-get upgrade -y
+    xz-utils tk-dev libffi-dev liblzma-dev
 
 WORKDIR /root
 
@@ -68,7 +68,7 @@ RUN pyenv install 3.13.12 && \
 
 # This is needed to upgrade pip in the following path
 # /root/.pyenv/versions/3.13.12/lib/python3.13/site-packages/
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip setuptools wheel
 
 # Create a Python virtual environment for synthtool dependencies.
 # This isolates your Python packages from the system Python.
@@ -80,7 +80,7 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 # This is needed to upgrade pip in the following path
 # /opt/venv/synthtool/lib/python3.13/site-packages/
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip setuptools wheel
 
 # TODO(https://github.com/python/cpython/issues/144538): This is
 # need to address CVE-2026-1703 which requires pip 26.0

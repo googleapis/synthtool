@@ -19,6 +19,7 @@
 FROM marketplace.gcr.io/google/ubuntu2404
 
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y --no-install-recommends \
     # Essential for compiling C code
     build-essential \
