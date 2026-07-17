@@ -18,9 +18,10 @@ This is a bit of a hack.
 """
 
 import pathlib
+from typing import List
 
 
-_tracked_paths = []
+_tracked_paths: List[pathlib.Path] = []
 
 
 def add(path):
