@@ -72,7 +72,7 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
     if not entries:
         return None
     for entry in entries:
-        if Path(entry.path).resolve().stem.lower() == version_string:
+        if Path(entry.path).resolve().stem.lower() == version_string.lower():
             return src
         if entry.is_dir():
             return _find_copy_target(Path(entry.path).resolve(), version_string)
@@ -90,26 +90,36 @@ def owlbot_copy_version(
 
     if copy_excludes is None:
         copy_excludes = DEFAULT_COPY_EXCLUDES
-    # detect the version string for later use
+
     src_dir = src / "src"
     if os.path.isdir(src_dir):
         entries = os.scandir(src_dir)
+
+        dest_src = dest / "src"
+        dest_tests = dest / "tests/Unit"
+        dest_samples = dest / "samples"
+
         if not version_string:
+            # detect the version string for later use
             version_string = os.path.basename(os.path.basename(next(entries))).lower()
             logger.debug("version_string detected: %s", version_string)
+        else:
+            logger.debug("version_string provided: %s", version_string)
+            # prefix the destination directories with the version string
+            dest_src = dest_src / version_string
+            dest_tests = dest_tests / version_string
+            dest_samples = dest_samples / version_string
 
         # copy all src including partial veneer classes
-        s.move([src / "src"], dest / "src", merge=_merge, excludes=copy_excludes)
+        s.move([src / "src"], dest_src, merge=_merge, excludes=copy_excludes)
 
         # copy tests
-        s.move([src / "tests"], dest / "tests", merge=_merge, excludes=copy_excludes)
+        s.move([src / "tests/Unit"], dest_tests, merge=_merge, excludes=copy_excludes)
 
         # copy snippets
         snippet_dir = src / "samples"
         if os.path.isdir(snippet_dir):
-            s.move(
-                [snippet_dir], dest / "samples", merge=_merge, excludes=copy_excludes
-            )
+            s.move([snippet_dir], dest_samples, merge=_merge, excludes=copy_excludes)
     else:
         logger.info("there is no src directory '%s' to copy", src_dir)
 
