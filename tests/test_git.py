@@ -87,6 +87,16 @@ class TestClone(unittest.TestCase):
         os.environ = self.env
         return super().tearDown()
 
+    @mock.patch("fcntl.flock")
+    def testCloneConcurrencyPatch(self, mock_flock):
+        import fcntl
+        metadata.reset()
+        local_directory = git.clone("https://github.com/googleapis/nodejs-vision.git")
+        self.assertTrue(mock_flock.called)
+        # Should be called with LOCK_EX then LOCK_UN
+        mock_flock.assert_any_call(mock.ANY, fcntl.LOCK_EX)
+        mock_flock.assert_any_call(mock.ANY, fcntl.LOCK_UN)
+
     def testClone(self):
         # clear out metadata before creating new metadata and asserting on it
         metadata.reset()
