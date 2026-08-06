@@ -109,13 +109,20 @@ def clone(
             shutil.rmtree(dest)
 
         default_branch = None
-        if not dest.exists():
-            cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
-            shell.run(cmd, check=True)
-        else:
-            default_branch = _local_default_branch(dest)
-            shell.run(["git", "checkout", default_branch], cwd=str(dest), check=True)
-            shell.run(["git", "pull"], cwd=str(dest), check=True)
+        import fcntl
+        lock_file = dest.parent / (dest.name + ".lock")
+        with open(lock_file, "w") as lock_f:
+            fcntl.flock(lock_f, fcntl.LOCK_EX)
+            try:
+                if not dest.exists():
+                    cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
+                    shell.run(cmd, check=True)
+                else:
+                    default_branch = _local_default_branch(dest)
+                    shell.run(["git", "checkout", default_branch], cwd=str(dest), check=True)
+                    shell.run(["git", "pull"], cwd=str(dest), check=True)
+            finally:
+                fcntl.flock(lock_f, fcntl.LOCK_UN)
         committish = committish or default_branch
 
     if committish:
