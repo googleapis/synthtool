@@ -106,6 +106,7 @@ def clone(
         dest = dest / pathlib.Path(url).stem
 
     import fcntl
+
     lock_file = dest.parent / (dest.name + ".lock")
     with open(lock_file, "w") as lock_f:
         fcntl.flock(lock_f, fcntl.LOCK_EX)
@@ -116,11 +117,20 @@ def clone(
 
                 default_branch = None
                 if not dest.exists():
-                    cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
+                    cmd = [
+                        "git",
+                        "clone",
+                        "--recurse-submodules",
+                        "--single-branch",
+                        url,
+                        dest,
+                    ]
                     shell.run(cmd, check=True)
                 else:
                     default_branch = _local_default_branch(dest)
-                    shell.run(["git", "checkout", default_branch], cwd=str(dest), check=True)
+                    shell.run(
+                        ["git", "checkout", default_branch], cwd=str(dest), check=True
+                    )
                     shell.run(["git", "pull"], cwd=str(dest), check=True)
                 committish = committish or default_branch
 

@@ -90,8 +90,10 @@ class TestClone(unittest.TestCase):
     @mock.patch("fcntl.flock")
     def testCloneConcurrencyPatch(self, mock_flock):
         import fcntl
+
         metadata.reset()
         local_directory = git.clone("https://github.com/googleapis/nodejs-vision.git")
+        self.assertEqual("nodejs-vision", local_directory.name)
         self.assertTrue(mock_flock.called)
         # Should be called with LOCK_EX then LOCK_UN
         mock_flock.assert_any_call(mock.ANY, fcntl.LOCK_EX)
