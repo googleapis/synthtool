@@ -105,15 +105,16 @@ def clone(
 
         dest = dest / pathlib.Path(url).stem
 
-        if force and dest.exists():
-            shutil.rmtree(dest)
+    import fcntl
+    lock_file = dest.parent / (dest.name + ".lock")
+    with open(lock_file, "w") as lock_f:
+        fcntl.flock(lock_f, fcntl.LOCK_EX)
+        try:
+            if not preclone:
+                if force and dest.exists():
+                    shutil.rmtree(dest)
 
-        default_branch = None
-        import fcntl
-        lock_file = dest.parent / (dest.name + ".lock")
-        with open(lock_file, "w") as lock_f:
-            fcntl.flock(lock_f, fcntl.LOCK_EX)
-            try:
+                default_branch = None
                 if not dest.exists():
                     cmd = ["git", "clone", "--recurse-submodules", "--single-branch", url, dest]
                     shell.run(cmd, check=True)
@@ -121,12 +122,12 @@ def clone(
                     default_branch = _local_default_branch(dest)
                     shell.run(["git", "checkout", default_branch], cwd=str(dest), check=True)
                     shell.run(["git", "pull"], cwd=str(dest), check=True)
-            finally:
-                fcntl.flock(lock_f, fcntl.LOCK_UN)
-        committish = committish or default_branch
+                committish = committish or default_branch
 
-    if committish:
-        shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
+            if committish:
+                shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
+        finally:
+            fcntl.flock(lock_f, fcntl.LOCK_UN)
 
     # track all git repositories
     _tracked_paths.add(dest)
