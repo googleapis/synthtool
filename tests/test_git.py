@@ -14,6 +14,7 @@
 
 import copy
 import importlib
+import fcntl
 import os
 import unittest
 from unittest import mock
@@ -89,8 +90,6 @@ class TestClone(unittest.TestCase):
 
     @mock.patch("fcntl.flock")
     def testCloneConcurrencyPatch(self, mock_flock):
-        import fcntl
-
         metadata.reset()
         local_directory = git.clone("https://github.com/googleapis/nodejs-vision.git")
         self.assertEqual("nodejs-vision", local_directory.name)

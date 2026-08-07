@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import fcntl
 import os
 import pathlib
 import re
@@ -104,8 +105,6 @@ def clone(
             dest = cache.get_cache_dir()
 
         dest = dest / pathlib.Path(url).stem
-
-    import fcntl
 
     lock_file = dest.parent / (dest.name + ".lock")
     with open(lock_file, "w") as lock_f:
