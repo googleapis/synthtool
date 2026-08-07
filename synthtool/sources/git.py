@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import contextlib
 import fcntl
 import os
 import pathlib
@@ -43,6 +44,16 @@ def make_repo_clone_url(repo: str) -> str:
         return f"git@github.com:{repo}.git"
     else:
         return f"https://github.com/{repo}.git"
+
+
+@contextlib.contextmanager
+def file_lock(lock_path: pathlib.Path):
+    with open(lock_path, "w") as lock_f:
+        fcntl.flock(lock_f, fcntl.LOCK_EX)
+        try:
+            yield lock_f
+        finally:
+            fcntl.flock(lock_f, fcntl.LOCK_UN)
 
 
 def _local_default_branch(path: pathlib.Path) -> Union[str, None]:
@@ -107,36 +118,32 @@ def clone(
         dest = dest / pathlib.Path(url).stem
 
     lock_file = dest.parent / (dest.name + ".lock")
-    with open(lock_file, "w") as lock_f:
-        fcntl.flock(lock_f, fcntl.LOCK_EX)
-        try:
-            if not preclone:
-                if force and dest.exists():
-                    shutil.rmtree(dest)
+    with file_lock(lock_file):
+        if not preclone:
+            if force and dest.exists():
+                shutil.rmtree(dest)
 
-                default_branch = None
-                if not dest.exists():
-                    cmd = [
-                        "git",
-                        "clone",
-                        "--recurse-submodules",
-                        "--single-branch",
-                        url,
-                        dest,
-                    ]
-                    shell.run(cmd, check=True)
-                else:
-                    default_branch = _local_default_branch(dest)
-                    shell.run(
-                        ["git", "checkout", default_branch], cwd=str(dest), check=True
-                    )
-                    shell.run(["git", "pull"], cwd=str(dest), check=True)
-                committish = committish or default_branch
+            default_branch = None
+            if not dest.exists():
+                cmd = [
+                    "git",
+                    "clone",
+                    "--recurse-submodules",
+                    "--single-branch",
+                    url,
+                    dest,
+                ]
+                shell.run(cmd, check=True)
+            else:
+                default_branch = _local_default_branch(dest)
+                shell.run(
+                    ["git", "checkout", default_branch], cwd=str(dest), check=True
+                )
+                shell.run(["git", "pull"], cwd=str(dest), check=True)
+            committish = committish or default_branch
 
-            if committish:
-                shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
-        finally:
-            fcntl.flock(lock_f, fcntl.LOCK_UN)
+        if committish:
+            shell.run(["git", "reset", "--hard", committish], cwd=str(dest))
 
     # track all git repositories
     _tracked_paths.add(dest)
