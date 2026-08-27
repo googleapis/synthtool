@@ -1913,6 +1913,171 @@
                          * @variation 2
                          */
     
+                        /**
+                         * Callback as used by {@link google.privacy.dlp.v2.DlpService|createContentPolicy}.
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @typedef CreateContentPolicyCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.privacy.dlp.v2.ContentPolicy} [response] ContentPolicy
+                         */
+    
+                        /**
+                         * Calls CreateContentPolicy.
+                         * @function createContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.ICreateContentPolicyRequest} request CreateContentPolicyRequest message or plain object
+                         * @param {google.privacy.dlp.v2.DlpService.CreateContentPolicyCallback} callback Node-style callback called with the error, if any, and ContentPolicy
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(DlpService.prototype.createContentPolicy = function createContentPolicy(request, callback) {
+                            return this.rpcCall(createContentPolicy, $root.google.privacy.dlp.v2.CreateContentPolicyRequest, $root.google.privacy.dlp.v2.ContentPolicy, request, callback);
+                        }, "name", { value: "CreateContentPolicy" });
+    
+                        /**
+                         * Calls CreateContentPolicy.
+                         * @function createContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.ICreateContentPolicyRequest} request CreateContentPolicyRequest message or plain object
+                         * @returns {Promise<google.privacy.dlp.v2.ContentPolicy>} Promise
+                         * @variation 2
+                         */
+    
+                        /**
+                         * Callback as used by {@link google.privacy.dlp.v2.DlpService|updateContentPolicy}.
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @typedef UpdateContentPolicyCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.privacy.dlp.v2.ContentPolicy} [response] ContentPolicy
+                         */
+    
+                        /**
+                         * Calls UpdateContentPolicy.
+                         * @function updateContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IUpdateContentPolicyRequest} request UpdateContentPolicyRequest message or plain object
+                         * @param {google.privacy.dlp.v2.DlpService.UpdateContentPolicyCallback} callback Node-style callback called with the error, if any, and ContentPolicy
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(DlpService.prototype.updateContentPolicy = function updateContentPolicy(request, callback) {
+                            return this.rpcCall(updateContentPolicy, $root.google.privacy.dlp.v2.UpdateContentPolicyRequest, $root.google.privacy.dlp.v2.ContentPolicy, request, callback);
+                        }, "name", { value: "UpdateContentPolicy" });
+    
+                        /**
+                         * Calls UpdateContentPolicy.
+                         * @function updateContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IUpdateContentPolicyRequest} request UpdateContentPolicyRequest message or plain object
+                         * @returns {Promise<google.privacy.dlp.v2.ContentPolicy>} Promise
+                         * @variation 2
+                         */
+    
+                        /**
+                         * Callback as used by {@link google.privacy.dlp.v2.DlpService|getContentPolicy}.
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @typedef GetContentPolicyCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.privacy.dlp.v2.ContentPolicy} [response] ContentPolicy
+                         */
+    
+                        /**
+                         * Calls GetContentPolicy.
+                         * @function getContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IGetContentPolicyRequest} request GetContentPolicyRequest message or plain object
+                         * @param {google.privacy.dlp.v2.DlpService.GetContentPolicyCallback} callback Node-style callback called with the error, if any, and ContentPolicy
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(DlpService.prototype.getContentPolicy = function getContentPolicy(request, callback) {
+                            return this.rpcCall(getContentPolicy, $root.google.privacy.dlp.v2.GetContentPolicyRequest, $root.google.privacy.dlp.v2.ContentPolicy, request, callback);
+                        }, "name", { value: "GetContentPolicy" });
+    
+                        /**
+                         * Calls GetContentPolicy.
+                         * @function getContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IGetContentPolicyRequest} request GetContentPolicyRequest message or plain object
+                         * @returns {Promise<google.privacy.dlp.v2.ContentPolicy>} Promise
+                         * @variation 2
+                         */
+    
+                        /**
+                         * Callback as used by {@link google.privacy.dlp.v2.DlpService|listContentPolicies}.
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @typedef ListContentPoliciesCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.privacy.dlp.v2.ListContentPoliciesResponse} [response] ListContentPoliciesResponse
+                         */
+    
+                        /**
+                         * Calls ListContentPolicies.
+                         * @function listContentPolicies
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesRequest} request ListContentPoliciesRequest message or plain object
+                         * @param {google.privacy.dlp.v2.DlpService.ListContentPoliciesCallback} callback Node-style callback called with the error, if any, and ListContentPoliciesResponse
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(DlpService.prototype.listContentPolicies = function listContentPolicies(request, callback) {
+                            return this.rpcCall(listContentPolicies, $root.google.privacy.dlp.v2.ListContentPoliciesRequest, $root.google.privacy.dlp.v2.ListContentPoliciesResponse, request, callback);
+                        }, "name", { value: "ListContentPolicies" });
+    
+                        /**
+                         * Calls ListContentPolicies.
+                         * @function listContentPolicies
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesRequest} request ListContentPoliciesRequest message or plain object
+                         * @returns {Promise<google.privacy.dlp.v2.ListContentPoliciesResponse>} Promise
+                         * @variation 2
+                         */
+    
+                        /**
+                         * Callback as used by {@link google.privacy.dlp.v2.DlpService|deleteContentPolicy}.
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @typedef DeleteContentPolicyCallback
+                         * @type {function}
+                         * @param {Error|null} error Error, if any
+                         * @param {google.protobuf.Empty} [response] Empty
+                         */
+    
+                        /**
+                         * Calls DeleteContentPolicy.
+                         * @function deleteContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IDeleteContentPolicyRequest} request DeleteContentPolicyRequest message or plain object
+                         * @param {google.privacy.dlp.v2.DlpService.DeleteContentPolicyCallback} callback Node-style callback called with the error, if any, and Empty
+                         * @returns {undefined}
+                         * @variation 1
+                         */
+                        Object.defineProperty(DlpService.prototype.deleteContentPolicy = function deleteContentPolicy(request, callback) {
+                            return this.rpcCall(deleteContentPolicy, $root.google.privacy.dlp.v2.DeleteContentPolicyRequest, $root.google.protobuf.Empty, request, callback);
+                        }, "name", { value: "DeleteContentPolicy" });
+    
+                        /**
+                         * Calls DeleteContentPolicy.
+                         * @function deleteContentPolicy
+                         * @memberof google.privacy.dlp.v2.DlpService
+                         * @instance
+                         * @param {google.privacy.dlp.v2.IDeleteContentPolicyRequest} request DeleteContentPolicyRequest message or plain object
+                         * @returns {Promise<google.protobuf.Empty>} Promise
+                         * @variation 2
+                         */
+    
                         return DlpService;
                     })();
     
@@ -6902,6 +7067,7 @@
                          * @memberof google.privacy.dlp.v2
                          * @interface IContentMetadata
                          * @property {Array.<google.privacy.dlp.v2.IKeyValueMetadataProperty>|null} [properties] ContentMetadata properties
+                         * @property {Array.<google.privacy.dlp.v2.IFileLabel>|null} [fileLabels] ContentMetadata fileLabels
                          */
     
                         /**
@@ -6914,6 +7080,7 @@
                          */
                         function ContentMetadata(properties) {
                             this.properties = [];
+                            this.fileLabels = [];
                             if (properties)
                                 for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                                     if (properties[keys[i]] != null && keys[i] !== "__proto__")
@@ -6927,6 +7094,14 @@
                          * @instance
                          */
                         ContentMetadata.prototype.properties = $util.emptyArray;
+    
+                        /**
+                         * ContentMetadata fileLabels.
+                         * @member {Array.<google.privacy.dlp.v2.IFileLabel>} fileLabels
+                         * @memberof google.privacy.dlp.v2.ContentMetadata
+                         * @instance
+                         */
+                        ContentMetadata.prototype.fileLabels = $util.emptyArray;
     
                         /**
                          * Creates a new ContentMetadata instance using the specified properties.
@@ -6955,6 +7130,9 @@
                             if (message.properties != null && message.properties.length)
                                 for (var i = 0; i < message.properties.length; ++i)
                                     $root.google.privacy.dlp.v2.KeyValueMetadataProperty.encode(message.properties[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            if (message.fileLabels != null && message.fileLabels.length)
+                                for (var i = 0; i < message.fileLabels.length; ++i)
+                                    $root.google.privacy.dlp.v2.FileLabel.encode(message.fileLabels[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                             return writer;
                         };
     
@@ -6999,6 +7177,12 @@
                                         if (!(message.properties && message.properties.length))
                                             message.properties = [];
                                         message.properties.push($root.google.privacy.dlp.v2.KeyValueMetadataProperty.decode(reader, reader.uint32(), undefined, long + 1));
+                                        break;
+                                    }
+                                case 3: {
+                                        if (!(message.fileLabels && message.fileLabels.length))
+                                            message.fileLabels = [];
+                                        message.fileLabels.push($root.google.privacy.dlp.v2.FileLabel.decode(reader, reader.uint32(), undefined, long + 1));
                                         break;
                                     }
                                 default:
@@ -7049,6 +7233,15 @@
                                         return "properties." + error;
                                 }
                             }
+                            if (message.fileLabels != null && message.hasOwnProperty("fileLabels")) {
+                                if (!Array.isArray(message.fileLabels))
+                                    return "fileLabels: array expected";
+                                for (var i = 0; i < message.fileLabels.length; ++i) {
+                                    var error = $root.google.privacy.dlp.v2.FileLabel.verify(message.fileLabels[i], long + 1);
+                                    if (error)
+                                        return "fileLabels." + error;
+                                }
+                            }
                             return null;
                         };
     
@@ -7078,6 +7271,16 @@
                                     message.properties[i] = $root.google.privacy.dlp.v2.KeyValueMetadataProperty.fromObject(object.properties[i], long + 1);
                                 }
                             }
+                            if (object.fileLabels) {
+                                if (!Array.isArray(object.fileLabels))
+                                    throw TypeError(".google.privacy.dlp.v2.ContentMetadata.fileLabels: array expected");
+                                message.fileLabels = [];
+                                for (var i = 0; i < object.fileLabels.length; ++i) {
+                                    if (typeof object.fileLabels[i] !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.ContentMetadata.fileLabels: object expected");
+                                    message.fileLabels[i] = $root.google.privacy.dlp.v2.FileLabel.fromObject(object.fileLabels[i], long + 1);
+                                }
+                            }
                             return message;
                         };
     
@@ -7094,12 +7297,19 @@
                             if (!options)
                                 options = {};
                             var object = {};
-                            if (options.arrays || options.defaults)
+                            if (options.arrays || options.defaults) {
                                 object.properties = [];
+                                object.fileLabels = [];
+                            }
                             if (message.properties && message.properties.length) {
                                 object.properties = [];
                                 for (var j = 0; j < message.properties.length; ++j)
                                     object.properties[j] = $root.google.privacy.dlp.v2.KeyValueMetadataProperty.toObject(message.properties[j], options);
+                            }
+                            if (message.fileLabels && message.fileLabels.length) {
+                                object.fileLabels = [];
+                                for (var j = 0; j < message.fileLabels.length; ++j)
+                                    object.fileLabels[j] = $root.google.privacy.dlp.v2.FileLabel.toObject(message.fileLabels[j], options);
                             }
                             return object;
                         };
@@ -8909,6 +9119,1007 @@
                         };
     
                         return KeyValueMetadataProperty;
+                    })();
+    
+                    v2.FileLabel = (function() {
+    
+                        /**
+                         * Properties of a FileLabel.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface IFileLabel
+                         * @property {google.privacy.dlp.v2.FileLabel.ISensitivityLabelMetadata|null} [sensitivityLabel] FileLabel sensitivityLabel
+                         * @property {google.privacy.dlp.v2.FileLabel.IGoogleDriveLabelMetadata|null} [googleDriveLabel] FileLabel googleDriveLabel
+                         */
+    
+                        /**
+                         * Constructs a new FileLabel.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents a FileLabel.
+                         * @implements IFileLabel
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.IFileLabel=} [properties] Properties to set
+                         */
+                        function FileLabel(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * FileLabel sensitivityLabel.
+                         * @member {google.privacy.dlp.v2.FileLabel.ISensitivityLabelMetadata|null|undefined} sensitivityLabel
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @instance
+                         */
+                        FileLabel.prototype.sensitivityLabel = null;
+    
+                        /**
+                         * FileLabel googleDriveLabel.
+                         * @member {google.privacy.dlp.v2.FileLabel.IGoogleDriveLabelMetadata|null|undefined} googleDriveLabel
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @instance
+                         */
+                        FileLabel.prototype.googleDriveLabel = null;
+    
+                        // OneOf field names bound to virtual getters and setters
+                        var $oneOfFields;
+    
+                        /**
+                         * FileLabel type.
+                         * @member {"sensitivityLabel"|"googleDriveLabel"|undefined} type
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @instance
+                         */
+                        Object.defineProperty(FileLabel.prototype, "type", {
+                            get: $util.oneOfGetter($oneOfFields = ["sensitivityLabel", "googleDriveLabel"]),
+                            set: $util.oneOfSetter($oneOfFields)
+                        });
+    
+                        /**
+                         * Creates a new FileLabel instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {google.privacy.dlp.v2.IFileLabel=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.FileLabel} FileLabel instance
+                         */
+                        FileLabel.create = function create(properties) {
+                            return new FileLabel(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified FileLabel message. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {google.privacy.dlp.v2.IFileLabel} message FileLabel message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        FileLabel.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.sensitivityLabel != null && Object.hasOwnProperty.call(message, "sensitivityLabel"))
+                                $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata.encode(message.sensitivityLabel, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.googleDriveLabel != null && Object.hasOwnProperty.call(message, "googleDriveLabel"))
+                                $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.encode(message.googleDriveLabel, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified FileLabel message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {google.privacy.dlp.v2.IFileLabel} message FileLabel message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        FileLabel.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a FileLabel message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.FileLabel} FileLabel
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        FileLabel.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.FileLabel();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.sensitivityLabel = $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 2: {
+                                        message.googleDriveLabel = $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a FileLabel message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.FileLabel} FileLabel
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        FileLabel.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a FileLabel message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        FileLabel.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            var properties = {};
+                            if (message.sensitivityLabel != null && message.hasOwnProperty("sensitivityLabel")) {
+                                properties.type = 1;
+                                {
+                                    var error = $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata.verify(message.sensitivityLabel, long + 1);
+                                    if (error)
+                                        return "sensitivityLabel." + error;
+                                }
+                            }
+                            if (message.googleDriveLabel != null && message.hasOwnProperty("googleDriveLabel")) {
+                                if (properties.type === 1)
+                                    return "type: multiple values";
+                                properties.type = 1;
+                                {
+                                    var error = $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.verify(message.googleDriveLabel, long + 1);
+                                    if (error)
+                                        return "googleDriveLabel." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a FileLabel message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.FileLabel} FileLabel
+                         */
+                        FileLabel.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.FileLabel)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.FileLabel();
+                            if (object.sensitivityLabel != null) {
+                                if (typeof object.sensitivityLabel !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.FileLabel.sensitivityLabel: object expected");
+                                message.sensitivityLabel = $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata.fromObject(object.sensitivityLabel, long + 1);
+                            }
+                            if (object.googleDriveLabel != null) {
+                                if (typeof object.googleDriveLabel !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.FileLabel.googleDriveLabel: object expected");
+                                message.googleDriveLabel = $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.fromObject(object.googleDriveLabel, long + 1);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a FileLabel message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {google.privacy.dlp.v2.FileLabel} message FileLabel
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        FileLabel.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (message.sensitivityLabel != null && message.hasOwnProperty("sensitivityLabel")) {
+                                object.sensitivityLabel = $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata.toObject(message.sensitivityLabel, options);
+                                if (options.oneofs)
+                                    object.type = "sensitivityLabel";
+                            }
+                            if (message.googleDriveLabel != null && message.hasOwnProperty("googleDriveLabel")) {
+                                object.googleDriveLabel = $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.toObject(message.googleDriveLabel, options);
+                                if (options.oneofs)
+                                    object.type = "googleDriveLabel";
+                            }
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this FileLabel to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        FileLabel.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for FileLabel
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.FileLabel
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        FileLabel.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.FileLabel";
+                        };
+    
+                        FileLabel.SensitivityLabelMetadata = (function() {
+    
+                            /**
+                             * Properties of a SensitivityLabelMetadata.
+                             * @memberof google.privacy.dlp.v2.FileLabel
+                             * @interface ISensitivityLabelMetadata
+                             * @property {string|null} [guid] SensitivityLabelMetadata guid
+                             */
+    
+                            /**
+                             * Constructs a new SensitivityLabelMetadata.
+                             * @memberof google.privacy.dlp.v2.FileLabel
+                             * @classdesc Represents a SensitivityLabelMetadata.
+                             * @implements ISensitivityLabelMetadata
+                             * @constructor
+                             * @param {google.privacy.dlp.v2.FileLabel.ISensitivityLabelMetadata=} [properties] Properties to set
+                             */
+                            function SensitivityLabelMetadata(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * SensitivityLabelMetadata guid.
+                             * @member {string} guid
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @instance
+                             */
+                            SensitivityLabelMetadata.prototype.guid = "";
+    
+                            /**
+                             * Creates a new SensitivityLabelMetadata instance using the specified properties.
+                             * @function create
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.ISensitivityLabelMetadata=} [properties] Properties to set
+                             * @returns {google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata} SensitivityLabelMetadata instance
+                             */
+                            SensitivityLabelMetadata.create = function create(properties) {
+                                return new SensitivityLabelMetadata(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified SensitivityLabelMetadata message. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.ISensitivityLabelMetadata} message SensitivityLabelMetadata message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            SensitivityLabelMetadata.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.guid != null && Object.hasOwnProperty.call(message, "guid"))
+                                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.guid);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified SensitivityLabelMetadata message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.ISensitivityLabelMetadata} message SensitivityLabelMetadata message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            SensitivityLabelMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a SensitivityLabelMetadata message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata} SensitivityLabelMetadata
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            SensitivityLabelMetadata.decode = function decode(reader, length, error, long) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $Reader.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.guid = reader.string();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7, long);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a SensitivityLabelMetadata message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata} SensitivityLabelMetadata
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            SensitivityLabelMetadata.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a SensitivityLabelMetadata message.
+                             * @function verify
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            SensitivityLabelMetadata.verify = function verify(message, long) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    return "maximum nesting depth exceeded";
+                                if (message.guid != null && message.hasOwnProperty("guid"))
+                                    if (!$util.isString(message.guid))
+                                        return "guid: string expected";
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a SensitivityLabelMetadata message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata} SensitivityLabelMetadata
+                             */
+                            SensitivityLabelMetadata.fromObject = function fromObject(object, long) {
+                                if (object instanceof $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata)
+                                    return object;
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var message = new $root.google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata();
+                                if (object.guid != null)
+                                    message.guid = String(object.guid);
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a SensitivityLabelMetadata message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata} message SensitivityLabelMetadata
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            SensitivityLabelMetadata.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.defaults)
+                                    object.guid = "";
+                                if (message.guid != null && message.hasOwnProperty("guid"))
+                                    object.guid = message.guid;
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this SensitivityLabelMetadata to JSON.
+                             * @function toJSON
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            SensitivityLabelMetadata.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for SensitivityLabelMetadata
+                             * @function getTypeUrl
+                             * @memberof google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            SensitivityLabelMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.privacy.dlp.v2.FileLabel.SensitivityLabelMetadata";
+                            };
+    
+                            return SensitivityLabelMetadata;
+                        })();
+    
+                        FileLabel.GoogleDriveLabelMetadata = (function() {
+    
+                            /**
+                             * Properties of a GoogleDriveLabelMetadata.
+                             * @memberof google.privacy.dlp.v2.FileLabel
+                             * @interface IGoogleDriveLabelMetadata
+                             * @property {string|null} [labelId] GoogleDriveLabelMetadata labelId
+                             * @property {Array.<google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.ILabelFieldMetadata>|null} [labelFields] GoogleDriveLabelMetadata labelFields
+                             */
+    
+                            /**
+                             * Constructs a new GoogleDriveLabelMetadata.
+                             * @memberof google.privacy.dlp.v2.FileLabel
+                             * @classdesc Represents a GoogleDriveLabelMetadata.
+                             * @implements IGoogleDriveLabelMetadata
+                             * @constructor
+                             * @param {google.privacy.dlp.v2.FileLabel.IGoogleDriveLabelMetadata=} [properties] Properties to set
+                             */
+                            function GoogleDriveLabelMetadata(properties) {
+                                this.labelFields = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * GoogleDriveLabelMetadata labelId.
+                             * @member {string} labelId
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @instance
+                             */
+                            GoogleDriveLabelMetadata.prototype.labelId = "";
+    
+                            /**
+                             * GoogleDriveLabelMetadata labelFields.
+                             * @member {Array.<google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.ILabelFieldMetadata>} labelFields
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @instance
+                             */
+                            GoogleDriveLabelMetadata.prototype.labelFields = $util.emptyArray;
+    
+                            /**
+                             * Creates a new GoogleDriveLabelMetadata instance using the specified properties.
+                             * @function create
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.IGoogleDriveLabelMetadata=} [properties] Properties to set
+                             * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata} GoogleDriveLabelMetadata instance
+                             */
+                            GoogleDriveLabelMetadata.create = function create(properties) {
+                                return new GoogleDriveLabelMetadata(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified GoogleDriveLabelMetadata message. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.IGoogleDriveLabelMetadata} message GoogleDriveLabelMetadata message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            GoogleDriveLabelMetadata.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.labelId != null && Object.hasOwnProperty.call(message, "labelId"))
+                                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.labelId);
+                                if (message.labelFields != null && message.labelFields.length)
+                                    for (var i = 0; i < message.labelFields.length; ++i)
+                                        $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.encode(message.labelFields[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified GoogleDriveLabelMetadata message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.IGoogleDriveLabelMetadata} message GoogleDriveLabelMetadata message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            GoogleDriveLabelMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a GoogleDriveLabelMetadata message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata} GoogleDriveLabelMetadata
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            GoogleDriveLabelMetadata.decode = function decode(reader, length, error, long) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $Reader.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.labelId = reader.string();
+                                            break;
+                                        }
+                                    case 2: {
+                                            if (!(message.labelFields && message.labelFields.length))
+                                                message.labelFields = [];
+                                            message.labelFields.push($root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.decode(reader, reader.uint32(), undefined, long + 1));
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7, long);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a GoogleDriveLabelMetadata message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata} GoogleDriveLabelMetadata
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            GoogleDriveLabelMetadata.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a GoogleDriveLabelMetadata message.
+                             * @function verify
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            GoogleDriveLabelMetadata.verify = function verify(message, long) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    return "maximum nesting depth exceeded";
+                                if (message.labelId != null && message.hasOwnProperty("labelId"))
+                                    if (!$util.isString(message.labelId))
+                                        return "labelId: string expected";
+                                if (message.labelFields != null && message.hasOwnProperty("labelFields")) {
+                                    if (!Array.isArray(message.labelFields))
+                                        return "labelFields: array expected";
+                                    for (var i = 0; i < message.labelFields.length; ++i) {
+                                        var error = $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.verify(message.labelFields[i], long + 1);
+                                        if (error)
+                                            return "labelFields." + error;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a GoogleDriveLabelMetadata message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata} GoogleDriveLabelMetadata
+                             */
+                            GoogleDriveLabelMetadata.fromObject = function fromObject(object, long) {
+                                if (object instanceof $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata)
+                                    return object;
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var message = new $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata();
+                                if (object.labelId != null)
+                                    message.labelId = String(object.labelId);
+                                if (object.labelFields) {
+                                    if (!Array.isArray(object.labelFields))
+                                        throw TypeError(".google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.labelFields: array expected");
+                                    message.labelFields = [];
+                                    for (var i = 0; i < object.labelFields.length; ++i) {
+                                        if (typeof object.labelFields[i] !== "object")
+                                            throw TypeError(".google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.labelFields: object expected");
+                                        message.labelFields[i] = $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.fromObject(object.labelFields[i], long + 1);
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a GoogleDriveLabelMetadata message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata} message GoogleDriveLabelMetadata
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            GoogleDriveLabelMetadata.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults)
+                                    object.labelFields = [];
+                                if (options.defaults)
+                                    object.labelId = "";
+                                if (message.labelId != null && message.hasOwnProperty("labelId"))
+                                    object.labelId = message.labelId;
+                                if (message.labelFields && message.labelFields.length) {
+                                    object.labelFields = [];
+                                    for (var j = 0; j < message.labelFields.length; ++j)
+                                        object.labelFields[j] = $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.toObject(message.labelFields[j], options);
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this GoogleDriveLabelMetadata to JSON.
+                             * @function toJSON
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            GoogleDriveLabelMetadata.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for GoogleDriveLabelMetadata
+                             * @function getTypeUrl
+                             * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            GoogleDriveLabelMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata";
+                            };
+    
+                            GoogleDriveLabelMetadata.LabelFieldMetadata = (function() {
+    
+                                /**
+                                 * Properties of a LabelFieldMetadata.
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                                 * @interface ILabelFieldMetadata
+                                 * @property {string|null} [id] LabelFieldMetadata id
+                                 * @property {google.privacy.dlp.v2.IValue|null} [value] LabelFieldMetadata value
+                                 */
+    
+                                /**
+                                 * Constructs a new LabelFieldMetadata.
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata
+                                 * @classdesc Represents a LabelFieldMetadata.
+                                 * @implements ILabelFieldMetadata
+                                 * @constructor
+                                 * @param {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.ILabelFieldMetadata=} [properties] Properties to set
+                                 */
+                                function LabelFieldMetadata(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * LabelFieldMetadata id.
+                                 * @member {string} id
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @instance
+                                 */
+                                LabelFieldMetadata.prototype.id = "";
+    
+                                /**
+                                 * LabelFieldMetadata value.
+                                 * @member {google.privacy.dlp.v2.IValue|null|undefined} value
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @instance
+                                 */
+                                LabelFieldMetadata.prototype.value = null;
+    
+                                /**
+                                 * Creates a new LabelFieldMetadata instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.ILabelFieldMetadata=} [properties] Properties to set
+                                 * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata} LabelFieldMetadata instance
+                                 */
+                                LabelFieldMetadata.create = function create(properties) {
+                                    return new LabelFieldMetadata(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified LabelFieldMetadata message. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.ILabelFieldMetadata} message LabelFieldMetadata message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                LabelFieldMetadata.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                                    if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                                        $root.google.privacy.dlp.v2.Value.encode(message.value, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified LabelFieldMetadata message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.ILabelFieldMetadata} message LabelFieldMetadata message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                LabelFieldMetadata.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a LabelFieldMetadata message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata} LabelFieldMetadata
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                LabelFieldMetadata.decode = function decode(reader, length, error, long) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $Reader.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        if (tag === error)
+                                            break;
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.id = reader.string();
+                                                break;
+                                            }
+                                        case 2: {
+                                                message.value = $root.google.privacy.dlp.v2.Value.decode(reader, reader.uint32(), undefined, long + 1);
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7, long);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a LabelFieldMetadata message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata} LabelFieldMetadata
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                LabelFieldMetadata.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a LabelFieldMetadata message.
+                                 * @function verify
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                LabelFieldMetadata.verify = function verify(message, long) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        return "maximum nesting depth exceeded";
+                                    if (message.id != null && message.hasOwnProperty("id"))
+                                        if (!$util.isString(message.id))
+                                            return "id: string expected";
+                                    if (message.value != null && message.hasOwnProperty("value")) {
+                                        var error = $root.google.privacy.dlp.v2.Value.verify(message.value, long + 1);
+                                        if (error)
+                                            return "value." + error;
+                                    }
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a LabelFieldMetadata message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata} LabelFieldMetadata
+                                 */
+                                LabelFieldMetadata.fromObject = function fromObject(object, long) {
+                                    if (object instanceof $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata)
+                                        return object;
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var message = new $root.google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata();
+                                    if (object.id != null)
+                                        message.id = String(object.id);
+                                    if (object.value != null) {
+                                        if (typeof object.value !== "object")
+                                            throw TypeError(".google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata.value: object expected");
+                                        message.value = $root.google.privacy.dlp.v2.Value.fromObject(object.value, long + 1);
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a LabelFieldMetadata message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata} message LabelFieldMetadata
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                LabelFieldMetadata.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults) {
+                                        object.id = "";
+                                        object.value = null;
+                                    }
+                                    if (message.id != null && message.hasOwnProperty("id"))
+                                        object.id = message.id;
+                                    if (message.value != null && message.hasOwnProperty("value"))
+                                        object.value = $root.google.privacy.dlp.v2.Value.toObject(message.value, options);
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this LabelFieldMetadata to JSON.
+                                 * @function toJSON
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                LabelFieldMetadata.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for LabelFieldMetadata
+                                 * @function getTypeUrl
+                                 * @memberof google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                LabelFieldMetadata.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.privacy.dlp.v2.FileLabel.GoogleDriveLabelMetadata.LabelFieldMetadata";
+                                };
+    
+                                return LabelFieldMetadata;
+                            })();
+    
+                            return GoogleDriveLabelMetadata;
+                        })();
+    
+                        return FileLabel;
                     })();
     
                     v2.InspectResult = (function() {
@@ -16420,6 +17631,22 @@
                         };
     
                         return ReidentifyContentResponse;
+                    })();
+    
+                    /**
+                     * ContentPolicyVerdict enum.
+                     * @name google.privacy.dlp.v2.ContentPolicyVerdict
+                     * @enum {number}
+                     * @property {number} CONTENT_POLICY_VERDICT_UNSPECIFIED=0 CONTENT_POLICY_VERDICT_UNSPECIFIED value
+                     * @property {number} ALLOW=1 ALLOW value
+                     * @property {number} BLOCK=2 BLOCK value
+                     */
+                    v2.ContentPolicyVerdict = (function() {
+                        var valuesById = {}, values = Object.create(valuesById);
+                        values[valuesById[0] = "CONTENT_POLICY_VERDICT_UNSPECIFIED"] = 0;
+                        values[valuesById[1] = "ALLOW"] = 1;
+                        values[valuesById[2] = "BLOCK"] = 2;
+                        return values;
                     })();
     
                     v2.InspectContentRequest = (function() {
@@ -47065,6 +48292,7 @@
                          * @property {google.protobuf.ITimestamp|null} [createTime] InspectTemplate createTime
                          * @property {google.protobuf.ITimestamp|null} [updateTime] InspectTemplate updateTime
                          * @property {google.privacy.dlp.v2.IInspectConfig|null} [inspectConfig] InspectTemplate inspectConfig
+                         * @property {boolean|null} [allowLimitedAvailabilityInfoTypes] InspectTemplate allowLimitedAvailabilityInfoTypes
                          */
     
                         /**
@@ -47131,6 +48359,14 @@
                         InspectTemplate.prototype.inspectConfig = null;
     
                         /**
+                         * InspectTemplate allowLimitedAvailabilityInfoTypes.
+                         * @member {boolean} allowLimitedAvailabilityInfoTypes
+                         * @memberof google.privacy.dlp.v2.InspectTemplate
+                         * @instance
+                         */
+                        InspectTemplate.prototype.allowLimitedAvailabilityInfoTypes = false;
+    
+                        /**
                          * Creates a new InspectTemplate instance using the specified properties.
                          * @function create
                          * @memberof google.privacy.dlp.v2.InspectTemplate
@@ -47166,6 +48402,8 @@
                                 $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
                             if (message.inspectConfig != null && Object.hasOwnProperty.call(message, "inspectConfig"))
                                 $root.google.privacy.dlp.v2.InspectConfig.encode(message.inspectConfig, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                            if (message.allowLimitedAvailabilityInfoTypes != null && Object.hasOwnProperty.call(message, "allowLimitedAvailabilityInfoTypes"))
+                                writer.uint32(/* id 8, wireType 0 =*/64).bool(message.allowLimitedAvailabilityInfoTypes);
                             return writer;
                         };
     
@@ -47228,6 +48466,10 @@
                                     }
                                 case 6: {
                                         message.inspectConfig = $root.google.privacy.dlp.v2.InspectConfig.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 8: {
+                                        message.allowLimitedAvailabilityInfoTypes = reader.bool();
                                         break;
                                     }
                                 default:
@@ -47293,6 +48535,9 @@
                                 if (error)
                                     return "inspectConfig." + error;
                             }
+                            if (message.allowLimitedAvailabilityInfoTypes != null && message.hasOwnProperty("allowLimitedAvailabilityInfoTypes"))
+                                if (typeof message.allowLimitedAvailabilityInfoTypes !== "boolean")
+                                    return "allowLimitedAvailabilityInfoTypes: boolean expected";
                             return null;
                         };
     
@@ -47333,6 +48578,8 @@
                                     throw TypeError(".google.privacy.dlp.v2.InspectTemplate.inspectConfig: object expected");
                                 message.inspectConfig = $root.google.privacy.dlp.v2.InspectConfig.fromObject(object.inspectConfig, long + 1);
                             }
+                            if (object.allowLimitedAvailabilityInfoTypes != null)
+                                message.allowLimitedAvailabilityInfoTypes = Boolean(object.allowLimitedAvailabilityInfoTypes);
                             return message;
                         };
     
@@ -47356,6 +48603,7 @@
                                 object.createTime = null;
                                 object.updateTime = null;
                                 object.inspectConfig = null;
+                                object.allowLimitedAvailabilityInfoTypes = false;
                             }
                             if (message.name != null && message.hasOwnProperty("name"))
                                 object.name = message.name;
@@ -47369,6 +48617,8 @@
                                 object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
                             if (message.inspectConfig != null && message.hasOwnProperty("inspectConfig"))
                                 object.inspectConfig = $root.google.privacy.dlp.v2.InspectConfig.toObject(message.inspectConfig, options);
+                            if (message.allowLimitedAvailabilityInfoTypes != null && message.hasOwnProperty("allowLimitedAvailabilityInfoTypes"))
+                                object.allowLimitedAvailabilityInfoTypes = message.allowLimitedAvailabilityInfoTypes;
                             return object;
                         };
     
@@ -105834,6 +107084,3899 @@
                         return Domain;
                     })();
     
+                    v2.CreateContentPolicyRequest = (function() {
+    
+                        /**
+                         * Properties of a CreateContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface ICreateContentPolicyRequest
+                         * @property {string|null} [parent] CreateContentPolicyRequest parent
+                         * @property {google.privacy.dlp.v2.IContentPolicy|null} [contentPolicy] CreateContentPolicyRequest contentPolicy
+                         * @property {string|null} [contentPolicyId] CreateContentPolicyRequest contentPolicyId
+                         */
+    
+                        /**
+                         * Constructs a new CreateContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents a CreateContentPolicyRequest.
+                         * @implements ICreateContentPolicyRequest
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.ICreateContentPolicyRequest=} [properties] Properties to set
+                         */
+                        function CreateContentPolicyRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * CreateContentPolicyRequest parent.
+                         * @member {string} parent
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @instance
+                         */
+                        CreateContentPolicyRequest.prototype.parent = "";
+    
+                        /**
+                         * CreateContentPolicyRequest contentPolicy.
+                         * @member {google.privacy.dlp.v2.IContentPolicy|null|undefined} contentPolicy
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @instance
+                         */
+                        CreateContentPolicyRequest.prototype.contentPolicy = null;
+    
+                        /**
+                         * CreateContentPolicyRequest contentPolicyId.
+                         * @member {string} contentPolicyId
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @instance
+                         */
+                        CreateContentPolicyRequest.prototype.contentPolicyId = "";
+    
+                        /**
+                         * Creates a new CreateContentPolicyRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.ICreateContentPolicyRequest=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.CreateContentPolicyRequest} CreateContentPolicyRequest instance
+                         */
+                        CreateContentPolicyRequest.create = function create(properties) {
+                            return new CreateContentPolicyRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified CreateContentPolicyRequest message. Does not implicitly {@link google.privacy.dlp.v2.CreateContentPolicyRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.ICreateContentPolicyRequest} message CreateContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        CreateContentPolicyRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.parent != null && Object.hasOwnProperty.call(message, "parent"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.parent);
+                            if (message.contentPolicy != null && Object.hasOwnProperty.call(message, "contentPolicy"))
+                                $root.google.privacy.dlp.v2.ContentPolicy.encode(message.contentPolicy, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            if (message.contentPolicyId != null && Object.hasOwnProperty.call(message, "contentPolicyId"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.contentPolicyId);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified CreateContentPolicyRequest message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.CreateContentPolicyRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.ICreateContentPolicyRequest} message CreateContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        CreateContentPolicyRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a CreateContentPolicyRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.CreateContentPolicyRequest} CreateContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        CreateContentPolicyRequest.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.CreateContentPolicyRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.parent = reader.string();
+                                        break;
+                                    }
+                                case 2: {
+                                        message.contentPolicy = $root.google.privacy.dlp.v2.ContentPolicy.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 3: {
+                                        message.contentPolicyId = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a CreateContentPolicyRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.CreateContentPolicyRequest} CreateContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        CreateContentPolicyRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a CreateContentPolicyRequest message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        CreateContentPolicyRequest.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            if (message.parent != null && message.hasOwnProperty("parent"))
+                                if (!$util.isString(message.parent))
+                                    return "parent: string expected";
+                            if (message.contentPolicy != null && message.hasOwnProperty("contentPolicy")) {
+                                var error = $root.google.privacy.dlp.v2.ContentPolicy.verify(message.contentPolicy, long + 1);
+                                if (error)
+                                    return "contentPolicy." + error;
+                            }
+                            if (message.contentPolicyId != null && message.hasOwnProperty("contentPolicyId"))
+                                if (!$util.isString(message.contentPolicyId))
+                                    return "contentPolicyId: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a CreateContentPolicyRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.CreateContentPolicyRequest} CreateContentPolicyRequest
+                         */
+                        CreateContentPolicyRequest.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.CreateContentPolicyRequest)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.CreateContentPolicyRequest();
+                            if (object.parent != null)
+                                message.parent = String(object.parent);
+                            if (object.contentPolicy != null) {
+                                if (typeof object.contentPolicy !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.CreateContentPolicyRequest.contentPolicy: object expected");
+                                message.contentPolicy = $root.google.privacy.dlp.v2.ContentPolicy.fromObject(object.contentPolicy, long + 1);
+                            }
+                            if (object.contentPolicyId != null)
+                                message.contentPolicyId = String(object.contentPolicyId);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a CreateContentPolicyRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.CreateContentPolicyRequest} message CreateContentPolicyRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        CreateContentPolicyRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.parent = "";
+                                object.contentPolicy = null;
+                                object.contentPolicyId = "";
+                            }
+                            if (message.parent != null && message.hasOwnProperty("parent"))
+                                object.parent = message.parent;
+                            if (message.contentPolicy != null && message.hasOwnProperty("contentPolicy"))
+                                object.contentPolicy = $root.google.privacy.dlp.v2.ContentPolicy.toObject(message.contentPolicy, options);
+                            if (message.contentPolicyId != null && message.hasOwnProperty("contentPolicyId"))
+                                object.contentPolicyId = message.contentPolicyId;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this CreateContentPolicyRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        CreateContentPolicyRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for CreateContentPolicyRequest
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.CreateContentPolicyRequest
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        CreateContentPolicyRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.CreateContentPolicyRequest";
+                        };
+    
+                        return CreateContentPolicyRequest;
+                    })();
+    
+                    v2.GetContentPolicyRequest = (function() {
+    
+                        /**
+                         * Properties of a GetContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface IGetContentPolicyRequest
+                         * @property {string|null} [name] GetContentPolicyRequest name
+                         */
+    
+                        /**
+                         * Constructs a new GetContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents a GetContentPolicyRequest.
+                         * @implements IGetContentPolicyRequest
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.IGetContentPolicyRequest=} [properties] Properties to set
+                         */
+                        function GetContentPolicyRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * GetContentPolicyRequest name.
+                         * @member {string} name
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @instance
+                         */
+                        GetContentPolicyRequest.prototype.name = "";
+    
+                        /**
+                         * Creates a new GetContentPolicyRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IGetContentPolicyRequest=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.GetContentPolicyRequest} GetContentPolicyRequest instance
+                         */
+                        GetContentPolicyRequest.create = function create(properties) {
+                            return new GetContentPolicyRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified GetContentPolicyRequest message. Does not implicitly {@link google.privacy.dlp.v2.GetContentPolicyRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IGetContentPolicyRequest} message GetContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        GetContentPolicyRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified GetContentPolicyRequest message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.GetContentPolicyRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IGetContentPolicyRequest} message GetContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        GetContentPolicyRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a GetContentPolicyRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.GetContentPolicyRequest} GetContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        GetContentPolicyRequest.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.GetContentPolicyRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a GetContentPolicyRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.GetContentPolicyRequest} GetContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        GetContentPolicyRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a GetContentPolicyRequest message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        GetContentPolicyRequest.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a GetContentPolicyRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.GetContentPolicyRequest} GetContentPolicyRequest
+                         */
+                        GetContentPolicyRequest.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.GetContentPolicyRequest)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.GetContentPolicyRequest();
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a GetContentPolicyRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.GetContentPolicyRequest} message GetContentPolicyRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        GetContentPolicyRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.name = "";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this GetContentPolicyRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        GetContentPolicyRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for GetContentPolicyRequest
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.GetContentPolicyRequest
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        GetContentPolicyRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.GetContentPolicyRequest";
+                        };
+    
+                        return GetContentPolicyRequest;
+                    })();
+    
+                    v2.ListContentPoliciesRequest = (function() {
+    
+                        /**
+                         * Properties of a ListContentPoliciesRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface IListContentPoliciesRequest
+                         * @property {string|null} [parent] ListContentPoliciesRequest parent
+                         * @property {number|null} [pageSize] ListContentPoliciesRequest pageSize
+                         * @property {string|null} [pageToken] ListContentPoliciesRequest pageToken
+                         */
+    
+                        /**
+                         * Constructs a new ListContentPoliciesRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents a ListContentPoliciesRequest.
+                         * @implements IListContentPoliciesRequest
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesRequest=} [properties] Properties to set
+                         */
+                        function ListContentPoliciesRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ListContentPoliciesRequest parent.
+                         * @member {string} parent
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @instance
+                         */
+                        ListContentPoliciesRequest.prototype.parent = "";
+    
+                        /**
+                         * ListContentPoliciesRequest pageSize.
+                         * @member {number} pageSize
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @instance
+                         */
+                        ListContentPoliciesRequest.prototype.pageSize = 0;
+    
+                        /**
+                         * ListContentPoliciesRequest pageToken.
+                         * @member {string} pageToken
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @instance
+                         */
+                        ListContentPoliciesRequest.prototype.pageToken = "";
+    
+                        /**
+                         * Creates a new ListContentPoliciesRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesRequest=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesRequest} ListContentPoliciesRequest instance
+                         */
+                        ListContentPoliciesRequest.create = function create(properties) {
+                            return new ListContentPoliciesRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ListContentPoliciesRequest message. Does not implicitly {@link google.privacy.dlp.v2.ListContentPoliciesRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesRequest} message ListContentPoliciesRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ListContentPoliciesRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.parent != null && Object.hasOwnProperty.call(message, "parent"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.parent);
+                            if (message.pageSize != null && Object.hasOwnProperty.call(message, "pageSize"))
+                                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.pageSize);
+                            if (message.pageToken != null && Object.hasOwnProperty.call(message, "pageToken"))
+                                writer.uint32(/* id 3, wireType 2 =*/26).string(message.pageToken);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ListContentPoliciesRequest message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ListContentPoliciesRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesRequest} message ListContentPoliciesRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ListContentPoliciesRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ListContentPoliciesRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesRequest} ListContentPoliciesRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ListContentPoliciesRequest.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ListContentPoliciesRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.parent = reader.string();
+                                        break;
+                                    }
+                                case 2: {
+                                        message.pageSize = reader.int32();
+                                        break;
+                                    }
+                                case 3: {
+                                        message.pageToken = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ListContentPoliciesRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesRequest} ListContentPoliciesRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ListContentPoliciesRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ListContentPoliciesRequest message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ListContentPoliciesRequest.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            if (message.parent != null && message.hasOwnProperty("parent"))
+                                if (!$util.isString(message.parent))
+                                    return "parent: string expected";
+                            if (message.pageSize != null && message.hasOwnProperty("pageSize"))
+                                if (!$util.isInteger(message.pageSize))
+                                    return "pageSize: integer expected";
+                            if (message.pageToken != null && message.hasOwnProperty("pageToken"))
+                                if (!$util.isString(message.pageToken))
+                                    return "pageToken: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ListContentPoliciesRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesRequest} ListContentPoliciesRequest
+                         */
+                        ListContentPoliciesRequest.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.ListContentPoliciesRequest)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.ListContentPoliciesRequest();
+                            if (object.parent != null)
+                                message.parent = String(object.parent);
+                            if (object.pageSize != null)
+                                message.pageSize = object.pageSize | 0;
+                            if (object.pageToken != null)
+                                message.pageToken = String(object.pageToken);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a ListContentPoliciesRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.ListContentPoliciesRequest} message ListContentPoliciesRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ListContentPoliciesRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.parent = "";
+                                object.pageSize = 0;
+                                object.pageToken = "";
+                            }
+                            if (message.parent != null && message.hasOwnProperty("parent"))
+                                object.parent = message.parent;
+                            if (message.pageSize != null && message.hasOwnProperty("pageSize"))
+                                object.pageSize = message.pageSize;
+                            if (message.pageToken != null && message.hasOwnProperty("pageToken"))
+                                object.pageToken = message.pageToken;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ListContentPoliciesRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ListContentPoliciesRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for ListContentPoliciesRequest
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesRequest
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        ListContentPoliciesRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.ListContentPoliciesRequest";
+                        };
+    
+                        return ListContentPoliciesRequest;
+                    })();
+    
+                    v2.ListContentPoliciesResponse = (function() {
+    
+                        /**
+                         * Properties of a ListContentPoliciesResponse.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface IListContentPoliciesResponse
+                         * @property {Array.<google.privacy.dlp.v2.IContentPolicy>|null} [contentPolicies] ListContentPoliciesResponse contentPolicies
+                         * @property {string|null} [nextPageToken] ListContentPoliciesResponse nextPageToken
+                         */
+    
+                        /**
+                         * Constructs a new ListContentPoliciesResponse.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents a ListContentPoliciesResponse.
+                         * @implements IListContentPoliciesResponse
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesResponse=} [properties] Properties to set
+                         */
+                        function ListContentPoliciesResponse(properties) {
+                            this.contentPolicies = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ListContentPoliciesResponse contentPolicies.
+                         * @member {Array.<google.privacy.dlp.v2.IContentPolicy>} contentPolicies
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @instance
+                         */
+                        ListContentPoliciesResponse.prototype.contentPolicies = $util.emptyArray;
+    
+                        /**
+                         * ListContentPoliciesResponse nextPageToken.
+                         * @member {string} nextPageToken
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @instance
+                         */
+                        ListContentPoliciesResponse.prototype.nextPageToken = "";
+    
+                        /**
+                         * Creates a new ListContentPoliciesResponse instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesResponse=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesResponse} ListContentPoliciesResponse instance
+                         */
+                        ListContentPoliciesResponse.create = function create(properties) {
+                            return new ListContentPoliciesResponse(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ListContentPoliciesResponse message. Does not implicitly {@link google.privacy.dlp.v2.ListContentPoliciesResponse.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesResponse} message ListContentPoliciesResponse message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ListContentPoliciesResponse.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.contentPolicies != null && message.contentPolicies.length)
+                                for (var i = 0; i < message.contentPolicies.length; ++i)
+                                    $root.google.privacy.dlp.v2.ContentPolicy.encode(message.contentPolicies[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                            if (message.nextPageToken != null && Object.hasOwnProperty.call(message, "nextPageToken"))
+                                writer.uint32(/* id 2, wireType 2 =*/18).string(message.nextPageToken);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ListContentPoliciesResponse message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ListContentPoliciesResponse.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {google.privacy.dlp.v2.IListContentPoliciesResponse} message ListContentPoliciesResponse message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ListContentPoliciesResponse.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ListContentPoliciesResponse message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesResponse} ListContentPoliciesResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ListContentPoliciesResponse.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ListContentPoliciesResponse();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        if (!(message.contentPolicies && message.contentPolicies.length))
+                                            message.contentPolicies = [];
+                                        message.contentPolicies.push($root.google.privacy.dlp.v2.ContentPolicy.decode(reader, reader.uint32(), undefined, long + 1));
+                                        break;
+                                    }
+                                case 2: {
+                                        message.nextPageToken = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ListContentPoliciesResponse message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesResponse} ListContentPoliciesResponse
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ListContentPoliciesResponse.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ListContentPoliciesResponse message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ListContentPoliciesResponse.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            if (message.contentPolicies != null && message.hasOwnProperty("contentPolicies")) {
+                                if (!Array.isArray(message.contentPolicies))
+                                    return "contentPolicies: array expected";
+                                for (var i = 0; i < message.contentPolicies.length; ++i) {
+                                    var error = $root.google.privacy.dlp.v2.ContentPolicy.verify(message.contentPolicies[i], long + 1);
+                                    if (error)
+                                        return "contentPolicies." + error;
+                                }
+                            }
+                            if (message.nextPageToken != null && message.hasOwnProperty("nextPageToken"))
+                                if (!$util.isString(message.nextPageToken))
+                                    return "nextPageToken: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ListContentPoliciesResponse message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.ListContentPoliciesResponse} ListContentPoliciesResponse
+                         */
+                        ListContentPoliciesResponse.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.ListContentPoliciesResponse)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.ListContentPoliciesResponse();
+                            if (object.contentPolicies) {
+                                if (!Array.isArray(object.contentPolicies))
+                                    throw TypeError(".google.privacy.dlp.v2.ListContentPoliciesResponse.contentPolicies: array expected");
+                                message.contentPolicies = [];
+                                for (var i = 0; i < object.contentPolicies.length; ++i) {
+                                    if (typeof object.contentPolicies[i] !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.ListContentPoliciesResponse.contentPolicies: object expected");
+                                    message.contentPolicies[i] = $root.google.privacy.dlp.v2.ContentPolicy.fromObject(object.contentPolicies[i], long + 1);
+                                }
+                            }
+                            if (object.nextPageToken != null)
+                                message.nextPageToken = String(object.nextPageToken);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a ListContentPoliciesResponse message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {google.privacy.dlp.v2.ListContentPoliciesResponse} message ListContentPoliciesResponse
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ListContentPoliciesResponse.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults)
+                                object.contentPolicies = [];
+                            if (options.defaults)
+                                object.nextPageToken = "";
+                            if (message.contentPolicies && message.contentPolicies.length) {
+                                object.contentPolicies = [];
+                                for (var j = 0; j < message.contentPolicies.length; ++j)
+                                    object.contentPolicies[j] = $root.google.privacy.dlp.v2.ContentPolicy.toObject(message.contentPolicies[j], options);
+                            }
+                            if (message.nextPageToken != null && message.hasOwnProperty("nextPageToken"))
+                                object.nextPageToken = message.nextPageToken;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ListContentPoliciesResponse to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ListContentPoliciesResponse.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for ListContentPoliciesResponse
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.ListContentPoliciesResponse
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        ListContentPoliciesResponse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.ListContentPoliciesResponse";
+                        };
+    
+                        return ListContentPoliciesResponse;
+                    })();
+    
+                    v2.UpdateContentPolicyRequest = (function() {
+    
+                        /**
+                         * Properties of an UpdateContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface IUpdateContentPolicyRequest
+                         * @property {string|null} [name] UpdateContentPolicyRequest name
+                         * @property {google.privacy.dlp.v2.IContentPolicy|null} [contentPolicy] UpdateContentPolicyRequest contentPolicy
+                         * @property {google.protobuf.IFieldMask|null} [updateMask] UpdateContentPolicyRequest updateMask
+                         */
+    
+                        /**
+                         * Constructs a new UpdateContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents an UpdateContentPolicyRequest.
+                         * @implements IUpdateContentPolicyRequest
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.IUpdateContentPolicyRequest=} [properties] Properties to set
+                         */
+                        function UpdateContentPolicyRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * UpdateContentPolicyRequest name.
+                         * @member {string} name
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @instance
+                         */
+                        UpdateContentPolicyRequest.prototype.name = "";
+    
+                        /**
+                         * UpdateContentPolicyRequest contentPolicy.
+                         * @member {google.privacy.dlp.v2.IContentPolicy|null|undefined} contentPolicy
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @instance
+                         */
+                        UpdateContentPolicyRequest.prototype.contentPolicy = null;
+    
+                        /**
+                         * UpdateContentPolicyRequest updateMask.
+                         * @member {google.protobuf.IFieldMask|null|undefined} updateMask
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @instance
+                         */
+                        UpdateContentPolicyRequest.prototype.updateMask = null;
+    
+                        /**
+                         * Creates a new UpdateContentPolicyRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IUpdateContentPolicyRequest=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.UpdateContentPolicyRequest} UpdateContentPolicyRequest instance
+                         */
+                        UpdateContentPolicyRequest.create = function create(properties) {
+                            return new UpdateContentPolicyRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified UpdateContentPolicyRequest message. Does not implicitly {@link google.privacy.dlp.v2.UpdateContentPolicyRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IUpdateContentPolicyRequest} message UpdateContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        UpdateContentPolicyRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                            if (message.contentPolicy != null && Object.hasOwnProperty.call(message, "contentPolicy"))
+                                $root.google.privacy.dlp.v2.ContentPolicy.encode(message.contentPolicy, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                            if (message.updateMask != null && Object.hasOwnProperty.call(message, "updateMask"))
+                                $root.google.protobuf.FieldMask.encode(message.updateMask, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified UpdateContentPolicyRequest message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.UpdateContentPolicyRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IUpdateContentPolicyRequest} message UpdateContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        UpdateContentPolicyRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes an UpdateContentPolicyRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.UpdateContentPolicyRequest} UpdateContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        UpdateContentPolicyRequest.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.UpdateContentPolicyRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                case 2: {
+                                        message.contentPolicy = $root.google.privacy.dlp.v2.ContentPolicy.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 3: {
+                                        message.updateMask = $root.google.protobuf.FieldMask.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes an UpdateContentPolicyRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.UpdateContentPolicyRequest} UpdateContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        UpdateContentPolicyRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies an UpdateContentPolicyRequest message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        UpdateContentPolicyRequest.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            if (message.contentPolicy != null && message.hasOwnProperty("contentPolicy")) {
+                                var error = $root.google.privacy.dlp.v2.ContentPolicy.verify(message.contentPolicy, long + 1);
+                                if (error)
+                                    return "contentPolicy." + error;
+                            }
+                            if (message.updateMask != null && message.hasOwnProperty("updateMask")) {
+                                var error = $root.google.protobuf.FieldMask.verify(message.updateMask, long + 1);
+                                if (error)
+                                    return "updateMask." + error;
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates an UpdateContentPolicyRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.UpdateContentPolicyRequest} UpdateContentPolicyRequest
+                         */
+                        UpdateContentPolicyRequest.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.UpdateContentPolicyRequest)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.UpdateContentPolicyRequest();
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            if (object.contentPolicy != null) {
+                                if (typeof object.contentPolicy !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.UpdateContentPolicyRequest.contentPolicy: object expected");
+                                message.contentPolicy = $root.google.privacy.dlp.v2.ContentPolicy.fromObject(object.contentPolicy, long + 1);
+                            }
+                            if (object.updateMask != null) {
+                                if (typeof object.updateMask !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.UpdateContentPolicyRequest.updateMask: object expected");
+                                message.updateMask = $root.google.protobuf.FieldMask.fromObject(object.updateMask, long + 1);
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from an UpdateContentPolicyRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.UpdateContentPolicyRequest} message UpdateContentPolicyRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        UpdateContentPolicyRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults) {
+                                object.name = "";
+                                object.contentPolicy = null;
+                                object.updateMask = null;
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            if (message.contentPolicy != null && message.hasOwnProperty("contentPolicy"))
+                                object.contentPolicy = $root.google.privacy.dlp.v2.ContentPolicy.toObject(message.contentPolicy, options);
+                            if (message.updateMask != null && message.hasOwnProperty("updateMask"))
+                                object.updateMask = $root.google.protobuf.FieldMask.toObject(message.updateMask, options);
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this UpdateContentPolicyRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        UpdateContentPolicyRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for UpdateContentPolicyRequest
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.UpdateContentPolicyRequest
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        UpdateContentPolicyRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.UpdateContentPolicyRequest";
+                        };
+    
+                        return UpdateContentPolicyRequest;
+                    })();
+    
+                    v2.DeleteContentPolicyRequest = (function() {
+    
+                        /**
+                         * Properties of a DeleteContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface IDeleteContentPolicyRequest
+                         * @property {string|null} [name] DeleteContentPolicyRequest name
+                         */
+    
+                        /**
+                         * Constructs a new DeleteContentPolicyRequest.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents a DeleteContentPolicyRequest.
+                         * @implements IDeleteContentPolicyRequest
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.IDeleteContentPolicyRequest=} [properties] Properties to set
+                         */
+                        function DeleteContentPolicyRequest(properties) {
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * DeleteContentPolicyRequest name.
+                         * @member {string} name
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @instance
+                         */
+                        DeleteContentPolicyRequest.prototype.name = "";
+    
+                        /**
+                         * Creates a new DeleteContentPolicyRequest instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IDeleteContentPolicyRequest=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.DeleteContentPolicyRequest} DeleteContentPolicyRequest instance
+                         */
+                        DeleteContentPolicyRequest.create = function create(properties) {
+                            return new DeleteContentPolicyRequest(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified DeleteContentPolicyRequest message. Does not implicitly {@link google.privacy.dlp.v2.DeleteContentPolicyRequest.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IDeleteContentPolicyRequest} message DeleteContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        DeleteContentPolicyRequest.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified DeleteContentPolicyRequest message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.DeleteContentPolicyRequest.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.IDeleteContentPolicyRequest} message DeleteContentPolicyRequest message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        DeleteContentPolicyRequest.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a DeleteContentPolicyRequest message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.DeleteContentPolicyRequest} DeleteContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        DeleteContentPolicyRequest.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.DeleteContentPolicyRequest();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a DeleteContentPolicyRequest message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.DeleteContentPolicyRequest} DeleteContentPolicyRequest
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        DeleteContentPolicyRequest.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a DeleteContentPolicyRequest message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        DeleteContentPolicyRequest.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a DeleteContentPolicyRequest message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.DeleteContentPolicyRequest} DeleteContentPolicyRequest
+                         */
+                        DeleteContentPolicyRequest.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.DeleteContentPolicyRequest)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.DeleteContentPolicyRequest();
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a DeleteContentPolicyRequest message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {google.privacy.dlp.v2.DeleteContentPolicyRequest} message DeleteContentPolicyRequest
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        DeleteContentPolicyRequest.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.defaults)
+                                object.name = "";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this DeleteContentPolicyRequest to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        DeleteContentPolicyRequest.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for DeleteContentPolicyRequest
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.DeleteContentPolicyRequest
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        DeleteContentPolicyRequest.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.DeleteContentPolicyRequest";
+                        };
+    
+                        return DeleteContentPolicyRequest;
+                    })();
+    
+                    v2.ContentPolicy = (function() {
+    
+                        /**
+                         * Properties of a ContentPolicy.
+                         * @memberof google.privacy.dlp.v2
+                         * @interface IContentPolicy
+                         * @property {string|null} [name] ContentPolicy name
+                         * @property {google.protobuf.ITimestamp|null} [createTime] ContentPolicy createTime
+                         * @property {google.protobuf.ITimestamp|null} [updateTime] ContentPolicy updateTime
+                         * @property {string|null} [displayName] ContentPolicy displayName
+                         * @property {google.privacy.dlp.v2.IInspectConfig|null} [inspectConfig] ContentPolicy inspectConfig
+                         * @property {Array.<google.privacy.dlp.v2.ContentPolicy.IPolicyRule>|null} [rules] ContentPolicy rules
+                         * @property {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null} [unsupportedFileType] ContentPolicy unsupportedFileType
+                         * @property {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null} [inputTooLarge] ContentPolicy inputTooLarge
+                         * @property {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null} [failedToScanSupportedFileType] ContentPolicy failedToScanSupportedFileType
+                         * @property {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null} [defaultAction] ContentPolicy defaultAction
+                         * @property {Array.<google.privacy.dlp.v2.ContentPolicy.ILoggingConfig>|null} [loggingConfigs] ContentPolicy loggingConfigs
+                         * @property {Array.<google.privacy.dlp.v2.IError>|null} [errors] ContentPolicy errors
+                         */
+    
+                        /**
+                         * Constructs a new ContentPolicy.
+                         * @memberof google.privacy.dlp.v2
+                         * @classdesc Represents a ContentPolicy.
+                         * @implements IContentPolicy
+                         * @constructor
+                         * @param {google.privacy.dlp.v2.IContentPolicy=} [properties] Properties to set
+                         */
+                        function ContentPolicy(properties) {
+                            this.rules = [];
+                            this.loggingConfigs = [];
+                            this.errors = [];
+                            if (properties)
+                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                        this[keys[i]] = properties[keys[i]];
+                        }
+    
+                        /**
+                         * ContentPolicy name.
+                         * @member {string} name
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.name = "";
+    
+                        /**
+                         * ContentPolicy createTime.
+                         * @member {google.protobuf.ITimestamp|null|undefined} createTime
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.createTime = null;
+    
+                        /**
+                         * ContentPolicy updateTime.
+                         * @member {google.protobuf.ITimestamp|null|undefined} updateTime
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.updateTime = null;
+    
+                        /**
+                         * ContentPolicy displayName.
+                         * @member {string} displayName
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.displayName = "";
+    
+                        /**
+                         * ContentPolicy inspectConfig.
+                         * @member {google.privacy.dlp.v2.IInspectConfig|null|undefined} inspectConfig
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.inspectConfig = null;
+    
+                        /**
+                         * ContentPolicy rules.
+                         * @member {Array.<google.privacy.dlp.v2.ContentPolicy.IPolicyRule>} rules
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.rules = $util.emptyArray;
+    
+                        /**
+                         * ContentPolicy unsupportedFileType.
+                         * @member {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null|undefined} unsupportedFileType
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.unsupportedFileType = null;
+    
+                        /**
+                         * ContentPolicy inputTooLarge.
+                         * @member {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null|undefined} inputTooLarge
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.inputTooLarge = null;
+    
+                        /**
+                         * ContentPolicy failedToScanSupportedFileType.
+                         * @member {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null|undefined} failedToScanSupportedFileType
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.failedToScanSupportedFileType = null;
+    
+                        /**
+                         * ContentPolicy defaultAction.
+                         * @member {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null|undefined} defaultAction
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.defaultAction = null;
+    
+                        /**
+                         * ContentPolicy loggingConfigs.
+                         * @member {Array.<google.privacy.dlp.v2.ContentPolicy.ILoggingConfig>} loggingConfigs
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.loggingConfigs = $util.emptyArray;
+    
+                        /**
+                         * ContentPolicy errors.
+                         * @member {Array.<google.privacy.dlp.v2.IError>} errors
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         */
+                        ContentPolicy.prototype.errors = $util.emptyArray;
+    
+                        /**
+                         * Creates a new ContentPolicy instance using the specified properties.
+                         * @function create
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {google.privacy.dlp.v2.IContentPolicy=} [properties] Properties to set
+                         * @returns {google.privacy.dlp.v2.ContentPolicy} ContentPolicy instance
+                         */
+                        ContentPolicy.create = function create(properties) {
+                            return new ContentPolicy(properties);
+                        };
+    
+                        /**
+                         * Encodes the specified ContentPolicy message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.verify|verify} messages.
+                         * @function encode
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {google.privacy.dlp.v2.IContentPolicy} message ContentPolicy message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ContentPolicy.encode = function encode(message, writer) {
+                            if (!writer)
+                                writer = $Writer.create();
+                            if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                                writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                            if (message.rules != null && message.rules.length)
+                                for (var i = 0; i < message.rules.length; ++i)
+                                    $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.encode(message.rules[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                            if (message.displayName != null && Object.hasOwnProperty.call(message, "displayName"))
+                                writer.uint32(/* id 4, wireType 2 =*/34).string(message.displayName);
+                            if (message.loggingConfigs != null && message.loggingConfigs.length)
+                                for (var i = 0; i < message.loggingConfigs.length; ++i)
+                                    $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.encode(message.loggingConfigs[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                            if (message.errors != null && message.errors.length)
+                                for (var i = 0; i < message.errors.length; ++i)
+                                    $root.google.privacy.dlp.v2.Error.encode(message.errors[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                            if (message.inspectConfig != null && Object.hasOwnProperty.call(message, "inspectConfig"))
+                                $root.google.privacy.dlp.v2.InspectConfig.encode(message.inspectConfig, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                            if (message.unsupportedFileType != null && Object.hasOwnProperty.call(message, "unsupportedFileType"))
+                                $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.encode(message.unsupportedFileType, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                            if (message.inputTooLarge != null && Object.hasOwnProperty.call(message, "inputTooLarge"))
+                                $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.encode(message.inputTooLarge, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                            if (message.failedToScanSupportedFileType != null && Object.hasOwnProperty.call(message, "failedToScanSupportedFileType"))
+                                $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.encode(message.failedToScanSupportedFileType, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                            if (message.defaultAction != null && Object.hasOwnProperty.call(message, "defaultAction"))
+                                $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.encode(message.defaultAction, writer.uint32(/* id 11, wireType 2 =*/90).fork()).ldelim();
+                            if (message.createTime != null && Object.hasOwnProperty.call(message, "createTime"))
+                                $root.google.protobuf.Timestamp.encode(message.createTime, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
+                            if (message.updateTime != null && Object.hasOwnProperty.call(message, "updateTime"))
+                                $root.google.protobuf.Timestamp.encode(message.updateTime, writer.uint32(/* id 13, wireType 2 =*/106).fork()).ldelim();
+                            return writer;
+                        };
+    
+                        /**
+                         * Encodes the specified ContentPolicy message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.verify|verify} messages.
+                         * @function encodeDelimited
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {google.privacy.dlp.v2.IContentPolicy} message ContentPolicy message or plain object to encode
+                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                         * @returns {$protobuf.Writer} Writer
+                         */
+                        ContentPolicy.encodeDelimited = function encodeDelimited(message, writer) {
+                            return this.encode(message, writer).ldelim();
+                        };
+    
+                        /**
+                         * Decodes a ContentPolicy message from the specified reader or buffer.
+                         * @function decode
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @param {number} [length] Message length if known beforehand
+                         * @returns {google.privacy.dlp.v2.ContentPolicy} ContentPolicy
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ContentPolicy.decode = function decode(reader, length, error, long) {
+                            if (!(reader instanceof $Reader))
+                                reader = $Reader.create(reader);
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $Reader.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy();
+                            while (reader.pos < end) {
+                                var tag = reader.uint32();
+                                if (tag === error)
+                                    break;
+                                switch (tag >>> 3) {
+                                case 1: {
+                                        message.name = reader.string();
+                                        break;
+                                    }
+                                case 12: {
+                                        message.createTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 13: {
+                                        message.updateTime = $root.google.protobuf.Timestamp.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 4: {
+                                        message.displayName = reader.string();
+                                        break;
+                                    }
+                                case 7: {
+                                        message.inspectConfig = $root.google.privacy.dlp.v2.InspectConfig.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 3: {
+                                        if (!(message.rules && message.rules.length))
+                                            message.rules = [];
+                                        message.rules.push($root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.decode(reader, reader.uint32(), undefined, long + 1));
+                                        break;
+                                    }
+                                case 8: {
+                                        message.unsupportedFileType = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 9: {
+                                        message.inputTooLarge = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 10: {
+                                        message.failedToScanSupportedFileType = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 11: {
+                                        message.defaultAction = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 5: {
+                                        if (!(message.loggingConfigs && message.loggingConfigs.length))
+                                            message.loggingConfigs = [];
+                                        message.loggingConfigs.push($root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.decode(reader, reader.uint32(), undefined, long + 1));
+                                        break;
+                                    }
+                                case 6: {
+                                        if (!(message.errors && message.errors.length))
+                                            message.errors = [];
+                                        message.errors.push($root.google.privacy.dlp.v2.Error.decode(reader, reader.uint32(), undefined, long + 1));
+                                        break;
+                                    }
+                                default:
+                                    reader.skipType(tag & 7, long);
+                                    break;
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Decodes a ContentPolicy message from the specified reader or buffer, length delimited.
+                         * @function decodeDelimited
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                         * @returns {google.privacy.dlp.v2.ContentPolicy} ContentPolicy
+                         * @throws {Error} If the payload is not a reader or valid buffer
+                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                         */
+                        ContentPolicy.decodeDelimited = function decodeDelimited(reader) {
+                            if (!(reader instanceof $Reader))
+                                reader = new $Reader(reader);
+                            return this.decode(reader, reader.uint32());
+                        };
+    
+                        /**
+                         * Verifies a ContentPolicy message.
+                         * @function verify
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {Object.<string,*>} message Plain object to verify
+                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                         */
+                        ContentPolicy.verify = function verify(message, long) {
+                            if (typeof message !== "object" || message === null)
+                                return "object expected";
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                return "maximum nesting depth exceeded";
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                if (!$util.isString(message.name))
+                                    return "name: string expected";
+                            if (message.createTime != null && message.hasOwnProperty("createTime")) {
+                                var error = $root.google.protobuf.Timestamp.verify(message.createTime, long + 1);
+                                if (error)
+                                    return "createTime." + error;
+                            }
+                            if (message.updateTime != null && message.hasOwnProperty("updateTime")) {
+                                var error = $root.google.protobuf.Timestamp.verify(message.updateTime, long + 1);
+                                if (error)
+                                    return "updateTime." + error;
+                            }
+                            if (message.displayName != null && message.hasOwnProperty("displayName"))
+                                if (!$util.isString(message.displayName))
+                                    return "displayName: string expected";
+                            if (message.inspectConfig != null && message.hasOwnProperty("inspectConfig")) {
+                                var error = $root.google.privacy.dlp.v2.InspectConfig.verify(message.inspectConfig, long + 1);
+                                if (error)
+                                    return "inspectConfig." + error;
+                            }
+                            if (message.rules != null && message.hasOwnProperty("rules")) {
+                                if (!Array.isArray(message.rules))
+                                    return "rules: array expected";
+                                for (var i = 0; i < message.rules.length; ++i) {
+                                    var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.verify(message.rules[i], long + 1);
+                                    if (error)
+                                        return "rules." + error;
+                                }
+                            }
+                            if (message.unsupportedFileType != null && message.hasOwnProperty("unsupportedFileType")) {
+                                var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.verify(message.unsupportedFileType, long + 1);
+                                if (error)
+                                    return "unsupportedFileType." + error;
+                            }
+                            if (message.inputTooLarge != null && message.hasOwnProperty("inputTooLarge")) {
+                                var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.verify(message.inputTooLarge, long + 1);
+                                if (error)
+                                    return "inputTooLarge." + error;
+                            }
+                            if (message.failedToScanSupportedFileType != null && message.hasOwnProperty("failedToScanSupportedFileType")) {
+                                var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.verify(message.failedToScanSupportedFileType, long + 1);
+                                if (error)
+                                    return "failedToScanSupportedFileType." + error;
+                            }
+                            if (message.defaultAction != null && message.hasOwnProperty("defaultAction")) {
+                                var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.verify(message.defaultAction, long + 1);
+                                if (error)
+                                    return "defaultAction." + error;
+                            }
+                            if (message.loggingConfigs != null && message.hasOwnProperty("loggingConfigs")) {
+                                if (!Array.isArray(message.loggingConfigs))
+                                    return "loggingConfigs: array expected";
+                                for (var i = 0; i < message.loggingConfigs.length; ++i) {
+                                    var error = $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.verify(message.loggingConfigs[i], long + 1);
+                                    if (error)
+                                        return "loggingConfigs." + error;
+                                }
+                            }
+                            if (message.errors != null && message.hasOwnProperty("errors")) {
+                                if (!Array.isArray(message.errors))
+                                    return "errors: array expected";
+                                for (var i = 0; i < message.errors.length; ++i) {
+                                    var error = $root.google.privacy.dlp.v2.Error.verify(message.errors[i], long + 1);
+                                    if (error)
+                                        return "errors." + error;
+                                }
+                            }
+                            return null;
+                        };
+    
+                        /**
+                         * Creates a ContentPolicy message from a plain object. Also converts values to their respective internal types.
+                         * @function fromObject
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {Object.<string,*>} object Plain object
+                         * @returns {google.privacy.dlp.v2.ContentPolicy} ContentPolicy
+                         */
+                        ContentPolicy.fromObject = function fromObject(object, long) {
+                            if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy)
+                                return object;
+                            if (long === undefined)
+                                long = 0;
+                            if (long > $util.recursionLimit)
+                                throw Error("maximum nesting depth exceeded");
+                            var message = new $root.google.privacy.dlp.v2.ContentPolicy();
+                            if (object.name != null)
+                                message.name = String(object.name);
+                            if (object.createTime != null) {
+                                if (typeof object.createTime !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.createTime: object expected");
+                                message.createTime = $root.google.protobuf.Timestamp.fromObject(object.createTime, long + 1);
+                            }
+                            if (object.updateTime != null) {
+                                if (typeof object.updateTime !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.updateTime: object expected");
+                                message.updateTime = $root.google.protobuf.Timestamp.fromObject(object.updateTime, long + 1);
+                            }
+                            if (object.displayName != null)
+                                message.displayName = String(object.displayName);
+                            if (object.inspectConfig != null) {
+                                if (typeof object.inspectConfig !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.inspectConfig: object expected");
+                                message.inspectConfig = $root.google.privacy.dlp.v2.InspectConfig.fromObject(object.inspectConfig, long + 1);
+                            }
+                            if (object.rules) {
+                                if (!Array.isArray(object.rules))
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.rules: array expected");
+                                message.rules = [];
+                                for (var i = 0; i < object.rules.length; ++i) {
+                                    if (typeof object.rules[i] !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.ContentPolicy.rules: object expected");
+                                    message.rules[i] = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.fromObject(object.rules[i], long + 1);
+                                }
+                            }
+                            if (object.unsupportedFileType != null) {
+                                if (typeof object.unsupportedFileType !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.unsupportedFileType: object expected");
+                                message.unsupportedFileType = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.fromObject(object.unsupportedFileType, long + 1);
+                            }
+                            if (object.inputTooLarge != null) {
+                                if (typeof object.inputTooLarge !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.inputTooLarge: object expected");
+                                message.inputTooLarge = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.fromObject(object.inputTooLarge, long + 1);
+                            }
+                            if (object.failedToScanSupportedFileType != null) {
+                                if (typeof object.failedToScanSupportedFileType !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.failedToScanSupportedFileType: object expected");
+                                message.failedToScanSupportedFileType = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.fromObject(object.failedToScanSupportedFileType, long + 1);
+                            }
+                            if (object.defaultAction != null) {
+                                if (typeof object.defaultAction !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.defaultAction: object expected");
+                                message.defaultAction = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.fromObject(object.defaultAction, long + 1);
+                            }
+                            if (object.loggingConfigs) {
+                                if (!Array.isArray(object.loggingConfigs))
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.loggingConfigs: array expected");
+                                message.loggingConfigs = [];
+                                for (var i = 0; i < object.loggingConfigs.length; ++i) {
+                                    if (typeof object.loggingConfigs[i] !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.ContentPolicy.loggingConfigs: object expected");
+                                    message.loggingConfigs[i] = $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.fromObject(object.loggingConfigs[i], long + 1);
+                                }
+                            }
+                            if (object.errors) {
+                                if (!Array.isArray(object.errors))
+                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.errors: array expected");
+                                message.errors = [];
+                                for (var i = 0; i < object.errors.length; ++i) {
+                                    if (typeof object.errors[i] !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.ContentPolicy.errors: object expected");
+                                    message.errors[i] = $root.google.privacy.dlp.v2.Error.fromObject(object.errors[i], long + 1);
+                                }
+                            }
+                            return message;
+                        };
+    
+                        /**
+                         * Creates a plain object from a ContentPolicy message. Also converts values to other types if specified.
+                         * @function toObject
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {google.privacy.dlp.v2.ContentPolicy} message ContentPolicy
+                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                         * @returns {Object.<string,*>} Plain object
+                         */
+                        ContentPolicy.toObject = function toObject(message, options) {
+                            if (!options)
+                                options = {};
+                            var object = {};
+                            if (options.arrays || options.defaults) {
+                                object.rules = [];
+                                object.loggingConfigs = [];
+                                object.errors = [];
+                            }
+                            if (options.defaults) {
+                                object.name = "";
+                                object.displayName = "";
+                                object.inspectConfig = null;
+                                object.unsupportedFileType = null;
+                                object.inputTooLarge = null;
+                                object.failedToScanSupportedFileType = null;
+                                object.defaultAction = null;
+                                object.createTime = null;
+                                object.updateTime = null;
+                            }
+                            if (message.name != null && message.hasOwnProperty("name"))
+                                object.name = message.name;
+                            if (message.rules && message.rules.length) {
+                                object.rules = [];
+                                for (var j = 0; j < message.rules.length; ++j)
+                                    object.rules[j] = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.toObject(message.rules[j], options);
+                            }
+                            if (message.displayName != null && message.hasOwnProperty("displayName"))
+                                object.displayName = message.displayName;
+                            if (message.loggingConfigs && message.loggingConfigs.length) {
+                                object.loggingConfigs = [];
+                                for (var j = 0; j < message.loggingConfigs.length; ++j)
+                                    object.loggingConfigs[j] = $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.toObject(message.loggingConfigs[j], options);
+                            }
+                            if (message.errors && message.errors.length) {
+                                object.errors = [];
+                                for (var j = 0; j < message.errors.length; ++j)
+                                    object.errors[j] = $root.google.privacy.dlp.v2.Error.toObject(message.errors[j], options);
+                            }
+                            if (message.inspectConfig != null && message.hasOwnProperty("inspectConfig"))
+                                object.inspectConfig = $root.google.privacy.dlp.v2.InspectConfig.toObject(message.inspectConfig, options);
+                            if (message.unsupportedFileType != null && message.hasOwnProperty("unsupportedFileType"))
+                                object.unsupportedFileType = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.toObject(message.unsupportedFileType, options);
+                            if (message.inputTooLarge != null && message.hasOwnProperty("inputTooLarge"))
+                                object.inputTooLarge = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.toObject(message.inputTooLarge, options);
+                            if (message.failedToScanSupportedFileType != null && message.hasOwnProperty("failedToScanSupportedFileType"))
+                                object.failedToScanSupportedFileType = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.toObject(message.failedToScanSupportedFileType, options);
+                            if (message.defaultAction != null && message.hasOwnProperty("defaultAction"))
+                                object.defaultAction = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.toObject(message.defaultAction, options);
+                            if (message.createTime != null && message.hasOwnProperty("createTime"))
+                                object.createTime = $root.google.protobuf.Timestamp.toObject(message.createTime, options);
+                            if (message.updateTime != null && message.hasOwnProperty("updateTime"))
+                                object.updateTime = $root.google.protobuf.Timestamp.toObject(message.updateTime, options);
+                            return object;
+                        };
+    
+                        /**
+                         * Converts this ContentPolicy to JSON.
+                         * @function toJSON
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @instance
+                         * @returns {Object.<string,*>} JSON object
+                         */
+                        ContentPolicy.prototype.toJSON = function toJSON() {
+                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                        };
+    
+                        /**
+                         * Gets the default type url for ContentPolicy
+                         * @function getTypeUrl
+                         * @memberof google.privacy.dlp.v2.ContentPolicy
+                         * @static
+                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                         * @returns {string} The default type url
+                         */
+                        ContentPolicy.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                            if (typeUrlPrefix === undefined) {
+                                typeUrlPrefix = "type.googleapis.com";
+                            }
+                            return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy";
+                        };
+    
+                        ContentPolicy.PolicyAction = (function() {
+    
+                            /**
+                             * Properties of a PolicyAction.
+                             * @memberof google.privacy.dlp.v2.ContentPolicy
+                             * @interface IPolicyAction
+                             * @property {google.privacy.dlp.v2.ContentPolicyVerdict|null} [returnVerdict] PolicyAction returnVerdict
+                             */
+    
+                            /**
+                             * Constructs a new PolicyAction.
+                             * @memberof google.privacy.dlp.v2.ContentPolicy
+                             * @classdesc Represents a PolicyAction.
+                             * @implements IPolicyAction
+                             * @constructor
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyAction=} [properties] Properties to set
+                             */
+                            function PolicyAction(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * PolicyAction returnVerdict.
+                             * @member {google.privacy.dlp.v2.ContentPolicyVerdict|null|undefined} returnVerdict
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @instance
+                             */
+                            PolicyAction.prototype.returnVerdict = null;
+    
+                            // OneOf field names bound to virtual getters and setters
+                            var $oneOfFields;
+    
+                            /**
+                             * PolicyAction action.
+                             * @member {"returnVerdict"|undefined} action
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @instance
+                             */
+                            Object.defineProperty(PolicyAction.prototype, "action", {
+                                get: $util.oneOfGetter($oneOfFields = ["returnVerdict"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * Creates a new PolicyAction instance using the specified properties.
+                             * @function create
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyAction=} [properties] Properties to set
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyAction} PolicyAction instance
+                             */
+                            PolicyAction.create = function create(properties) {
+                                return new PolicyAction(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified PolicyAction message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyAction.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyAction} message PolicyAction message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PolicyAction.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.returnVerdict != null && Object.hasOwnProperty.call(message, "returnVerdict"))
+                                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.returnVerdict);
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified PolicyAction message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyAction.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyAction} message PolicyAction message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PolicyAction.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a PolicyAction message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyAction} PolicyAction
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PolicyAction.decode = function decode(reader, length, error, long) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $Reader.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.returnVerdict = reader.int32();
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7, long);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a PolicyAction message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyAction} PolicyAction
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PolicyAction.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a PolicyAction message.
+                             * @function verify
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            PolicyAction.verify = function verify(message, long) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    return "maximum nesting depth exceeded";
+                                var properties = {};
+                                if (message.returnVerdict != null && message.hasOwnProperty("returnVerdict")) {
+                                    properties.action = 1;
+                                    switch (message.returnVerdict) {
+                                    default:
+                                        return "returnVerdict: enum value expected";
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        break;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a PolicyAction message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyAction} PolicyAction
+                             */
+                            PolicyAction.fromObject = function fromObject(object, long) {
+                                if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction)
+                                    return object;
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction();
+                                switch (object.returnVerdict) {
+                                default:
+                                    if (typeof object.returnVerdict === "number") {
+                                        message.returnVerdict = object.returnVerdict;
+                                        break;
+                                    }
+                                    break;
+                                case "CONTENT_POLICY_VERDICT_UNSPECIFIED":
+                                case 0:
+                                    message.returnVerdict = 0;
+                                    break;
+                                case "ALLOW":
+                                case 1:
+                                    message.returnVerdict = 1;
+                                    break;
+                                case "BLOCK":
+                                case 2:
+                                    message.returnVerdict = 2;
+                                    break;
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a PolicyAction message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.PolicyAction} message PolicyAction
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            PolicyAction.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (message.returnVerdict != null && message.hasOwnProperty("returnVerdict")) {
+                                    object.returnVerdict = options.enums === String ? $root.google.privacy.dlp.v2.ContentPolicyVerdict[message.returnVerdict] === undefined ? message.returnVerdict : $root.google.privacy.dlp.v2.ContentPolicyVerdict[message.returnVerdict] : message.returnVerdict;
+                                    if (options.oneofs)
+                                        object.action = "returnVerdict";
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this PolicyAction to JSON.
+                             * @function toJSON
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            PolicyAction.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for PolicyAction
+                             * @function getTypeUrl
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyAction
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            PolicyAction.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy.PolicyAction";
+                            };
+    
+                            return PolicyAction;
+                        })();
+    
+                        ContentPolicy.PolicyRule = (function() {
+    
+                            /**
+                             * Properties of a PolicyRule.
+                             * @memberof google.privacy.dlp.v2.ContentPolicy
+                             * @interface IPolicyRule
+                             * @property {Array.<google.privacy.dlp.v2.ContentPolicy.PolicyRule.IPolicyCondition>|null} [conditions] PolicyRule conditions
+                             * @property {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null} [action] PolicyRule action
+                             */
+    
+                            /**
+                             * Constructs a new PolicyRule.
+                             * @memberof google.privacy.dlp.v2.ContentPolicy
+                             * @classdesc Represents a PolicyRule.
+                             * @implements IPolicyRule
+                             * @constructor
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyRule=} [properties] Properties to set
+                             */
+                            function PolicyRule(properties) {
+                                this.conditions = [];
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * PolicyRule conditions.
+                             * @member {Array.<google.privacy.dlp.v2.ContentPolicy.PolicyRule.IPolicyCondition>} conditions
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @instance
+                             */
+                            PolicyRule.prototype.conditions = $util.emptyArray;
+    
+                            /**
+                             * PolicyRule action.
+                             * @member {google.privacy.dlp.v2.ContentPolicy.IPolicyAction|null|undefined} action
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @instance
+                             */
+                            PolicyRule.prototype.action = null;
+    
+                            /**
+                             * Creates a new PolicyRule instance using the specified properties.
+                             * @function create
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyRule=} [properties] Properties to set
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule} PolicyRule instance
+                             */
+                            PolicyRule.create = function create(properties) {
+                                return new PolicyRule(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified PolicyRule message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyRule} message PolicyRule message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PolicyRule.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.conditions != null && message.conditions.length)
+                                    for (var i = 0; i < message.conditions.length; ++i)
+                                        $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.encode(message.conditions[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                if (message.action != null && Object.hasOwnProperty.call(message, "action"))
+                                    $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.encode(message.action, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified PolicyRule message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.IPolicyRule} message PolicyRule message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            PolicyRule.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a PolicyRule message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule} PolicyRule
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PolicyRule.decode = function decode(reader, length, error, long) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $Reader.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
+                                    switch (tag >>> 3) {
+                                    case 2: {
+                                            if (!(message.conditions && message.conditions.length))
+                                                message.conditions = [];
+                                            message.conditions.push($root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.decode(reader, reader.uint32(), undefined, long + 1));
+                                            break;
+                                        }
+                                    case 5: {
+                                            message.action = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.decode(reader, reader.uint32(), undefined, long + 1);
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7, long);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a PolicyRule message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule} PolicyRule
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            PolicyRule.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a PolicyRule message.
+                             * @function verify
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            PolicyRule.verify = function verify(message, long) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    return "maximum nesting depth exceeded";
+                                if (message.conditions != null && message.hasOwnProperty("conditions")) {
+                                    if (!Array.isArray(message.conditions))
+                                        return "conditions: array expected";
+                                    for (var i = 0; i < message.conditions.length; ++i) {
+                                        var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.verify(message.conditions[i], long + 1);
+                                        if (error)
+                                            return "conditions." + error;
+                                    }
+                                }
+                                if (message.action != null && message.hasOwnProperty("action")) {
+                                    var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.verify(message.action, long + 1);
+                                    if (error)
+                                        return "action." + error;
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a PolicyRule message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule} PolicyRule
+                             */
+                            PolicyRule.fromObject = function fromObject(object, long) {
+                                if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule)
+                                    return object;
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule();
+                                if (object.conditions) {
+                                    if (!Array.isArray(object.conditions))
+                                        throw TypeError(".google.privacy.dlp.v2.ContentPolicy.PolicyRule.conditions: array expected");
+                                    message.conditions = [];
+                                    for (var i = 0; i < object.conditions.length; ++i) {
+                                        if (typeof object.conditions[i] !== "object")
+                                            throw TypeError(".google.privacy.dlp.v2.ContentPolicy.PolicyRule.conditions: object expected");
+                                        message.conditions[i] = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.fromObject(object.conditions[i], long + 1);
+                                    }
+                                }
+                                if (object.action != null) {
+                                    if (typeof object.action !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.ContentPolicy.PolicyRule.action: object expected");
+                                    message.action = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.fromObject(object.action, long + 1);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a PolicyRule message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule} message PolicyRule
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            PolicyRule.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (options.arrays || options.defaults)
+                                    object.conditions = [];
+                                if (options.defaults)
+                                    object.action = null;
+                                if (message.conditions && message.conditions.length) {
+                                    object.conditions = [];
+                                    for (var j = 0; j < message.conditions.length; ++j)
+                                        object.conditions[j] = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.toObject(message.conditions[j], options);
+                                }
+                                if (message.action != null && message.hasOwnProperty("action"))
+                                    object.action = $root.google.privacy.dlp.v2.ContentPolicy.PolicyAction.toObject(message.action, options);
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this PolicyRule to JSON.
+                             * @function toJSON
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            PolicyRule.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for PolicyRule
+                             * @function getTypeUrl
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            PolicyRule.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy.PolicyRule";
+                            };
+    
+                            PolicyRule.PolicyCondition = (function() {
+    
+                                /**
+                                 * Properties of a PolicyCondition.
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                                 * @interface IPolicyCondition
+                                 * @property {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.IInfoTypeCondition|null} [infoTypeCondition] PolicyCondition infoTypeCondition
+                                 */
+    
+                                /**
+                                 * Constructs a new PolicyCondition.
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule
+                                 * @classdesc Represents a PolicyCondition.
+                                 * @implements IPolicyCondition
+                                 * @constructor
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.IPolicyCondition=} [properties] Properties to set
+                                 */
+                                function PolicyCondition(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * PolicyCondition infoTypeCondition.
+                                 * @member {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.IInfoTypeCondition|null|undefined} infoTypeCondition
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @instance
+                                 */
+                                PolicyCondition.prototype.infoTypeCondition = null;
+    
+                                // OneOf field names bound to virtual getters and setters
+                                var $oneOfFields;
+    
+                                /**
+                                 * PolicyCondition condition.
+                                 * @member {"infoTypeCondition"|undefined} condition
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @instance
+                                 */
+                                Object.defineProperty(PolicyCondition.prototype, "condition", {
+                                    get: $util.oneOfGetter($oneOfFields = ["infoTypeCondition"]),
+                                    set: $util.oneOfSetter($oneOfFields)
+                                });
+    
+                                /**
+                                 * Creates a new PolicyCondition instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.IPolicyCondition=} [properties] Properties to set
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition} PolicyCondition instance
+                                 */
+                                PolicyCondition.create = function create(properties) {
+                                    return new PolicyCondition(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified PolicyCondition message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.IPolicyCondition} message PolicyCondition message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                PolicyCondition.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.infoTypeCondition != null && Object.hasOwnProperty.call(message, "infoTypeCondition"))
+                                        $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.encode(message.infoTypeCondition, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified PolicyCondition message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.IPolicyCondition} message PolicyCondition message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                PolicyCondition.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a PolicyCondition message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition} PolicyCondition
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                PolicyCondition.decode = function decode(reader, length, error, long) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $Reader.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        if (tag === error)
+                                            break;
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.infoTypeCondition = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.decode(reader, reader.uint32(), undefined, long + 1);
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7, long);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a PolicyCondition message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition} PolicyCondition
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                PolicyCondition.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a PolicyCondition message.
+                                 * @function verify
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                PolicyCondition.verify = function verify(message, long) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        return "maximum nesting depth exceeded";
+                                    var properties = {};
+                                    if (message.infoTypeCondition != null && message.hasOwnProperty("infoTypeCondition")) {
+                                        properties.condition = 1;
+                                        {
+                                            var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.verify(message.infoTypeCondition, long + 1);
+                                            if (error)
+                                                return "infoTypeCondition." + error;
+                                        }
+                                    }
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a PolicyCondition message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition} PolicyCondition
+                                 */
+                                PolicyCondition.fromObject = function fromObject(object, long) {
+                                    if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition)
+                                        return object;
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition();
+                                    if (object.infoTypeCondition != null) {
+                                        if (typeof object.infoTypeCondition !== "object")
+                                            throw TypeError(".google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.infoTypeCondition: object expected");
+                                        message.infoTypeCondition = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.fromObject(object.infoTypeCondition, long + 1);
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a PolicyCondition message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition} message PolicyCondition
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                PolicyCondition.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (message.infoTypeCondition != null && message.hasOwnProperty("infoTypeCondition")) {
+                                        object.infoTypeCondition = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.toObject(message.infoTypeCondition, options);
+                                        if (options.oneofs)
+                                            object.condition = "infoTypeCondition";
+                                    }
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this PolicyCondition to JSON.
+                                 * @function toJSON
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                PolicyCondition.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for PolicyCondition
+                                 * @function getTypeUrl
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                PolicyCondition.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition";
+                                };
+    
+                                PolicyCondition.InfoTypeCondition = (function() {
+    
+                                    /**
+                                     * Properties of an InfoTypeCondition.
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                     * @interface IInfoTypeCondition
+                                     * @property {number|Long|null} [minCount] InfoTypeCondition minCount
+                                     * @property {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.IInfoTypes|null} [infoTypes] InfoTypeCondition infoTypes
+                                     * @property {google.protobuf.IEmpty|null} [anyInfoType] InfoTypeCondition anyInfoType
+                                     */
+    
+                                    /**
+                                     * Constructs a new InfoTypeCondition.
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition
+                                     * @classdesc Represents an InfoTypeCondition.
+                                     * @implements IInfoTypeCondition
+                                     * @constructor
+                                     * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.IInfoTypeCondition=} [properties] Properties to set
+                                     */
+                                    function InfoTypeCondition(properties) {
+                                        if (properties)
+                                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                    this[keys[i]] = properties[keys[i]];
+                                    }
+    
+                                    /**
+                                     * InfoTypeCondition minCount.
+                                     * @member {number|Long} minCount
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @instance
+                                     */
+                                    InfoTypeCondition.prototype.minCount = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+    
+                                    /**
+                                     * InfoTypeCondition infoTypes.
+                                     * @member {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.IInfoTypes|null|undefined} infoTypes
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @instance
+                                     */
+                                    InfoTypeCondition.prototype.infoTypes = null;
+    
+                                    /**
+                                     * InfoTypeCondition anyInfoType.
+                                     * @member {google.protobuf.IEmpty|null|undefined} anyInfoType
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @instance
+                                     */
+                                    InfoTypeCondition.prototype.anyInfoType = null;
+    
+                                    // OneOf field names bound to virtual getters and setters
+                                    var $oneOfFields;
+    
+                                    /**
+                                     * InfoTypeCondition infoTypeCondition.
+                                     * @member {"infoTypes"|"anyInfoType"|undefined} infoTypeCondition
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @instance
+                                     */
+                                    Object.defineProperty(InfoTypeCondition.prototype, "infoTypeCondition", {
+                                        get: $util.oneOfGetter($oneOfFields = ["infoTypes", "anyInfoType"]),
+                                        set: $util.oneOfSetter($oneOfFields)
+                                    });
+    
+                                    /**
+                                     * Creates a new InfoTypeCondition instance using the specified properties.
+                                     * @function create
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.IInfoTypeCondition=} [properties] Properties to set
+                                     * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition} InfoTypeCondition instance
+                                     */
+                                    InfoTypeCondition.create = function create(properties) {
+                                        return new InfoTypeCondition(properties);
+                                    };
+    
+                                    /**
+                                     * Encodes the specified InfoTypeCondition message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.verify|verify} messages.
+                                     * @function encode
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.IInfoTypeCondition} message InfoTypeCondition message or plain object to encode
+                                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                                     * @returns {$protobuf.Writer} Writer
+                                     */
+                                    InfoTypeCondition.encode = function encode(message, writer) {
+                                        if (!writer)
+                                            writer = $Writer.create();
+                                        if (message.infoTypes != null && Object.hasOwnProperty.call(message, "infoTypes"))
+                                            $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.encode(message.infoTypes, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                        if (message.anyInfoType != null && Object.hasOwnProperty.call(message, "anyInfoType"))
+                                            $root.google.protobuf.Empty.encode(message.anyInfoType, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                        if (message.minCount != null && Object.hasOwnProperty.call(message, "minCount"))
+                                            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.minCount);
+                                        return writer;
+                                    };
+    
+                                    /**
+                                     * Encodes the specified InfoTypeCondition message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.verify|verify} messages.
+                                     * @function encodeDelimited
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.IInfoTypeCondition} message InfoTypeCondition message or plain object to encode
+                                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                                     * @returns {$protobuf.Writer} Writer
+                                     */
+                                    InfoTypeCondition.encodeDelimited = function encodeDelimited(message, writer) {
+                                        return this.encode(message, writer).ldelim();
+                                    };
+    
+                                    /**
+                                     * Decodes an InfoTypeCondition message from the specified reader or buffer.
+                                     * @function decode
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                     * @param {number} [length] Message length if known beforehand
+                                     * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition} InfoTypeCondition
+                                     * @throws {Error} If the payload is not a reader or valid buffer
+                                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                     */
+                                    InfoTypeCondition.decode = function decode(reader, length, error, long) {
+                                        if (!(reader instanceof $Reader))
+                                            reader = $Reader.create(reader);
+                                        if (long === undefined)
+                                            long = 0;
+                                        if (long > $Reader.recursionLimit)
+                                            throw Error("maximum nesting depth exceeded");
+                                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition();
+                                        while (reader.pos < end) {
+                                            var tag = reader.uint32();
+                                            if (tag === error)
+                                                break;
+                                            switch (tag >>> 3) {
+                                            case 3: {
+                                                    message.minCount = reader.int64();
+                                                    break;
+                                                }
+                                            case 1: {
+                                                    message.infoTypes = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.decode(reader, reader.uint32(), undefined, long + 1);
+                                                    break;
+                                                }
+                                            case 2: {
+                                                    message.anyInfoType = $root.google.protobuf.Empty.decode(reader, reader.uint32(), undefined, long + 1);
+                                                    break;
+                                                }
+                                            default:
+                                                reader.skipType(tag & 7, long);
+                                                break;
+                                            }
+                                        }
+                                        return message;
+                                    };
+    
+                                    /**
+                                     * Decodes an InfoTypeCondition message from the specified reader or buffer, length delimited.
+                                     * @function decodeDelimited
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                     * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition} InfoTypeCondition
+                                     * @throws {Error} If the payload is not a reader or valid buffer
+                                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                     */
+                                    InfoTypeCondition.decodeDelimited = function decodeDelimited(reader) {
+                                        if (!(reader instanceof $Reader))
+                                            reader = new $Reader(reader);
+                                        return this.decode(reader, reader.uint32());
+                                    };
+    
+                                    /**
+                                     * Verifies an InfoTypeCondition message.
+                                     * @function verify
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {Object.<string,*>} message Plain object to verify
+                                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                     */
+                                    InfoTypeCondition.verify = function verify(message, long) {
+                                        if (typeof message !== "object" || message === null)
+                                            return "object expected";
+                                        if (long === undefined)
+                                            long = 0;
+                                        if (long > $util.recursionLimit)
+                                            return "maximum nesting depth exceeded";
+                                        var properties = {};
+                                        if (message.minCount != null && message.hasOwnProperty("minCount"))
+                                            if (!$util.isInteger(message.minCount) && !(message.minCount && $util.isInteger(message.minCount.low) && $util.isInteger(message.minCount.high)))
+                                                return "minCount: integer|Long expected";
+                                        if (message.infoTypes != null && message.hasOwnProperty("infoTypes")) {
+                                            properties.infoTypeCondition = 1;
+                                            {
+                                                var error = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.verify(message.infoTypes, long + 1);
+                                                if (error)
+                                                    return "infoTypes." + error;
+                                            }
+                                        }
+                                        if (message.anyInfoType != null && message.hasOwnProperty("anyInfoType")) {
+                                            if (properties.infoTypeCondition === 1)
+                                                return "infoTypeCondition: multiple values";
+                                            properties.infoTypeCondition = 1;
+                                            {
+                                                var error = $root.google.protobuf.Empty.verify(message.anyInfoType, long + 1);
+                                                if (error)
+                                                    return "anyInfoType." + error;
+                                            }
+                                        }
+                                        return null;
+                                    };
+    
+                                    /**
+                                     * Creates an InfoTypeCondition message from a plain object. Also converts values to their respective internal types.
+                                     * @function fromObject
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {Object.<string,*>} object Plain object
+                                     * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition} InfoTypeCondition
+                                     */
+                                    InfoTypeCondition.fromObject = function fromObject(object, long) {
+                                        if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition)
+                                            return object;
+                                        if (long === undefined)
+                                            long = 0;
+                                        if (long > $util.recursionLimit)
+                                            throw Error("maximum nesting depth exceeded");
+                                        var message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition();
+                                        if (object.minCount != null)
+                                            if ($util.Long)
+                                                (message.minCount = $util.Long.fromValue(object.minCount)).unsigned = false;
+                                            else if (typeof object.minCount === "string")
+                                                message.minCount = parseInt(object.minCount, 10);
+                                            else if (typeof object.minCount === "number")
+                                                message.minCount = object.minCount;
+                                            else if (typeof object.minCount === "object")
+                                                message.minCount = new $util.LongBits(object.minCount.low >>> 0, object.minCount.high >>> 0).toNumber();
+                                        if (object.infoTypes != null) {
+                                            if (typeof object.infoTypes !== "object")
+                                                throw TypeError(".google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.infoTypes: object expected");
+                                            message.infoTypes = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.fromObject(object.infoTypes, long + 1);
+                                        }
+                                        if (object.anyInfoType != null) {
+                                            if (typeof object.anyInfoType !== "object")
+                                                throw TypeError(".google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.anyInfoType: object expected");
+                                            message.anyInfoType = $root.google.protobuf.Empty.fromObject(object.anyInfoType, long + 1);
+                                        }
+                                        return message;
+                                    };
+    
+                                    /**
+                                     * Creates a plain object from an InfoTypeCondition message. Also converts values to other types if specified.
+                                     * @function toObject
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition} message InfoTypeCondition
+                                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                     * @returns {Object.<string,*>} Plain object
+                                     */
+                                    InfoTypeCondition.toObject = function toObject(message, options) {
+                                        if (!options)
+                                            options = {};
+                                        var object = {};
+                                        if (options.defaults)
+                                            if ($util.Long) {
+                                                var long = new $util.Long(0, 0, false);
+                                                object.minCount = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                                            } else
+                                                object.minCount = options.longs === String ? "0" : 0;
+                                        if (message.infoTypes != null && message.hasOwnProperty("infoTypes")) {
+                                            object.infoTypes = $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.toObject(message.infoTypes, options);
+                                            if (options.oneofs)
+                                                object.infoTypeCondition = "infoTypes";
+                                        }
+                                        if (message.anyInfoType != null && message.hasOwnProperty("anyInfoType")) {
+                                            object.anyInfoType = $root.google.protobuf.Empty.toObject(message.anyInfoType, options);
+                                            if (options.oneofs)
+                                                object.infoTypeCondition = "anyInfoType";
+                                        }
+                                        if (message.minCount != null && message.hasOwnProperty("minCount"))
+                                            if (typeof message.minCount === "number")
+                                                object.minCount = options.longs === String ? String(message.minCount) : message.minCount;
+                                            else
+                                                object.minCount = options.longs === String ? $util.Long.prototype.toString.call(message.minCount) : options.longs === Number ? new $util.LongBits(message.minCount.low >>> 0, message.minCount.high >>> 0).toNumber() : message.minCount;
+                                        return object;
+                                    };
+    
+                                    /**
+                                     * Converts this InfoTypeCondition to JSON.
+                                     * @function toJSON
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @instance
+                                     * @returns {Object.<string,*>} JSON object
+                                     */
+                                    InfoTypeCondition.prototype.toJSON = function toJSON() {
+                                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                    };
+    
+                                    /**
+                                     * Gets the default type url for InfoTypeCondition
+                                     * @function getTypeUrl
+                                     * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                     * @static
+                                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                     * @returns {string} The default type url
+                                     */
+                                    InfoTypeCondition.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                        if (typeUrlPrefix === undefined) {
+                                            typeUrlPrefix = "type.googleapis.com";
+                                        }
+                                        return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition";
+                                    };
+    
+                                    InfoTypeCondition.InfoTypes = (function() {
+    
+                                        /**
+                                         * Properties of an InfoTypes.
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                         * @interface IInfoTypes
+                                         * @property {Array.<string>|null} [infoTypeNames] InfoTypes infoTypeNames
+                                         */
+    
+                                        /**
+                                         * Constructs a new InfoTypes.
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition
+                                         * @classdesc Represents an InfoTypes.
+                                         * @implements IInfoTypes
+                                         * @constructor
+                                         * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.IInfoTypes=} [properties] Properties to set
+                                         */
+                                        function InfoTypes(properties) {
+                                            this.infoTypeNames = [];
+                                            if (properties)
+                                                for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                                    if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                        this[keys[i]] = properties[keys[i]];
+                                        }
+    
+                                        /**
+                                         * InfoTypes infoTypeNames.
+                                         * @member {Array.<string>} infoTypeNames
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @instance
+                                         */
+                                        InfoTypes.prototype.infoTypeNames = $util.emptyArray;
+    
+                                        /**
+                                         * Creates a new InfoTypes instance using the specified properties.
+                                         * @function create
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.IInfoTypes=} [properties] Properties to set
+                                         * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes} InfoTypes instance
+                                         */
+                                        InfoTypes.create = function create(properties) {
+                                            return new InfoTypes(properties);
+                                        };
+    
+                                        /**
+                                         * Encodes the specified InfoTypes message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.verify|verify} messages.
+                                         * @function encode
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.IInfoTypes} message InfoTypes message or plain object to encode
+                                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                                         * @returns {$protobuf.Writer} Writer
+                                         */
+                                        InfoTypes.encode = function encode(message, writer) {
+                                            if (!writer)
+                                                writer = $Writer.create();
+                                            if (message.infoTypeNames != null && message.infoTypeNames.length)
+                                                for (var i = 0; i < message.infoTypeNames.length; ++i)
+                                                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.infoTypeNames[i]);
+                                            return writer;
+                                        };
+    
+                                        /**
+                                         * Encodes the specified InfoTypes message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.verify|verify} messages.
+                                         * @function encodeDelimited
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.IInfoTypes} message InfoTypes message or plain object to encode
+                                         * @param {$protobuf.Writer} [writer] Writer to encode to
+                                         * @returns {$protobuf.Writer} Writer
+                                         */
+                                        InfoTypes.encodeDelimited = function encodeDelimited(message, writer) {
+                                            return this.encode(message, writer).ldelim();
+                                        };
+    
+                                        /**
+                                         * Decodes an InfoTypes message from the specified reader or buffer.
+                                         * @function decode
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                         * @param {number} [length] Message length if known beforehand
+                                         * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes} InfoTypes
+                                         * @throws {Error} If the payload is not a reader or valid buffer
+                                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                         */
+                                        InfoTypes.decode = function decode(reader, length, error, long) {
+                                            if (!(reader instanceof $Reader))
+                                                reader = $Reader.create(reader);
+                                            if (long === undefined)
+                                                long = 0;
+                                            if (long > $Reader.recursionLimit)
+                                                throw Error("maximum nesting depth exceeded");
+                                            var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes();
+                                            while (reader.pos < end) {
+                                                var tag = reader.uint32();
+                                                if (tag === error)
+                                                    break;
+                                                switch (tag >>> 3) {
+                                                case 1: {
+                                                        if (!(message.infoTypeNames && message.infoTypeNames.length))
+                                                            message.infoTypeNames = [];
+                                                        message.infoTypeNames.push(reader.string());
+                                                        break;
+                                                    }
+                                                default:
+                                                    reader.skipType(tag & 7, long);
+                                                    break;
+                                                }
+                                            }
+                                            return message;
+                                        };
+    
+                                        /**
+                                         * Decodes an InfoTypes message from the specified reader or buffer, length delimited.
+                                         * @function decodeDelimited
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                         * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes} InfoTypes
+                                         * @throws {Error} If the payload is not a reader or valid buffer
+                                         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                         */
+                                        InfoTypes.decodeDelimited = function decodeDelimited(reader) {
+                                            if (!(reader instanceof $Reader))
+                                                reader = new $Reader(reader);
+                                            return this.decode(reader, reader.uint32());
+                                        };
+    
+                                        /**
+                                         * Verifies an InfoTypes message.
+                                         * @function verify
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {Object.<string,*>} message Plain object to verify
+                                         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                         */
+                                        InfoTypes.verify = function verify(message, long) {
+                                            if (typeof message !== "object" || message === null)
+                                                return "object expected";
+                                            if (long === undefined)
+                                                long = 0;
+                                            if (long > $util.recursionLimit)
+                                                return "maximum nesting depth exceeded";
+                                            if (message.infoTypeNames != null && message.hasOwnProperty("infoTypeNames")) {
+                                                if (!Array.isArray(message.infoTypeNames))
+                                                    return "infoTypeNames: array expected";
+                                                for (var i = 0; i < message.infoTypeNames.length; ++i)
+                                                    if (!$util.isString(message.infoTypeNames[i]))
+                                                        return "infoTypeNames: string[] expected";
+                                            }
+                                            return null;
+                                        };
+    
+                                        /**
+                                         * Creates an InfoTypes message from a plain object. Also converts values to their respective internal types.
+                                         * @function fromObject
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {Object.<string,*>} object Plain object
+                                         * @returns {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes} InfoTypes
+                                         */
+                                        InfoTypes.fromObject = function fromObject(object, long) {
+                                            if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes)
+                                                return object;
+                                            if (long === undefined)
+                                                long = 0;
+                                            if (long > $util.recursionLimit)
+                                                throw Error("maximum nesting depth exceeded");
+                                            var message = new $root.google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes();
+                                            if (object.infoTypeNames) {
+                                                if (!Array.isArray(object.infoTypeNames))
+                                                    throw TypeError(".google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes.infoTypeNames: array expected");
+                                                message.infoTypeNames = [];
+                                                for (var i = 0; i < object.infoTypeNames.length; ++i)
+                                                    message.infoTypeNames[i] = String(object.infoTypeNames[i]);
+                                            }
+                                            return message;
+                                        };
+    
+                                        /**
+                                         * Creates a plain object from an InfoTypes message. Also converts values to other types if specified.
+                                         * @function toObject
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes} message InfoTypes
+                                         * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                         * @returns {Object.<string,*>} Plain object
+                                         */
+                                        InfoTypes.toObject = function toObject(message, options) {
+                                            if (!options)
+                                                options = {};
+                                            var object = {};
+                                            if (options.arrays || options.defaults)
+                                                object.infoTypeNames = [];
+                                            if (message.infoTypeNames && message.infoTypeNames.length) {
+                                                object.infoTypeNames = [];
+                                                for (var j = 0; j < message.infoTypeNames.length; ++j)
+                                                    object.infoTypeNames[j] = message.infoTypeNames[j];
+                                            }
+                                            return object;
+                                        };
+    
+                                        /**
+                                         * Converts this InfoTypes to JSON.
+                                         * @function toJSON
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @instance
+                                         * @returns {Object.<string,*>} JSON object
+                                         */
+                                        InfoTypes.prototype.toJSON = function toJSON() {
+                                            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                        };
+    
+                                        /**
+                                         * Gets the default type url for InfoTypes
+                                         * @function getTypeUrl
+                                         * @memberof google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes
+                                         * @static
+                                         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                         * @returns {string} The default type url
+                                         */
+                                        InfoTypes.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                            if (typeUrlPrefix === undefined) {
+                                                typeUrlPrefix = "type.googleapis.com";
+                                            }
+                                            return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy.PolicyRule.PolicyCondition.InfoTypeCondition.InfoTypes";
+                                        };
+    
+                                        return InfoTypes;
+                                    })();
+    
+                                    return InfoTypeCondition;
+                                })();
+    
+                                return PolicyCondition;
+                            })();
+    
+                            return PolicyRule;
+                        })();
+    
+                        ContentPolicy.LoggingConfig = (function() {
+    
+                            /**
+                             * Properties of a LoggingConfig.
+                             * @memberof google.privacy.dlp.v2.ContentPolicy
+                             * @interface ILoggingConfig
+                             * @property {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.ILogToBigQuery|null} [logToBigQuery] LoggingConfig logToBigQuery
+                             */
+    
+                            /**
+                             * Constructs a new LoggingConfig.
+                             * @memberof google.privacy.dlp.v2.ContentPolicy
+                             * @classdesc Represents a LoggingConfig.
+                             * @implements ILoggingConfig
+                             * @constructor
+                             * @param {google.privacy.dlp.v2.ContentPolicy.ILoggingConfig=} [properties] Properties to set
+                             */
+                            function LoggingConfig(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * LoggingConfig logToBigQuery.
+                             * @member {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.ILogToBigQuery|null|undefined} logToBigQuery
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @instance
+                             */
+                            LoggingConfig.prototype.logToBigQuery = null;
+    
+                            // OneOf field names bound to virtual getters and setters
+                            var $oneOfFields;
+    
+                            /**
+                             * LoggingConfig destination.
+                             * @member {"logToBigQuery"|undefined} destination
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @instance
+                             */
+                            Object.defineProperty(LoggingConfig.prototype, "destination", {
+                                get: $util.oneOfGetter($oneOfFields = ["logToBigQuery"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * Creates a new LoggingConfig instance using the specified properties.
+                             * @function create
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.ILoggingConfig=} [properties] Properties to set
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig} LoggingConfig instance
+                             */
+                            LoggingConfig.create = function create(properties) {
+                                return new LoggingConfig(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified LoggingConfig message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.LoggingConfig.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.ILoggingConfig} message LoggingConfig message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            LoggingConfig.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.logToBigQuery != null && Object.hasOwnProperty.call(message, "logToBigQuery"))
+                                    $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery.encode(message.logToBigQuery, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified LoggingConfig message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.LoggingConfig.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.ILoggingConfig} message LoggingConfig message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            LoggingConfig.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a LoggingConfig message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig} LoggingConfig
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            LoggingConfig.decode = function decode(reader, length, error, long) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $Reader.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.logToBigQuery = $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery.decode(reader, reader.uint32(), undefined, long + 1);
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7, long);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a LoggingConfig message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig} LoggingConfig
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            LoggingConfig.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a LoggingConfig message.
+                             * @function verify
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            LoggingConfig.verify = function verify(message, long) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    return "maximum nesting depth exceeded";
+                                var properties = {};
+                                if (message.logToBigQuery != null && message.hasOwnProperty("logToBigQuery")) {
+                                    properties.destination = 1;
+                                    {
+                                        var error = $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery.verify(message.logToBigQuery, long + 1);
+                                        if (error)
+                                            return "logToBigQuery." + error;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a LoggingConfig message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig} LoggingConfig
+                             */
+                            LoggingConfig.fromObject = function fromObject(object, long) {
+                                if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig)
+                                    return object;
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var message = new $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig();
+                                if (object.logToBigQuery != null) {
+                                    if (typeof object.logToBigQuery !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.ContentPolicy.LoggingConfig.logToBigQuery: object expected");
+                                    message.logToBigQuery = $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery.fromObject(object.logToBigQuery, long + 1);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a LoggingConfig message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {google.privacy.dlp.v2.ContentPolicy.LoggingConfig} message LoggingConfig
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            LoggingConfig.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (message.logToBigQuery != null && message.hasOwnProperty("logToBigQuery")) {
+                                    object.logToBigQuery = $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery.toObject(message.logToBigQuery, options);
+                                    if (options.oneofs)
+                                        object.destination = "logToBigQuery";
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this LoggingConfig to JSON.
+                             * @function toJSON
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            LoggingConfig.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for LoggingConfig
+                             * @function getTypeUrl
+                             * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            LoggingConfig.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy.LoggingConfig";
+                            };
+    
+                            LoggingConfig.LogToBigQuery = (function() {
+    
+                                /**
+                                 * Properties of a LogToBigQuery.
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                                 * @interface ILogToBigQuery
+                                 * @property {string|null} [projectId] LogToBigQuery projectId
+                                 * @property {string|null} [datasetId] LogToBigQuery datasetId
+                                 * @property {string|null} [tableId] LogToBigQuery tableId
+                                 */
+    
+                                /**
+                                 * Constructs a new LogToBigQuery.
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig
+                                 * @classdesc Represents a LogToBigQuery.
+                                 * @implements ILogToBigQuery
+                                 * @constructor
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.ILogToBigQuery=} [properties] Properties to set
+                                 */
+                                function LogToBigQuery(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * LogToBigQuery projectId.
+                                 * @member {string} projectId
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @instance
+                                 */
+                                LogToBigQuery.prototype.projectId = "";
+    
+                                /**
+                                 * LogToBigQuery datasetId.
+                                 * @member {string} datasetId
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @instance
+                                 */
+                                LogToBigQuery.prototype.datasetId = "";
+    
+                                /**
+                                 * LogToBigQuery tableId.
+                                 * @member {string} tableId
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @instance
+                                 */
+                                LogToBigQuery.prototype.tableId = "";
+    
+                                /**
+                                 * Creates a new LogToBigQuery instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.ILogToBigQuery=} [properties] Properties to set
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery} LogToBigQuery instance
+                                 */
+                                LogToBigQuery.create = function create(properties) {
+                                    return new LogToBigQuery(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified LogToBigQuery message. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.ILogToBigQuery} message LogToBigQuery message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                LogToBigQuery.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.projectId != null && Object.hasOwnProperty.call(message, "projectId"))
+                                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.projectId);
+                                    if (message.datasetId != null && Object.hasOwnProperty.call(message, "datasetId"))
+                                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.datasetId);
+                                    if (message.tableId != null && Object.hasOwnProperty.call(message, "tableId"))
+                                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.tableId);
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified LogToBigQuery message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.ILogToBigQuery} message LogToBigQuery message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                LogToBigQuery.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a LogToBigQuery message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery} LogToBigQuery
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                LogToBigQuery.decode = function decode(reader, length, error, long) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $Reader.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        if (tag === error)
+                                            break;
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.projectId = reader.string();
+                                                break;
+                                            }
+                                        case 2: {
+                                                message.datasetId = reader.string();
+                                                break;
+                                            }
+                                        case 3: {
+                                                message.tableId = reader.string();
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7, long);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a LogToBigQuery message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery} LogToBigQuery
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                LogToBigQuery.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a LogToBigQuery message.
+                                 * @function verify
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                LogToBigQuery.verify = function verify(message, long) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        return "maximum nesting depth exceeded";
+                                    if (message.projectId != null && message.hasOwnProperty("projectId"))
+                                        if (!$util.isString(message.projectId))
+                                            return "projectId: string expected";
+                                    if (message.datasetId != null && message.hasOwnProperty("datasetId"))
+                                        if (!$util.isString(message.datasetId))
+                                            return "datasetId: string expected";
+                                    if (message.tableId != null && message.hasOwnProperty("tableId"))
+                                        if (!$util.isString(message.tableId))
+                                            return "tableId: string expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a LogToBigQuery message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery} LogToBigQuery
+                                 */
+                                LogToBigQuery.fromObject = function fromObject(object, long) {
+                                    if (object instanceof $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery)
+                                        return object;
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var message = new $root.google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery();
+                                    if (object.projectId != null)
+                                        message.projectId = String(object.projectId);
+                                    if (object.datasetId != null)
+                                        message.datasetId = String(object.datasetId);
+                                    if (object.tableId != null)
+                                        message.tableId = String(object.tableId);
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a LogToBigQuery message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery} message LogToBigQuery
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                LogToBigQuery.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults) {
+                                        object.projectId = "";
+                                        object.datasetId = "";
+                                        object.tableId = "";
+                                    }
+                                    if (message.projectId != null && message.hasOwnProperty("projectId"))
+                                        object.projectId = message.projectId;
+                                    if (message.datasetId != null && message.hasOwnProperty("datasetId"))
+                                        object.datasetId = message.datasetId;
+                                    if (message.tableId != null && message.hasOwnProperty("tableId"))
+                                        object.tableId = message.tableId;
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this LogToBigQuery to JSON.
+                                 * @function toJSON
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                LogToBigQuery.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for LogToBigQuery
+                                 * @function getTypeUrl
+                                 * @memberof google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                LogToBigQuery.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.privacy.dlp.v2.ContentPolicy.LoggingConfig.LogToBigQuery";
+                                };
+    
+                                return LogToBigQuery;
+                            })();
+    
+                            return LoggingConfig;
+                        })();
+    
+                        return ContentPolicy;
+                    })();
+    
                     v2.InfoType = (function() {
     
                         /**
@@ -106655,6 +111798,7 @@
                          * @property {google.privacy.dlp.v2.CustomInfoType.ISurrogateType|null} [surrogateType] CustomInfoType surrogateType
                          * @property {google.privacy.dlp.v2.IStoredType|null} [storedType] CustomInfoType storedType
                          * @property {google.privacy.dlp.v2.CustomInfoType.IMetadataKeyValueExpression|null} [metadataKeyValueExpression] CustomInfoType metadataKeyValueExpression
+                         * @property {google.privacy.dlp.v2.CustomInfoType.IFileLabelInfoType|null} [fileLabelInfoType] CustomInfoType fileLabelInfoType
                          * @property {Array.<google.privacy.dlp.v2.CustomInfoType.IDetectionRule>|null} [detectionRules] CustomInfoType detectionRules
                          * @property {google.privacy.dlp.v2.CustomInfoType.ExclusionType|null} [exclusionType] CustomInfoType exclusionType
                          * @property {google.privacy.dlp.v2.ISensitivityScore|null} [sensitivityScore] CustomInfoType sensitivityScore
@@ -106733,6 +111877,14 @@
                         CustomInfoType.prototype.metadataKeyValueExpression = null;
     
                         /**
+                         * CustomInfoType fileLabelInfoType.
+                         * @member {google.privacy.dlp.v2.CustomInfoType.IFileLabelInfoType|null|undefined} fileLabelInfoType
+                         * @memberof google.privacy.dlp.v2.CustomInfoType
+                         * @instance
+                         */
+                        CustomInfoType.prototype.fileLabelInfoType = null;
+    
+                        /**
                          * CustomInfoType detectionRules.
                          * @member {Array.<google.privacy.dlp.v2.CustomInfoType.IDetectionRule>} detectionRules
                          * @memberof google.privacy.dlp.v2.CustomInfoType
@@ -106761,12 +111913,12 @@
     
                         /**
                          * CustomInfoType type.
-                         * @member {"dictionary"|"regex"|"surrogateType"|"storedType"|"metadataKeyValueExpression"|undefined} type
+                         * @member {"dictionary"|"regex"|"surrogateType"|"storedType"|"metadataKeyValueExpression"|"fileLabelInfoType"|undefined} type
                          * @memberof google.privacy.dlp.v2.CustomInfoType
                          * @instance
                          */
                         Object.defineProperty(CustomInfoType.prototype, "type", {
-                            get: $util.oneOfGetter($oneOfFields = ["dictionary", "regex", "surrogateType", "storedType", "metadataKeyValueExpression"]),
+                            get: $util.oneOfGetter($oneOfFields = ["dictionary", "regex", "surrogateType", "storedType", "metadataKeyValueExpression", "fileLabelInfoType"]),
                             set: $util.oneOfSetter($oneOfFields)
                         });
     
@@ -106815,6 +111967,8 @@
                                 $root.google.privacy.dlp.v2.SensitivityScore.encode(message.sensitivityScore, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
                             if (message.metadataKeyValueExpression != null && Object.hasOwnProperty.call(message, "metadataKeyValueExpression"))
                                 $root.google.privacy.dlp.v2.CustomInfoType.MetadataKeyValueExpression.encode(message.metadataKeyValueExpression, writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                            if (message.fileLabelInfoType != null && Object.hasOwnProperty.call(message, "fileLabelInfoType"))
+                                $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.encode(message.fileLabelInfoType, writer.uint32(/* id 12, wireType 2 =*/98).fork()).ldelim();
                             return writer;
                         };
     
@@ -106881,6 +112035,10 @@
                                     }
                                 case 10: {
                                         message.metadataKeyValueExpression = $root.google.privacy.dlp.v2.CustomInfoType.MetadataKeyValueExpression.decode(reader, reader.uint32(), undefined, long + 1);
+                                        break;
+                                    }
+                                case 12: {
+                                        message.fileLabelInfoType = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.decode(reader, reader.uint32(), undefined, long + 1);
                                         break;
                                     }
                                 case 7: {
@@ -107002,6 +112160,16 @@
                                         return "metadataKeyValueExpression." + error;
                                 }
                             }
+                            if (message.fileLabelInfoType != null && message.hasOwnProperty("fileLabelInfoType")) {
+                                if (properties.type === 1)
+                                    return "type: multiple values";
+                                properties.type = 1;
+                                {
+                                    var error = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.verify(message.fileLabelInfoType, long + 1);
+                                    if (error)
+                                        return "fileLabelInfoType." + error;
+                                }
+                            }
                             if (message.detectionRules != null && message.hasOwnProperty("detectionRules")) {
                                 if (!Array.isArray(message.detectionRules))
                                     return "detectionRules: array expected";
@@ -107105,6 +112273,11 @@
                                     throw TypeError(".google.privacy.dlp.v2.CustomInfoType.metadataKeyValueExpression: object expected");
                                 message.metadataKeyValueExpression = $root.google.privacy.dlp.v2.CustomInfoType.MetadataKeyValueExpression.fromObject(object.metadataKeyValueExpression, long + 1);
                             }
+                            if (object.fileLabelInfoType != null) {
+                                if (typeof object.fileLabelInfoType !== "object")
+                                    throw TypeError(".google.privacy.dlp.v2.CustomInfoType.fileLabelInfoType: object expected");
+                                message.fileLabelInfoType = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.fromObject(object.fileLabelInfoType, long + 1);
+                            }
                             if (object.detectionRules) {
                                 if (!Array.isArray(object.detectionRules))
                                     throw TypeError(".google.privacy.dlp.v2.CustomInfoType.detectionRules: array expected");
@@ -107197,6 +112370,11 @@
                                 object.metadataKeyValueExpression = $root.google.privacy.dlp.v2.CustomInfoType.MetadataKeyValueExpression.toObject(message.metadataKeyValueExpression, options);
                                 if (options.oneofs)
                                     object.type = "metadataKeyValueExpression";
+                            }
+                            if (message.fileLabelInfoType != null && message.hasOwnProperty("fileLabelInfoType")) {
+                                object.fileLabelInfoType = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.toObject(message.fileLabelInfoType, options);
+                                if (options.oneofs)
+                                    object.type = "fileLabelInfoType";
                             }
                             return object;
                         };
@@ -108429,6 +113607,1002 @@
                             };
     
                             return MetadataKeyValueExpression;
+                        })();
+    
+                        CustomInfoType.FileLabelInfoType = (function() {
+    
+                            /**
+                             * Properties of a FileLabelInfoType.
+                             * @memberof google.privacy.dlp.v2.CustomInfoType
+                             * @interface IFileLabelInfoType
+                             * @property {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.ISensitivityLabel|null} [sensitivityLabel] FileLabelInfoType sensitivityLabel
+                             * @property {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.IGoogleDriveLabel|null} [googleDriveLabel] FileLabelInfoType googleDriveLabel
+                             */
+    
+                            /**
+                             * Constructs a new FileLabelInfoType.
+                             * @memberof google.privacy.dlp.v2.CustomInfoType
+                             * @classdesc Represents a FileLabelInfoType.
+                             * @implements IFileLabelInfoType
+                             * @constructor
+                             * @param {google.privacy.dlp.v2.CustomInfoType.IFileLabelInfoType=} [properties] Properties to set
+                             */
+                            function FileLabelInfoType(properties) {
+                                if (properties)
+                                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                        if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                            this[keys[i]] = properties[keys[i]];
+                            }
+    
+                            /**
+                             * FileLabelInfoType sensitivityLabel.
+                             * @member {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.ISensitivityLabel|null|undefined} sensitivityLabel
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @instance
+                             */
+                            FileLabelInfoType.prototype.sensitivityLabel = null;
+    
+                            /**
+                             * FileLabelInfoType googleDriveLabel.
+                             * @member {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.IGoogleDriveLabel|null|undefined} googleDriveLabel
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @instance
+                             */
+                            FileLabelInfoType.prototype.googleDriveLabel = null;
+    
+                            // OneOf field names bound to virtual getters and setters
+                            var $oneOfFields;
+    
+                            /**
+                             * FileLabelInfoType type.
+                             * @member {"sensitivityLabel"|"googleDriveLabel"|undefined} type
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @instance
+                             */
+                            Object.defineProperty(FileLabelInfoType.prototype, "type", {
+                                get: $util.oneOfGetter($oneOfFields = ["sensitivityLabel", "googleDriveLabel"]),
+                                set: $util.oneOfSetter($oneOfFields)
+                            });
+    
+                            /**
+                             * Creates a new FileLabelInfoType instance using the specified properties.
+                             * @function create
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {google.privacy.dlp.v2.CustomInfoType.IFileLabelInfoType=} [properties] Properties to set
+                             * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType} FileLabelInfoType instance
+                             */
+                            FileLabelInfoType.create = function create(properties) {
+                                return new FileLabelInfoType(properties);
+                            };
+    
+                            /**
+                             * Encodes the specified FileLabelInfoType message. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.verify|verify} messages.
+                             * @function encode
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {google.privacy.dlp.v2.CustomInfoType.IFileLabelInfoType} message FileLabelInfoType message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            FileLabelInfoType.encode = function encode(message, writer) {
+                                if (!writer)
+                                    writer = $Writer.create();
+                                if (message.sensitivityLabel != null && Object.hasOwnProperty.call(message, "sensitivityLabel"))
+                                    $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel.encode(message.sensitivityLabel, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                                if (message.googleDriveLabel != null && Object.hasOwnProperty.call(message, "googleDriveLabel"))
+                                    $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.encode(message.googleDriveLabel, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                return writer;
+                            };
+    
+                            /**
+                             * Encodes the specified FileLabelInfoType message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.verify|verify} messages.
+                             * @function encodeDelimited
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {google.privacy.dlp.v2.CustomInfoType.IFileLabelInfoType} message FileLabelInfoType message or plain object to encode
+                             * @param {$protobuf.Writer} [writer] Writer to encode to
+                             * @returns {$protobuf.Writer} Writer
+                             */
+                            FileLabelInfoType.encodeDelimited = function encodeDelimited(message, writer) {
+                                return this.encode(message, writer).ldelim();
+                            };
+    
+                            /**
+                             * Decodes a FileLabelInfoType message from the specified reader or buffer.
+                             * @function decode
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @param {number} [length] Message length if known beforehand
+                             * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType} FileLabelInfoType
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            FileLabelInfoType.decode = function decode(reader, length, error, long) {
+                                if (!(reader instanceof $Reader))
+                                    reader = $Reader.create(reader);
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $Reader.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType();
+                                while (reader.pos < end) {
+                                    var tag = reader.uint32();
+                                    if (tag === error)
+                                        break;
+                                    switch (tag >>> 3) {
+                                    case 1: {
+                                            message.sensitivityLabel = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel.decode(reader, reader.uint32(), undefined, long + 1);
+                                            break;
+                                        }
+                                    case 2: {
+                                            message.googleDriveLabel = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.decode(reader, reader.uint32(), undefined, long + 1);
+                                            break;
+                                        }
+                                    default:
+                                        reader.skipType(tag & 7, long);
+                                        break;
+                                    }
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Decodes a FileLabelInfoType message from the specified reader or buffer, length delimited.
+                             * @function decodeDelimited
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                             * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType} FileLabelInfoType
+                             * @throws {Error} If the payload is not a reader or valid buffer
+                             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                             */
+                            FileLabelInfoType.decodeDelimited = function decodeDelimited(reader) {
+                                if (!(reader instanceof $Reader))
+                                    reader = new $Reader(reader);
+                                return this.decode(reader, reader.uint32());
+                            };
+    
+                            /**
+                             * Verifies a FileLabelInfoType message.
+                             * @function verify
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {Object.<string,*>} message Plain object to verify
+                             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                             */
+                            FileLabelInfoType.verify = function verify(message, long) {
+                                if (typeof message !== "object" || message === null)
+                                    return "object expected";
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    return "maximum nesting depth exceeded";
+                                var properties = {};
+                                if (message.sensitivityLabel != null && message.hasOwnProperty("sensitivityLabel")) {
+                                    properties.type = 1;
+                                    {
+                                        var error = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel.verify(message.sensitivityLabel, long + 1);
+                                        if (error)
+                                            return "sensitivityLabel." + error;
+                                    }
+                                }
+                                if (message.googleDriveLabel != null && message.hasOwnProperty("googleDriveLabel")) {
+                                    if (properties.type === 1)
+                                        return "type: multiple values";
+                                    properties.type = 1;
+                                    {
+                                        var error = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.verify(message.googleDriveLabel, long + 1);
+                                        if (error)
+                                            return "googleDriveLabel." + error;
+                                    }
+                                }
+                                return null;
+                            };
+    
+                            /**
+                             * Creates a FileLabelInfoType message from a plain object. Also converts values to their respective internal types.
+                             * @function fromObject
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {Object.<string,*>} object Plain object
+                             * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType} FileLabelInfoType
+                             */
+                            FileLabelInfoType.fromObject = function fromObject(object, long) {
+                                if (object instanceof $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType)
+                                    return object;
+                                if (long === undefined)
+                                    long = 0;
+                                if (long > $util.recursionLimit)
+                                    throw Error("maximum nesting depth exceeded");
+                                var message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType();
+                                if (object.sensitivityLabel != null) {
+                                    if (typeof object.sensitivityLabel !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.sensitivityLabel: object expected");
+                                    message.sensitivityLabel = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel.fromObject(object.sensitivityLabel, long + 1);
+                                }
+                                if (object.googleDriveLabel != null) {
+                                    if (typeof object.googleDriveLabel !== "object")
+                                        throw TypeError(".google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.googleDriveLabel: object expected");
+                                    message.googleDriveLabel = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.fromObject(object.googleDriveLabel, long + 1);
+                                }
+                                return message;
+                            };
+    
+                            /**
+                             * Creates a plain object from a FileLabelInfoType message. Also converts values to other types if specified.
+                             * @function toObject
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType} message FileLabelInfoType
+                             * @param {$protobuf.IConversionOptions} [options] Conversion options
+                             * @returns {Object.<string,*>} Plain object
+                             */
+                            FileLabelInfoType.toObject = function toObject(message, options) {
+                                if (!options)
+                                    options = {};
+                                var object = {};
+                                if (message.sensitivityLabel != null && message.hasOwnProperty("sensitivityLabel")) {
+                                    object.sensitivityLabel = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel.toObject(message.sensitivityLabel, options);
+                                    if (options.oneofs)
+                                        object.type = "sensitivityLabel";
+                                }
+                                if (message.googleDriveLabel != null && message.hasOwnProperty("googleDriveLabel")) {
+                                    object.googleDriveLabel = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.toObject(message.googleDriveLabel, options);
+                                    if (options.oneofs)
+                                        object.type = "googleDriveLabel";
+                                }
+                                return object;
+                            };
+    
+                            /**
+                             * Converts this FileLabelInfoType to JSON.
+                             * @function toJSON
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @instance
+                             * @returns {Object.<string,*>} JSON object
+                             */
+                            FileLabelInfoType.prototype.toJSON = function toJSON() {
+                                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                            };
+    
+                            /**
+                             * Gets the default type url for FileLabelInfoType
+                             * @function getTypeUrl
+                             * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                             * @static
+                             * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                             * @returns {string} The default type url
+                             */
+                            FileLabelInfoType.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                if (typeUrlPrefix === undefined) {
+                                    typeUrlPrefix = "type.googleapis.com";
+                                }
+                                return typeUrlPrefix + "/google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType";
+                            };
+    
+                            FileLabelInfoType.SensitivityLabel = (function() {
+    
+                                /**
+                                 * Properties of a SensitivityLabel.
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                                 * @interface ISensitivityLabel
+                                 * @property {string|null} [guid] SensitivityLabel guid
+                                 */
+    
+                                /**
+                                 * Constructs a new SensitivityLabel.
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                                 * @classdesc Represents a SensitivityLabel.
+                                 * @implements ISensitivityLabel
+                                 * @constructor
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.ISensitivityLabel=} [properties] Properties to set
+                                 */
+                                function SensitivityLabel(properties) {
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * SensitivityLabel guid.
+                                 * @member {string} guid
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @instance
+                                 */
+                                SensitivityLabel.prototype.guid = "";
+    
+                                /**
+                                 * Creates a new SensitivityLabel instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.ISensitivityLabel=} [properties] Properties to set
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel} SensitivityLabel instance
+                                 */
+                                SensitivityLabel.create = function create(properties) {
+                                    return new SensitivityLabel(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified SensitivityLabel message. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.ISensitivityLabel} message SensitivityLabel message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                SensitivityLabel.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.guid != null && Object.hasOwnProperty.call(message, "guid"))
+                                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.guid);
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified SensitivityLabel message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.ISensitivityLabel} message SensitivityLabel message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                SensitivityLabel.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a SensitivityLabel message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel} SensitivityLabel
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                SensitivityLabel.decode = function decode(reader, length, error, long) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $Reader.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        if (tag === error)
+                                            break;
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.guid = reader.string();
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7, long);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a SensitivityLabel message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel} SensitivityLabel
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                SensitivityLabel.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a SensitivityLabel message.
+                                 * @function verify
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                SensitivityLabel.verify = function verify(message, long) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        return "maximum nesting depth exceeded";
+                                    if (message.guid != null && message.hasOwnProperty("guid"))
+                                        if (!$util.isString(message.guid))
+                                            return "guid: string expected";
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a SensitivityLabel message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel} SensitivityLabel
+                                 */
+                                SensitivityLabel.fromObject = function fromObject(object, long) {
+                                    if (object instanceof $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel)
+                                        return object;
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel();
+                                    if (object.guid != null)
+                                        message.guid = String(object.guid);
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a SensitivityLabel message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel} message SensitivityLabel
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                SensitivityLabel.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.defaults)
+                                        object.guid = "";
+                                    if (message.guid != null && message.hasOwnProperty("guid"))
+                                        object.guid = message.guid;
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this SensitivityLabel to JSON.
+                                 * @function toJSON
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                SensitivityLabel.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for SensitivityLabel
+                                 * @function getTypeUrl
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                SensitivityLabel.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.SensitivityLabel";
+                                };
+    
+                                return SensitivityLabel;
+                            })();
+    
+                            FileLabelInfoType.GoogleDriveLabel = (function() {
+    
+                                /**
+                                 * Properties of a GoogleDriveLabel.
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                                 * @interface IGoogleDriveLabel
+                                 * @property {string|null} [labelId] GoogleDriveLabel labelId
+                                 * @property {Array.<google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.ILabelField>|null} [labelFieldsToMatch] GoogleDriveLabel labelFieldsToMatch
+                                 */
+    
+                                /**
+                                 * Constructs a new GoogleDriveLabel.
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType
+                                 * @classdesc Represents a GoogleDriveLabel.
+                                 * @implements IGoogleDriveLabel
+                                 * @constructor
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.IGoogleDriveLabel=} [properties] Properties to set
+                                 */
+                                function GoogleDriveLabel(properties) {
+                                    this.labelFieldsToMatch = [];
+                                    if (properties)
+                                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                            if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                this[keys[i]] = properties[keys[i]];
+                                }
+    
+                                /**
+                                 * GoogleDriveLabel labelId.
+                                 * @member {string} labelId
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @instance
+                                 */
+                                GoogleDriveLabel.prototype.labelId = "";
+    
+                                /**
+                                 * GoogleDriveLabel labelFieldsToMatch.
+                                 * @member {Array.<google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.ILabelField>} labelFieldsToMatch
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @instance
+                                 */
+                                GoogleDriveLabel.prototype.labelFieldsToMatch = $util.emptyArray;
+    
+                                /**
+                                 * Creates a new GoogleDriveLabel instance using the specified properties.
+                                 * @function create
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.IGoogleDriveLabel=} [properties] Properties to set
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel} GoogleDriveLabel instance
+                                 */
+                                GoogleDriveLabel.create = function create(properties) {
+                                    return new GoogleDriveLabel(properties);
+                                };
+    
+                                /**
+                                 * Encodes the specified GoogleDriveLabel message. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.verify|verify} messages.
+                                 * @function encode
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.IGoogleDriveLabel} message GoogleDriveLabel message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                GoogleDriveLabel.encode = function encode(message, writer) {
+                                    if (!writer)
+                                        writer = $Writer.create();
+                                    if (message.labelId != null && Object.hasOwnProperty.call(message, "labelId"))
+                                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.labelId);
+                                    if (message.labelFieldsToMatch != null && message.labelFieldsToMatch.length)
+                                        for (var i = 0; i < message.labelFieldsToMatch.length; ++i)
+                                            $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField.encode(message.labelFieldsToMatch[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                                    return writer;
+                                };
+    
+                                /**
+                                 * Encodes the specified GoogleDriveLabel message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.verify|verify} messages.
+                                 * @function encodeDelimited
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.IGoogleDriveLabel} message GoogleDriveLabel message or plain object to encode
+                                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                                 * @returns {$protobuf.Writer} Writer
+                                 */
+                                GoogleDriveLabel.encodeDelimited = function encodeDelimited(message, writer) {
+                                    return this.encode(message, writer).ldelim();
+                                };
+    
+                                /**
+                                 * Decodes a GoogleDriveLabel message from the specified reader or buffer.
+                                 * @function decode
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @param {number} [length] Message length if known beforehand
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel} GoogleDriveLabel
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                GoogleDriveLabel.decode = function decode(reader, length, error, long) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = $Reader.create(reader);
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $Reader.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel();
+                                    while (reader.pos < end) {
+                                        var tag = reader.uint32();
+                                        if (tag === error)
+                                            break;
+                                        switch (tag >>> 3) {
+                                        case 1: {
+                                                message.labelId = reader.string();
+                                                break;
+                                            }
+                                        case 2: {
+                                                if (!(message.labelFieldsToMatch && message.labelFieldsToMatch.length))
+                                                    message.labelFieldsToMatch = [];
+                                                message.labelFieldsToMatch.push($root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField.decode(reader, reader.uint32(), undefined, long + 1));
+                                                break;
+                                            }
+                                        default:
+                                            reader.skipType(tag & 7, long);
+                                            break;
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Decodes a GoogleDriveLabel message from the specified reader or buffer, length delimited.
+                                 * @function decodeDelimited
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel} GoogleDriveLabel
+                                 * @throws {Error} If the payload is not a reader or valid buffer
+                                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                 */
+                                GoogleDriveLabel.decodeDelimited = function decodeDelimited(reader) {
+                                    if (!(reader instanceof $Reader))
+                                        reader = new $Reader(reader);
+                                    return this.decode(reader, reader.uint32());
+                                };
+    
+                                /**
+                                 * Verifies a GoogleDriveLabel message.
+                                 * @function verify
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {Object.<string,*>} message Plain object to verify
+                                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                 */
+                                GoogleDriveLabel.verify = function verify(message, long) {
+                                    if (typeof message !== "object" || message === null)
+                                        return "object expected";
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        return "maximum nesting depth exceeded";
+                                    if (message.labelId != null && message.hasOwnProperty("labelId"))
+                                        if (!$util.isString(message.labelId))
+                                            return "labelId: string expected";
+                                    if (message.labelFieldsToMatch != null && message.hasOwnProperty("labelFieldsToMatch")) {
+                                        if (!Array.isArray(message.labelFieldsToMatch))
+                                            return "labelFieldsToMatch: array expected";
+                                        for (var i = 0; i < message.labelFieldsToMatch.length; ++i) {
+                                            var error = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField.verify(message.labelFieldsToMatch[i], long + 1);
+                                            if (error)
+                                                return "labelFieldsToMatch." + error;
+                                        }
+                                    }
+                                    return null;
+                                };
+    
+                                /**
+                                 * Creates a GoogleDriveLabel message from a plain object. Also converts values to their respective internal types.
+                                 * @function fromObject
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {Object.<string,*>} object Plain object
+                                 * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel} GoogleDriveLabel
+                                 */
+                                GoogleDriveLabel.fromObject = function fromObject(object, long) {
+                                    if (object instanceof $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel)
+                                        return object;
+                                    if (long === undefined)
+                                        long = 0;
+                                    if (long > $util.recursionLimit)
+                                        throw Error("maximum nesting depth exceeded");
+                                    var message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel();
+                                    if (object.labelId != null)
+                                        message.labelId = String(object.labelId);
+                                    if (object.labelFieldsToMatch) {
+                                        if (!Array.isArray(object.labelFieldsToMatch))
+                                            throw TypeError(".google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.labelFieldsToMatch: array expected");
+                                        message.labelFieldsToMatch = [];
+                                        for (var i = 0; i < object.labelFieldsToMatch.length; ++i) {
+                                            if (typeof object.labelFieldsToMatch[i] !== "object")
+                                                throw TypeError(".google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.labelFieldsToMatch: object expected");
+                                            message.labelFieldsToMatch[i] = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField.fromObject(object.labelFieldsToMatch[i], long + 1);
+                                        }
+                                    }
+                                    return message;
+                                };
+    
+                                /**
+                                 * Creates a plain object from a GoogleDriveLabel message. Also converts values to other types if specified.
+                                 * @function toObject
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel} message GoogleDriveLabel
+                                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                 * @returns {Object.<string,*>} Plain object
+                                 */
+                                GoogleDriveLabel.toObject = function toObject(message, options) {
+                                    if (!options)
+                                        options = {};
+                                    var object = {};
+                                    if (options.arrays || options.defaults)
+                                        object.labelFieldsToMatch = [];
+                                    if (options.defaults)
+                                        object.labelId = "";
+                                    if (message.labelId != null && message.hasOwnProperty("labelId"))
+                                        object.labelId = message.labelId;
+                                    if (message.labelFieldsToMatch && message.labelFieldsToMatch.length) {
+                                        object.labelFieldsToMatch = [];
+                                        for (var j = 0; j < message.labelFieldsToMatch.length; ++j)
+                                            object.labelFieldsToMatch[j] = $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField.toObject(message.labelFieldsToMatch[j], options);
+                                    }
+                                    return object;
+                                };
+    
+                                /**
+                                 * Converts this GoogleDriveLabel to JSON.
+                                 * @function toJSON
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @instance
+                                 * @returns {Object.<string,*>} JSON object
+                                 */
+                                GoogleDriveLabel.prototype.toJSON = function toJSON() {
+                                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                };
+    
+                                /**
+                                 * Gets the default type url for GoogleDriveLabel
+                                 * @function getTypeUrl
+                                 * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                 * @static
+                                 * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                 * @returns {string} The default type url
+                                 */
+                                GoogleDriveLabel.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                    if (typeUrlPrefix === undefined) {
+                                        typeUrlPrefix = "type.googleapis.com";
+                                    }
+                                    return typeUrlPrefix + "/google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel";
+                                };
+    
+                                GoogleDriveLabel.LabelField = (function() {
+    
+                                    /**
+                                     * Properties of a LabelField.
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                     * @interface ILabelField
+                                     * @property {string|null} [id] LabelField id
+                                     * @property {string|null} [value] LabelField value
+                                     */
+    
+                                    /**
+                                     * Constructs a new LabelField.
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel
+                                     * @classdesc Represents a LabelField.
+                                     * @implements ILabelField
+                                     * @constructor
+                                     * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.ILabelField=} [properties] Properties to set
+                                     */
+                                    function LabelField(properties) {
+                                        if (properties)
+                                            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                                                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                                                    this[keys[i]] = properties[keys[i]];
+                                    }
+    
+                                    /**
+                                     * LabelField id.
+                                     * @member {string} id
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @instance
+                                     */
+                                    LabelField.prototype.id = "";
+    
+                                    /**
+                                     * LabelField value.
+                                     * @member {string} value
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @instance
+                                     */
+                                    LabelField.prototype.value = "";
+    
+                                    /**
+                                     * Creates a new LabelField instance using the specified properties.
+                                     * @function create
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.ILabelField=} [properties] Properties to set
+                                     * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField} LabelField instance
+                                     */
+                                    LabelField.create = function create(properties) {
+                                        return new LabelField(properties);
+                                    };
+    
+                                    /**
+                                     * Encodes the specified LabelField message. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField.verify|verify} messages.
+                                     * @function encode
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.ILabelField} message LabelField message or plain object to encode
+                                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                                     * @returns {$protobuf.Writer} Writer
+                                     */
+                                    LabelField.encode = function encode(message, writer) {
+                                        if (!writer)
+                                            writer = $Writer.create();
+                                        if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                                            writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                                        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                                            writer.uint32(/* id 2, wireType 2 =*/18).string(message.value);
+                                        return writer;
+                                    };
+    
+                                    /**
+                                     * Encodes the specified LabelField message, length delimited. Does not implicitly {@link google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField.verify|verify} messages.
+                                     * @function encodeDelimited
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.ILabelField} message LabelField message or plain object to encode
+                                     * @param {$protobuf.Writer} [writer] Writer to encode to
+                                     * @returns {$protobuf.Writer} Writer
+                                     */
+                                    LabelField.encodeDelimited = function encodeDelimited(message, writer) {
+                                        return this.encode(message, writer).ldelim();
+                                    };
+    
+                                    /**
+                                     * Decodes a LabelField message from the specified reader or buffer.
+                                     * @function decode
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                     * @param {number} [length] Message length if known beforehand
+                                     * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField} LabelField
+                                     * @throws {Error} If the payload is not a reader or valid buffer
+                                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                     */
+                                    LabelField.decode = function decode(reader, length, error, long) {
+                                        if (!(reader instanceof $Reader))
+                                            reader = $Reader.create(reader);
+                                        if (long === undefined)
+                                            long = 0;
+                                        if (long > $Reader.recursionLimit)
+                                            throw Error("maximum nesting depth exceeded");
+                                        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField();
+                                        while (reader.pos < end) {
+                                            var tag = reader.uint32();
+                                            if (tag === error)
+                                                break;
+                                            switch (tag >>> 3) {
+                                            case 1: {
+                                                    message.id = reader.string();
+                                                    break;
+                                                }
+                                            case 2: {
+                                                    message.value = reader.string();
+                                                    break;
+                                                }
+                                            default:
+                                                reader.skipType(tag & 7, long);
+                                                break;
+                                            }
+                                        }
+                                        return message;
+                                    };
+    
+                                    /**
+                                     * Decodes a LabelField message from the specified reader or buffer, length delimited.
+                                     * @function decodeDelimited
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                                     * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField} LabelField
+                                     * @throws {Error} If the payload is not a reader or valid buffer
+                                     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                                     */
+                                    LabelField.decodeDelimited = function decodeDelimited(reader) {
+                                        if (!(reader instanceof $Reader))
+                                            reader = new $Reader(reader);
+                                        return this.decode(reader, reader.uint32());
+                                    };
+    
+                                    /**
+                                     * Verifies a LabelField message.
+                                     * @function verify
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {Object.<string,*>} message Plain object to verify
+                                     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                                     */
+                                    LabelField.verify = function verify(message, long) {
+                                        if (typeof message !== "object" || message === null)
+                                            return "object expected";
+                                        if (long === undefined)
+                                            long = 0;
+                                        if (long > $util.recursionLimit)
+                                            return "maximum nesting depth exceeded";
+                                        if (message.id != null && message.hasOwnProperty("id"))
+                                            if (!$util.isString(message.id))
+                                                return "id: string expected";
+                                        if (message.value != null && message.hasOwnProperty("value"))
+                                            if (!$util.isString(message.value))
+                                                return "value: string expected";
+                                        return null;
+                                    };
+    
+                                    /**
+                                     * Creates a LabelField message from a plain object. Also converts values to their respective internal types.
+                                     * @function fromObject
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {Object.<string,*>} object Plain object
+                                     * @returns {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField} LabelField
+                                     */
+                                    LabelField.fromObject = function fromObject(object, long) {
+                                        if (object instanceof $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField)
+                                            return object;
+                                        if (long === undefined)
+                                            long = 0;
+                                        if (long > $util.recursionLimit)
+                                            throw Error("maximum nesting depth exceeded");
+                                        var message = new $root.google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField();
+                                        if (object.id != null)
+                                            message.id = String(object.id);
+                                        if (object.value != null)
+                                            message.value = String(object.value);
+                                        return message;
+                                    };
+    
+                                    /**
+                                     * Creates a plain object from a LabelField message. Also converts values to other types if specified.
+                                     * @function toObject
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField} message LabelField
+                                     * @param {$protobuf.IConversionOptions} [options] Conversion options
+                                     * @returns {Object.<string,*>} Plain object
+                                     */
+                                    LabelField.toObject = function toObject(message, options) {
+                                        if (!options)
+                                            options = {};
+                                        var object = {};
+                                        if (options.defaults) {
+                                            object.id = "";
+                                            object.value = "";
+                                        }
+                                        if (message.id != null && message.hasOwnProperty("id"))
+                                            object.id = message.id;
+                                        if (message.value != null && message.hasOwnProperty("value"))
+                                            object.value = message.value;
+                                        return object;
+                                    };
+    
+                                    /**
+                                     * Converts this LabelField to JSON.
+                                     * @function toJSON
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @instance
+                                     * @returns {Object.<string,*>} JSON object
+                                     */
+                                    LabelField.prototype.toJSON = function toJSON() {
+                                        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                                    };
+    
+                                    /**
+                                     * Gets the default type url for LabelField
+                                     * @function getTypeUrl
+                                     * @memberof google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField
+                                     * @static
+                                     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+                                     * @returns {string} The default type url
+                                     */
+                                    LabelField.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+                                        if (typeUrlPrefix === undefined) {
+                                            typeUrlPrefix = "type.googleapis.com";
+                                        }
+                                        return typeUrlPrefix + "/google.privacy.dlp.v2.CustomInfoType.FileLabelInfoType.GoogleDriveLabel.LabelField";
+                                    };
+    
+                                    return LabelField;
+                                })();
+    
+                                return GoogleDriveLabel;
+                            })();
+    
+                            return FileLabelInfoType;
                         })();
     
                         CustomInfoType.DetectionRule = (function() {
