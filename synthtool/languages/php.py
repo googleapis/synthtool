@@ -72,7 +72,7 @@ def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
         if entry.name.lower() == version_string:
             return src
         if entry.is_dir():
-            target = _fixed_find_copy_target(entry, version_string)
+            target = _find_copy_target(entry, version_string)
             if target is not None:
                 return target
     return None
