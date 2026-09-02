@@ -20,6 +20,8 @@ import tempfile
 
 import pytest
 
+from synthtool.languages import php
+
 
 FIXTURES = Path(__file__).parent / "fixtures" / "php"
 
@@ -57,3 +59,43 @@ def get_diff_string(dcmp, buf=""):
     for sub_dcmp in dcmp.subdirs.values():
         buf += get_diff_string(sub_dcmp)
     return buf
+
+
+def test_find_copy_target_direct(tmp_path: Path):
+    (tmp_path / "V1").mkdir()
+    assert php._find_copy_target(tmp_path, "v1") == tmp_path
+
+
+def test_find_copy_target_in_sibling(tmp_path: Path):
+    sibling_empty = tmp_path / "sibling_empty"
+    sibling_empty.mkdir()
+
+    sibling_other = tmp_path / "sibling_other"
+    sibling_other.mkdir()
+    (sibling_other / "v2").mkdir()
+
+    sibling_match = tmp_path / "sibling_match"
+    sibling_match.mkdir()
+    (sibling_match / "V1").mkdir()
+
+    assert php._find_copy_target(tmp_path, "v1") == sibling_match
+
+
+def test_find_copy_target_nested(tmp_path: Path):
+    nested_dir = tmp_path / "a" / "b"
+    nested_dir.mkdir(parents=True)
+    (nested_dir / "v1beta1").mkdir()
+
+    assert php._find_copy_target(tmp_path, "v1beta1") == nested_dir
+
+
+def test_find_copy_target_not_found(tmp_path: Path):
+    nested_dir = tmp_path / "a" / "b"
+    nested_dir.mkdir(parents=True)
+    (nested_dir / "v2").mkdir()
+
+    assert php._find_copy_target(tmp_path, "v1") is None
+
+
+def test_find_copy_target_empty_dir(tmp_path: Path):
+    assert php._find_copy_target(tmp_path, "v1") is None
