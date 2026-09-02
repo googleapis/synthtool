@@ -68,14 +68,13 @@ def _merge(src: str, dest: str, path: Path):
 def _find_copy_target(src: Path, version_string: str) -> typing.Optional[Path]:
     """Returns a directory contains the version subdirectory."""
     logger.debug("_find_copy_target called with %s and %s", src, version_string)
-    entries = os.scandir(src)
-    if not entries:
-        return None
-    for entry in entries:
-        if Path(entry.path).resolve().stem.lower() == version_string:
+    for entry in src.iterdir():
+        if entry.name.lower() == version_string:
             return src
         if entry.is_dir():
-            return _find_copy_target(Path(entry.path).resolve(), version_string)
+            target = _fixed_find_copy_target(entry, version_string)
+            if target is not None:
+                return target
     return None
 
 
