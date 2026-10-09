@@ -53,8 +53,8 @@ ENV PATH="/root/.pyenv/bin:/root/.pyenv/shims:${PATH}"
 
 ## Install Node.js from apt-get
 
-# Add NodeSource APT repository for Node.js v18
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+# Add NodeSource APT repository for Node.js v22
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
     apt-get install -y nodejs && \
     rm -rf /var/lib/apt/lists/*
 
