@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import importlib.metadata
 import time
 import pathlib
 
-import pkg_resources
 import packaging.version
 import requests
 
@@ -50,7 +50,7 @@ def check_for_updates(package_name: str, print=print) -> None:
         return
 
     current_version = packaging.version.Version(
-        pkg_resources.get_distribution(package_name).version
+        importlib.metadata.version(package_name)
     )
 
     pypi_version = packaging.version.Version(_get_pypi_version(package_name))
