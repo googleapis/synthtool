@@ -12,20 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import importlib.metadata
 import importlib.util
 import os
 import sys
 from typing import List, Sequence
 
 import click
-import pkg_resources
 from synthtool.log import logger
 import synthtool.metadata
 from synthtool import preconfig
 
 try:
-    VERSION = pkg_resources.get_distribution("gcp-synthtool").version
-except pkg_resources.DistributionNotFound:
+    VERSION = importlib.metadata.version("gcp-synthtool")
+except importlib.metadata.PackageNotFoundError:
     VERSION = "0.0.0+dev"
 
 
